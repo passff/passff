@@ -11,12 +11,16 @@ PassFF.Page = {
   },
 
   onPageLoad : function(event) {
-    let doc = event.originalTarget; // doc is document that triggered the event
+
+    if (!_this.hasPasswordInput()) return;
+
+    let doc = event.originalTarget; // d c is document that triggered the event
     let win = doc.defaultView; // win is the window for the doc
     // test desired conditions and do something
     // if (doc.nodeName == "#document") return; // only documents
     if (win != win.top) return; //only top window.
     // if (win.frameElement) return; // skip iframes/frames
+
     let match = PassFF.Pass.getUrlMatchingItems(win.location.href);
     if(match.length > 0) {
       let passwordData = PassFF.Pass.getPasswordData(match[0]);
@@ -39,9 +43,7 @@ PassFF.Page = {
     let inputs = content.document.getElementsByTagName("input");
     for(let i = 0 ; i < inputs.length ; i++) {
       let input = inputs[i]
-      if (input.type == "text" && _this.hasGoodName(input.name, PassFF.Preferences.loginInputNames)) {
-        input.value = login;
-      }
+      if (_this.isLoginInput(input)) input.value = login;
     }
   },
 
@@ -50,11 +52,27 @@ PassFF.Page = {
     let input = null;
     for(let i = 0 ; i < inputs.length ; i++) {
       input = inputs[i]
-      if (input.type == "password" || (input.type == "text" && _this.hasGoodName(input.name, PassFF.Preferences.passwordInputNames))) {
-        input.value = password;
-      }
+      if (_this.isPasswordInput(input)) input.value = password;
     }
+
     return input;
+  },
+
+  hasPasswordInput : function() {
+    let inputs = content.document.getElementsByTagName("input");
+    for(let i = 0 ; i < inputs.length ; i++) {
+      input = inputs[i]
+      if (_this.isPasswordInput(input)) return true;
+    }
+    return false;
+  },
+
+  isPasswordInput : function(input) {
+      return input.type == "password" || (input.type == "text" && _this.hasGoodName(input.name, PassFF.Preferences.passwordInputNames));
+  },
+
+  isLoginInput : function(input) {
+      return input.type == "text" && _this.hasGoodName(input.name, PassFF.Preferences.loginInputNames);
   },
 
   searchLogin : function(passwordData) {
