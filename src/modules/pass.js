@@ -112,7 +112,7 @@ PassFF.Pass = {
       done        : function(data) { result = data }
     });
     p.wait();
-
+    //Components.utils.reportError(JSON.stringify(result));
     return result;
   },
 
