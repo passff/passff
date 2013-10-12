@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!DOCTYPE overlay SYSTEM "chrome://passff/locale/preferences.dtd">
+
+<prefwindow xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <prefpane id="saveoptions" label="Backups">
+    <preferences>
+      <preference id="passff-message-count-pref" name="extensions.passff.message.count" type="int" />
+      <preference id="passff-passwordInputNames-pref" name="extensions.passff.passwordInputNames" type="string" />
+      <preference id="passff-loginInputNames-pref" name="extensions.passff.loginInputNames" type="string" />
+      <preference id="passff-loginFieldNames-pref" name="extensions.passff.loginFieldNames" type="string" />
+      <preference id="passff-command-pref" name="extensions.passff.command" type="string" />
+      <preference id="passff-home-pref" name="extensions.passff.home" type="string" />
+    </preferences>
+    <groupbox>
+      <caption label="&passff.preferences.page_caption;"/>
+      <grid>
+        <columns>
+          <column flex="1"/>
+          <column flex="2"/>
+        </columns>
+        <rows>
+          <row>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.password_input_names_tooltip;" control="passwordInputNames" value="&passff.preferences.password_input_names_label;"/>
+              <textbox tooltiptext= "&passff.preferences.password_input_names_tooltip;" id="passwordInputNames" preference="passff-passwordInputNames-pref" type="string"/>
+            </vbox>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.login_input_names_tooltip;" control="loginInputNames" value="&passff.preferences.login_input_names_label;"/>
+              <textbox  tooltiptext= "&passff.preferences.login_input_names_tooltip;" id="loginInputNames" preference="passff-loginInputNames-pref" type="string"/>
+            </vbox>
+          </row>
+        </rows>
+      </grid>
+    </groupbox>
+    <groupbox>
+      <caption label="&passff.preferences.pass_caption;"/>
+      <grid>
+        <columns>
+          <column flex="1"/>
+          <column flex="2"/>
+        </columns>
+        <rows>
+          <row>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.login_field_names_tooltip;" control="loginFieldNames" value="&passff.preferences.login_field_names_label;"/>
+              <textbox tooltiptext= "&passff.preferences.login_field_names_tooltip;" id="loginFieldNames" preference="passff-loginFieldNames-pref" type="string"/>
+            </vbox>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.command_tooltip;" control="command" value="&passff.preferences.command_label;"/>
+              <textbox tooltiptext= "&passff.preferences.command_tooltip;" id="command" preference="passff-command-pref" type="string"/>
+            </vbox>
+          </row>
+          <row>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.home_tooltip;" control="home" value="&passff.preferences.home_label;"/>
+              <textbox tooltiptext= "&passff.preferences.home_tooltip;" id="home" preference="passff-home-pref" type="string"/>
+            </vbox>
+          </row>
+        </rows>
+      </grid>
+    </groupbox>
+
+  </prefpane>
+</prefwindow>

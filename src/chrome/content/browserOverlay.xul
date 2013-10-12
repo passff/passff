@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/css" href="chrome://global/skin/" ?>
+<?xml-stylesheet type="text/css" href="chrome://passff/skin/browserOverlay.css" ?>
+
+<!DOCTYPE overlay SYSTEM "chrome://passff/locale/browserOverlay.dtd">
+
+<overlay id="passff-browser-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script type="application/x-javascript" src="chrome://passff/content/browserOverlay.js" />
+  <script type="application/x-javascript" src="resource://passff/page.js" />
+
+  <toolbarpalette id="BrowserToolbarPalette">
+    <toolbarbutton id="passff-button"
+      class="toolbarbutton-1 chromeclass-toolbar-additional"
+      label="&passff.toolbar.button.label;"
+      type="menu"
+      orient="horizontal"
+      tooltiptext="&passff.toolbar.button.tooltip;">
+      <menupopup id="passff-menu">
+      </menupopup>
+    </toolbarbutton>
+  </toolbarpalette>
+
+</overlay>

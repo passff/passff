@@ -1,0 +1,7 @@
+#passff-button {
+list-style-image: url("chrome://passff/skin/passff_medium.png");
+}
+
+toolbar[iconsize="small"] #passff-button {
+  list-style-image: url("chrome://passff/skin/passff_small.png");
+}

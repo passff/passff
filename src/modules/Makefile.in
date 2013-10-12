@@ -1,0 +1,2 @@
+# The sources for the module files.
+modules_sources := $(wildcard $(modules_dir)/*.js) $(wildcard $(modules_dir)/subprocess/*.*)

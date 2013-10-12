@@ -1,0 +1,6 @@
+content   passff              jar:chrome/passff.jar!/content/
+skin      passff  classic/1.0 jar:chrome/passff.jar!/skin/
+locale    passff  en-US       jar:chrome/passff.jar!/locale/en-US/
+resource  passff              modules/
+
+overlay chrome://browser/content/browser.xul  chrome://passff/content/browserOverlay.xul

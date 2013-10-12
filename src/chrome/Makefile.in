@@ -1,0 +1,31 @@
+# The location where the JAR file will be created.
+jar_target_dir := $(build_dir)/chrome
+
+# The main chrome JAR file.
+chrome_jar_file := $(jar_target_dir)/$(extension_name).jar
+
+# The root of the JAR sources.
+jar_source_root := chrome
+
+# The sources for the JAR file.
+jar_sources := $(wildcard $(jar_source_root)/content/*.js) \
+               $(wildcard $(jar_source_root)/content/*.xul) \
+               $(wildcard $(jar_source_root)/content/*.xml) \
+               $(wildcard $(jar_source_root)/content/*.css) \
+               $(wildcard $(jar_source_root)/skin/*.css) \
+               $(wildcard $(jar_source_root)/skin/*.png) \
+               $(wildcard $(jar_source_root)/locale/*/*.dtd) \
+               $(wildcard $(jar_source_root)/locale/*/*.properties)
+
+jar_sources_no_dir := $(subst $(jar_source_root)/,,$(jar_sources))
+
+$(chrome_jar_file): $(jar_target_dir) $(jar_sources)
+	@echo "Creating chrome JAR file."
+	@cd $(jar_source_root); $(ZIP) ../$(chrome_jar_file) $(jar_sources_no_dir)
+	@echo "Creating chrome JAR file. Done!"
+
+$(jar_target_dir): $(build_dir)
+	@if [ ! -x $(jar_target_dir) ]; \
+  then \
+    mkdir $(jar_target_dir); \
+  fi
