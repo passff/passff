@@ -7,26 +7,28 @@ PassFF.Page = {
   _autoSubmittedUrls : new Array(),
   init : function() {
     _this = this;
-    if(gBrowser) gBrowser.addEventListener("DOMContentLoaded", this.onPageLoad, false);
+    if(gBrowser) {
+      gBrowser.addEventListener("DOMContentLoaded", this.onPageLoad, false);
+      gBrowser.tabContainer.addEventListener("TabSelect", this.onTabSelect, false);
+    }
   },
 
   onPageLoad : function(event) {
+    let doc = event.originalTarget;
+    let win = doc.defaultView;
+    // if (doc.nodeName == "#document") return;
+    if (win != win.top) return;
+    // if (win.frameElement) return;
+
+    let matchItems = PassFF.Pass.getUrlMatchingItems(win.location.href);
+    PassFF.BrowserOverlay.createContextualMenu(matchItems);
 
     if (!_this.hasPasswordInput()) return;
 
-    let doc = event.originalTarget; // d c is document that triggered the event
-    let win = doc.defaultView; // win is the window for the doc
-    // test desired conditions and do something
-    // if (doc.nodeName == "#document") return; // only documents
-    if (win != win.top) return; //only top window.
-    // if (win.frameElement) return; // skip iframes/frames
-
-    let match = PassFF.Pass.getUrlMatchingItems(win.location.href);
-    if(match.length > 0) {
-      let passwordData = PassFF.Pass.getPasswordData(match[0]);
+    if(matchItems.length > 0) {
+      let passwordData = PassFF.Pass.getPasswordData(matchItems[0]);
       if(passwordData) {
-        let login = _this.searchLogin(passwordData);
-        _this.setLoginInputs(login);
+        _this.setLoginInputs(passwordData.login);
         let input = _this.setPasswordInputs(passwordData.password);
         if (!_this.removeFromArray(_this._autoSubmittedUrls, win.location.href)) {
           let form = _this.searchParentForm(input);
@@ -37,6 +39,11 @@ PassFF.Page = {
         }
       }
     }
+  },
+
+  onTabSelect : function(event) {
+    let matchItems  = PassFF.Pass.getUrlMatchingItems(gBrowser.contentDocument.location.href);
+    PassFF.BrowserOverlay.createContextualMenu(matchItems);
   },
 
   setLoginInputs : function(login) {

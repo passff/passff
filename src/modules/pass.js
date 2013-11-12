@@ -10,32 +10,40 @@ Components.utils.import("resource://passff/subprocess/subprocess.jsm");
 PassFF.Pass = {
   _items : [],
   _rootItems : [],
-  _pp : null,
+  _promptService : Cc["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService),
+  _stringBundle : null,
+  //_pp : null,
 
   getPasswordData : function(item) {
-    if (this._pp == null) {
-      let promptService = Cc["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
+    let args = new Array();
+    /*if (this._pp == null) {
       let pw = {value: null};
       let check = {value: true};
       let ok = promptService.promptPassword(null, "Title", "Enter password:", pw, null, check);
       if (!ok) return;
       this._pp = pw.value;
     }
-    let args = new Array();
     if (this._pp && this._pp.trim().length > 0) {
       args.push("-p");
       args.push(this._pp);
-    }
+    }*/
     args.push(item.fullKey());
     let executionResult = this.executePass(args);
+    while (executionResult.exitCode != 0 && executionResult.stderr.indexOf("gpg: decryption failed: No secret key") >= 0) {
+      //Components.utils.reportError("oups");
+      let title = this._stringBundle.GetStringFromName("passff.passphrase.title");
+      let desc = this._stringBundle.GetStringFromName("passff.passphrase.description");
+      if(!this._promptService.confirm(null, title, desc)) return;
+      executionResult = this.executePass(args);
+    }
     if (executionResult.exitCode != 0) {
-      if (executionResult.stderr.indexOf("gpg: decryption failed: No secret key") >= 0) this._pp = null;
-      return
+      this._promptService.alert(null, "Error", executionResult.stderr);
+      return;
     }
     let lines = executionResult.stdout.split("\n");
     let result = {};
     result.password = lines[0];
-    for(let i = 1 ; i < lines.length; i++) {
+    for (let i = 1 ; i < lines.length; i++) {
       let line = lines[i];
       let splitPos = line.indexOf(":");
       if (splitPos >= 0) {
@@ -44,8 +52,18 @@ PassFF.Pass = {
         result[attributeName] = attributeValue;
       }
     }
+    result.login = this.searchLogin(result);
 
     return result;
+  },
+
+  searchLogin : function(passwordData) {
+    //console.log(JSON.stringify(passwordData));
+    for(let i = 0 ; i < PassFF.Preferences.loginFieldNames.length; i++) {
+      let login = passwordData[PassFF.Preferences.loginFieldNames[i].toLowerCase()];
+      if (login != undefined) return login;
+    }
+    return null;
   },
 
   initItems : function() {
@@ -118,6 +136,10 @@ PassFF.Pass = {
 
   init : function() {
     this.initItems();
+    let stringBundleService = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService);
+    this._stringBundle = stringBundleService.createBundle("chrome://passff/locale/strings.properties");
+    //Components.utils.reportError(JSON.stringify(this._stringBundle));
+
   },
 
   get rootItems() {return this._rootItems;}
