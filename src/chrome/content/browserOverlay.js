@@ -43,7 +43,7 @@ PassFF.BrowserOverlay = {
       for (let i = 0 ; i < PassFF.Pass.rootItems.length ; i++) {
         let root = PassFF.Pass.rootItems[i];
         //root.print();
-        repoPopup.appendChild(this.createMenuInternal(root));
+        repoPopup.appendChild(this.createMenuInternal(root, root.key));
       }
       let separator = document.createElement("menuseparator");
       separator.setAttribute("id", "menu-separator");
@@ -51,23 +51,23 @@ PassFF.BrowserOverlay = {
     }
   },
 
-  createMenuInternal : function(item) {
+  createMenuInternal : function(item, label) {
     //item.print()
     let menu = document.createElement("menu");
     menu.item = item
-    menu.setAttribute("label", item.key);
+      menu.setAttribute("label", label);
     //menu.setAttribute("oncommand","PassFF.BrowserOverlay.goToItemUrl(event)");
     menu.addEventListener("click", PassFF.BrowserOverlay.goToItemUrl);
     let menuPopupDyn = document.createElement("menupopup");
     if (item.children.length > 0) {
       for(let i = 0 ; i < item.children.length ; i++) {
-        menuPopupDyn.appendChild(this.createMenuInternal(item.children[i]));
+        menuPopupDyn.appendChild(this.createMenuInternal(item.children[i], item.children[i].key));
       }
     } else {
       let passwordLabel = this._stringBundle.GetStringFromName("passff.menu.copy_password");
       let loginLabel = this._stringBundle.GetStringFromName("passff.menu.copy_login");
-      menuPopupDyn.appendChild(this.createSubmenu(passwordLabel, "password", PassFF.BrowserOverlay.copyToClipboard));
       menuPopupDyn.appendChild(this.createSubmenu(loginLabel, "login", PassFF.BrowserOverlay.copyToClipboard));
+      menuPopupDyn.appendChild(this.createSubmenu(passwordLabel, "password", PassFF.BrowserOverlay.copyToClipboard));
     }
 
     menu.appendChild(menuPopupDyn);
@@ -123,7 +123,15 @@ PassFF.BrowserOverlay = {
       separator.parentNode.removeChild(separator.nextSibling);
     }
     for(let i = 0 ; i < items.length ; i++) {
-      separator.parentNode.appendChild(this.createMenuInternal(items[i]));
+
+      let item = items[i];
+      let labelItem = item;
+      let label = "";
+      while (labelItem != null) {
+        label = labelItem.key + "/" + label
+        labelItem = labelItem.parent;
+      }
+      separator.parentNode.appendChild(this.createMenuInternal(item, label));
     }
   }
 };
