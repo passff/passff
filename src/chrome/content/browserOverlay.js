@@ -34,11 +34,16 @@ PassFF.BrowserOverlay = {
 
   createMenu : function() {
     let menuPopup = document.getElementById("passff-menu");
+    let repoMenu = document.createElement("menu");
+    repoMenu.setAttribute("label", "All");
+    let repoPopup = document.createElement("menupopup");
+    repoMenu.appendChild(repoPopup);
+    menuPopup.appendChild(repoMenu);
     if (menuPopup) {
       for (let i = 0 ; i < PassFF.Pass.rootItems.length ; i++) {
         let root = PassFF.Pass.rootItems[i];
         //root.print();
-        menuPopup.appendChild(this.createMenuInternal(root));
+        repoPopup.appendChild(this.createMenuInternal(root));
       }
       let separator = document.createElement("menuseparator");
       separator.setAttribute("id", "menu-separator");
@@ -58,8 +63,7 @@ PassFF.BrowserOverlay = {
       for(let i = 0 ; i < item.children.length ; i++) {
         menuPopupDyn.appendChild(this.createMenuInternal(item.children[i]));
       }
-    }
-    if (item.children.length == 0) {
+    } else {
       let passwordLabel = this._stringBundle.GetStringFromName("passff.menu.copy_password");
       let loginLabel = this._stringBundle.GetStringFromName("passff.menu.copy_login");
       menuPopupDyn.appendChild(this.createSubmenu(passwordLabel, "password", PassFF.BrowserOverlay.copyToClipboard));

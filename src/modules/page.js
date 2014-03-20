@@ -6,7 +6,7 @@ PassFF.Page = {
   _this : null,
   _autoSubmittedUrls : new Array(),
   init : function() {
-    _this = this;
+    this._this = this;
     if(gBrowser) {
       gBrowser.addEventListener("DOMContentLoaded", this.onPageLoad, false);
       gBrowser.tabContainer.addEventListener("TabSelect", this.onTabSelect, false);

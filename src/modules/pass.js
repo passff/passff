@@ -30,7 +30,7 @@ PassFF.Pass = {
     args.push(item.fullKey());
     let executionResult = this.executePass(args);
     while (executionResult.exitCode != 0 && executionResult.stderr.indexOf("gpg: decryption failed: No secret key") >= 0) {
-      //Components.utils.reportError("oups");
+      Components.utils.reportError(executionResult.stderr);
       let title = this._stringBundle.GetStringFromName("passff.passphrase.title");
       let desc = this._stringBundle.GetStringFromName("passff.passphrase.description");
       if(!this._promptService.confirm(null, title, desc)) return;
@@ -49,7 +49,7 @@ PassFF.Pass = {
       if (splitPos >= 0) {
         let attributeName = line.substring(0, splitPos).toLowerCase();
         let attributeValue = line.substring(splitPos + 1)
-        result[attributeName] = attributeValue;
+        result[attributeName] = attributeValue.trim();
       }
     }
     result.login = this.searchLogin(result);
@@ -117,14 +117,14 @@ PassFF.Pass = {
   },
 
   executePass : function(arguments) {
-    let result = null
+    
+    let result = null;
     let p = subprocess.call({
       command     : PassFF.Preferences.command,
       arguments   : arguments,
-      environment : ["HOME=" + PassFF.Preferences.home],
+      environment : this.getEnvParams(),
       charset     : 'UTF-8',
       workdir     : PassFF.Preferences.home,
-      //stdin     : "some value to write to stdin\nfoobar",
       //stdout      : function(data) { output += data },
       mergeStderr : false,
       done        : function(data) { result = data }
@@ -142,6 +142,12 @@ PassFF.Pass = {
 
   },
 
+  getEnvParams : function() {
+    var params = ["HOME=" + PassFF.Preferences.home, "DISPLAY=:0.0"];
+    if (PassFF.Preferences.gpgAgentEnv != null) params = params.concat(PassFF.Preferences.gpgAgentEnv);
+
+    return params;
+  },
   get rootItems() {return this._rootItems;}
 
 };

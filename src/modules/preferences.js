@@ -4,6 +4,8 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 Components.utils.import("resource://passff/common.js");
+Components.utils.import("resource://gre/modules/FileUtils.jsm");
+Components.utils.import("resource://gre/modules/NetUtil.jsm");
 
 PassFF.Preferences = {
 
@@ -12,6 +14,7 @@ PassFF.Preferences = {
   _loginFieldNames    : null,
   _command            : null,
   _home               : null,
+  _gpg_agent_env      : null,
 
   _init : function() {
     let application = Cc["@mozilla.org/fuel/application;1"].getService(Ci.fuelIApplication);
@@ -21,6 +24,9 @@ PassFF.Preferences = {
     this._loginFieldNames    = application.prefs.get("extensions.passff.loginFieldNames");
     this._command            = application.prefs.get("extensions.passff.command");
     this._home               = application.prefs.get("extensions.passff.home");
+    this._gpgAgentInfo       = application.prefs.get("extensions.passff.gpg_agent_info");
+
+    this.setGpgAgentEnv();
   },
 
   get passwordInputNames() { return this._passwordInputNames.value.split(","); },
@@ -28,6 +34,16 @@ PassFF.Preferences = {
   get loginFieldNames()    { return this._loginFieldNames.value.split(","); },
   get command()            { return this._command.value; },
   get home()               { return (this._home.value.trim().length > 0 ? this._home.value : Cc["@mozilla.org/process/environment;1"].getService(Components.interfaces.nsIEnvironment).get('HOME')); },
+  get gpgAgentEnv()       { return this._gpg_agent_env; },
+
+  setGpgAgentEnv : function() {
+    var file = new FileUtils.File(this.home + "/.gpg-agent-info");
+    if (file.exists()) {
+      NetUtil.asyncFetch(file, function(inputStream, status) {
+        PassFF.Preferences._gpg_agent_env = NetUtil.readInputStreamToString(inputStream, inputStream.available()).split("\n")
+      });
+    }
+  },
 };
 
 (function() { this._init(); }).apply(PassFF.Preferences);

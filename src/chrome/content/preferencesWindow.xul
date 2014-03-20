@@ -12,6 +12,7 @@
       <preference id="passff-loginFieldNames-pref" name="extensions.passff.loginFieldNames" type="string" />
       <preference id="passff-command-pref" name="extensions.passff.command" type="string" />
       <preference id="passff-home-pref" name="extensions.passff.home" type="string" />
+      <preference id="passff-gpg_agent_info-pref" name="extensions.passff.gpg_agent_info" type="string" />
     </preferences>
     <groupbox>
       <caption label="&passff.preferences.page_caption;"/>
@@ -56,6 +57,10 @@
             <vbox>
               <label tooltiptext= "&passff.preferences.home_tooltip;" control="home" value="&passff.preferences.home_label;"/>
               <textbox tooltiptext= "&passff.preferences.home_tooltip;" id="home" preference="passff-home-pref" type="string"/>
+            </vbox>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.gpg_agent_info_tooltip;" control="gpg_agent_info" value="&passff.preferences.gpg_agent_info_label;"/>
+              <textbox tooltiptext= "&passff.preferences.gpg_agent_info_tooltip;" id="gpg_agent_info" preference="passff-gpg_agent_info-pref" type="string"/>
             </vbox>
           </row>
         </rows>

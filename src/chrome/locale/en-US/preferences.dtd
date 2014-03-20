@@ -8,5 +8,7 @@
 <!ENTITY passff.preferences.login_field_names_tooltip    "Comma separated list of field names. The first matching field in the password data will be used as login">
 <!ENTITY passff.preferences.command_label                "Pass command">
 <!ENTITY passff.preferences.command_tooltip              "The pass script path">
-<!ENTITY passff.preferences.home_label                "Pass home">
-<!ENTITY passff.preferences.home_tooltip              "Pass home. If empty, use User home">
+<!ENTITY passff.preferences.home_label                   "Pass home">
+<!ENTITY passff.preferences.home_tooltip                 "Pass home. If empty, use User home">
+<!ENTITY passff.preferences.gpg_agent_info_label         "Gpg agent info file">
+<!ENTITY passff.preferences.gpg_agent_info_tooltip       "Location of the gpg agent info file containing environment variables (relative to the home)">
