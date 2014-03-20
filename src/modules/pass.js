@@ -4,7 +4,6 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 Components.utils.import("resource://passff/common.js");
-Components.utils.import("resource://passff/preferences.js");
 Components.utils.import("resource://passff/subprocess/subprocess.jsm");
 
 PassFF.Pass = {

@@ -1,19 +1,20 @@
+var EXPORTED_SYMBOLS = [];
+
 Components.utils.import("resource://passff/common.js");
-Components.utils.import("resource://passff/preferences.js");
-Components.utils.import("resource://passff/pass.js");
 
 PassFF.Page = {
   _this : null,
   _autoSubmittedUrls : new Array(),
   init : function() {
-    this._this = this;
-    if(gBrowser) {
+    _this = this;
+    if(typeof(gBrowser) != "undefined") {
       gBrowser.addEventListener("DOMContentLoaded", this.onPageLoad, false);
       gBrowser.tabContainer.addEventListener("TabSelect", this.onTabSelect, false);
     }
   },
 
   onPageLoad : function(event) {
+
     let doc = event.originalTarget;
     let win = doc.defaultView;
     // if (doc.nodeName == "#document") return;
@@ -26,17 +27,21 @@ PassFF.Page = {
     if (!_this.hasPasswordInput()) return;
 
     if(matchItems.length > 0) {
-      let passwordData = PassFF.Pass.getPasswordData(matchItems[0]);
-      if(passwordData) {
-        _this.setLoginInputs(passwordData.login);
-        let input = _this.setPasswordInputs(passwordData.password);
-        if (!_this.removeFromArray(_this._autoSubmittedUrls, win.location.href)) {
-          let form = _this.searchParentForm(input);
-          if (form) {
-            _this._autoSubmittedUrls.push(win.location.href);
-            form.submit();
-          }
-        }
+      Components.utils.reportError(matchItem.fullKey());
+      let passwordData = PassFF.Pass.getPasswordData(matchItem);
+      if(passwordData) _this.fillInputsAndSubmit(passwordData, win);
+    }
+  },
+
+  fillInputsAndSubmit : function(passwordData, win) {
+    Components.utils.reportError(JSON.stringify(passwordData));
+    _this.setLoginInputs(passwordData.login);
+    let input = _this.setPasswordInputs(passwordData.password);
+    if (!_this.removeFromArray(_this._autoSubmittedUrls, win.location.href)) {
+      let form = _this.searchParentForm(input);
+      if (form) {
+        _this._autoSubmittedUrls.push(win.location.href);
+        //form.submit();
       }
     }
   },
@@ -58,7 +63,7 @@ PassFF.Page = {
     let inputs = content.document.getElementsByTagName("input");
     let input = null;
     for(let i = 0 ; i < inputs.length ; i++) {
-      input = inputs[i]
+      let input = inputs[i]
       if (_this.isPasswordInput(input)) input.value = password;
     }
 
@@ -79,7 +84,8 @@ PassFF.Page = {
   },
 
   isLoginInput : function(input) {
-      return input.type == "text" && _this.hasGoodName(input.name, PassFF.Preferences.loginInputNames);
+
+      return (input.type == "text" || input.type == "email") && _this.hasGoodName(input.name, PassFF.Preferences.loginInputNames);
   },
 
   searchLogin : function(passwordData) {

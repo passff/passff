@@ -1,5 +1,7 @@
 Components.utils.import("resource://passff/common.js");
+Components.utils.import("resource://passff/preferences.js");
 Components.utils.import("resource://passff/pass.js");
+Components.utils.import("resource://passff/page.js");
 
 /**
 * Controls the browser overlay for the PassFF extension.
@@ -66,6 +68,7 @@ PassFF.BrowserOverlay = {
     } else {
       let passwordLabel = this._stringBundle.GetStringFromName("passff.menu.copy_password");
       let loginLabel = this._stringBundle.GetStringFromName("passff.menu.copy_login");
+      menuPopupDyn.appendChild(this.createSubmenu("Fill and submit", "login", PassFF.BrowserOverlay.autoFill));
       menuPopupDyn.appendChild(this.createSubmenu(loginLabel, "login", PassFF.BrowserOverlay.copyToClipboard));
       menuPopupDyn.appendChild(this.createSubmenu(passwordLabel, "password", PassFF.BrowserOverlay.copyToClipboard));
     }
@@ -102,19 +105,25 @@ PassFF.BrowserOverlay = {
     }
   },
   
+  autoFill : function(event) {
+    event.stopPropagation();
+    PassFF.Page.fillInputsAndSubmit(PassFF.BrowserOverlay.getPasswordData(event), window);
+  },
+
   copyToClipboard : function(event) {
     event.stopPropagation();
     let str = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
     let trans = Cc["@mozilla.org/widget/transferable;1"].createInstance(Ci.nsITransferable);
     let clip = Cc["@mozilla.org/widget/clipboard;1"].getService(Ci.nsIClipboard);
-    let subMenu = event.target;
-    let item = subMenu.parentNode.parentNode.item;
-    let attribute = subMenu.dataKey
-    let passwordData = PassFF.Pass.getPasswordData(item);
-    str.data = passwordData[attribute];
+    let passwordData = PassFF.BrowserOverlay.getPasswordData(event);
+    str.data = passwordData[event.target.dataKey];
     trans.addDataFlavor('text/unicode');
     trans.setTransferData('text/unicode', str, str.data.length * 2);
     clip.setData(trans, null, Ci.nsIClipboard.kGlobalClipboard);
+  },
+
+  getPasswordData : function(event) {
+    return PassFF.Pass.getPasswordData(event.target.parentNode.parentNode.item);
   },
 
   createContextualMenu : function(items) {
@@ -123,19 +132,11 @@ PassFF.BrowserOverlay = {
       separator.parentNode.removeChild(separator.nextSibling);
     }
     for(let i = 0 ; i < items.length ; i++) {
-
       let item = items[i];
-      let labelItem = item;
-      let label = "";
-      while (labelItem != null) {
-        label = labelItem.key + "/" + label
-        labelItem = labelItem.parent;
-      }
-      separator.parentNode.appendChild(this.createMenuInternal(item, label));
+      separator.parentNode.appendChild(this.createMenuInternal(item, item.fullKey()));
     }
   }
 };
-
 
 window.addEventListener("load", function load(event){
   (function() { this.init(); }).apply(PassFF.BrowserOverlay);
