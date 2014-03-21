@@ -66,6 +66,8 @@ PassFF.Pass = {
   },
 
   initItems : function() {
+    this._rootItems = [];
+    this._items = [];
     let lines = this.executePass([]).stdout.split("\n");
     let re = /(.*[|`])+-- (.*)/;
     let curParent = null;
@@ -82,6 +84,7 @@ PassFF.Pass = {
           key : match[2],
           children : new Array(),
           parent : curParent,
+          isLeaf : function() { return this.children.length == 0; },
           fullKey : function() {
             let fullKey = this.key;
             let loopParent = this.parent;
@@ -111,8 +114,31 @@ PassFF.Pass = {
 
   getUrlMatchingItems : function(url) {
     return this._items.filter(function(item){
-      return url.search(item.key) >= 0;
+      return url.search(new RegExp(item.key,"i")) >= 0;
     });
+  },
+
+  findBestFitItem : function(items, url) {
+    let leafs = PassFF.Pass.getItemsLeafs(items);
+    return leafs.length > 0 ? leafs[0] : null;
+  },
+
+  getItemsLeafs : function(items) {
+    let leafs = new Array();
+    items.forEach(function(item) { leafs = leafs.concat(PassFF.Pass.getItemLeafs(item)); });
+
+    return leafs;
+  },
+
+  getItemLeafs : function(item) {
+    let leafs = new Array();
+    if (item.isLeaf()) {
+      leafs.push(item);
+    } else {
+      item.children.forEach(function(child) { leafs = leafs.concat(PassFF.Pass.getItemLeafs(child)); });
+    }
+
+    return leafs;
   },
 
   executePass : function(arguments) {

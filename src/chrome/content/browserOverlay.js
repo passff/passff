@@ -1,7 +1,4 @@
 Components.utils.import("resource://passff/common.js");
-Components.utils.import("resource://passff/preferences.js");
-Components.utils.import("resource://passff/pass.js");
-Components.utils.import("resource://passff/page.js");
 
 /**
 * Controls the browser overlay for the PassFF extension.
@@ -36,17 +33,30 @@ PassFF.BrowserOverlay = {
 
   createMenu : function() {
     let menuPopup = document.getElementById("passff-menu");
-    let repoMenu = document.createElement("menu");
-    repoMenu.setAttribute("label", "All");
-    let repoPopup = document.createElement("menupopup");
-    repoMenu.appendChild(repoPopup);
-    menuPopup.appendChild(repoMenu);
     if (menuPopup) {
+      while (menuPopup.hasChildNodes()) {
+          menuPopup.removeChild(menuPopup.lastChild);
+      }
+
+      let repoMenu = document.createElement("menu");
+      let allLabel = this._stringBundle.GetStringFromName("passff.menu.all");
+      repoMenu.setAttribute("label", allLabel);
+      let repoPopup = document.createElement("menupopup");
+      repoMenu.appendChild(repoPopup);
+      menuPopup.appendChild(repoMenu);
+
       for (let i = 0 ; i < PassFF.Pass.rootItems.length ; i++) {
         let root = PassFF.Pass.rootItems[i];
         //root.print();
         repoPopup.appendChild(this.createMenuInternal(root, root.key));
       }
+
+      let refreshMenu = document.createElement("menuitem");
+      let refreshLabel = this._stringBundle.GetStringFromName("passff.menu.refresh");
+      refreshMenu.setAttribute("label", refreshLabel);
+      refreshMenu.addEventListener("click", PassFF.BrowserOverlay.refresh);
+      menuPopup.appendChild(refreshMenu);
+
       let separator = document.createElement("menuseparator");
       separator.setAttribute("id", "menu-separator");
       menuPopup.appendChild(separator);
@@ -59,7 +69,7 @@ PassFF.BrowserOverlay = {
     menu.item = item
       menu.setAttribute("label", label);
     //menu.setAttribute("oncommand","PassFF.BrowserOverlay.goToItemUrl(event)");
-    menu.addEventListener("click", PassFF.BrowserOverlay.goToItemUrl);
+    menu.addEventListener("click", PassFF.BrowserOverlay.menuClick);
     let menuPopupDyn = document.createElement("menupopup");
     if (item.children.length > 0) {
       for(let i = 0 ; i < item.children.length ; i++) {
@@ -68,7 +78,11 @@ PassFF.BrowserOverlay = {
     } else {
       let passwordLabel = this._stringBundle.GetStringFromName("passff.menu.copy_password");
       let loginLabel = this._stringBundle.GetStringFromName("passff.menu.copy_login");
-      menuPopupDyn.appendChild(this.createSubmenu("Fill and submit", "login", PassFF.BrowserOverlay.autoFill));
+      let fillAndSubmitLabel = this._stringBundle.GetStringFromName("passff.menu.fill_and_submit");
+      let gotoFillAndSubmitLabel = this._stringBundle.GetStringFromName("passff.menu.goto_fill_and_submit");
+
+      menuPopupDyn.appendChild(this.createSubmenu(fillAndSubmitLabel, "fill_and_submit", PassFF.BrowserOverlay.autoFill));
+      menuPopupDyn.appendChild(this.createSubmenu(gotoFillAndSubmitLabel, "goto_fill_and_submit", PassFF.BrowserOverlay.gotoAutoFill));
       menuPopupDyn.appendChild(this.createSubmenu(loginLabel, "login", PassFF.BrowserOverlay.copyToClipboard));
       menuPopupDyn.appendChild(this.createSubmenu(passwordLabel, "password", PassFF.BrowserOverlay.copyToClipboard));
     }
@@ -78,6 +92,13 @@ PassFF.BrowserOverlay = {
     return menu;
   },
   
+  refresh : function() {
+    PassFF.Pass.initItems();
+    PassFF.BrowserOverlay.createMenu();
+    let matchItems  = PassFF.Pass.getUrlMatchingItems(window.content.location.href);
+    PassFF.BrowserOverlay.createContextualMenu(matchItems);
+  },
+
   createSubmenu : function(label, attribute, action) {
       let submenu = document.createElement("menuitem");
       submenu.setAttribute("label", label);
@@ -87,9 +108,24 @@ PassFF.BrowserOverlay = {
     return submenu;
   },
 
-  goToItemUrl : function(event) {
+  menuClick : function(event) {
+    PassFF.BrowserOverlay.goToItemUrl(event.target.item, event);
+  },
+
+  autoFill : function(event) {
     event.stopPropagation();
-    let item = event.target.item;
+    PassFF.Page.fillInputs(PassFF.BrowserOverlay.getPasswordData(event));
+    PassFF.Page.submit(window.content.location.href);
+  },
+
+  gotoAutoFill : function(event) {
+    let item = event.target.parentNode.parentNode.item;
+    PassFF.Page.itemToUse = item;
+    PassFF.BrowserOverlay.goToItemUrl(item, event);
+  },
+
+  goToItemUrl : function(item, event) {
+    event.stopPropagation();
     if (item == null || item == undefined) return;
 
     let passwordData = PassFF.Pass.getPasswordData(item);
@@ -105,11 +141,6 @@ PassFF.BrowserOverlay = {
     }
   },
   
-  autoFill : function(event) {
-    event.stopPropagation();
-    PassFF.Page.fillInputsAndSubmit(PassFF.BrowserOverlay.getPasswordData(event), window);
-  },
-
   copyToClipboard : function(event) {
     event.stopPropagation();
     let str = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);

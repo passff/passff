@@ -5,6 +5,7 @@ Components.utils.import("resource://passff/common.js");
 PassFF.Page = {
   _this : null,
   _autoSubmittedUrls : new Array(),
+  itemToUse : null,
   init : function() {
     _this = this;
     if(typeof(gBrowser) != "undefined") {
@@ -21,27 +22,47 @@ PassFF.Page = {
     if (win != win.top) return;
     // if (win.frameElement) return;
 
-    let matchItems = PassFF.Pass.getUrlMatchingItems(win.location.href);
+    let url = win.location.href
+    let matchItems = PassFF.Pass.getUrlMatchingItems(url);
+
     PassFF.BrowserOverlay.createContextualMenu(matchItems);
 
-    if (!_this.hasPasswordInput()) return;
+    if (_this.getPasswordInputs().length == 0) return;
 
-    if(matchItems.length > 0) {
-      Components.utils.reportError(matchItem.fullKey());
-      let passwordData = PassFF.Pass.getPasswordData(matchItem);
-      if(passwordData) _this.fillInputsAndSubmit(passwordData, win);
+    let bestFitItem = _this.itemToUse;
+    if (!bestFitItem) bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
+
+    if(bestFitItem) {
+      
+      let passwordData = PassFF.Pass.getPasswordData(bestFitItem);
+      if (passwordData) {
+        _this.fillInputs(passwordData);
+        if (_this.itemToUse || PassFF.Pass.getItemsLeafs(matchItems).length == 1) _this.submit(url);
+      }
     }
+    _this.itemToUse = null;
   },
 
-  fillInputsAndSubmit : function(passwordData, win) {
-    Components.utils.reportError(JSON.stringify(passwordData));
+  fillInputs : function(passwordData) {
     _this.setLoginInputs(passwordData.login);
-    let input = _this.setPasswordInputs(passwordData.password);
-    if (!_this.removeFromArray(_this._autoSubmittedUrls, win.location.href)) {
-      let form = _this.searchParentForm(input);
-      if (form) {
-        _this._autoSubmittedUrls.push(win.location.href);
-        //form.submit();
+    _this.setPasswordInputs(passwordData.password);
+  },
+
+  submit : function(url) {
+    if (!_this.removeFromArray(_this._autoSubmittedUrls, url)) {
+      let passwords = _this.getPasswordInputs();
+      if (passwords.length > 0) {
+        let form = _this.searchParentForm(passwords[0]);
+        if (form) {
+          _this._autoSubmittedUrls.push(url);
+          let submitBtn = _this.getSubmitButton(form);
+          if (submitBtn) {
+            submitBtn.click();
+            //form.onclick.apply(form);
+          } else {
+            form.submit();
+          }
+        }
       }
     }
   },
@@ -51,45 +72,21 @@ PassFF.Page = {
     PassFF.BrowserOverlay.createContextualMenu(matchItems);
   },
 
-  setLoginInputs : function(login) {
-    let inputs = content.document.getElementsByTagName("input");
-    for(let i = 0 ; i < inputs.length ; i++) {
-      let input = inputs[i]
-      if (_this.isLoginInput(input)) input.value = login;
-    }
-  },
+  setLoginInputs    : function(login)    { _this.getLoginInputs().forEach(function(loginInput) { loginInput.value = login; }); },
+  setPasswordInputs : function(password) { _this.getPasswordInputs().forEach(function(passwordInput) { passwordInput.value = password; }); },
+  getLoginInputs    : function()         { return Array.prototype.slice.call(content.document.getElementsByTagName("input")).filter(_this.isLoginInput); },
+  getPasswordInputs : function()         { return Array.prototype.slice.call(content.document.getElementsByTagName("input")).filter(_this.isPasswordInput); },
+  isPasswordInput   : function(input)    { return input.type == "password" || (input.type == "text" && _this.hasGoodName(input.name, PassFF.Preferences.passwordInputNames)); },
+  isLoginInput      : function(input)    { return (input.type == "text" || input.type == "email") && _this.hasGoodName(input.name, PassFF.Preferences.loginInputNames); },
 
-  setPasswordInputs : function(password) {
-    let inputs = content.document.getElementsByTagName("input");
-    let input = null;
-    for(let i = 0 ; i < inputs.length ; i++) {
-      let input = inputs[i]
-      if (_this.isPasswordInput(input)) input.value = password;
-    }
-
-    return input;
-  },
-
-  hasPasswordInput : function() {
-    let inputs = content.document.getElementsByTagName("input");
-    for(let i = 0 ; i < inputs.length ; i++) {
-      input = inputs[i]
-      if (_this.isPasswordInput(input)) return true;
-    }
-    return false;
-  },
-
-  isPasswordInput : function(input) {
-      return input.type == "password" || (input.type == "text" && _this.hasGoodName(input.name, PassFF.Preferences.passwordInputNames));
-  },
-
-  isLoginInput : function(input) {
-
-      return (input.type == "text" || input.type == "email") && _this.hasGoodName(input.name, PassFF.Preferences.loginInputNames);
+  getSubmitButton : function(form) {
+    let submitBtns = Array.prototype.slice.call(form.getElementsByTagName("button")).filter( function(input) { return input.type == "submit" } )
+    if (submitBtns.length == 0) submitBtns = Array.prototype.slice.call(form.getElementsByTagName("input")).filter( function(input) { return input.type == "submit" } )
+    if (submitBtns.length > 0) return submitBtns[submitBtns.length - 1]
+    return null;
   },
 
   searchLogin : function(passwordData) {
-    //console.log(JSON.stringify(passwordData));
     for(let i = 0 ; i < PassFF.Preferences.loginFieldNames.length; i++) {
       let login = passwordData[PassFF.Preferences.loginFieldNames[i].toLowerCase()];
       if (login != undefined) return login;
