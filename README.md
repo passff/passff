@@ -26,10 +26,10 @@ Current supported features are :
 
 Additionnally, if you added an url property in your password info you will be able to go there clicking directly on the password menu (left-click same tab, middle-click new tab)
 
-the accepted form for the password info is :
-<the_password>
-login: <the_login>
-url: <the_url>
+the accepted format for the password info is :  
+<the_password>  
+login: <the_login>  
+url: <the_url>  
 
 from the plugin preferences you will be able to set :
 - A comma separated list of input names. Input field names in a html page containing one of those values will be filled with the password
