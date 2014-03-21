@@ -23,6 +23,7 @@ Current supported features are :
 - Goto, fill and submit
 - Copy login to clipboard
 - Copy password to clipboard
+
 Additionnally, if you added an url property in your password info you will be able to go there clicking directly on the password menu (left-click same tab, middle-click new tab)
 
 the accepted form for the password info is :
