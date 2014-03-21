@@ -5,7 +5,8 @@ passff
 
 
 ### Overview
-This plugin will allow you to access your [pass](http://www.zx2c4.com/projects/password-store/) repository directly from firefox
+This plugin will allow you to access your [pass](http://www.zx2c4.com/projects/password-store/) repository directly from firefox.
+
 It will try to auto fill and auto submit the login form if a matching password entry is found
 
 ### Installation
