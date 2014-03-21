@@ -32,9 +32,9 @@ login: &lt;the_login&gt;
 url: &lt;the_url&gt;  
 
 from the plugin preferences you will be able to set :
-- A comma separated list of input names. Input field names in a html page containing one of those values will be filled with the password
-- A comma separated list of input names. Input field names in a html page containing one of those values will be filled with the login
-- A comma separated list of field names. The first matching field in the password data will be used as login
+- A comma separated list of password input names. Input field names in a html page containing one of those values will be filled with the password
+- A comma separated list of login input names. Input field names in a html page containing one of those values will be filled with the login
+- A comma separated list of login field names. The first matching field in the password data will be used as login
 - The pass script path
 - Pass home. If empty, use User home
 - Location of the gpg agent info file containing environment variables (relative to the home)
