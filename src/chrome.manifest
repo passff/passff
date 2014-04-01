@@ -4,3 +4,4 @@ locale    passff  en-US       jar:chrome/passff.jar!/locale/en-US/
 resource  passff              modules/
 
 overlay chrome://browser/content/browser.xul  chrome://passff/content/browserOverlay.xul
+style chrome://global/content/customizeToolbar.xul chrome://passff/skin/browserOverlay.css
