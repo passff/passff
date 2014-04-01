@@ -6,13 +6,14 @@
 <prefwindow xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <prefpane id="saveoptions" label="Backups">
     <preferences>
-      <preference id="passff-message-count-pref" name="extensions.passff.message.count" type="int" />
       <preference id="passff-passwordInputNames-pref" name="extensions.passff.passwordInputNames" type="string" />
       <preference id="passff-loginInputNames-pref" name="extensions.passff.loginInputNames" type="string" />
       <preference id="passff-loginFieldNames-pref" name="extensions.passff.loginFieldNames" type="string" />
       <preference id="passff-command-pref" name="extensions.passff.command" type="string" />
       <preference id="passff-home-pref" name="extensions.passff.home" type="string" />
       <preference id="passff-gpg_agent_info-pref" name="extensions.passff.gpg_agent_info" type="string" />
+      <preference id="passff-pass_dir-pref" name="extensions.passff.pass_dir" type="string" />
+      <preference id="passff-pass_git-pref" name="extensions.passff.pass_git" type="string" />
     </preferences>
     <groupbox>
       <caption label="&passff.preferences.page_caption;"/>
@@ -61,6 +62,16 @@
             <vbox>
               <label tooltiptext= "&passff.preferences.gpg_agent_info_tooltip;" control="gpg_agent_info" value="&passff.preferences.gpg_agent_info_label;"/>
               <textbox tooltiptext= "&passff.preferences.gpg_agent_info_tooltip;" id="gpg_agent_info" preference="passff-gpg_agent_info-pref" type="string"/>
+            </vbox>
+          </row>
+          <row>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.pass_dir_tooltip;" control="pass_dir" value="&passff.preferences.pass_dir_label;"/>
+              <textbox tooltiptext= "&passff.preferences.pass_dir_tooltip;" id="pass_dir" preference="passff-pass_dir-pref" type="string"/>
+            </vbox>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.pass_git_tooltip;" control="pass_git" value="&passff.preferences.pass_git_label;"/>
+              <textbox tooltiptext= "&passff.preferences.pass_git_tooltip;" id="pass_git" preference="passff-pass_git-pref" type="string"/>
             </vbox>
           </row>
         </rows>

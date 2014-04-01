@@ -169,6 +169,8 @@ PassFF.Pass = {
 
   getEnvParams : function() {
     var params = ["HOME=" + PassFF.Preferences.home, "DISPLAY=:0.0"];
+    if ( PassFF.Preferences.storeDir.trim().length > 0) params.push("PASSWORD_STORE_DIR=" + PassFF.Preferences.storeDir);
+    if ( PassFF.Preferences.storeGit.trim().length > 0) params.push("PASSWORD_STORE_GIT=" + PassFF.Preferences.storeGit);
     if (PassFF.Preferences.gpgAgentEnv != null) params = params.concat(PassFF.Preferences.gpgAgentEnv);
 
     return params;
