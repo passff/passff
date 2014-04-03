@@ -78,11 +78,13 @@ PassFF.BrowserOverlay = {
     } else {
       let passwordLabel = this._stringBundle.GetStringFromName("passff.menu.copy_password");
       let loginLabel = this._stringBundle.GetStringFromName("passff.menu.copy_login");
+      let fillLabel = this._stringBundle.GetStringFromName("passff.menu.fill");
       let fillAndSubmitLabel = this._stringBundle.GetStringFromName("passff.menu.fill_and_submit");
       let gotoFillAndSubmitLabel = this._stringBundle.GetStringFromName("passff.menu.goto_fill_and_submit");
 
-      menuPopupDyn.appendChild(this.createSubmenu(fillAndSubmitLabel, "fill_and_submit", PassFF.BrowserOverlay.autoFill));
-      menuPopupDyn.appendChild(this.createSubmenu(gotoFillAndSubmitLabel, "goto_fill_and_submit", PassFF.BrowserOverlay.gotoAutoFill));
+      menuPopupDyn.appendChild(this.createSubmenu(fillLabel, "fill", PassFF.BrowserOverlay.autoFill));
+      menuPopupDyn.appendChild(this.createSubmenu(fillAndSubmitLabel, "fill_and_submit", PassFF.BrowserOverlay.autoFillAndSubmit));
+      menuPopupDyn.appendChild(this.createSubmenu(gotoFillAndSubmitLabel, "goto_fill_and_submit", PassFF.BrowserOverlay.gotoAutoFillAndSubmit));
       menuPopupDyn.appendChild(this.createSubmenu(loginLabel, "login", PassFF.BrowserOverlay.copyToClipboard));
       menuPopupDyn.appendChild(this.createSubmenu(passwordLabel, "password", PassFF.BrowserOverlay.copyToClipboard));
     }
@@ -115,10 +117,14 @@ PassFF.BrowserOverlay = {
   autoFill : function(event) {
     event.stopPropagation();
     PassFF.Page.fillInputs(PassFF.BrowserOverlay.getPasswordData(event));
+  },
+
+  autoFillAndSubmit : function(event) {
+    PassFF.BrowserOverlay.autoFill(event);
     PassFF.Page.submit(window.content.location.href);
   },
 
-  gotoAutoFill : function(event) {
+  gotoAutoFillAndSubmit : function(event) {
     let item = event.target.parentNode.parentNode.item;
     PassFF.Page.itemToUse = item;
     PassFF.BrowserOverlay.goToItemUrl(item, event);
