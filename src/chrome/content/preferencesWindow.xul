@@ -14,6 +14,7 @@
       <preference id="passff-gpg_agent_info-pref" name="extensions.passff.gpg_agent_info" type="string" />
       <preference id="passff-pass_dir-pref" name="extensions.passff.pass_dir" type="string" />
       <preference id="passff-pass_git-pref" name="extensions.passff.pass_git" type="string" />
+      <preference id="passff-auto_fill-pref" name="extensions.passff.auto_fill" type="bool" />
     </preferences>
     <groupbox>
       <caption label="&passff.preferences.page_caption;"/>
@@ -23,6 +24,11 @@
           <column flex="2"/>
         </columns>
         <rows>
+          <row>
+            <vbox>
+              <checkbox tooltiptext="&passff.preferences.auto_fill_tooltip;" label="&passff.preferences.auto_fill_label;" id="auto_fill" preference="passff-auto_fill-pref"/>
+            </vbox>
+          </row>
           <row>
             <vbox>
               <label tooltiptext= "&passff.preferences.password_input_names_tooltip;" control="passwordInputNames" value="&passff.preferences.password_input_names_label;"/>

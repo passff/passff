@@ -19,6 +19,7 @@ PassFF.Preferences = {
   _storeDir           : null,
   _storeGit           : null,
   _gpg_agent_env      : null,
+  _autofill           : null,
 
   _init : function() {
     let application = Cc["@mozilla.org/fuel/application;1"].getService(Ci.fuelIApplication);
@@ -31,6 +32,7 @@ PassFF.Preferences = {
     this._storeDir           = application.prefs.get("extensions.passff.pass_dir");
     this._storeGit           = application.prefs.get("extensions.passff.pass_git");
     this._gpgAgentInfo       = application.prefs.get("extensions.passff.gpg_agent_info");
+    this._autoFill           = application.prefs.get("extensions.passff.auto_fill");
 
     this.setGpgAgentEnv();
   },
@@ -40,9 +42,10 @@ PassFF.Preferences = {
   get loginFieldNames()    { return this._loginFieldNames.value.split(","); },
   get command()            { return this._command.value; },
   get home()               { return (this._home.value.trim().length > 0 ? this._home.value : this._environment.get('HOME')); },
-  get storeDir()               { return (this._storeDir.value.trim().length > 0 ? this._storeDir.value : this._environment.get('PASSWORD_STORE_DIR')); },
-  get storeGit()               { return (this._storeGit.value.trim().length > 0 ? this._storeGit.value : this._environment.get('PASSWORD_STORE_GIT')); },
-  get gpgAgentEnv()       { return this._gpg_agent_env; },
+  get storeDir()           { return (this._storeDir.value.trim().length > 0 ? this._storeDir.value : this._environment.get('PASSWORD_STORE_DIR')); },
+  get storeGit()           { return (this._storeGit.value.trim().length > 0 ? this._storeGit.value : this._environment.get('PASSWORD_STORE_GIT')); },
+  get gpgAgentEnv()        { return this._gpg_agent_env; },
+  get autoFill()           { return this._autoFill.value; },
 
   setGpgAgentEnv : function() {
     var filename = (this._gpgAgentInfo.value.indexOf("/") != 0 ? this.home + "/" : "") + this._gpgAgentInfo
@@ -58,7 +61,7 @@ PassFF.Preferences = {
           "SSH_AGENT_PID=" + this._environment.get('SSH_AGENT_PID')
         ]
     }
-  },
+  }
 };
 
 (function() { this._init(); }).apply(PassFF.Preferences);

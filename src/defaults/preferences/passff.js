@@ -6,3 +6,4 @@ pref("extensions.passff.home", "");
 pref("extensions.passff.gpg_agent_info", ".gpg_agent_info");
 pref("extensions.passff.pass_dir", "");
 pref("extensions.passff.pass_git", "");
+pref("extensions.passff.auto_fill", false);

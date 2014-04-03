@@ -16,6 +16,8 @@ PassFF.Page = {
 
   onPageLoad : function(event) {
 
+    if (!PassFF.Preferences.autoFill) return;
+
     let doc = event.originalTarget;
     let win = doc.defaultView;
     // if (doc.nodeName == "#document") return;

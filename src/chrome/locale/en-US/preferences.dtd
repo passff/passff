@@ -16,4 +16,6 @@
 <!ENTITY passff.preferences.pass_dir_tooltip             "Pass store dir (PASSWORD_STORE_DIR). If empty, use the current environment PASSWORD_STORE_DIR">
 <!ENTITY passff.preferences.pass_git_label               "Pass store git dir">
 <!ENTITY passff.preferences.pass_git_tooltip             "Pass store git dir (PASSWORD_STORE_GIT). If empty, use the current environment PASSWORD_STORE_GIT">
+<!ENTITY passff.preferences.auto_fill_label              "Try to auto fill page login forms">
+<!ENTITY passff.preferences.auto_fill_tooltip            "If set, will try to fill automatically the login forms searching a password key contained in the page url">
 
