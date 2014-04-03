@@ -5,10 +5,12 @@ Components.utils.import("resource://passff/common.js");
 */
 PassFF.BrowserOverlay = {
   _stringBundle : null,
+  _promptService : Cc["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService),
 
   init : function() {
     let stringBundleService = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService);
     this._stringBundle = stringBundleService.createBundle("chrome://passff/locale/strings.properties");
+
     this.createMenu();
   },
 
@@ -81,12 +83,14 @@ PassFF.BrowserOverlay = {
       let fillLabel = this._stringBundle.GetStringFromName("passff.menu.fill");
       let fillAndSubmitLabel = this._stringBundle.GetStringFromName("passff.menu.fill_and_submit");
       let gotoFillAndSubmitLabel = this._stringBundle.GetStringFromName("passff.menu.goto_fill_and_submit");
+      let displayLabel = this._stringBundle.GetStringFromName("passff.menu.display");
 
       menuPopupDyn.appendChild(this.createSubmenu(fillLabel, "fill", PassFF.BrowserOverlay.autoFill));
       menuPopupDyn.appendChild(this.createSubmenu(fillAndSubmitLabel, "fill_and_submit", PassFF.BrowserOverlay.autoFillAndSubmit));
       menuPopupDyn.appendChild(this.createSubmenu(gotoFillAndSubmitLabel, "goto_fill_and_submit", PassFF.BrowserOverlay.gotoAutoFillAndSubmit));
       menuPopupDyn.appendChild(this.createSubmenu(loginLabel, "login", PassFF.BrowserOverlay.copyToClipboard));
       menuPopupDyn.appendChild(this.createSubmenu(passwordLabel, "password", PassFF.BrowserOverlay.copyToClipboard));
+      menuPopupDyn.appendChild(this.createSubmenu(displayLabel, "display", PassFF.BrowserOverlay.display));
     }
 
     menu.appendChild(menuPopupDyn);
@@ -145,6 +149,15 @@ PassFF.BrowserOverlay = {
         gBrowser.selectedTab = gBrowser.addTab(url);
       }
     }
+  },
+
+  display : function(event) {
+    let passwordData = PassFF.BrowserOverlay.getPasswordData(event);
+    let login = passwordData["login"];
+    let password = passwordData["password"];
+    let title = PassFF.BrowserOverlay._stringBundle.GetStringFromName("passff.display.title");
+    let desc = PassFF.BrowserOverlay._stringBundle.formatStringFromName("passff.display.description", [login, password], 2);
+    if(!PassFF.BrowserOverlay._promptService.alert(null, title, desc)) return;
   },
   
   copyToClipboard : function(event) {
