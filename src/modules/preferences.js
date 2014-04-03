@@ -9,6 +9,8 @@ Components.utils.import("resource://gre/modules/NetUtil.jsm");
 
 PassFF.Preferences = {
 
+  _environment        : Cc["@mozilla.org/process/environment;1"].getService(Components.interfaces.nsIEnvironment),
+
   _passwordInputNames : null,
   _loginInputNames    : null,
   _loginFieldNames    : null,
@@ -37,17 +39,24 @@ PassFF.Preferences = {
   get loginInputNames()    { return this._loginInputNames.value.split(","); },
   get loginFieldNames()    { return this._loginFieldNames.value.split(","); },
   get command()            { return this._command.value; },
-  get home()               { return (this._home.value.trim().length > 0 ? this._home.value : Cc["@mozilla.org/process/environment;1"].getService(Components.interfaces.nsIEnvironment).get('HOME')); },
-  get storeDir()               { return (this._storeDir.value.trim().length > 0 ? this._storeDir.value : Cc["@mozilla.org/process/environment;1"].getService(Components.interfaces.nsIEnvironment).get('PASSWORD_STORE_DIR')); },
-  get storeGit()               { return (this._storeGit.value.trim().length > 0 ? this._storeGit.value : Cc["@mozilla.org/process/environment;1"].getService(Components.interfaces.nsIEnvironment).get('PASSWORD_STORE_GIT')); },
+  get home()               { return (this._home.value.trim().length > 0 ? this._home.value : this._environment.get('HOME')); },
+  get storeDir()               { return (this._storeDir.value.trim().length > 0 ? this._storeDir.value : this._environment.get('PASSWORD_STORE_DIR')); },
+  get storeGit()               { return (this._storeGit.value.trim().length > 0 ? this._storeGit.value : this._environment.get('PASSWORD_STORE_GIT')); },
   get gpgAgentEnv()       { return this._gpg_agent_env; },
 
   setGpgAgentEnv : function() {
-    var file = new FileUtils.File(this.home + "/.gpg-agent-info");
+    var filename = (this._gpgAgentInfo.value.indexOf("/") != 0 ? this.home + "/" : "") + this._gpgAgentInfo
+    var file = new FileUtils.File(filename);
     if (file.exists()) {
       NetUtil.asyncFetch(file, function(inputStream, status) {
         PassFF.Preferences._gpg_agent_env = NetUtil.readInputStreamToString(inputStream, inputStream.available()).split("\n")
       });
+    } else {
+        PassFF.Preferences._gpg_agent_env = [
+          "GPG_AGENT_INFO=" + this._environment.get('GPG_AGENT_INFO'),
+          "SSH_AUTH_SOCK=" + this._environment.get('SSH_AUTH_SOCK'),
+          "SSH_AGENT_PID=" + this._environment.get('SSH_AGENT_PID')
+        ]
     }
   },
 };
