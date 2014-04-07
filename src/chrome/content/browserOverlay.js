@@ -1,4 +1,7 @@
-Components.utils.import("resource://passff/common.js");
+var EXPORTED_SYMBOLS = [];
+
+Cu.import("resource://passff/common.js");
+Cu.import("resource://passff/pass.js");
 
 /**
 * Controls the browser overlay for the PassFF extension.
@@ -99,7 +102,8 @@ PassFF.BrowserOverlay = {
   },
   
   refresh : function() {
-    PassFF.Pass.initItems();
+    (function() { PassFF.Preferences._init(); }).apply(PassFF.Preferences);
+    (function() { PassFF.Pass.init(); }).apply(PassFF.Pass);
     PassFF.BrowserOverlay.createMenu();
     let matchItems  = PassFF.Pass.getUrlMatchingItems(window.content.location.href);
     PassFF.BrowserOverlay.createContextualMenu(matchItems);

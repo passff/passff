@@ -2,11 +2,16 @@ var EXPORTED_SYMBOLS = [];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
+const Cu = Components.utils;
 
-Components.utils.import("resource://passff/common.js");
-Components.utils.import("resource://passff/subprocess/subprocess.jsm");
+Cu.import("resource://passff/common.js");
+Cu.import("resource://passff/preferences.js");
+Cu.import("resource://passff/subprocess/subprocess.jsm");
+
+const consoleJSM = Cu.import("resource://gre/modules/devtools/Console.jsm", {});
 
 PassFF.Pass = {
+  _console : Cu.import("resource://gre/modules/devtools/Console.jsm", {}).console,
   _items : [],
   _rootItems : [],
   _promptService : Cc["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService),
@@ -15,28 +20,16 @@ PassFF.Pass = {
 
   getPasswordData : function(item) {
     let args = new Array();
-    /*if (this._pp == null) {
-      let pw = {value: null};
-      let check = {value: true};
-      let ok = promptService.promptPassword(null, "Title", "Enter password:", pw, null, check);
-      if (!ok) return;
-      this._pp = pw.value;
-    }
-    if (this._pp && this._pp.trim().length > 0) {
-      args.push("-p");
-      args.push(this._pp);
-    }*/
     args.push(item.fullKey());
     let executionResult = this.executePass(args);
     while (executionResult.exitCode != 0 && executionResult.stderr.indexOf("gpg: decryption failed: No secret key") >= 0) {
-      Components.utils.reportError(executionResult.stderr);
-      let title = this._stringBundle.GetStringFromName("passff.passphrase.title");
-      let desc = this._stringBundle.GetStringFromName("passff.passphrase.description");
-      if(!this._promptService.confirm(null, title, desc)) return;
-      executionResult = this.executePass(args);
+      let title = PassFF.Pass._stringBundle.GetStringFromName("passff.passphrase.title");
+      let desc = PassFF.Pass._stringBundle.GetStringFromName("passff.passphrase.description");
+      if(!PassFF.Pass._promptService.confirm(null, title, desc)) return;
+      executionResult = PassFF.Pass.executePass(args);
     }
     if (executionResult.exitCode != 0) {
-      this._promptService.alert(null, "Error", executionResult.stderr);
+       PassFF.Pass._promptService.alert(null, "Error", executionResult.stderr);
       return;
     }
     let lines = executionResult.stdout.split("\n");
@@ -51,7 +44,7 @@ PassFF.Pass = {
         result[attributeName] = attributeValue.trim();
       }
     }
-    result.login = this.searchLogin(result);
+    result.login = PassFF.Pass.searchLogin(result);
 
     return result;
   },
@@ -66,12 +59,16 @@ PassFF.Pass = {
   },
 
   initItems : function() {
+    let result = this.executePass([]);
+    if (result.exitCode != 0) return;
+  
+    let stdout = result.stdout;
     this._rootItems = [];
     this._items = [];
-    let lines = this.executePass([]).stdout.split("\n");
+    this._console.debug("[PassFF]", stdout);
+    let lines = stdout.split("\n");
     let re = /(.*[|`])+-- (.*)/;
     let curParent = null;
-    let roots = new Array();
     for(let i = 0 ; i < lines.length; i++) {
       let match = re.exec(lines[i]);
       if(match != null) {
@@ -110,6 +107,7 @@ PassFF.Pass = {
         if (item.depth == 0) this._rootItems.push(item);
       }
     }
+    this._console.debug("[PassFF]", "Found Items", this._rootItems);
   },
 
   getUrlMatchingItems : function(url) {
@@ -120,6 +118,7 @@ PassFF.Pass = {
 
   findBestFitItem : function(items, url) {
     let leafs = PassFF.Pass.getItemsLeafs(items);
+    PassFF.Pass._console.info("[PassFF]", "Found best fit items : ", leafs);
     return leafs.length > 0 ? leafs[0] : null;
   },
 
@@ -144,7 +143,7 @@ PassFF.Pass = {
   executePass : function(arguments) {
     
     let result = null;
-    let p = subprocess.call({
+    let params = {
       command     : PassFF.Preferences.command,
       arguments   : arguments,
       environment : this.getEnvParams(),
@@ -153,9 +152,15 @@ PassFF.Pass = {
       //stdout      : function(data) { output += data },
       mergeStderr : false,
       done        : function(data) { result = data }
-    });
+    }
+    PassFF.Pass._console.debug("[PassFF]", "Execute pass", params);
+    let p = subprocess.call(params);
     p.wait();
-    //Components.utils.reportError(JSON.stringify(result));
+    if (result.exitCode != 0) {
+      PassFF.Pass._console.warn("[PassFF]", result.stderr, result.stdout);
+    } else {
+      PassFF.Pass._console.info("[PassFF]", "pass script execution ok");
+    }
     return result;
   },
 
@@ -163,14 +168,13 @@ PassFF.Pass = {
     this.initItems();
     let stringBundleService = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService);
     this._stringBundle = stringBundleService.createBundle("chrome://passff/locale/strings.properties");
-    //Components.utils.reportError(JSON.stringify(this._stringBundle));
 
   },
 
   getEnvParams : function() {
     var params = ["HOME=" + PassFF.Preferences.home, "DISPLAY=:0.0"];
-    if ( PassFF.Preferences.storeDir.trim().length > 0) params.push("PASSWORD_STORE_DIR=" + PassFF.Preferences.storeDir);
-    if ( PassFF.Preferences.storeGit.trim().length > 0) params.push("PASSWORD_STORE_GIT=" + PassFF.Preferences.storeGit);
+    if (PassFF.Preferences.storeDir.trim().length > 0) params.push("PASSWORD_STORE_DIR=" + PassFF.Preferences.storeDir);
+    if (PassFF.Preferences.storeGit.trim().length > 0) params.push("PASSWORD_STORE_GIT=" + PassFF.Preferences.storeGit);
     if (PassFF.Preferences.gpgAgentEnv != null) params = params.concat(PassFF.Preferences.gpgAgentEnv);
 
     return params;
