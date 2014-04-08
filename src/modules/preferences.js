@@ -64,16 +64,15 @@ PassFF.Preferences = {
   get autoFill()           { return this._params.autoFill.value; },
 
   setGpgAgentEnv : function() {
-    var filename = (this._params.gpgAgentInfo.value.indexOf("/") != 0 ? this.home + "/" : "") + this._params.gpgAgentInfo
+    var filename = (this._params.gpgAgentInfo.value.indexOf("/") != 0 ? this.home + "/" : "") + this._params.gpgAgentInfo.value;
+    PassFF.Preferences._console.info("[PassFF]", "Try to retrieve Gpg agent variables from file " + filename);
     var file = new FileUtils.File(filename);
     if (file.exists()) {
-      
-      PassFF.Preferences._console.info("[PassFF]", "Retrieve Gpg agent variables from file " + filename);
       NetUtil.asyncFetch(file, function(inputStream, status) {
         PassFF.Preferences._params.gpg_agent_env = NetUtil.readInputStreamToString(inputStream, inputStream.available()).split("\n")
       });
     } else {
-        PassFF.Preferences._console.info("[PassFF]", "Retrieve Gpg agent variables environment");
+        PassFF.Preferences._console.info("[PassFF]", "File not exists. Retrieve Gpg agent variables environment");
         PassFF.Preferences._params.gpg_agent_env = [
           "GPG_AGENT_INFO=" + this._environment.get('GPG_AGENT_INFO'),
           "SSH_AUTH_SOCK=" + this._environment.get('SSH_AUTH_SOCK'),
