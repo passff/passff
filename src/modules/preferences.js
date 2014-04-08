@@ -11,6 +11,7 @@ Cu.import("resource://gre/modules/NetUtil.jsm");
 PassFF.Preferences = {
 
   _environment        : Cc["@mozilla.org/process/environment;1"].getService(Components.interfaces.nsIEnvironment),
+  _console            : Cu.import("resource://gre/modules/devtools/Console.jsm", {}).console,
   _params : {
     passwordInputNames : null,
     loginInputNames    : null,
@@ -25,7 +26,6 @@ PassFF.Preferences = {
 
   _init : function() {
     let application = Cc["@mozilla.org/fuel/application;1"].getService(Ci.fuelIApplication);
-    let console = Cu.import("resource://gre/modules/devtools/Console.jsm", {}).console;
 
     this._params.passwordInputNames = application.prefs.get("extensions.passff.passwordInputNames");
     this._params.loginInputNames    = application.prefs.get("extensions.passff.loginInputNames");
@@ -39,8 +39,8 @@ PassFF.Preferences = {
 
     this.setGpgAgentEnv();
 
-    console.info("[PassFF] preferences initialised");
-    console.debug("[PassFF]", {
+    PassFF.Preferences._console.info("[PassFF] preferences initialised");
+    PassFF.Preferences._console.debug("[PassFF]", {
       passwordInputNames : this.passwordInputNames,
       loginInputNames : this.loginInputNames,
       loginFieldNames : this.loginFieldNames,
@@ -67,10 +67,13 @@ PassFF.Preferences = {
     var filename = (this._params.gpgAgentInfo.value.indexOf("/") != 0 ? this.home + "/" : "") + this._params.gpgAgentInfo
     var file = new FileUtils.File(filename);
     if (file.exists()) {
+      
+      PassFF.Preferences._console.info("[PassFF]", "Retrieve Gpg agent variables from file " + filename);
       NetUtil.asyncFetch(file, function(inputStream, status) {
         PassFF.Preferences._params.gpg_agent_env = NetUtil.readInputStreamToString(inputStream, inputStream.available()).split("\n")
       });
     } else {
+        PassFF.Preferences._console.info("[PassFF]", "Retrieve Gpg agent variables environment");
         PassFF.Preferences._params.gpg_agent_env = [
           "GPG_AGENT_INFO=" + this._environment.get('GPG_AGENT_INFO'),
           "SSH_AUTH_SOCK=" + this._environment.get('SSH_AUTH_SOCK'),

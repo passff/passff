@@ -5,6 +5,7 @@ Cu.import("resource://passff/preferences.js");
 Cu.import("resource://passff/pass.js");
 
 PassFF.Page = {
+  _console : Cu.import("resource://gre/modules/devtools/Console.jsm", {}).console,
   _autoSubmittedUrls : new Array(),
   itemToUse : null,
   init : function() {
@@ -29,7 +30,7 @@ PassFF.Page = {
 
     if (!PassFF.Preferences.autoFill || PassFF.Page.getPasswordInputs().length == 0) return;
 
-    console.info("[PassFF]", "Start auto-fill")
+    PassFF.Page._console.info("[PassFF]", "Start auto-fill")
     let bestFitItem = PassFF.Page.itemToUse;
     if (!bestFitItem) bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
 
@@ -45,7 +46,7 @@ PassFF.Page = {
   },
 
   fillInputs : function(passwordData) {
-    console.debug("[PassFF]", "Fill inputs")
+    PassFF.Page._console.debug("[PassFF]", "Fill inputs")
     PassFF.Page.setLoginInputs(passwordData.login);
     PassFF.Page.setPasswordInputs(passwordData.password);
   },
@@ -53,27 +54,27 @@ PassFF.Page = {
   submit : function(url) {
     if (!PassFF.Page.removeFromArray(PassFF.Page._autoSubmittedUrls, url)) {
 
-      console.debug("[PassFF]", "Url never submit. Submit it", url);
+      PassFF.Page._console.debug("[PassFF]", "Url never submit. Submit it", url);
       let passwords = PassFF.Page.getPasswordInputs();
       if (PassFF.Preferences.autoFill &&passwords.length > 0) {
         let form = PassFF.Page.searchParentForm(passwords[0]);
         if (form) {
-          console.debug("[PassFF]", "Found form to submit", form);
+          PassFF.Page._console.debug("[PassFF]", "Found form to submit", form);
           PassFF.Page._autoSubmittedUrls.push(url);
           let submitBtn = PassFF.Page.getSubmitButton(form);
           if (submitBtn) {
-            console.info("[PassFF]", "Click submit button");
+            PassFF.Page._console.info("[PassFF]", "Click submit button");
             submitBtn.click();
           } else {
-            console.info("[PassFF]", "Submit form");
+            PassFF.Page._console.info("[PassFF]", "Submit form");
             form.submit();
           }
         } else {
-          console.debug("[PassFF]", "No form found to submit");
+          PassFF.Page._console.debug("[PassFF]", "No form found to submit");
         }
       }
     } else {
-      console.info("[PassFF]", "Url already submit. skip it");
+      PassFF.Page._console.info("[PassFF]", "Url already submit. skip it");
     }
   },
 
