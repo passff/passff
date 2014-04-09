@@ -1,2 +1,4 @@
-<!ENTITY passff.toolbar.button.label            "PassFF">
-<!ENTITY passff.toolbar.button.tooltip    "zx2c4 pass manager addon">
+<!ENTITY passff.toolbar.treebutton.label            "PassFF tree button">
+<!ENTITY passff.toolbar.treebutton.tooltip    "zx2c4 pass manager - Tree button">
+<!ENTITY passff.toolbar.listbutton.label            "PassFF list button">
+<!ENTITY passff.toolbar.listbutton.tooltip    "zx2c4 pass manager - List button">

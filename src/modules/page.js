@@ -35,20 +35,19 @@ PassFF.Page = {
     if (!bestFitItem) bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
 
     if(bestFitItem) {
-      
-      let passwordData = PassFF.Pass.getPasswordData(bestFitItem);
-      if (passwordData) {
-        PassFF.Page.fillInputs(passwordData);
-        if (PassFF.Page.itemToUse || PassFF.Pass.getItemsLeafs(matchItems).length == 1) PassFF.Page.submit(url);
-      }
+      PassFF.Page.fillInputs(bestFitItem);
+      if (PassFF.Page.itemToUse || PassFF.Pass.getItemsLeafs(matchItems).length == 1) PassFF.Page.submit(url);
     }
     PassFF.Page.itemToUse = null;
   },
 
-  fillInputs : function(passwordData) {
+  fillInputs : function(item) {
     PassFF.Page._console.debug("[PassFF]", "Fill inputs")
-    PassFF.Page.setLoginInputs(passwordData.login);
-    PassFF.Page.setPasswordInputs(passwordData.password);
+    let passwordData = PassFF.Pass.getPasswordData(item);
+    if (passwordData) {
+      PassFF.Page.setLoginInputs(passwordData.login);
+      PassFF.Page.setPasswordInputs(passwordData.password);
+    }
   },
 
   submit : function(url) {

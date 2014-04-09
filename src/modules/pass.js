@@ -8,8 +8,6 @@ Cu.import("resource://passff/common.js");
 Cu.import("resource://passff/preferences.js");
 Cu.import("resource://passff/subprocess/subprocess.jsm");
 
-const consoleJSM = Cu.import("resource://gre/modules/devtools/Console.jsm", {});
-
 PassFF.Pass = {
   _console : Cu.import("resource://gre/modules/devtools/Console.jsm", {}).console,
   _items : [],
@@ -50,7 +48,6 @@ PassFF.Pass = {
   },
 
   searchLogin : function(passwordData) {
-    //console.log(JSON.stringify(passwordData));
     for(let i = 0 ; i < PassFF.Preferences.loginFieldNames.length; i++) {
       let login = passwordData[PassFF.Preferences.loginFieldNames[i].toLowerCase()];
       if (login != undefined) return login;
@@ -108,6 +105,23 @@ PassFF.Pass = {
       }
     }
     this._console.debug("[PassFF]", "Found Items", this._rootItems);
+  },
+
+  getMatchingItems : function(search, limit) {
+    let searchRegex = ''
+    for(i=0; i<search.length; i++) searchRegex += search.charAt(i) + ".*";
+
+    let BreakException= {};
+    let result = new Array();
+    try {
+        this._items.forEach(function(item) {
+          if (item.isLeaf() && item.fullKey().search(new RegExp(searchRegex)) >= 0) result.push(item);
+          if (result.length == limit) throw BreakException;
+        })
+    } catch(e) {
+        if (e!==BreakException) throw e;
+    }
+    return result;
   },
 
   getUrlMatchingItems : function(url) {

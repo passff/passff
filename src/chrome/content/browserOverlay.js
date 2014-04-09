@@ -68,6 +68,71 @@ PassFF.BrowserOverlay = {
     }
   },
 
+  searchKeyDown : function(event) {
+    console.debug("[PassFF]", "Search keydown : " + event.keyCode);
+    if(event.keyCode == 40) {
+      console.debug("[PassFF]", "Arrow down")
+      let listElm = document.getElementById("entries-list");
+      if(listElm.firstChild) listElm.firstChild.selected = false;
+      listElm.selectItem(listElm.firstChild)
+      document.getElementById('entries-list').focus();
+      return false;
+    }
+    if(event.keyCode == 13) {
+      let listElm = document.getElementById("entries-list");
+      let searchPanel = document.getElementById('search-panel');
+      listElm.selectItem(listElm.firstChild)
+      console.debug("[PassFF]", "Selected item", listElm.selectedItem)
+      let item = PassFF.BrowserOverlay.getItem(listElm.selectedItem);
+      PassFF.Page.itemToUse = item;
+      PassFF.BrowserOverlay.goToItemUrl(item, event.shiftKey);
+      searchPanel.hidePopup();
+      //listElm.firefogg
+    }
+  },
+
+  listItemkeyPress : function(event) {
+    console.debug("[PassFF]", "List item keydown : " + event.keyCode, event.target);
+    let searchPanel = document.getElementById('search-panel');
+    if(event.keyCode == 13) {
+      let item = PassFF.BrowserOverlay.getItem(event.target.selectedItem);
+      PassFF.Page.itemToUse = item;
+      PassFF.BrowserOverlay.goToItemUrl(item, event.shiftKey);
+      searchPanel.hidePopup();
+    } else if (event.keyCode != 40) {
+      let inputText = searchPanel.getElementsByAttribute('id', 'search')[0]
+      inputText.focus();
+      //inputText.setSelectionRange(0, inputText.value.length)
+    }
+  },
+
+  createMatchingSearchList : function(search) {
+    let listElm = document.getElementById("entries-list");
+
+    while (listElm.hasChildNodes()) {
+      listElm.removeChild(listElm.firstChild);
+    }
+
+    let matchItems  = PassFF.Pass.getMatchingItems(search, 6);
+    matchItems.forEach(function(item) {
+      let listItemElm = document.createElement("richlistitem");
+      listItemElm.item = item;
+      let descElm = document.createElement("label")
+      descElm.setAttribute("value", item.fullKey());
+      descElm.setAttribute("keydown", PassFF.BrowserOverlay.listItemkeyPress);
+      listItemElm.appendChild(descElm);
+      listElm.appendChild(listItemElm);
+    });
+  },
+
+  openSearchPanel : function() {
+    let searchPanel = document.getElementById('search-panel');
+    searchPanel.openPopup(document.getElementById('passff-button2'), 'after_start', 0, 0, false, false);
+    let inputText = searchPanel.getElementsByAttribute('id', 'search')[0]
+    inputText.focus();
+    inputText.setSelectionRange(0, inputText.value.length)
+  },
+
   createMenuInternal : function(item, label) {
     //item.print()
     let menu = document.createElement("menu");
@@ -88,9 +153,9 @@ PassFF.BrowserOverlay = {
       let gotoFillAndSubmitLabel = this._stringBundle.GetStringFromName("passff.menu.goto_fill_and_submit");
       let displayLabel = this._stringBundle.GetStringFromName("passff.menu.display");
 
-      menuPopupDyn.appendChild(this.createSubmenu(fillLabel, "fill", PassFF.BrowserOverlay.autoFill));
-      menuPopupDyn.appendChild(this.createSubmenu(fillAndSubmitLabel, "fill_and_submit", PassFF.BrowserOverlay.autoFillAndSubmit));
-      menuPopupDyn.appendChild(this.createSubmenu(gotoFillAndSubmitLabel, "goto_fill_and_submit", PassFF.BrowserOverlay.gotoAutoFillAndSubmit));
+      menuPopupDyn.appendChild(this.createSubmenu(fillLabel, "fill", PassFF.BrowserOverlay.autoFillMenuClick));
+      menuPopupDyn.appendChild(this.createSubmenu(fillAndSubmitLabel, "fill_and_submit", PassFF.BrowserOverlay.autoFillAndSubmitMenuClick));
+      menuPopupDyn.appendChild(this.createSubmenu(gotoFillAndSubmitLabel, "goto_fill_and_submit", PassFF.BrowserOverlay.gotoAutoFillAndSubmitMenuClick));
       menuPopupDyn.appendChild(this.createSubmenu(loginLabel, "login", PassFF.BrowserOverlay.copyToClipboard));
       menuPopupDyn.appendChild(this.createSubmenu(passwordLabel, "password", PassFF.BrowserOverlay.copyToClipboard));
       menuPopupDyn.appendChild(this.createSubmenu(displayLabel, "display", PassFF.BrowserOverlay.display));
@@ -119,27 +184,31 @@ PassFF.BrowserOverlay = {
   },
 
   menuClick : function(event) {
-    PassFF.BrowserOverlay.goToItemUrl(event.target.item, event);
-  },
-
-  autoFill : function(event) {
     event.stopPropagation();
-    PassFF.Page.fillInputs(PassFF.BrowserOverlay.getPasswordData(event));
+    PassFF.BrowserOverlay.goToItemUrl(item, event.button != 0);
   },
 
-  autoFillAndSubmit : function(event) {
-    PassFF.BrowserOverlay.autoFill(event);
+  autoFillMenuClick : function(event) {
+    event.stopPropagation();
+    let item = PassFF.BrowserOverlay.getItem(event.target);
+    PassFF.Page.fillInputs(item);
+  },
+
+  autoFillAndSubmitMenuClick : function(event) {
+    event.stopPropagation();
+    let item = PassFF.BrowserOverlay.getItem(event.target);
+    PassFF.Page.fillInputs(item);
     PassFF.Page.submit(window.content.location.href);
   },
 
-  gotoAutoFillAndSubmit : function(event) {
-    let item = event.target.parentNode.parentNode.item;
+  gotoAutoFillAndSubmitMenuClick : function(event) {
+    event.stopPropagation();
+    let item = PassFF.BrowserOverlay.getItem(event.target);
     PassFF.Page.itemToUse = item;
-    PassFF.BrowserOverlay.goToItemUrl(item, event);
+    PassFF.BrowserOverlay.goToItemUrl(item, event.button != 0);
   },
 
-  goToItemUrl : function(item, event) {
-    event.stopPropagation();
+  goToItemUrl: function(item, newTab) {
     if (item == null || item == undefined) return;
 
     let passwordData = PassFF.Pass.getPasswordData(item);
@@ -147,10 +216,10 @@ PassFF.BrowserOverlay = {
     if (url == null || url == undefined) url = item.key;
     if (!url.startsWith("http")) url = "http://" + url;
     if (url != null && url != undefined) {
-      if (event.button == 0) {
-        window.content.location.href = url;
-      } else {
+      if (newTab) {
         gBrowser.selectedTab = gBrowser.addTab(url);
+      } else {
+        window.content.location.href = url;
       }
     }
   },
@@ -176,8 +245,10 @@ PassFF.BrowserOverlay = {
     clip.setData(trans, null, Ci.nsIClipboard.kGlobalClipboard);
   },
 
-  getPasswordData : function(event) {
-    return PassFF.Pass.getPasswordData(event.target.parentNode.parentNode.item);
+  getItem : function(menuItem) {
+    while (menuItem && menuItem.item == undefined) menuItem = menuItem.parentNode;
+  
+    return menuItem ? menuItem.item : null;
   },
 
   createContextualMenu : function(items) {
