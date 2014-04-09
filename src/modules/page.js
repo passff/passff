@@ -84,10 +84,28 @@ PassFF.Page = {
 
   setLoginInputs    : function(login)    { PassFF.Page.getLoginInputs().forEach(function(loginInput) { loginInput.value = login; }); },
   setPasswordInputs : function(password) { PassFF.Page.getPasswordInputs().forEach(function(passwordInput) { passwordInput.value = password; }); },
-  getLoginInputs    : function()         { return Array.prototype.slice.call(content.document.getElementsByTagName("input")).filter(PassFF.Page.isLoginInput); },
-  getPasswordInputs : function()         { return Array.prototype.slice.call(content.document.getElementsByTagName("input")).filter(PassFF.Page.isPasswordInput); },
   isPasswordInput   : function(input)    { return input.type == "password" || (input.type == "text" && PassFF.Page.hasGoodName(input.name, PassFF.Preferences.passwordInputNames)); },
   isLoginInput      : function(input)    { return (input.type == "text" || input.type == "email") && PassFF.Page.hasGoodName(input.name, PassFF.Preferences.loginInputNames); },
+
+  getLoginInputs    : function()         {
+    let result = new Array();
+    let inputs = content.document.getElementsByTagName("input")
+    for (var i = 0; i < inputs.length; i++) { 
+      if (PassFF.Page.isLoginInput(inputs[i])) result.push(inputs[i]);
+    }
+    return result;
+    //return Array.prototype.slice.call(content.document.getElementsByTagName("input")).filter(PassFF.Page.isLoginInput);
+  },
+
+  getPasswordInputs : function()         {
+    let result = new Array();
+    let inputs = content.document.getElementsByTagName("input")
+    for (var i = 0; i < inputs.length; i++) { 
+      if (PassFF.Page.isPasswordInput(inputs[i])) result.push(inputs[i]);
+    }
+    return result;
+  //return Array.prototype.slice.call(content.document.getElementsByTagName("input")).filter(PassFF.Page.isPasswordInput);
+  },
 
   getSubmitButton : function(form) {
     let submitBtns = Array.prototype.slice.call(form.getElementsByTagName("button")).filter( function(input) { return input.type == "submit" } )
