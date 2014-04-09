@@ -75,7 +75,7 @@ PassFF.Pass = {
         }
         let item = {
           depth : curDepth,
-          key : match[2],
+          key : match[2].replace(/\\ /, ' '),
           children : new Array(),
           parent : curParent,
           isLeaf : function() { return this.children.length == 0; },

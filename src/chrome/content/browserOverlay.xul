@@ -32,7 +32,6 @@
     </toolbarbutton>
   </toolbarpalette>
   <keyset>
-    <!--<key id="search-credentials" modifiers="control" key="Y" oncommand="alert('uuuuu');"/>-->
     <key id="search-credentials" modifiers="control" key="Y" oncommand="PassFF.BrowserOverlay.openSearchPanel();"/>
   </keyset>
 
