@@ -40,5 +40,25 @@ from the plugin preferences you will be able to set :
 - Location of the gpg agent info file containing environment variables (relative to the home)
 
 
+### The keyboard addicts like me will be happy
+I **add a new button** displaying password repository in a list instead of a tree.
+**This button will not be added automatically** to your Navigation toolbar.
+You have to add it manually using the Customize menu (Right-click/Customize...) of the Navigation toolbar
+This list has a shortcut : **Ctrl-y**
+And a case sensitive **Fuzzy matching** algorithm.
+So considering this repository
+* Internet
+ * MySite1
+ * MySite2
+* CoolStuf
+  * SuperSite1
+  * SuperSite2
+
+&lt;Ctrl-y&gt;M1&lt;Enter&gt; will send you and authenticate you on MySite1 (&lt;Shift-Enter&gt; to open in a new tab)
+
 This is a beta. For test purpose only
 =========
+
+
+
+
