@@ -42,17 +42,38 @@ PassFF.Pass = {
         result[attributeName] = attributeValue.trim();
       }
     }
-    result.login = PassFF.Pass.searchLogin(result);
+    item.children.forEach(function(child){
+      if (child.isField()) {
+        result[child.key] = PassFF.Pass.getPasswordData(child).password;
+      }
+    });
+
+    PassFF.Pass.setLogin(result);
+    PassFF.Pass.setPassword(result);
 
     return result;
   },
 
-  searchLogin : function(passwordData) {
+  setPassword : function(passwordData) {
+    for(let i = 0 ; i < PassFF.Preferences.passwordFieldNames.length; i++) {
+      let password = passwordData[PassFF.Preferences.passwordFieldNames[i].toLowerCase()];
+      if (password != undefined) return passwordData.password = password;
+    }
+  },
+
+  setLogin : function(passwordData) {
     for(let i = 0 ; i < PassFF.Preferences.loginFieldNames.length; i++) {
       let login = passwordData[PassFF.Preferences.loginFieldNames[i].toLowerCase()];
-      if (login != undefined) return login;
+      if (login != undefined) return passwordData.login = login;
     }
-    return null;
+  },
+
+  isLoginField: function(name) {
+    return PassFF.Preferences.loginFieldNames.indexOf(name) >= 0;
+  },
+
+  isPasswordField: function(name) {
+    return PassFF.Preferences.passwordFieldNames.indexOf(name) >= 0;
   },
 
   initItems : function() {
@@ -70,6 +91,7 @@ PassFF.Pass = {
       let match = re.exec(lines[i]);
       if(match != null) {
         let curDepth = (match[1].length - 1) / 4;
+        let key = match[2].replace(/\\ /g, ' ');
         while (curParent != null && curParent.depth >= curDepth) {
           curParent = curParent.parent;
         }
@@ -78,7 +100,9 @@ PassFF.Pass = {
           key : match[2].replace(/\\ /g, ' '),
           children : new Array(),
           parent : curParent,
-          isLeaf : function() { return this.children.length == 0; },
+          isLeaf : function() { return this.children.length == 0;},
+          hasFields : function() { return this.children.find(function(element){ return element.isField(); }) != null; },
+          isField: function() { return this.isLeaf() && (PassFF.Pass.isLoginField(this.key) || PassFF.Pass.isPasswordField(this.key)); },
           fullKey : function() {
             let fullKey = this.key;
             let loopParent = this.parent;
@@ -87,15 +111,6 @@ PassFF.Pass = {
               loopParent = loopParent.parent;
             }
             return fullKey;
-          },
-          print : function() {
-            let spaces = "";
-            for (i = 0 ; i < this.depth ; i++) {
-              spaces += "  ";
-            }
-            for (let i = 0 ; i < this.children.length ; i++) {
-              this.children[i].print();
-            }
           }
         }
         if(curParent != null) curParent.children.push(item);
@@ -115,7 +130,7 @@ PassFF.Pass = {
     let result = new Array();
     try {
         this._items.forEach(function(item) {
-          if (item.isLeaf() && item.fullKey().search(new RegExp(searchRegex)) >= 0) result.push(item);
+          if ((item.isLeaf() || item.hasFields()) && item.fullKey().search(new RegExp(searchRegex)) >= 0) result.push(item);
           if (result.length == limit) throw BreakException;
         })
     } catch(e) {

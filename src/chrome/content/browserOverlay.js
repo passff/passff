@@ -52,7 +52,8 @@ PassFF.BrowserOverlay = {
 
       for (let i = 0 ; i < PassFF.Pass.rootItems.length ; i++) {
         let root = PassFF.Pass.rootItems[i];
-        repoPopup.appendChild(this.createMenuInternal(root, root.key));
+        let rootMenu= this.createMenuInternal(root, root.key);
+        if (rootMenu) repoPopup.appendChild(rootMenu);
       }
 
       let refreshMenu = document.createElement("menuitem");
@@ -114,13 +115,15 @@ PassFF.BrowserOverlay = {
 
     let matchItems  = PassFF.Pass.getMatchingItems(search, 6);
     matchItems.forEach(function(item) {
-      let listItemElm = document.createElement("richlistitem");
-      listItemElm.item = item;
-      let descElm = document.createElement("label")
-      descElm.setAttribute("value", item.fullKey());
-      descElm.setAttribute("keydown", PassFF.BrowserOverlay.listItemkeyPress);
-      listItemElm.appendChild(descElm);
-      listElm.appendChild(listItemElm);
+      if (!item.isField()) {
+        let listItemElm = document.createElement("richlistitem");
+        listItemElm.item = item;
+        let descElm = document.createElement("label")
+        descElm.setAttribute("value", item.fullKey());
+        descElm.setAttribute("keydown", PassFF.BrowserOverlay.listItemkeyPress);
+        listItemElm.appendChild(descElm);
+        listElm.appendChild(listItemElm);
+      }
     });
   },
 
@@ -133,17 +136,34 @@ PassFF.BrowserOverlay = {
   },
 
   createMenuInternal : function(item, label) {
+    if(item.isField()) return null;
     let menu = document.createElement("menu");
     menu.item = item
-      menu.setAttribute("label", label);
+    menu.setAttribute("label", label);
     //menu.setAttribute("oncommand","PassFF.BrowserOverlay.goToItemUrl(event)");
     menu.addEventListener("click", PassFF.BrowserOverlay.menuClick);
     let menuPopupDyn = document.createElement("menupopup");
-    if (item.children.length > 0) {
-      for(let i = 0 ; i < item.children.length ; i++) {
-        menuPopupDyn.appendChild(this.createMenuInternal(item.children[i], item.children[i].key));
+    if (!item.isLeaf()) {
+      if (item.hasFields()) {
+        PassFF.BrowserOverlay.createCommandMenu(menuPopupDyn)
+      }
+      for (let i = 0 ; i < item.children.length ; i++) {
+        let newMenu = this.createMenuInternal(item.children[i], item.children[i].key)
+        if (newMenu) menuPopupDyn.appendChild(newMenu);
       }
     } else {
+      PassFF.BrowserOverlay.createCommandMenu(menuPopupDyn)
+    }
+
+    menu.appendChild(menuPopupDyn);
+    return menu;
+  },
+
+  createMenuPopup: function(attribute) {
+    
+  },
+
+  createCommandMenu: function(menuPopupDyn) {
       let passwordLabel = this._stringBundle.GetStringFromName("passff.menu.copy_password");
       let loginLabel = this._stringBundle.GetStringFromName("passff.menu.copy_login");
       let fillLabel = this._stringBundle.GetStringFromName("passff.menu.fill");
@@ -157,11 +177,6 @@ PassFF.BrowserOverlay = {
       menuPopupDyn.appendChild(this.createSubmenu(loginLabel, "login", PassFF.BrowserOverlay.copyToClipboard));
       menuPopupDyn.appendChild(this.createSubmenu(passwordLabel, "password", PassFF.BrowserOverlay.copyToClipboard));
       menuPopupDyn.appendChild(this.createSubmenu(displayLabel, "display", PassFF.BrowserOverlay.display));
-    }
-
-    menu.appendChild(menuPopupDyn);
-
-    return menu;
   },
   
   refresh : function() {
@@ -258,7 +273,8 @@ PassFF.BrowserOverlay = {
     }
     for(let i = 0 ; i < items.length ; i++) {
       let item = items[i];
-      separator.parentNode.appendChild(this.createMenuInternal(item, item.fullKey()));
+      let itemMenu = this.createMenuInternal(item, item.fullKey())
+      if (itemMenu) separator.parentNode.appendChild(itemMenu);
     }
   }
 };

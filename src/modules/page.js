@@ -16,8 +16,6 @@ PassFF.Page = {
   },
 
   onPageLoad : function(event) {
-
-
     let doc = event.originalTarget;
     let win = doc.defaultView;
     // if (doc.nodeName == "#document") return;
@@ -111,14 +109,6 @@ PassFF.Page = {
     let submitBtns = Array.prototype.slice.call(form.getElementsByTagName("button")).filter( function(input) { return input.type == "submit" } )
     if (submitBtns.length == 0) submitBtns = Array.prototype.slice.call(form.getElementsByTagName("input")).filter( function(input) { return input.type == "submit" } )
     if (submitBtns.length > 0) return submitBtns[submitBtns.length - 1]
-    return null;
-  },
-
-  searchLogin : function(passwordData) {
-    for(let i = 0 ; i < PassFF.Preferences.loginFieldNames.length; i++) {
-      let login = passwordData[PassFF.Preferences.loginFieldNames[i].toLowerCase()];
-      if (login != undefined) return login;
-    }
     return null;
   },
 

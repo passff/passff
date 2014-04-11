@@ -9,6 +9,8 @@
       <preference id="passff-passwordInputNames-pref" name="extensions.passff.passwordInputNames" type="string" />
       <preference id="passff-loginInputNames-pref" name="extensions.passff.loginInputNames" type="string" />
       <preference id="passff-loginFieldNames-pref" name="extensions.passff.loginFieldNames" type="string" />
+      <preference id="passff-passwordFieldNames-pref" name="extensions.passff.passwordFieldNames" type="string" />
+      <preference id="passff-urlFieldNames-pref" name="extensions.passff.urlFieldNames" type="string" />
       <preference id="passff-command-pref" name="extensions.passff.command" type="string" />
       <preference id="passff-home-pref" name="extensions.passff.home" type="string" />
       <preference id="passff-gpg_agent_info-pref" name="extensions.passff.gpg_agent_info" type="string" />
@@ -42,6 +44,36 @@
         </rows>
       </grid>
     </groupbox>
+    <separator class="groove-thin"/>
+    <groupbox>
+      <caption label="&passff.preferences.fields_caption;"/>
+      <description>&passff.preferences.fields_description;</description>
+      <grid>
+        <columns>
+          <column flex="1"/>
+          <column flex="2"/>
+        </columns>
+        <rows>
+          <row>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.password_field_names_tooltip;" control="passwordFieldNames" value="&passff.preferences.password_field_names_label;"/>
+              <textbox tooltiptext= "&passff.preferences.password_field_names_tooltip;" id="passwordFieldNames" preference="passff-passwordFieldNames-pref" type="string"/>
+            </vbox>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.url_field_names_tooltip;" control="urlFieldNames" value="&passff.preferences.url_field_names_label;"/>
+              <textbox tooltiptext= "&passff.preferences.url_field_names_tooltip;" id="urlFieldNames" preference="passff-urlFieldNames-pref" type="string"/>
+            </vbox>
+          </row>
+          <row>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.login_field_names_tooltip;" control="loginFieldNames" value="&passff.preferences.login_field_names_label;"/>
+              <textbox tooltiptext= "&passff.preferences.login_field_names_tooltip;" id="loginFieldNames" preference="passff-loginFieldNames-pref" type="string"/>
+            </vbox>
+          </row>
+        </rows>
+      </grid>
+    </groupbox>
+    <separator class="groove-thin"/>
     <groupbox>
       <caption label="&passff.preferences.pass_caption;"/>
       <grid>
@@ -51,10 +83,6 @@
         </columns>
         <rows>
           <row>
-            <vbox>
-              <label tooltiptext= "&passff.preferences.login_field_names_tooltip;" control="loginFieldNames" value="&passff.preferences.login_field_names_label;"/>
-              <textbox tooltiptext= "&passff.preferences.login_field_names_tooltip;" id="loginFieldNames" preference="passff-loginFieldNames-pref" type="string"/>
-            </vbox>
             <vbox>
               <label tooltiptext= "&passff.preferences.command_tooltip;" control="command" value="&passff.preferences.command_label;"/>
               <textbox tooltiptext= "&passff.preferences.command_tooltip;" id="command" preference="passff-command-pref" type="string"/>

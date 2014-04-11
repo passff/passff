@@ -16,11 +16,14 @@ PassFF.Preferences = {
     passwordInputNames : null,
     loginInputNames    : null,
     loginFieldNames    : null,
+    passwordFieldNames : null,
+    urlFieldNames      : null,
     command            : null,
     home               : null,
     storeDir           : null,
     storeGit           : null,
     gpg_agent_env      : null,
+    gpgAgentInfo       : null,
     autofill           : null,
   },
 
@@ -30,6 +33,8 @@ PassFF.Preferences = {
     this._params.passwordInputNames = application.prefs.get("extensions.passff.passwordInputNames");
     this._params.loginInputNames    = application.prefs.get("extensions.passff.loginInputNames");
     this._params.loginFieldNames    = application.prefs.get("extensions.passff.loginFieldNames");
+    this._params.passwordFieldNames = application.prefs.get("extensions.passff.passwordFieldNames");
+    this._params.urlFieldNames      = application.prefs.get("extensions.passff.urlFieldNames");
     this._params.command            = application.prefs.get("extensions.passff.command");
     this._params.home               = application.prefs.get("extensions.passff.home");
     this._params.storeDir           = application.prefs.get("extensions.passff.pass_dir");
@@ -42,20 +47,24 @@ PassFF.Preferences = {
     PassFF.Preferences._console.info("[PassFF] preferences initialised");
     PassFF.Preferences._console.debug("[PassFF]", {
       passwordInputNames : this.passwordInputNames,
-      loginInputNames : this.loginInputNames,
-      loginFieldNames : this.loginFieldNames,
-      command : this.command,
-      home : this.home,
-      storeDir : this.storeDir,
-      storeGit : this.storeGit,
-      gpgAgentEnv : this.gpgAgentEnv,
-      autoFill : this.autoFill
+      loginInputNames    : this.loginInputNames,
+      loginFieldNames    : this.loginFieldNames,
+      passwordFieldNames : this.passwordFieldNames,
+      urlFieldNames      : this.urlFieldNames,
+      command            : this.command,
+      home               : this.home,
+      storeDir           : this.storeDir,
+      storeGit           : this.storeGit,
+      gpgAgentEnv        : this.gpgAgentEnv,
+      autoFill           : this.autoFill
     });
   },
 
   get passwordInputNames() { return this._params.passwordInputNames.value.split(","); },
   get loginInputNames()    { return this._params.loginInputNames.value.split(","); },
   get loginFieldNames()    { return this._params.loginFieldNames.value.split(","); },
+  get passwordFieldNames() { return this._params.passwordFieldNames.value.split(",");},
+  get urlFieldNames()      { return this._params.urlFieldNames.value.split(",");},
   get command()            { return this._params.command.value; },
   get home()               { return (this._params.home.value.trim().length > 0 ? this._params.home.value : this._environment.get('HOME')); },
   get storeDir()           { return (this._params.storeDir.value.trim().length > 0 ? this._params.storeDir.value : this._environment.get('PASSWORD_STORE_DIR')); },

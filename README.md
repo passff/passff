@@ -31,16 +31,36 @@ the accepted format for the password info is :
 login: &lt;the_login&gt;  
 url: &lt;the_url&gt;  
 
+PassFF will also try to find login password and url inside the direct child of a pass node.
+For example, if you have as structure like this :
+* www
+  * supersite.com
+    * login
+    * user
+  * mysite.com
+
+PassFF will 
+* get the login from the "login" entry for supersite.com
+* get the login form the "login" field inside the mysite.com entry for mysite.com (see format above)  
+
+Fields names can be set in the preferences
+
+
 from the plugin preferences you will be able to set :
-- A comma separated list of password input names. Input field names in a html page containing one of those values will be filled with the password
-- A comma separated list of login input names. Input field names in a html page containing one of those values will be filled with the login
-- A comma separated list of login field names. The first matching field in the password data will be used as login
-- The pass script path
-- Pass home. If empty, use User home
-- Location of the gpg agent info file containing environment variables (relative to the home)
+- Inputs (A comma separated list of input names. Input field names in a html page containing one of those values will be filled with the corresponding value.)
+  - Passwords inputs names.
+  - Login inputs names.
+- Fields (A comma separated list of field names. The first matching field in the password data or in the store tree will be used as the corresponding value.)
+  - Login fields names.
+  - Password fields names.
+  - Url fields names.
+- Pass Scrit params
+  - The pass script path.
+  - Pass home. If empty, use User home.
+  - Location of the gpg agent info file containing environment variables (relative to the home).
 
 
-### The keyboard addicts like me will be happy
+### The keyboard addicts will be happy
 I **add a new button** displaying password repository in a list instead of a tree.
 **This button will not be added automatically** to your Navigation toolbar.
 You have to add it manually using the Customize menu (Right-click/Customize...) of the Navigation toolbar
@@ -58,7 +78,3 @@ So considering this repository
 
 This is a beta. For test purpose only
 =========
-
-
-
-
