@@ -52,7 +52,6 @@ PassFF.BrowserOverlay = {
 
       for (let i = 0 ; i < PassFF.Pass.rootItems.length ; i++) {
         let root = PassFF.Pass.rootItems[i];
-        //root.print();
         repoPopup.appendChild(this.createMenuInternal(root, root.key));
       }
 
@@ -134,7 +133,6 @@ PassFF.BrowserOverlay = {
   },
 
   createMenuInternal : function(item, label) {
-    //item.print()
     let menu = document.createElement("menu");
     menu.item = item
       menu.setAttribute("label", label);
@@ -225,7 +223,8 @@ PassFF.BrowserOverlay = {
   },
 
   display : function(event) {
-    let passwordData = PassFF.BrowserOverlay.getPasswordData(event);
+    let item = PassFF.BrowserOverlay.getItem(event.target);
+    let passwordData = PassFF.Pass.getPasswordData(item);
     let login = passwordData["login"];
     let password = passwordData["password"];
     let title = PassFF.BrowserOverlay._stringBundle.GetStringFromName("passff.display.title");
@@ -238,7 +237,8 @@ PassFF.BrowserOverlay = {
     let str = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
     let trans = Cc["@mozilla.org/widget/transferable;1"].createInstance(Ci.nsITransferable);
     let clip = Cc["@mozilla.org/widget/clipboard;1"].getService(Ci.nsIClipboard);
-    let passwordData = PassFF.BrowserOverlay.getPasswordData(event);
+    let item = PassFF.BrowserOverlay.getItem(event.target);
+    let passwordData = PassFF.Pass.getPasswordData(item);
     str.data = passwordData[event.target.dataKey];
     trans.addDataFlavor('text/unicode');
     trans.setTransferData('text/unicode', str, str.data.length * 2);
