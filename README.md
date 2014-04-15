@@ -17,10 +17,10 @@ It will try to auto fill and auto submit the login form if a matching password e
 
 ### Usage
 A black icon with a P should appear in your Firefox toolbar.
-From here, you will be able to browse your password repository.
-The shortcut to open the menu is : **Ctrl-y**
-From here, you will be able to browse your password repository
-or to search using a case sensitive **Fuzzy matching** algorithm.
+From here, you will be able to browse your password repository.  
+The shortcut to open the menu is : **Ctrl-y**  
+From here, you will be able to browse your password repository  
+or to search using a case sensitive **Fuzzy matching** algorithm.  
 So considering this repository
 * Internet
  * MySite1
@@ -40,7 +40,7 @@ Current supported features are :
 
 Additionnally, if you added an url property in your password info you will be able to go there clicking directly on the password menu (left-click same tab, middle-click new tab)
 
-the accepted format for the password info is :  
+The accepted format for the password info is :  
 &lt;the_password&gt;  
 login: &lt;the_login&gt;  
 url: &lt;the_url&gt;  
