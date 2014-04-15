@@ -1,18 +1,18 @@
 passff
 ======
 
-[zx2c4 pass](http://www.zx2c4.com/projects/password-store/) manager addon for firefox
+**[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** manager addon for firefox
 
 
 ### Overview
-This plugin will allow you to access your [pass](http://www.zx2c4.com/projects/password-store/) repository directly from firefox.
+This plugin will allow you to access your **[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** repository directly from firefox.
 
 It will try to auto fill and auto submit the login form if a matching password entry is found
 
 ### Installation
-- You need [zx2c4 pass](http://www.zx2c4.com/projects/password-store/) installed on your computer
+- You need **[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** installed on your computer
 - You will also need a working password repository
-- Download the last release of the plugin [here](https://github.com/jvenant/passff/releases).
+- Download the last release of the plugin **[here](https://github.com/jvenant/passff/releases)**.
 - You can then manually install the plugin in Firefox from the addons page (Firefox/Add-ons/Install Add-on from File...)
 
 ### Usage
