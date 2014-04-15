@@ -10,7 +10,7 @@ This plugin will allow you to access your [pass](http://www.zx2c4.com/projects/p
 It will try to auto fill and auto submit the login form if a matching password entry is found
 
 ### Installation
-- You have to have [zx2c4 pass](http://www.zx2c4.com/projects/password-store/) installed on your computer
+- You need [zx2c4 pass](http://www.zx2c4.com/projects/password-store/) installed on your computer
 - You will also need a working password repository
 - Download the last release of the plugin [here](https://github.com/jvenant/passff/releases).
 - You can then manually install the plugin in Firefox from the addons page (Firefox/Add-ons/Install Add-on from File...)
