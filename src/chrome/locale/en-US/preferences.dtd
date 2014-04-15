@@ -1,7 +1,7 @@
 <!ENTITY passff.preferences.page_caption                 "Html page autofill behavior">
 <!ENTITY passff.preferences.pass_caption                 "Pass script parameters">
 <!ENTITY passff.preferences.fields_caption               "Fields parameters">
-<!ENTITY passff.preferences.fields_description           "Fields are used to find data inside your passwords repository. PassFF will try to find the login, password or url value inside the password data (using the standard syntax) or trying to find a matching child">
+<!ENTITY passff.preferences.fields_description           "Fields are used to find data inside your passwords repository. PassFF will try to find the login, password or url value inside the password data (using the standard syntax) or trying to find a matching child node name">
 <!ENTITY passff.preferences.password_input_names_label   "Password input names">
 <!ENTITY passff.preferences.password_input_names_tooltip "Comma separated list of input names. Input field names in a html page containing one of those values will be filled with the password">
 <!ENTITY passff.preferences.login_input_names_label      "Login input names">

@@ -1,12 +1,12 @@
-#passff-button,#passff-button2{
+#passff-button{
 list-style-image: url("chrome://passff/skin/passff_medium.png");
 }
 
-toolbar[iconsize="large"] #passff-button,toolbar[iconsize="large"] #passff-button2 {
+toolbar[iconsize="large"] #passff-button {
   list-style-image: url("chrome://passff/skin/passff_medium.png");
 }
 
-toolbar[iconsize="small"] #passff-button,toolbar[iconsize="small"] #passff-button2 {
+toolbar[iconsize="small"] #passff-button {
   list-style-image: url("chrome://passff/skin/passff_small.png");
 }
 

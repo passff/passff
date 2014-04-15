@@ -1,4 +1,8 @@
-<!ENTITY passff.toolbar.treebutton.label      "PassFF tree button">
-<!ENTITY passff.toolbar.treebutton.tooltip    "zx2c4 pass manager - Tree button">
-<!ENTITY passff.toolbar.listbutton.label      "PassFF list button">
-<!ENTITY passff.toolbar.listbutton.tooltip    "zx2c4 pass manager - List button">
+<!ENTITY passff.toolbar.button.label      "PassFF button">
+<!ENTITY passff.toolbar.button.tooltip    "zx2c4 pass manager button">
+<!ENTITY passff.toolbar.search.label      "Search :">
+<!ENTITY passff.toolbar.search.tooltip    "Fuzzy case sensitive search">
+<!ENTITY passff.toolbar.options.label      "Options">
+<!ENTITY passff.toolbar.refresh.label      "Refresh">
+<!ENTITY passff.toolbar.passwords.label      "Passwords store">
+<!ENTITY passff.toolbar.preferences.label      "Preferences">

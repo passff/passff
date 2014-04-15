@@ -111,6 +111,6 @@
         </rows>
       </grid>
     </groupbox>
-
+    <separator class="groove-thin"/>
   </prefpane>
 </prefwindow>

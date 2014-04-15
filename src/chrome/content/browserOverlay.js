@@ -43,28 +43,16 @@ PassFF.BrowserOverlay = {
           menuPopup.removeChild(menuPopup.lastChild);
       }
 
-      let repoMenu = document.createElement("menu");
-      let allLabel = this._stringBundle.GetStringFromName("passff.menu.all");
-      repoMenu.setAttribute("label", allLabel);
-      let repoPopup = document.createElement("menupopup");
-      repoMenu.appendChild(repoPopup);
-      menuPopup.appendChild(repoMenu);
-
       for (let i = 0 ; i < PassFF.Pass.rootItems.length ; i++) {
         let root = PassFF.Pass.rootItems[i];
         let rootMenu= this.createMenuInternal(root, root.key);
-        if (rootMenu) repoPopup.appendChild(rootMenu);
+        if (rootMenu) menuPopup.appendChild(rootMenu);
       }
-
-      let refreshMenu = document.createElement("menuitem");
-      let refreshLabel = this._stringBundle.GetStringFromName("passff.menu.refresh");
-      refreshMenu.setAttribute("label", refreshLabel);
-      refreshMenu.addEventListener("click", PassFF.BrowserOverlay.refresh);
-      menuPopup.appendChild(refreshMenu);
 
       let separator = document.createElement("menuseparator");
       separator.setAttribute("id", "menu-separator");
       menuPopup.appendChild(separator);
+
     }
   },
 
@@ -129,12 +117,26 @@ PassFF.BrowserOverlay = {
 
   openSearchPanel : function() {
     let searchPanel = document.getElementById('search-panel');
-    searchPanel.openPopup(document.getElementById('passff-button2'), 'after_start', 0, 0, false, false);
+    searchPanel.openPopup(document.getElementById('passff-button'), 'after_start', 0, 0, false, false);
+  },
+
+  onPanelShow : function() {
+    let searchPanel = document.getElementById('search-panel');
     let inputText = searchPanel.getElementsByAttribute('id', 'search')[0]
     inputText.focus();
     inputText.setSelectionRange(0, inputText.value.length)
   },
 
+  openPreferences : function() {
+    if (null == this._preferencesWindow || this._preferencesWindow.closed) {
+      let instantApply =
+      Application.prefs.get("browser.preferences.instantApply");
+      let features = "chrome,titlebar,toolbar,centerscreen" + (instantApply.value ? ",dialog=no" : ",modal");
+      this._preferencesWindow = window.openDialog( "chrome://passff/content/preferencesWindow.xul", "passff-preferences-window", features);
+    }
+
+    this._preferencesWindow.focus();
+  },
   createMenuInternal : function(item, label) {
     if(item.isField()) return null;
     let menu = document.createElement("menu");
@@ -267,14 +269,16 @@ PassFF.BrowserOverlay = {
   },
 
   createContextualMenu : function(items) {
-    let separator = document.getElementById("menu-separator")
-    while (separator != null && separator.nextSibling) {
-      separator.parentNode.removeChild(separator.nextSibling);
+    let contextualMenu = document.getElementById("contextual-menu")
+
+    while (contextualMenu.hasChildNodes()) {
+      contextualMenu.removeChild(contextualMenu.lastChild);
     }
+
     for(let i = 0 ; i < items.length ; i++) {
       let item = items[i];
       let itemMenu = this.createMenuInternal(item, item.fullKey())
-      if (itemMenu) separator.parentNode.appendChild(itemMenu);
+      if (itemMenu) contextualMenu.appendChild(itemMenu);
     }
   }
 };
