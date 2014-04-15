@@ -28,7 +28,7 @@ So considering this repository
   * SuperSite1
   * SuperSite2
 
-&lt;Ctrl-y&gt;M1&lt;Enter&gt; will send you and authenticate you on MySite1 (&lt;Shift-Enter&gt; to open in a new tab)
+&lt;Ctrl-y&gt;M1&lt;Enter&gt; will send and authenticate you on MySite1 (&lt;Shift-Enter&gt; to open in a new tab)
 
 
 Current supported features are :
@@ -71,9 +71,6 @@ from the plugin preferences you will be able to set :
   - The pass script path.
   - Pass home. If empty, use User home.
   - Location of the gpg agent info file containing environment variables (relative to the home).
-
-
-### The keyboard addicts will be happy
 
 This is a beta. For test purpose only
 =========
