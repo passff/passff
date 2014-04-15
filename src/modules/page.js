@@ -136,5 +136,7 @@ PassFF.Page = {
     return index >= 0;
   }
 };
-
-(function() { this.init() }).apply(PassFF.Page);
+window.addEventListener("load", function load(event){
+    window.removeEventListener("load", load, false); //remove listener, no longer needed
+    (function() { this.init() }).apply(PassFF.Page);
+},false);
