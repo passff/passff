@@ -44,8 +44,7 @@ PassFF.Preferences = {
 
     this.setGpgAgentEnv();
 
-    PassFF.Preferences._console.info("[PassFF]", "Preferences initialised");
-    PassFF.Preferences._console.debug("[PassFF]", {
+    PassFF.Preferences._console.info("[PassFF]", "Preferences initialised", {
       passwordInputNames : this.passwordInputNames,
       loginInputNames    : this.loginInputNames,
       loginFieldNames    : this.loginFieldNames,
@@ -73,21 +72,23 @@ PassFF.Preferences = {
   get autoFill()           { return this._params.autoFill.value; },
 
   setGpgAgentEnv : function() {
-    var filename = (this._params.gpgAgentInfo.value.indexOf("/") != 0 ? this.home + "/" : "") + this._params.gpgAgentInfo.value;
-    PassFF.Preferences._console.info("[PassFF]", "Try to retrieve Gpg agent variables from file " + filename);
-    var file = new FileUtils.File(filename);
-    if (file.exists()) {
+    let gpgAgentInfo = this._params.gpgAgentInfo.value;
+    let filename = (gpgAgentInfo.indexOf("/") != 0 ? this.home + "/" : "") + gpgAgentInfo;
+    let file = new FileUtils.File(filename);
+    PassFF.Preferences._console.debug("[PassFF]", "Check Gpg agent file existance : " + filename);
+    if (file.exists() && file.isFile()) {
+      PassFF.Preferences._console.info("[PassFF]", "Retrieve Gpg agent variable from file " + filename);
       NetUtil.asyncFetch(file, function(inputStream, status) {
         let content = NetUtil.readInputStreamToString(inputStream, inputStream.available());
-        PassFF.Preferences._console.debug("[PassFF]", "Content :", content);
+        PassFF.Preferences._console.debug("[PassFF]", "Set Gpg agent variable :", content);
         PassFF.Preferences._params.gpg_agent_env = content.split("\n")
       });
     } else {
-        PassFF.Preferences._console.info("[PassFF]", "File not exists. Retrieve Gpg agent variables environment");
+        PassFF.Preferences._console.info("[PassFF]", "Retrieve Gpg agent variable from environment");
         PassFF.Preferences._params.gpg_agent_env = [
           "GPG_AGENT_INFO=" + this._environment.get('GPG_AGENT_INFO'),
-          "SSH_AUTH_SOCK=" + this._environment.get('SSH_AUTH_SOCK'),
-          "SSH_AGENT_PID=" + this._environment.get('SSH_AGENT_PID')
+          //"SSH_AUTH_SOCK=" + this._environment.get('SSH_AUTH_SOCK'),
+          //"SSH_AGENT_PID=" + this._environment.get('SSH_AGENT_PID')
         ]
     }
   }

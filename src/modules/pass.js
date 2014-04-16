@@ -101,13 +101,7 @@ PassFF.Pass = {
           children : new Array(),
           parent : curParent,
           isLeaf : function() { return this.children.length == 0;},
-          hasFields : function() {
-            for(i=0; i<this.children.length; i++) {
-              if (this.children[i].isField()) return true;
-            }
-            return false;
-            //return this.children.find(function(element) { return element.isField(); }) != null;
-          },
+          hasFields : function() { return this.children.some(function(element) { return element.isField(); }); },
           isField: function() { return this.isLeaf() && (PassFF.Pass.isLoginField(this.key) || PassFF.Pass.isPasswordField(this.key)); },
           fullKey : function() {
             let fullKey = this.key;
