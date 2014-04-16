@@ -44,7 +44,7 @@ PassFF.Preferences = {
 
     this.setGpgAgentEnv();
 
-    PassFF.Preferences._console.info("[PassFF] preferences initialised");
+    PassFF.Preferences._console.info("[PassFF]", "Preferences initialised");
     PassFF.Preferences._console.debug("[PassFF]", {
       passwordInputNames : this.passwordInputNames,
       loginInputNames    : this.loginInputNames,
@@ -78,7 +78,9 @@ PassFF.Preferences = {
     var file = new FileUtils.File(filename);
     if (file.exists()) {
       NetUtil.asyncFetch(file, function(inputStream, status) {
-        PassFF.Preferences._params.gpg_agent_env = NetUtil.readInputStreamToString(inputStream, inputStream.available()).split("\n")
+        let content = NetUtil.readInputStreamToString(inputStream, inputStream.available());
+        PassFF.Preferences._console.debug("[PassFF]", "Content :", content);
+        PassFF.Preferences._params.gpg_agent_env = content.split("\n")
       });
     } else {
         PassFF.Preferences._console.info("[PassFF]", "File not exists. Retrieve Gpg agent variables environment");

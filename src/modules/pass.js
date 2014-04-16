@@ -79,7 +79,7 @@ PassFF.Pass = {
   initItems : function() {
     let result = this.executePass([]);
     if (result.exitCode != 0) return;
-  
+ 
     let stdout = result.stdout;
     this._rootItems = [];
     this._items = [];
@@ -97,11 +97,17 @@ PassFF.Pass = {
         }
         let item = {
           depth : curDepth,
-          key : match[2].replace(/\\ /g, ' '),
+          key : key,
           children : new Array(),
           parent : curParent,
           isLeaf : function() { return this.children.length == 0;},
-          hasFields : function() { return this.children.find(function(element){ return element.isField(); }) != null; },
+          hasFields : function() {
+            for(i=0; i<this.children.length; i++) {
+              if (this.children[i].isField()) return true;
+            }
+            return false;
+            //return this.children.find(function(element) { return element.isField(); }) != null;
+          },
           isField: function() { return this.isLeaf() && (PassFF.Pass.isLoginField(this.key) || PassFF.Pass.isPasswordField(this.key)); },
           fullKey : function() {
             let fullKey = this.key;
