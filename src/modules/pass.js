@@ -1,8 +1,6 @@
 var EXPORTED_SYMBOLS = [];
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cu = Components.utils;
+const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
 Cu.import("resource://passff/common.js");
 Cu.import("resource://passff/preferences.js");
