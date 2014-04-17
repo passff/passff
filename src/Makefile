@@ -39,6 +39,9 @@ build_dir := $(bin_dir)/build
 # The install.rdf file.
 install_rdf := install.rdf
 
+# The install.rdf file.
+bootstrap_js := bootstrap.js
+
 # The chrome.manifest file.
 chrome_manifest := chrome.manifest
 
@@ -73,6 +76,7 @@ include modules/Makefile.in
 # The sources for the XPI file. Uses variables defined in the included
 # Makefiles.
 xpi_built := $(build_dir)/$(install_rdf) \
+             $(build_dir)/$(bootstrap_js) \
              $(build_dir)/$(chrome_manifest) \
              $(chrome_jar_file) \
              $(addprefix $(build_dir)/,$(modules_sources)) \
