@@ -152,7 +152,7 @@ PassFF.BrowserOverlay = {
     menu.item = item
     menu.setAttribute("label", label);
     //menu.setAttribute("oncommand","PassFF.BrowserOverlay.goToItemUrl(event)");
-    menu.addEventListener("click", PassFF.BrowserOverlay.menuClick);
+    //menu.addEventListener("click", PassFF.BrowserOverlay.menuClick);
     let menuPopupDyn = document.createElement("menupopup");
     if (!item.isLeaf()) {
       if (item.hasFields()) {
@@ -207,11 +207,11 @@ PassFF.BrowserOverlay = {
     return submenu;
   },
 
-  menuClick : function(event) {
-    event.stopPropagation();
-    let item = PassFF.BrowserOverlay.getItem(event.target);
-    PassFF.BrowserOverlay.goToItemUrl(item, event.button != 0);
-  },
+  //menuClick : function(event) {
+    //event.stopPropagation();
+    //let item = PassFF.BrowserOverlay.getItem(event.target);
+    //PassFF.BrowserOverlay.goToItemUrl(item, event.button != 0);
+  //},
 
   autoFillMenuClick : function(event) {
     event.stopPropagation();
