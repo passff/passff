@@ -19,7 +19,7 @@
       <panel id="search-panel" onpopupshown="PassFF.BrowserOverlay.onPanelShow(event);">
         <label control="search" value="&passff.toolbar.search.label;"/>
         <textbox id="search" onkeypress="return PassFF.BrowserOverlay.searchKeyDown(event)" onkeyup="PassFF.BrowserOverlay.createMatchingSearchList(this.value);"/>
-        <richlistbox id="entries-list" onkeydown="return PassFF.BrowserOverlay.listItemkeyPress(event)"></richlistbox>
+        <richlistbox id="entries-list" onclick="return PassFF.BrowserOverlay.listItemClick(event)" onkeydown="return PassFF.BrowserOverlay.listItemkeyPress(event)"></richlistbox>
         <menubar id="menu" orient="vertical">
           <menu id="options-menu" label="&passff.toolbar.options.label;">
             <menupopup id="file-popup">

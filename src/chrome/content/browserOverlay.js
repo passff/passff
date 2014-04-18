@@ -94,6 +94,16 @@ PassFF.BrowserOverlay = {
     }
   },
 
+  listItemClick : function(event) {
+    console.debug("[PassFF]", "List item click : ", event);
+    let searchPanel = document.getElementById('search-panel');
+    let item = PassFF.BrowserOverlay.getItem(event.target.parentNode.parentNode.selectedItem);
+    console.debug(item);
+    PassFF.Page.itemToUse = item;
+    PassFF.BrowserOverlay.goToItemUrl(item, event.shiftKey);
+    searchPanel.hidePopup();
+  },
+
   createMatchingSearchList : function(search) {
     let listElm = document.getElementById("entries-list");
 
@@ -108,7 +118,6 @@ PassFF.BrowserOverlay = {
         listItemElm.item = item;
         let descElm = document.createElement("label")
         descElm.setAttribute("value", item.fullKey());
-        descElm.setAttribute("keydown", PassFF.BrowserOverlay.listItemkeyPress);
         listItemElm.appendChild(descElm);
         listElm.appendChild(listItemElm);
       }
