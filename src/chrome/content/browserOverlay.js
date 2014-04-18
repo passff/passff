@@ -87,7 +87,7 @@ PassFF.BrowserOverlay = {
       PassFF.Page.itemToUse = item;
       PassFF.BrowserOverlay.goToItemUrl(item, event.shiftKey);
       searchPanel.hidePopup();
-    } else if (event.keyCode != 40) {
+    } else if (event.keyCode != 40 && event.keyCode !=38) {
       let inputText = searchPanel.getElementsByAttribute('id', 'search')[0]
       inputText.focus();
       //inputText.setSelectionRange(0, inputText.value.length)
