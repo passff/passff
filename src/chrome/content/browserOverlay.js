@@ -80,7 +80,7 @@ PassFF.BrowserOverlay = {
   },
 
   listItemkeyPress : function(event) {
-    console.debug("[PassFF]", "List item keydown : " + event.keyCode, event.target);
+    console.debug("[PassFF]", "List item keydown : ", event);
     let searchPanel = document.getElementById('search-panel');
     if(event.keyCode == 13) {
       let item = PassFF.BrowserOverlay.getItem(event.target.selectedItem);

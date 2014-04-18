@@ -97,6 +97,11 @@ PassFF.Page = {
 
   getPasswordInputs : function()         {
     let result = new Array();
+    console.debug("[PassFF]", content);
+    console.debug("[PassFF]", content.document);
+    console.debug("[PassFF]", content.document.getElementsByTagName("thisisatest"));
+    console.debug("[PassFF]", content.document.getElementsByTagName("body"));
+    console.debug("[PassFF]", content.document.getElementsByTagName("input"));
     let inputs = content.document.getElementsByTagName("input")
     for (var i = 0; i < inputs.length; i++) { 
       if (PassFF.Page.isPasswordInput(inputs[i])) result.push(inputs[i]);
