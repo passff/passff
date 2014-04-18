@@ -209,6 +209,7 @@ PassFF.BrowserOverlay = {
 
   menuClick : function(event) {
     event.stopPropagation();
+    let item = PassFF.BrowserOverlay.getItem(event.target);
     PassFF.BrowserOverlay.goToItemUrl(item, event.button != 0);
   },
 
