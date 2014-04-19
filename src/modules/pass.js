@@ -146,12 +146,6 @@ PassFF.Pass = {
     });
   },
 
-  findBestFitItem : function(items, url) {
-    let leafs = PassFF.Pass.getItemsLeafs(items);
-    PassFF.Pass._console.info("[PassFF]", "Found best fit items : ", leafs);
-    return leafs.length > 0 ? leafs[0] : null;
-  },
-
   getItemsLeafs : function(items) {
     let leafs = new Array();
     items.forEach(function(item) { leafs = leafs.concat(PassFF.Pass.getItemLeafs(item)); });
