@@ -15,36 +15,39 @@ PassFF.Pass = {
   //_pp : null,
 
   getPasswordData : function(item) {
-    let args = new Array();
-    args.push(item.fullKey());
-    let executionResult = this.executePass(args);
-    while (executionResult.exitCode != 0 && executionResult.stderr.indexOf("gpg: decryption failed: No secret key") >= 0) {
-      let title = PassFF.Pass._stringBundle.GetStringFromName("passff.passphrase.title");
-      let desc = PassFF.Pass._stringBundle.GetStringFromName("passff.passphrase.description");
-      if(!PassFF.Pass._promptService.confirm(null, title, desc)) return;
-      executionResult = PassFF.Pass.executePass(args);
-    }
-    if (executionResult.exitCode != 0) {
-       PassFF.Pass._promptService.alert(null, "Error", executionResult.stderr);
-      return;
-    }
-    let lines = executionResult.stdout.split("\n");
     let result = {};
-    result.password = lines[0];
-    for (let i = 1 ; i < lines.length; i++) {
-      let line = lines[i];
-      let splitPos = line.indexOf(":");
-      if (splitPos >= 0) {
-        let attributeName = line.substring(0, splitPos).toLowerCase();
-        let attributeValue = line.substring(splitPos + 1)
-        result[attributeName] = attributeValue.trim();
+    if (!item.children || item.children.length === 0) { // multiline-style item
+      let args = new Array();
+      args.push(item.fullKey());
+      let executionResult = this.executePass(args);
+      while (executionResult.exitCode != 0 && executionResult.stderr.indexOf("gpg: decryption failed: No secret key") >= 0) {
+        let title = PassFF.Pass._stringBundle.GetStringFromName("passff.passphrase.title");
+        let desc = PassFF.Pass._stringBundle.GetStringFromName("passff.passphrase.description");
+        if(!PassFF.Pass._promptService.confirm(null, title, desc)) return;
+        executionResult = PassFF.Pass.executePass(args);
       }
+      if (executionResult.exitCode != 0) {
+        PassFF.Pass._promptService.alert(null, "Error", executionResult.stderr);
+        return;
+      }
+      let lines = executionResult.stdout.split("\n");
+      result.password = lines[0];
+      for (let i = 1 ; i < lines.length; i++) {
+        let line = lines[i];
+        let splitPos = line.indexOf(":");
+        if (splitPos >= 0) {
+          let attributeName = line.substring(0, splitPos).toLowerCase();
+          let attributeValue = line.substring(splitPos + 1)
+          result[attributeName] = attributeValue.trim();
+        }
+      }
+    } else { // hierarchical-style item
+      item.children.forEach(function(child){
+        if (child.isField()) {
+          result[child.key] = PassFF.Pass.getPasswordData(child).password;
+        }
+      });
     }
-    item.children.forEach(function(child){
-      if (child.isField()) {
-        result[child.key] = PassFF.Pass.getPasswordData(child).password;
-      }
-    });
 
     PassFF.Pass.setLogin(result);
     PassFF.Pass.setPassword(result);
@@ -141,12 +144,6 @@ PassFF.Pass = {
     return this._items.filter(function(item){
       return url.search(new RegExp(item.key,"i")) >= 0;
     });
-  },
-
-  findBestFitItem : function(items, url) {
-    let leafs = PassFF.Pass.getItemsLeafs(items);
-    PassFF.Pass._console.info("[PassFF]", "Found best fit items : ", leafs);
-    return leafs.length > 0 ? leafs[0] : null;
   },
 
   getItemsLeafs : function(items) {

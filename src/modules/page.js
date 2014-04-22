@@ -30,7 +30,7 @@ PassFF.Page = {
 
     PassFF.Page._console.info("[PassFF]", "Start auto-fill")
     let bestFitItem = PassFF.Page.itemToUse;
-    if (!bestFitItem) bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
+    if (!bestFitItem) bestFitItem = matchItems[0];
 
     if(bestFitItem) {
       PassFF.Page.fillInputs(bestFitItem);
