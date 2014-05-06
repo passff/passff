@@ -217,6 +217,7 @@ PassFF.BrowserOverlay = {
     event.stopPropagation();
     let item = PassFF.BrowserOverlay.getItem(event.target);
     PassFF.Page.fillInputs(item);
+    document.getElementById('search-panel').hidePopup();
   },
 
   autoFillAndSubmitMenuClick : function(event) {
@@ -224,6 +225,7 @@ PassFF.BrowserOverlay = {
     let item = PassFF.BrowserOverlay.getItem(event.target);
     PassFF.Page.fillInputs(item);
     PassFF.Page.submit(window.content.location.href);
+    document.getElementById('search-panel').hidePopup();
   },
 
   gotoAutoFillAndSubmitMenuClick : function(event) {
@@ -231,6 +233,7 @@ PassFF.BrowserOverlay = {
     let item = PassFF.BrowserOverlay.getItem(event.target);
     PassFF.Page.itemToUse = item;
     PassFF.BrowserOverlay.goToItemUrl(item, event.button != 0);
+    document.getElementById('search-panel').hidePopup();
   },
 
   goToItemUrl: function(item, newTab) {
