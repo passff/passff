@@ -13,10 +13,10 @@
       <preference id="passff-urlFieldNames-pref" name="extensions.passff.urlFieldNames" type="string" />
       <preference id="passff-command-pref" name="extensions.passff.command" type="string" />
       <preference id="passff-home-pref" name="extensions.passff.home" type="string" />
-      <preference id="passff-gpg_agent_info-pref" name="extensions.passff.gpg_agent_info" type="string" />
-      <preference id="passff-pass_dir-pref" name="extensions.passff.pass_dir" type="string" />
-      <preference id="passff-pass_git-pref" name="extensions.passff.pass_git" type="string" />
-      <preference id="passff-auto_fill-pref" name="extensions.passff.auto_fill" type="bool" />
+      <preference id="passff-gpg_agent_info-pref" name="extensions.passff.gpgAgentInfo" type="string" />
+      <preference id="passff-pass_dir-pref" name="extensions.passff.storeDir" type="string" />
+      <preference id="passff-pass_git-pref" name="extensions.passff.storeGit" type="string" />
+      <preference id="passff-auto_fill-pref" name="extensions.passff.autoFill" type="bool" />
     </preferences>
     <groupbox>
       <caption label="&passff.preferences.page_caption;"/>
