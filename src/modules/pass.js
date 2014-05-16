@@ -1,11 +1,3 @@
-var EXPORTED_SYMBOLS = [];
-
-const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
-
-Cu.import("resource://passff/common.js");
-Cu.import("resource://passff/preferences.js");
-Cu.import("resource://passff/subprocess/subprocess.jsm");
-
 PassFF.Pass = {
   _console : Cu.import("resource://gre/modules/devtools/Console.jsm", {}).console,
   _items : [],
@@ -80,7 +72,7 @@ PassFF.Pass = {
   initItems : function() {
     let result = this.executePass([]);
     if (result.exitCode != 0) return;
- 
+
     let stdout = result.stdout;
     this._rootItems = [];
     this._items = [];

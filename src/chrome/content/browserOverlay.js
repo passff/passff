@@ -1,7 +1,6 @@
 var EXPORTED_SYMBOLS = [];
 
-Cu.import("resource://passff/common.js");
-Cu.import("resource://passff/pass.js");
+const {classes: Cc, interfaces: Ci, utils: Cu} = Components;
 
 /**
 * Controls the browser overlay for the PassFF extension.
@@ -11,6 +10,9 @@ PassFF.BrowserOverlay = {
   _promptService : Cc["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService),
 
   init : function() {
+    Cu.import("resource://passff/common.js");
+    Cu.import("resource://passff/pass.js");
+
     let stringBundleService = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService);
     this._stringBundle = stringBundleService.createBundle("chrome://passff/locale/strings.properties");
 

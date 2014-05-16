@@ -1,43 +1,37 @@
-var EXPORTED_SYMBOLS = [];
-
-Cu.import("resource://passff/common.js");
-Cu.import("resource://passff/preferences.js");
-Cu.import("resource://passff/pass.js");
-
 PassFF.Page = {
-  _console : Cu.import("resource://gre/modules/devtools/Console.jsm", {}).console,
+  //_console : Cu.import("resource://gre/modules/devtools/Console.jsm", {}).console,
   _autoSubmittedUrls : new Array(),
   itemToUse : null,
   init : function() {
-    if(typeof(gBrowser) != "undefined" && gBrowser.tabContainer != undefined) {
-      gBrowser.addEventListener("DOMContentLoaded", this.onPageLoad, false);
-      gBrowser.tabContainer.addEventListener("TabSelect", this.onTabSelect, false);
-    }
+    //if(typeof(gBrowser) != "undefined" && gBrowser.tabContainer != undefined) {
+      //gBrowser.addEventListener("DOMContentLoaded", this.onPageLoad, false);
+      //gBrowser.tabContainer.addEventListener("TabSelect", this.onTabSelect, false);
+    //}
   },
 
-  onPageLoad : function(event) {
-    let doc = event.originalTarget;
-    let win = doc.defaultView;
-    // if (doc.nodeName == "#document") return;
-    if (win != win.top) return;
-    // if (win.frameElement) return;
-    let url = win.location.href
+  //onPageLoad : function(event) {
+    //let doc = event.originalTarget;
+    //let win = doc.defaultView;
+    //// if (doc.nodeName == "#document") return;
+    //if (win != win.top) return;
+    //// if (win.frameElement) return;
+    //let url = win.location.href
 
-    let matchItems = PassFF.Pass.getUrlMatchingItems(url);
-    PassFF.BrowserOverlay.createContextualMenu(matchItems);
+    //let matchItems = PassFF.Pass.getUrlMatchingItems(url);
+    //PassFF.BrowserOverlay.createContextualMenu(matchItems);
 
-    if (!PassFF.Preferences.autoFill || PassFF.Page.getPasswordInputs().length == 0) return;
+    //if (!PassFF.Preferences.autoFill || PassFF.Page.getPasswordInputs().length == 0) return;
 
-    PassFF.Page._console.info("[PassFF]", "Start auto-fill")
-    let bestFitItem = PassFF.Page.itemToUse;
-    if (!bestFitItem) bestFitItem = matchItems[0];
+    //PassFF.Page._console.info("[PassFF]", "Start auto-fill")
+    //let bestFitItem = PassFF.Page.itemToUse;
+    //if (!bestFitItem) bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
 
-    if(bestFitItem) {
-      PassFF.Page.fillInputs(bestFitItem);
-      if (PassFF.Page.itemToUse || PassFF.Pass.getItemsLeafs(matchItems).length == 1) PassFF.Page.submit(url);
-    }
-    PassFF.Page.itemToUse = null;
-  },
+    //if(bestFitItem) {
+      //PassFF.Page.fillInputs(bestFitItem);
+      //if (PassFF.Page.itemToUse || PassFF.Pass.getItemsLeafs(matchItems).length == 1) PassFF.Page.submit(url);
+    //}
+    //PassFF.Page.itemToUse = null;
+  //},
 
   fillInputs : function(item) {
     PassFF.Page._console.debug("[PassFF]", "Fill inputs")
@@ -75,10 +69,11 @@ PassFF.Page = {
     }
   },
 
-  onTabSelect : function(event) {
-    let matchItems  = PassFF.Pass.getUrlMatchingItems(gBrowser.contentDocument.location.href);
-    PassFF.BrowserOverlay.createContextualMenu(matchItems);
-  },
+  //onTabSelect : function(event) {
+    //let window = Services.wm.getMostRecentWindow("navigator:browser");
+    //let matchItems  = PassFF.Pass.getUrlMatchingItems(window.gBrowser.content.location.href);
+    //PassFF.BrowserOverlay.createContextualMenu(matchItems);
+  //},
 
   setLoginInputs    : function(login)    { PassFF.Page.getLoginInputs().forEach(function(loginInput) { loginInput.value = login; }); },
   setPasswordInputs : function(password) { PassFF.Page.getPasswordInputs().forEach(function(passwordInput) { passwordInput.value = password; }); },
@@ -141,7 +136,3 @@ PassFF.Page = {
     return index >= 0;
   }
 };
-window.addEventListener("load", function load(event){
-    window.removeEventListener("load", load, false); //remove listener, no longer needed
-    (function() { this.init() }).apply(PassFF.Page);
-},false);

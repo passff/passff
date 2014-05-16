@@ -1,0 +1,2 @@
+# The sources for the module files.
+includes_sources := $(wildcard $(includes_dir)/*.js)
