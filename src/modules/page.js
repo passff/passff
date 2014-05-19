@@ -33,39 +33,39 @@ PassFF.Page = {
     //PassFF.Page.itemToUse = null;
   //},
 
-  fillInputs : function(item) {
-    PassFF.Page._console.debug("[PassFF]", "Fill inputs")
+  fillInputs : function(doc, item) {
+    console.debug("[PassFF]", "Fill inputs", item)
     let passwordData = PassFF.Pass.getPasswordData(item);
     if (passwordData) {
-      PassFF.Page.setLoginInputs(passwordData.login);
-      PassFF.Page.setPasswordInputs(passwordData.password);
+      PassFF.Page.setLoginInputs(doc, passwordData.login);
+      PassFF.Page.setPasswordInputs(doc, passwordData.password);
     }
   },
 
   submit : function(url) {
     if (!PassFF.Page.removeFromArray(PassFF.Page._autoSubmittedUrls, url)) {
 
-      PassFF.Page._console.debug("[PassFF]", "Url never submit. Submit it", url);
+      console.debug("[PassFF]", "Url never submit. Submit it", url);
       let passwords = PassFF.Page.getPasswordInputs();
       if (PassFF.Preferences.autoFill &&passwords.length > 0) {
         let form = PassFF.Page.searchParentForm(passwords[0]);
         if (form) {
-          PassFF.Page._console.debug("[PassFF]", "Found form to submit", form);
+          console.debug("[PassFF]", "Found form to submit", form);
           PassFF.Page._autoSubmittedUrls.push(url);
           let submitBtn = PassFF.Page.getSubmitButton(form);
           if (submitBtn) {
-            PassFF.Page._console.info("[PassFF]", "Click submit button");
+            console.info("[PassFF]", "Click submit button");
             submitBtn.click();
           } else {
-            PassFF.Page._console.info("[PassFF]", "Submit form");
+            console.info("[PassFF]", "Submit form");
             form.submit();
           }
         } else {
-          PassFF.Page._console.debug("[PassFF]", "No form found to submit");
+          console.debug("[PassFF]", "No form found to submit");
         }
       }
     } else {
-      PassFF.Page._console.info("[PassFF]", "Url already submit. skip it");
+      console.info("[PassFF]", "Url already submit. skip it");
     }
   },
 
@@ -75,34 +75,29 @@ PassFF.Page = {
     //PassFF.BrowserOverlay.createContextualMenu(matchItems);
   //},
 
-  setLoginInputs    : function(login)    { PassFF.Page.getLoginInputs().forEach(function(loginInput) { loginInput.value = login; }); },
-  setPasswordInputs : function(password) { PassFF.Page.getPasswordInputs().forEach(function(passwordInput) { passwordInput.value = password; }); },
-  isPasswordInput   : function(input)    { return input.type == "password" || (input.type == "text" && PassFF.Page.hasGoodName(input.name, PassFF.Preferences.passwordInputNames)); },
-  isLoginInput      : function(input)    { return (input.type == "text" || input.type == "email") && PassFF.Page.hasGoodName(input.name, PassFF.Preferences.loginInputNames); },
+  setLoginInputs    : function(doc, login)    { PassFF.Page.getLoginInputs(doc).forEach(function(loginInput) { loginInput.value = login; }); },
+  setPasswordInputs : function(doc, password) { PassFF.Page.getPasswordInputs(doc).forEach(function(passwordInput) { passwordInput.value = password; }); },
+  isPasswordInput   : function(input)         { return input.type == "password" || (input.type == "text" && PassFF.Page.hasGoodName(input.name, PassFF.Preferences.passwordInputNames)); },
+  isLoginInput      : function(input)         { return (input.type == "text" || input.type == "email") && PassFF.Page.hasGoodName(input.name, PassFF.Preferences.loginInputNames); },
 
-  getLoginInputs    : function()         {
+  getLoginInputs    : function(document)         {
     let result = new Array();
-    let inputs = content.document.getElementsByTagName("input")
+    let inputs = document.getElementsByTagName("input")
     for (var i = 0; i < inputs.length; i++) { 
       if (PassFF.Page.isLoginInput(inputs[i])) result.push(inputs[i]);
     }
     return result;
-    //return Array.prototype.slice.call(content.document.getElementsByTagName("input")).filter(PassFF.Page.isLoginInput);
+    //return Array.prototype.slice.call(document.getElementsByTagName("input")).filter(PassFF.Page.isLoginInput);
   },
 
-  getPasswordInputs : function()         {
+  getPasswordInputs : function(document)         {
     let result = new Array();
-    console.debug("[PassFF]", content);
-    console.debug("[PassFF]", content.document);
-    console.debug("[PassFF]", content.document.getElementsByTagName("thisisatest"));
-    console.debug("[PassFF]", content.document.getElementsByTagName("body"));
-    console.debug("[PassFF]", content.document.getElementsByTagName("input"));
-    let inputs = content.document.getElementsByTagName("input")
+    let inputs = document.getElementsByTagName("input")
     for (var i = 0; i < inputs.length; i++) { 
       if (PassFF.Page.isPasswordInput(inputs[i])) result.push(inputs[i]);
     }
     return result;
-  //return Array.prototype.slice.call(content.document.getElementsByTagName("input")).filter(PassFF.Page.isPasswordInput);
+  //return Array.prototype.slice.call(content.getElementsByTagName("input")).filter(PassFF.Page.isPasswordInput);
   },
 
   getSubmitButton : function(form) {

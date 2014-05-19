@@ -12,24 +12,24 @@ PassFF.Menu = {
             //this.createMenu();
     },
 
-    installButton : function(toolbarId, id, afterId) {
-        if (!document.getElementById(id)) {
-            let toolbar = document.getElementById(toolbarId);
+    //installButton : function(toolbarId, id, afterId) {
+        //if (!document.getElementById(id)) {
+            //let toolbar = document.getElementById(toolbarId);
 
-            // If no afterId is given, then append the item to the toolbar
-            let before = null;
-            if (afterId) {
-                let elem = document.getElementById(afterId);
-                if (elem && elem.parentNode == toolbar) before = elem.nextElementSibling;
-            }
+            //// If no afterId is given, then append the item to the toolbar
+            //let before = null;
+            //if (afterId) {
+                //let elem = document.getElementById(afterId);
+                //if (elem && elem.parentNode == toolbar) before = elem.nextElementSibling;
+            //}
 
-            toolbar.insertItem(id, before);
-            toolbar.setAttribute("currentset", toolbar.currentSet);
-            document.persist(toolbar.id, "currentset")
+            //toolbar.insertItem(id, before);
+            //toolbar.setAttribute("currentset", toolbar.currentSet);
+            //document.persist(toolbar.id, "currentset")
 
-            if (toolbarId == "addon-bar") toolbar.collapsed = false;
-        }
-    },
+            //if (toolbarId == "addon-bar") toolbar.collapsed = false;
+        //}
+    //},
 
     createStaticMenu : function(doc) {
         let panel = doc.createElement("panelview");
@@ -43,33 +43,153 @@ PassFF.Menu = {
         searchtextbox.setAttribute("id", "search");
 
 
+        //menus container
         let menubar = doc.createElement("menubar");
         menubar.setAttribute("orient", "vertical");
         menubar.setAttribute("id", "menu");
 
+        //option menu
         let optionmenu = doc.createElement("menu")
         optionmenu.setAttribute("id", "options-menu");
         optionmenu.setAttribute("label", "Options");
-
         let menupopup = doc.createElement("menupopup");
         menupopup.setAttribute("id", "options-menu-popup");
-
         let refreshitem = doc.createElement("menuitem");
         refreshitem.setAttribute("label", "Refresh");
-
         let prefsitem = doc.createElement("menuitem");
         prefsitem.setAttribute("label", "Preferences");
 
+        //Tree menu
         let treemenu = doc.createElement("menu");
         treemenu.setAttribute("id", "tree-menu");
         treemenu.setAttribute("label", "Tree");
-
         let passffmenupopup = doc.createElement("menupopup");
         passffmenupopup.setAttribute("id", "passff-menu");
 
-        let contextmenu = doc.createElement("menu");
+        let contextmenu = doc.createElement("menubar");
         contextmenu.setAttribute("id", "contextual-menu");
         contextmenu.setAttribute("orient", "vertical");
+
+        let separator = doc.createElement("menuseparator");
+        separator.setAttribute("id", "menu-separator");
+        
+
+        //let tree = doc.createElement("tree");
+        //tree.setAttribute("id", "testTree")
+        //tree.setAttribute("flex", 1)
+        //let treecols = doc.createElement("treecols");
+        //let treecol1 = doc.createElement("treecol");
+        //treecol1.setAttribute("id", "element");
+        //treecol1.setAttribute("label", "Element");
+        //treecol1.setAttribute("primary", "true");
+        //treecol1.setAttribute("flex", 1);
+        //treecols.appendChild(treecol1);
+        //let treecol2 = doc.createElement("treecol");
+        //treecol2.setAttribute("flex", 2);
+        //treecol2.setAttribute("id", "subject");
+        //treecol2.setAttribute("label", "Subject");
+        //treecols.appendChild(treecol2);
+        //tree.appendChild(treecols);
+        //let treechildren = doc.createElement("treechildren");
+        //let treeitem1 = doc.createElement("treeitem");
+        //let treerow1 = doc.createElement("treerow");
+        //let treecell1 = doc.createElement("treecell");
+        //treecell1.setAttribute("label", "toto")
+        //treerow1.appendChild(treecell1);
+        //let treecell2 = doc.createElement("treecell");
+        //treecell2.setAttribute("label", "toto")
+        //treerow1.appendChild(treecell2);
+        //treeitem1.appendChild(treerow1);
+        //treechildren.appendChild(treeitem1)
+        //tree.appendChild(treechildren);
+        //tree.view = {
+            //childData : {
+                //Solids: ["Silver", "Gold", "Lead"],
+                //Liquids: ["Mercury"],
+                //Gases: ["Helium", "Nitrogen"]
+            //},
+
+            //visibleData : [
+                //["Solids", true, false],
+                //["Liquids", true, false],
+                //["Gases", true, false]
+            //],
+
+            //treeBox: null,
+            //selection: null,
+
+            //get rowCount()                     { return this.visibleData.length; },
+            //setTree: function(treeBox)         { this.treeBox = treeBox; },
+            //getCellText: function(idx, column) { return this.visibleData[idx][0]; },
+            //isContainer: function(idx)         { return this.visibleData[idx][1]; },
+            //isContainerOpen: function(idx)     { return this.visibleData[idx][2]; },
+            //isContainerEmpty: function(idx)    { return false; },
+            //isSeparator: function(idx)         { return false; },
+            //isSorted: function()               { return false; },
+            //isEditable: function(idx, column)  { return false; },
+
+            //getParentIndex: function(idx) {
+                //if (this.isContainer(idx)) return -1;
+                //for (var t = idx - 1; t >= 0 ; t--) {
+                    //if (this.isContainer(t)) return t;
+                //}
+            //},
+            //getLevel: function(idx) {
+                //if (this.isContainer(idx)) return 0;
+                //return 1;
+            //},
+            //hasNextSibling: function(idx, after) {
+                //var thisLevel = this.getLevel(idx);
+                //for (var t = after + 1; t < this.visibleData.length; t++) {
+                    //var nextLevel = this.getLevel(t);
+                    //if (nextLevel == thisLevel) return true;
+                    //if (nextLevel < thisLevel) break;
+                //}
+                //return false;
+            //},
+            //toggleOpenState: function(idx) {
+                //var item = this.visibleData[idx];
+                //if (!item[1]) return;
+
+                //if (item[2]) {
+                    //item[2] = false;
+
+                    //var thisLevel = this.getLevel(idx);
+                    //var deletecount = 0;
+                    //for (var t = idx + 1; t < this.visibleData.length; t++) {
+                        //if (this.getLevel(t) > thisLevel) deletecount++;
+                        //else break;
+                    //}
+                    //if (deletecount) {
+                        //this.visibleData.splice(idx + 1, deletecount);
+                        //this.treeBox.rowCountChanged(idx + 1, -deletecount);
+                    //}
+                //}
+                //else {
+                    //item[2] = true;
+
+                    //var label = this.visibleData[idx][0];
+                    //var toinsert = this.childData[label];
+                    //for (var i = 0; i < toinsert.length; i++) {
+                        //this.visibleData.splice(idx + i + 1, 0, [toinsert[i], false]);
+                    //}
+                    //this.treeBox.rowCountChanged(idx + 1, toinsert.length);
+                //}
+                //this.treeBox.invalidateRow(idx);
+            //},
+
+            //getImageSrc: function(idx, column) {},
+            //getProgressMode : function(idx,column) {},
+            //getCellValue: function(idx, column) {},
+            //cycleHeader: function(col, elem) {},
+            //selectionChanged: function() {},
+            //cycleCell: function(idx, column) {},
+            //performAction: function(action) {},
+            //performActionOnCell: function(action, index, column) {},
+            //getRowProperties: function(idx, prop) {},
+            //getCellProperties: function(idx, column, prop) {},
+            //getColumnProperties: function(column, element, prop) {},
+        //}
 
         menupopup.appendChild(refreshitem);
         menupopup.appendChild(prefsitem);
@@ -77,10 +197,12 @@ PassFF.Menu = {
         treemenu.appendChild(passffmenupopup);
         menubar.appendChild(optionmenu);
         menubar.appendChild(treemenu);
+        menubar.appendChild(separator);
         menubar.appendChild(contextmenu);
         panel.appendChild(searchlabel);
         panel.appendChild(searchtextbox);
         panel.appendChild(menubar);
+        //panel.appendChild(tree);
 
         //let iframe = doc.createElement("iframe");
         //iframe.setAttribute("id", "passff-iframe");
@@ -98,13 +220,9 @@ PassFF.Menu = {
 
             for (let i = 0 ; i < PassFF.Pass.rootItems.length ; i++) {
                 let root = PassFF.Pass.rootItems[i];
-                let rootMenu= this.createMenuInternal(document, root, root.key);
+                let rootMenu = this.createMenuInternal(document, root, root.key);
                 if (rootMenu) menuPopup.appendChild(rootMenu);
             }
-
-            let separator = document.createElement("menuseparator");
-            separator.setAttribute("id", "menu-separator");
-            menuPopup.appendChild(separator);
 
         }
     },
@@ -199,9 +317,7 @@ PassFF.Menu = {
         menu.addEventListener("click", PassFF.Menu.menuClick);
         let menuPopupDyn = document.createElement("menupopup");
         if (!item.isLeaf()) {
-            if (item.hasFields()) {
-                PassFF.Menu.createCommandMenu(document, menuPopupDyn)
-            }
+            if (item.hasFields()) PassFF.Menu.createCommandMenu(document, menuPopupDyn)
             for (let i = 0 ; i < item.children.length ; i++) {
                 let newMenu = this.createMenuInternal(document, item.children[i], item.children[i].key)
                 if (newMenu) menuPopupDyn.appendChild(newMenu);
@@ -212,10 +328,6 @@ PassFF.Menu = {
 
         menu.appendChild(menuPopupDyn);
         return menu;
-    },
-
-    createMenuPopup: function(attribute) {
-
     },
 
     createCommandMenu: function(document, menuPopupDyn) {
