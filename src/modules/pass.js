@@ -1,5 +1,4 @@
 PassFF.Pass = {
-  _console : Cu.import("resource://gre/modules/devtools/Console.jsm", {}).console,
   _items : [],
   _rootItems : [],
   _promptService : Cc["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService),
@@ -20,6 +19,7 @@ PassFF.Pass = {
        PassFF.Pass._promptService.alert(null, "Error", executionResult.stderr);
       return;
     }
+
     let lines = executionResult.stdout.split("\n");
     let result = {};
     result.password = lines[0];
@@ -66,6 +66,9 @@ PassFF.Pass = {
     return PassFF.Preferences.passwordFieldNames.indexOf(name) >= 0;
   },
 
+  isUrlField: function(name) {
+    return PassFF.Preferences.urlFieldNames.indexOf(name) >= 0;
+  },
   initItems : function() {
     let result = this.executePass([]);
     if (result.exitCode != 0) return;
@@ -73,7 +76,7 @@ PassFF.Pass = {
     let stdout = result.stdout;
     this._rootItems = [];
     this._items = [];
-    this._console.debug("[PassFF]", stdout);
+    console.debug("[PassFF]", stdout);
     let lines = stdout.split("\n");
     let re = /(.*[|`])+-- (.*)/;
     let curParent = null;
@@ -92,7 +95,7 @@ PassFF.Pass = {
           parent : curParent,
           isLeaf : function() { return this.children.length == 0;},
           hasFields : function() { return this.children.some(function(element) { return element.isField(); }); },
-          isField: function() { return this.isLeaf() && (PassFF.Pass.isLoginField(this.key) || PassFF.Pass.isPasswordField(this.key)); },
+          isField: function() { return this.isLeaf() && (PassFF.Pass.isLoginField(this.key) || PassFF.Pass.isPasswordField(this.key) || PassFF.Pass.isUrlField(this.key)); },
           fullKey : function() {
             let fullKey = this.key;
             let loopParent = this.parent;
@@ -109,7 +112,7 @@ PassFF.Pass = {
         if (item.depth == 0) this._rootItems.push(item);
       }
     }
-    this._console.debug("[PassFF]", "Found Items", this._rootItems);
+    console.debug("[PassFF]", "Found Items", this._rootItems);
   },
 
   getMatchingItems : function(search, limit) {
@@ -131,13 +134,13 @@ PassFF.Pass = {
 
   getUrlMatchingItems : function(url) {
     return this._items.filter(function(item){
-      return url.search(new RegExp(item.key,"i")) >= 0;
+      return !item.isField() && url.search(new RegExp(item.key,"i")) >= 0;
     });
   },
 
   findBestFitItem : function(items, url) {
     let leafs = PassFF.Pass.getItemsLeafs(items);
-    PassFF.Pass._console.info("[PassFF]", "Found best fit items : ", leafs);
+    console.info("[PassFF]", "Found best fit items : ", leafs);
     return leafs.length > 0 ? leafs[0] : null;
   },
 
@@ -172,13 +175,13 @@ PassFF.Pass = {
       mergeStderr : false,
       done        : function(data) { result = data }
     }
-    PassFF.Pass._console.debug("[PassFF]", "Execute pass", params);
+    console.debug("[PassFF]", "Execute pass", params);
     let p = subprocess.call(params);
     p.wait();
     if (result.exitCode != 0) {
-      PassFF.Pass._console.warn("[PassFF]", result.stderr, result.stdout);
+      console.warn("[PassFF]", result.stderr, result.stdout);
     } else {
-      PassFF.Pass._console.info("[PassFF]", "pass script execution ok");
+      console.info("[PassFF]", "pass script execution ok");
     }
     return result;
   },
