@@ -6,9 +6,6 @@ PassFF.Menu = {
     _promptService : Cc["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService),
 
     init : function() {
-        let stringBundleService = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService);
-        this._stringBundle = stringBundleService.createBundle("chrome://passff/locale/strings.properties");
-
             //this.createMenu();
     },
 
@@ -36,11 +33,12 @@ PassFF.Menu = {
         panel.setAttribute("id", "passff-panel");
 
         let searchlabel = doc.createElement("label");
-        searchlabel.setAttribute("control", "search");
-        searchlabel.setAttribute("value", "Search :");
+        searchlabel.setAttribute("control", "pass-search-box");
+        searchlabel.setAttribute("value", PassFF.gsfm("passff.toolbar.search.label"));
 
         let searchtextbox = doc.createElement("textbox");
-        searchtextbox.setAttribute("id", "search");
+        searchtextbox.setAttribute("id", "pass-search-box");
+        searchtextbox.setAttribute("clickSelectsAll", "true");
 
 
         //menus container
@@ -51,18 +49,18 @@ PassFF.Menu = {
         //option menu
         let optionmenu = doc.createElement("menu")
         optionmenu.setAttribute("id", "options-menu");
-        optionmenu.setAttribute("label", "Options");
+        optionmenu.setAttribute("label", PassFF.gsfm("passff.toolbar.options.label"));
         let menupopup = doc.createElement("menupopup");
         menupopup.setAttribute("id", "options-menu-popup");
         let refreshitem = doc.createElement("menuitem");
-        refreshitem.setAttribute("label", "Refresh");
+        refreshitem.setAttribute("label", PassFF.gsfm("passff.toolbar.refresh.label"));
         let prefsitem = doc.createElement("menuitem");
-        prefsitem.setAttribute("label", "Preferences");
+        prefsitem.setAttribute("label", PassFF.gsfm("passff.toolbar.preferences.label"));
 
         //Tree menu
         let treemenu = doc.createElement("menu");
         treemenu.setAttribute("id", "tree-menu");
-        treemenu.setAttribute("label", "Tree");
+        treemenu.setAttribute("label", PassFF.gsfm("passff.toolbar.passwords.label"));
         let passffmenupopup = doc.createElement("menupopup");
         passffmenupopup.setAttribute("id", "passff-menu");
 
@@ -286,7 +284,7 @@ PassFF.Menu = {
         });
     },
 
-    openSearchPanel : function() {
+    /*openSearchPanel : function() {
         let searchPanel = document.getElementById('search-panel');
         searchPanel.openPopup(document.getElementById('passff-button'), 'after_start', 0, 0, false, false);
     },
@@ -296,7 +294,7 @@ PassFF.Menu = {
         let inputText = searchPanel.getElementsByAttribute('id', 'search')[0]
         inputText.focus();
         inputText.setSelectionRange(0, inputText.value.length)
-    },
+    },*/
 
     openPreferences : function() {
         if (null == this._preferencesWindow || this._preferencesWindow.closed) {
@@ -331,12 +329,12 @@ PassFF.Menu = {
     },
 
     createCommandMenu: function(document, menuPopupDyn) {
-        let passwordLabel = this._stringBundle.GetStringFromName("passff.menu.copy_password");
-        let loginLabel = this._stringBundle.GetStringFromName("passff.menu.copy_login");
-        let fillLabel = this._stringBundle.GetStringFromName("passff.menu.fill");
-        let fillAndSubmitLabel = this._stringBundle.GetStringFromName("passff.menu.fill_and_submit");
-        let gotoFillAndSubmitLabel = this._stringBundle.GetStringFromName("passff.menu.goto_fill_and_submit");
-        let displayLabel = this._stringBundle.GetStringFromName("passff.menu.display");
+        let passwordLabel = PassFF.gsfm("passff.menu.copy_password");
+        let loginLabel = PassFF.gsfm("passff.menu.copy_login");
+        let fillLabel = PassFF.gsfm("passff.menu.fill");
+        let fillAndSubmitLabel = PassFF.gsfm("passff.menu.fill_and_submit");
+        let gotoFillAndSubmitLabel = PassFF.gsfm("passff.menu.goto_fill_and_submit");
+        let displayLabel = PassFF.gsfm("passff.menu.display");
 
         menuPopupDyn.appendChild(this.createSubmenu(document, fillLabel, "fill", PassFF.Menu.autoFillMenuClick));
         menuPopupDyn.appendChild(this.createSubmenu(document, fillAndSubmitLabel, "fill_and_submit", PassFF.Menu.autoFillAndSubmitMenuClick));

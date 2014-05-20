@@ -1,8 +1,0 @@
-<!ENTITY passff.toolbar.button.label      "PassFF button">
-<!ENTITY passff.toolbar.button.tooltip    "zx2c4 pass manager button">
-<!ENTITY passff.toolbar.search.label      "Search :">
-<!ENTITY passff.toolbar.search.tooltip    "Fuzzy case sensitive search">
-<!ENTITY passff.toolbar.options.label      "Options">
-<!ENTITY passff.toolbar.refresh.label      "Refresh">
-<!ENTITY passff.toolbar.passwords.label      "Passwords store">
-<!ENTITY passff.toolbar.preferences.label      "Preferences">
