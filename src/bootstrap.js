@@ -30,28 +30,37 @@ function uninstall(aData, aReason) {}
 
 function startup({id}) AddonManager.getAddonByID(id, function(addon) {
     Cu.import("chrome://passff/content/subprocess.jsm");
-        // Load various javascript includes for helper functions
-        ["common", "preferences", "pass", "menu", "page"].forEach(function(fileName) {
-            let fileURI = addon.getResourceURI("modules/" + fileName + ".js");
-            Services.scriptloader.loadSubScript(fileURI.spec, global);
-        });
-        PassFF.Preferences._init();
-        PassFF.Pass.init();
-        PassFF.Menu.init();
-        PassFF.Page.init();
-        PassFF.init();
+    // Load various javascript includes for helper functions
+    ["common", "preferences", "pass", "menu", "page"].forEach(function(fileName) {
+        let fileURI = addon.getResourceURI("modules/" + fileName + ".js");
+        Services.scriptloader.loadSubScript(fileURI.spec, global);
+    });
+    let stringBundleService = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService);
+    PassFF.stringBundle = stringBundleService.createBundle("chrome://passff/locale/strings.properties");
+
+    PassFF.Preferences._init();
+    PassFF.Pass.init();
+    PassFF.Menu.init();
+    PassFF.Page.init();
+    PassFF.init();
 });
 
 function shutdown(aData, aReason) { PassFF.uninit(); }
 
 let PassFF = {
+    stringBufferService : null,
     _timers : [],
+
+    gsfm : function(key) {
+        return PassFF.stringBundle.GetStringFromName(key);
+    },
 
     init : function() {
         let enumerator = Services.wm.getEnumerator("navigator:browser");
         while (enumerator.hasMoreElements()) {
             this.windowListener.addUI(enumerator.getNext());
         }
+
 
         Services.wm.addListener(this.windowListener);
 
@@ -61,11 +70,11 @@ let PassFF = {
             type : "view",
             viewId : "passff-panel",
             defaultArea : CustomizableUI.AREA_NAVBAR,
-            label : "PassFF",
-            tooltiptext : "Hello!",
+            label : PassFF.gsfm("passff.toolbar.button.label"),
+            tooltiptext : PassFF.gsfm("passff.toolbar.button.tooltip"),
             onViewShowing : function (aEvent) {
                 let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-                timer.initWithCallback( { notify : function() { PassFF.showAudioPanel(aEvent.target.ownerDocument); } }, 100, Ci.nsITimer.TYPE_ONE_SHOT);
+                timer.initWithCallback( { notify : function() { PassFF.showPassFFPanel(aEvent.target.ownerDocument); } }, 100, Ci.nsITimer.TYPE_ONE_SHOT);
                 PassFF._timers.push(timer);
             },
             onViewHiding : function (aEvent) {
@@ -74,7 +83,9 @@ let PassFF = {
         });
     },
 
-    showAudioPanel : function(aDocument) { },
+    showPassFFPanel : function(aDocument) {
+     aDocument.getElementById("pass-search-box").focus();
+    },
 
     uninit : function() {
         CustomizableUI.destroyWidget("passff-button");
@@ -91,7 +102,7 @@ let PassFF = {
         * Adds the panel view for the button on all windows.
         */
         addUI : function(aWindow) {
-            console.debug("[PassFF]", "Add panel to", aWindow);
+            console.debug("[PassFF]", "Add panel to new window");
             let doc = aWindow.document;
             let menuPanel = PassFF.Menu.createStaticMenu(doc);
             doc.getElementById("PanelUI-multiView").appendChild(menuPanel);
