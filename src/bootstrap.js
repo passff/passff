@@ -146,13 +146,6 @@ let PassFF = {
             if (doc.nodeName == "#document" && win == win.top) {
                 console.debug("[PassFF]", "Content loaded", event, PassFF.Preferences.autoFill, PassFF.Page.getPasswordInputs(doc).length);
 
-                let mainWindow = win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-                                   .getInterface(Components.interfaces.nsIWebNavigation)
-                                   .QueryInterface(Components.interfaces.nsIDocShellTreeItem)
-                                   .rootTreeItem
-                                   .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-                                   .getInterface(Components.interfaces.nsIDOMWindow);
-
                 if (PassFF.Preferences.autoFill && PassFF.Page.getPasswordInputs(doc).length > 0) {
                     let url = win.location.href
                     let matchItems = PassFF.Pass.getUrlMatchingItems(url);
