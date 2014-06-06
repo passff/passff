@@ -65,7 +65,7 @@ PassFF.Menu = {
         passffmenupopup.setAttribute("id", "passff-menu");
 
         let contextmenu = doc.createElement("menubar");
-        contextmenu.setAttribute("id", "contextual-menu");
+        contextmenu.setAttribute("id", "passff-contextual-menu");
         contextmenu.setAttribute("orient", "vertical");
 
         let separator = doc.createElement("menuseparator");
@@ -312,7 +312,7 @@ PassFF.Menu = {
         menu.item = item
         menu.setAttribute("label", label);
         //menu.setAttribute("oncommand","PassFF.Menu.goToItemUrl(event)");
-        menu.addEventListener("click", PassFF.Menu.menuClick);
+        //menu.addEventListener("click", PassFF.Menu.menuClick);
         let menuPopupDyn = document.createElement("menupopup");
         if (!item.isLeaf()) {
             if (item.hasFields()) PassFF.Menu.createCommandMenu(document, menuPopupDyn)
@@ -344,13 +344,13 @@ PassFF.Menu = {
         menuPopupDyn.appendChild(this.createSubmenu(document, displayLabel, "display", PassFF.Menu.display));
     },
 
-    refresh : function(document) {
-        (function() { PassFF.Preferences._init(); }).apply(PassFF.Preferences);
-        (function() { PassFF.Pass.init(); }).apply(PassFF.Pass);
-        PassFF.Menu.createMenu(document);
-        let window = Services.wm.getMostRecentWindow("navigator:browser");
-        PassFF.Menu.createContextualMenu(window);
-    },
+    //refresh : function(document) {
+        //(function() { PassFF.Preferences._init(); }).apply(PassFF.Preferences);
+        //(function() { PassFF.Pass.init(); }).apply(PassFF.Pass);
+        //PassFF.Menu.createMenu(document);
+        //let window = Services.wm.getMostRecentWindow("navigator:browser");
+        //PassFF.Menu.createContextualMenu(window);
+    //},
 
     createSubmenu : function(document, label, attribute, action) {
         let submenu = document.createElement("menuitem");
@@ -361,10 +361,11 @@ PassFF.Menu = {
         return submenu;
     },
 
-    menuClick : function(event) {
-        event.stopPropagation();
-        PassFF.Menu.goToItemUrl(item, event.button != 0);
-    },
+    //menuClick : function(event) {
+        //event.stopPropagation();
+        //let item = PassFF.Menu.getItem(event.target);
+        //PassFF.Menu.goToItemUrl(item, event.button != 0);
+    //},
 
     autoFillMenuClick : function(event) {
         event.stopPropagation();
@@ -374,10 +375,10 @@ PassFF.Menu = {
 
     autoFillAndSubmitMenuClick : function(event) {
         event.stopPropagation();
+        let doc = event.target.ownerDocument
         let item = PassFF.Menu.getItem(event.target);
-        PassFF.Page.fillInputs(item);
-        let window = Services.wm.getMostRecentWindow("navigator:browser");
-        PassFF.Page.submit(window.content.location.href);
+        PassFF.Page.fillInputs(doc, item);
+        PassFF.Page.submit(doc, event.target.ownerGlobal.content.location.href);
     },
 
     gotoAutoFillAndSubmitMenuClick : function(event) {
@@ -430,13 +431,13 @@ PassFF.Menu = {
 
     getItem : function(menuItem) {
         while (menuItem && menuItem.item == undefined) menuItem = menuItem.parentNode;
-
         return menuItem ? menuItem.item : null;
     },
 
     createContextualMenu : function(aWindow) {
+        console.debug("[PassFF]", "createContextualMenu", aWindow.content.location.href);
         let document = aWindow.document;
-        let contextualMenu = document.getElementById("contextual-menu")
+        let contextualMenu = document.getElementById("passff-contextual-menu")
 
         while (contextualMenu.hasChildNodes()) {
             contextualMenu.removeChild(contextualMenu.lastChild);

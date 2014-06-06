@@ -31,7 +31,7 @@
             <menupopup id="passff-menu"/>
           </menu>
           <menuseparator/>
-          <menubar id="contextual-menu" orient="vertical"/>
+          <menubar id="passff-contextual-menu" orient="vertical"/>
         </menubar>
       </panel>
     </toolbarbutton>
