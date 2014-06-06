@@ -114,6 +114,7 @@ let PassFF = {
             PassFF.Menu.createContextualMenu(aWindow);
 
             aWindow.gBrowser.addEventListener('load', this.webPageLoaded, true);
+            aWindow.gBrowser.addTabsProgressListener(this);
             aWindow.gBrowser.tabContainer.addEventListener("TabSelect", this.tabSelect, false);
         },
 
@@ -124,12 +125,18 @@ let PassFF = {
             let doc = aWindow.document;
             let panel = doc.getElementById("passff-panel");
 
-            panel.parentNode.removeChild(panel);
+            if (panel) panel.parentNode.removeChild(panel);
 
             aWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowUtils).removeSheet(this._uri, 1);
 
             aWindow.gBrowser.removeEventListener("load", this.webPageLoaded, true);
+            aWindow.gBrowser.removeTabsProgressListener(this);
             aWindow.gBrowser.tabContainer.removeEventListener("TabSelect", this.tabSelect, false);
+        },
+
+        onLocationChange: function(aBrowser, aWebProgress, aRequest, aLocation) {
+            console.debug("[PassFF]", "Location changed", aBrowser.ownerGlobal.content.location.href)
+            PassFF.Menu.createContextualMenu(aBrowser.ownerGlobal);
         },
 
         webPageLoaded : function(event) {
@@ -137,21 +144,29 @@ let PassFF = {
             let doc = event.originalTarget; // doc is document that triggered the event
             let win = doc.defaultView;
             if (doc.nodeName == "#document" && win == win.top) {
-                console.debug("[PassFF]", "Content loaded", event.target);
+                console.debug("[PassFF]", "Content loaded", event, PassFF.Preferences.autoFill, PassFF.Page.getPasswordInputs(doc).length);
 
-                if (!PassFF.Preferences.autoFill || PassFF.Page.getPasswordInputs(doc).length == 0) return;
+                let mainWindow = win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                                   .getInterface(Components.interfaces.nsIWebNavigation)
+                                   .QueryInterface(Components.interfaces.nsIDocShellTreeItem)
+                                   .rootTreeItem
+                                   .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                                   .getInterface(Components.interfaces.nsIDOMWindow);
 
-                let url = win.location.href
-                let matchItems = PassFF.Pass.getUrlMatchingItems(url);
+                if (PassFF.Preferences.autoFill && PassFF.Page.getPasswordInputs(doc).length > 0) {
+                    let url = win.location.href
+                    let matchItems = PassFF.Pass.getUrlMatchingItems(url);
 
-                console.info("[PassFF]", "Start auto-fill")
-                let bestFitItem = PassFF.Page.itemToUse;
-                if (!bestFitItem) bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
+                    console.info("[PassFF]", "Start auto-fill")
+                    let bestFitItem = PassFF.Page.itemToUse;
+                    if (!bestFitItem) bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
 
-                if(bestFitItem) {
-                    PassFF.Page.fillInputs(doc, bestFitItem);
-                    if (PassFF.Page.itemToUse || PassFF.Pass.getItemsLeafs(matchItems).length == 1) PassFF.Page.submit(url);
+                    if(bestFitItem) {
+                        PassFF.Page.fillInputs(doc, bestFitItem);
+                        if (PassFF.Page.itemToUse || PassFF.Pass.getItemsLeafs(matchItems).length == 1) PassFF.Page.submit(doc, url);
+                    }
                 }
+
                 PassFF.Page.itemToUse = null;
             }
         },

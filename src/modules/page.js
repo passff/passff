@@ -42,12 +42,15 @@ PassFF.Page = {
     }
   },
 
-  submit : function(url) {
+  submit : function(doc, url) {
     if (!PassFF.Page.removeFromArray(PassFF.Page._autoSubmittedUrls, url)) {
 
       console.debug("[PassFF]", "Url never submit. Submit it", url);
-      let passwords = PassFF.Page.getPasswordInputs();
-      if (PassFF.Preferences.autoFill &&passwords.length > 0) {
+      let passwords = PassFF.Page.getPasswordInputs(doc);
+      console.log("JJJJJJJJJ")
+      console.log(PassFF.Preferences.autoFill)
+      console.log(passwords.length)
+      if (PassFF.Preferences.autoFill && passwords.length > 0) {
         let form = PassFF.Page.searchParentForm(passwords[0]);
         if (form) {
           console.debug("[PassFF]", "Found form to submit", form);

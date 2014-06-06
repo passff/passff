@@ -271,7 +271,7 @@ PassFF.BrowserOverlay = {
   },
 
   createContextualMenu : function(items) {
-    let contextualMenu = document.getElementById("contextual-menu")
+    let contextualMenu = document.getElementById("passff-contextual-menu")
 
     while (contextualMenu.hasChildNodes()) {
       contextualMenu.removeChild(contextualMenu.lastChild);
