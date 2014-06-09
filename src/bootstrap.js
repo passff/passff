@@ -16,8 +16,10 @@
 
 "use strict";
 const global = this;
+const NS_XUL = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 
 const {classes: Cc, interfaces: Ci, utils: Cu} = Components;
+
 
 Cu.import("resource:///modules/CustomizableUI.jsm");
 Cu.import("resource://gre/modules/AddonManager.jsm");
@@ -48,6 +50,24 @@ function startup({id}) AddonManager.getAddonByID(id, function(addon) {
 function shutdown(aData, aReason) { PassFF.uninit(); }
 
 let PassFF = {
+    Ids : {
+        panel : "passff-panel",
+        button: "passff-button",
+        key: "passff-key",
+        keyset: "passff-keyset",
+        searchbox: "passff-search-box",
+        entrieslist: "passff-entries-list",
+        contextlist: "passff-context-list",
+        menubar: "passff-menubar",
+        optionsmenu: "passff-options-menu",
+        optionsmenupopup: "passff-options-menupopup",
+        //treemenu: "passff-tree-menu",
+        //contextualmenu: "passff-contextual-menu",
+        //menu: "passff-menu",
+        //menuseparator: "passff-menu-separator"
+    },
+
+
     stringBufferService : null,
     _timers : [],
 
@@ -66,9 +86,9 @@ let PassFF = {
 
         // create widget and add it to the main toolbar.
         CustomizableUI.createWidget( {
-            id : "passff-button",
+            id : PassFF.Ids.button,
             type : "view",
-            viewId : "passff-panel",
+            viewId : PassFF.Ids.panel,
             defaultArea : CustomizableUI.AREA_NAVBAR,
             label : PassFF.gsfm("passff.toolbar.button.label"),
             tooltiptext : PassFF.gsfm("passff.toolbar.button.tooltip"),
@@ -78,17 +98,18 @@ let PassFF = {
                 PassFF._timers.push(timer);
             },
             onViewHiding : function (aEvent) {
+            return false;
                 //aEvent.target.ownerDocument.getElementById("passff-iframe").webNavigation.reload(Ci.nsIWebNavigation.LOAD_FLAGS_NONE);
             }
         });
     },
 
     showPassFFPanel : function(aDocument) {
-     aDocument.getElementById("pass-search-box").focus();
+     aDocument.getElementById(PassFF.Ids.searchbox).focus();
     },
 
     uninit : function() {
-        CustomizableUI.destroyWidget("passff-button");
+        CustomizableUI.destroyWidget(PassFF.Ids.button);
         Services.wm.removeListener(this.windowListener);
         let enumerator = Services.wm.getEnumerator("navigator:browser");
         while (enumerator.hasMoreElements()) {
@@ -103,6 +124,7 @@ let PassFF = {
         */
         addUI : function(aWindow) {
             console.debug("[PassFF]", "Add panel to new window");
+
             let doc = aWindow.document;
             let menuPanel = PassFF.Menu.createStaticMenu(doc);
             doc.getElementById("PanelUI-multiView").appendChild(menuPanel);
@@ -110,8 +132,23 @@ let PassFF = {
             this._uri = Services.io.newURI("chrome://passff/skin/toolbar.css", null, null);
             aWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowUtils).loadSheet(this._uri, 1);
 
-            PassFF.Menu.createMenu(doc);
+            //PassFF.Menu.createMenu(doc);
+            PassFF.Menu.createItemsMenuList(doc, doc.getElementById(PassFF.Ids.entrieslist), PassFF.Pass.rootItems);
             PassFF.Menu.createContextualMenu(aWindow);
+
+            let toggleKeyset = doc.createElementNS(NS_XUL, "keyset");
+            toggleKeyset.setAttribute("id", PassFF.Ids.keyset);
+            // add hotkey
+            let (toggleKey = doc.createElementNS(NS_XUL, "key")) {
+                toggleKey.setAttribute("id", PassFF.Ids.key);
+                toggleKey.setAttribute("key", "t");
+                toggleKey.setAttribute("modifiers", "control,alt");
+                toggleKey.setAttribute("oncommand", "void(0);");
+                toggleKey.addEventListener("command", function(event) {
+                    event.target.ownerDocument.getElementById(PassFF.Ids.button).click();
+                }, true);
+                doc.getElementById("mainKeyset").parentNode.appendChild(toggleKeyset).appendChild(toggleKey);
+            }
 
             aWindow.gBrowser.addEventListener('load', this.webPageLoaded, true);
             aWindow.gBrowser.addTabsProgressListener(this);
@@ -123,9 +160,12 @@ let PassFF = {
         */
         removeUI : function(aWindow) {
             let doc = aWindow.document;
-            let panel = doc.getElementById("passff-panel");
 
+            let panel = doc.getElementById(PassFF.Ids.panel);
             if (panel) panel.parentNode.removeChild(panel);
+
+            let keySet = doc.getElementById(PassFF.Ids.keyset);
+            if (keySet) keySet.parentNode.removeChild(keySet);
 
             aWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowUtils).removeSheet(this._uri, 1);
 
@@ -170,30 +210,13 @@ let PassFF = {
         },
 
         onOpenWindow : function(aXULWindow) {
-            // A new window has opened.
             let that = this;
             let domWindow = aXULWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindow);
-
-            // Wait for it to finish loading
-            //
             domWindow.addEventListener( "DOMContentLoaded", function listener() {
                 domWindow.removeEventListener("DOMContentLoaded", listener, false);
-                // If this is a browser window then setup its UI
                 let isBrowser = domWindow.document.documentElement.getAttribute("windowtype") == "navigator:browser";
                 if (isBrowser) that.addUI(domWindow);
             }, false);
-            //domWindow.addEventListener( "DOMContentLoaded", function listener() {
-                ////domWindow.removeEventListener("DOMContentLoaded", listener, false);
-                //// If this is a browser window then setup its UI
-                //let isBrowser = domWindow.document.documentElement.getAttribute("windowtype") == "navigator:browser";
-                //let isInitialized = domWindow.document.getElementById("passff-panel") != null;
-                //console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + isBrowser);
-                //console.log("isBrowser : " + isBrowser);
-                //console.log("isInitialized : " + isInitialized);
-                //if (isBrowser) {
-                    //if(!isInitialized) that.addUI(domWindow);
-                //}
-            //}, false);
         },
 
         onCloseWindow : function(aXULWindow) {},

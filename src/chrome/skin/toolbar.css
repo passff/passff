@@ -33,6 +33,17 @@
   }*/
 
   #passff-panel {
-    width: 20em;
+    width: 100em;
+    max-height: 100em;
+  }
+  #passff-entries-list {
+    width: 100em;
+    height: 20em;
+    max-height: 100em;
+  }
+  #passff-context-list {
+    width: 100em;
+    height: 20em;
+    max-height: 100em;
   }
 }

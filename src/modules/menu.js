@@ -30,47 +30,57 @@ PassFF.Menu = {
 
     createStaticMenu : function(doc) {
         let panel = doc.createElement("panelview");
-        panel.setAttribute("id", "passff-panel");
+        panel.setAttribute("id", PassFF.Ids.panel);
 
         let searchlabel = doc.createElement("label");
-        searchlabel.setAttribute("control", "pass-search-box");
+        searchlabel.setAttribute("control", PassFF.Ids.searchbox);
         searchlabel.setAttribute("value", PassFF.gsfm("passff.toolbar.search.label"));
 
         let searchtextbox = doc.createElement("textbox");
-        searchtextbox.setAttribute("id", "pass-search-box");
+        searchtextbox.setAttribute("id", PassFF.Ids.searchbox);
         searchtextbox.setAttribute("clickSelectsAll", "true");
+        searchtextbox.addEventListener("keypress",PassFF.Menu.searchKeyDown);
+        searchtextbox.addEventListener("keyup",PassFF.Menu.createMatchingSearchList);
 
+        let richlistbox = doc.createElement("richlistbox");
+        richlistbox.setAttribute("id", PassFF.Ids.entrieslist);
 
         //menus container
         let menubar = doc.createElement("menubar");
         menubar.setAttribute("orient", "vertical");
-        menubar.setAttribute("id", "menu");
+        menubar.setAttribute("id", PassFF.Ids.menubar);
 
         //option menu
         let optionmenu = doc.createElement("menu")
-        optionmenu.setAttribute("id", "options-menu");
+        optionmenu.setAttribute("id", PassFF.Ids.optionmenu);
         optionmenu.setAttribute("label", PassFF.gsfm("passff.toolbar.options.label"));
         let menupopup = doc.createElement("menupopup");
-        menupopup.setAttribute("id", "options-menu-popup");
+        menupopup.setAttribute("id", PassFF.Ids.optionsmenupopup);
         let refreshitem = doc.createElement("menuitem");
         refreshitem.setAttribute("label", PassFF.gsfm("passff.toolbar.refresh.label"));
         let prefsitem = doc.createElement("menuitem");
         prefsitem.setAttribute("label", PassFF.gsfm("passff.toolbar.preferences.label"));
 
-        //Tree menu
-        let treemenu = doc.createElement("menu");
-        treemenu.setAttribute("id", "tree-menu");
-        treemenu.setAttribute("label", PassFF.gsfm("passff.toolbar.passwords.label"));
-        let passffmenupopup = doc.createElement("menupopup");
-        passffmenupopup.setAttribute("id", "passff-menu");
-
-        let contextmenu = doc.createElement("menubar");
-        contextmenu.setAttribute("id", "passff-contextual-menu");
-        contextmenu.setAttribute("orient", "vertical");
 
         let separator = doc.createElement("menuseparator");
-        separator.setAttribute("id", "menu-separator");
-        
+        separator.setAttribute("id", PassFF.Ids.menuseparator);
+
+        let richcontextlistbox = doc.createElement("richlistbox");
+        richcontextlistbox.setAttribute("id", PassFF.Ids.contextlist);
+
+        //Tree menu
+        //let treemenu = doc.createElement("menu");
+        //treemenu.setAttribute("id", PassFF.Ids.treemenu);
+        //treemenu.setAttribute("label", PassFF.gsfm("passff.toolbar.passwords.label"));
+        //let passffmenupopup = doc.createElement("menupopup");
+        //passffmenupopup.setAttribute("id", PassFF.Ids.menu);
+
+        //let contextmenu = doc.createElement("menubar");
+        //contextmenu.setAttribute("id", PassFF.Ids.contextualmenu);
+        //contextmenu.setAttribute("orient", "vertical");
+
+        //let separator = doc.createElement("menuseparator");
+        //separator.setAttribute("id", PassFF.Ids.menuseparator);
 
         //let tree = doc.createElement("tree");
         //tree.setAttribute("id", "testTree")
@@ -192,13 +202,15 @@ PassFF.Menu = {
         menupopup.appendChild(refreshitem);
         menupopup.appendChild(prefsitem);
         optionmenu.appendChild(menupopup);
-        treemenu.appendChild(passffmenupopup);
+        //t eemenu.appendChild(passffmenupopup);
         menubar.appendChild(optionmenu);
-        menubar.appendChild(treemenu);
-        menubar.appendChild(separator);
-        menubar.appendChild(contextmenu);
+        //menubar.appendChild(treemenu);
+        //menubar.appendChild(contextmenu);
         panel.appendChild(searchlabel);
         panel.appendChild(searchtextbox);
+        panel.appendChild(richcontextlistbox);
+        panel.appendChild(separator);
+        panel.appendChild(richlistbox);
         panel.appendChild(menubar);
         //panel.appendChild(tree);
 
@@ -209,8 +221,9 @@ PassFF.Menu = {
         //panel.appendChild(iframe);
         return panel;
     },
-    createMenu : function(document) {
-        let menuPopup = document.getElementById("passff-menu");
+
+    /*createMenu : function(document) {
+        let menuPopup = document.getElementById(PassFF.Ids.menu);
         if (menuPopup) {
             while (menuPopup.hasChildNodes()) {
                 menuPopup.removeChild(menuPopup.lastChild);
@@ -223,78 +236,60 @@ PassFF.Menu = {
             }
 
         }
-    },
+    },*/
 
     searchKeyDown : function(event) {
-        console.debug("[PassFF]", "Search keydown : " + event.keyCode);
+        console.debug("[PassFF]", "Search keydown", event);
+        let document = event.target.ownerDocument;
         if(event.keyCode == 40) {
             console.debug("[PassFF]", "Arrow down")
-            let listElm = document.getElementById("entries-list");
+            let listElm = document.getElementById(PassFF.Ids.entrieslist);
             if(listElm.firstChild) listElm.firstChild.selected = false;
             listElm.selectItem(listElm.firstChild)
-            document.getElementById('entries-list').focus();
+            listElm.focus();
             return false;
         }
         if(event.keyCode == 13) {
-            let listElm = document.getElementById("entries-list");
-            let searchPanel = document.getElementById('search-panel');
+            let listElm = document.getElementById(PassFF.Ids.entrieslist);
             listElm.selectItem(listElm.firstChild)
             console.debug("[PassFF]", "Selected item", listElm.selectedItem)
             let item = PassFF.Menu.getItem(listElm.selectedItem);
             PassFF.Page.itemToUse = item;
             PassFF.Menu.goToItemUrl(item, event.shiftKey);
-            searchPanel.hidePopup();
             //listElm.firefogg
         }
     },
 
     listItemkeyPress : function(event) {
-        console.debug("[PassFF]", "List item keydown : " + event.keyCode, event.target);
-        let searchPanel = document.getElementById('search-panel');
+        console.debug("[PassFF]", "List item keydown", event);
         if(event.keyCode == 13) {
             let item = PassFF.Menu.getItem(event.target.selectedItem);
             PassFF.Page.itemToUse = item;
             PassFF.Menu.goToItemUrl(item, event.shiftKey);
-            searchPanel.hidePopup();
-        } else if (event.keyCode != 40) {
-            let inputText = searchPanel.getElementsByAttribute('id', 'search')[0]
-            inputText.focus();
-            //inputText.setSelectionRange(0, inputText.value.length)
         }
     },
 
-    createMatchingSearchList : function(search) {
-        let listElm = document.getElementById("entries-list");
+    listItemSelected :function(event) {
+        console.debug("[PassFF]", "List item selected", event);
 
-        while (listElm.hasChildNodes()) {
-            listElm.removeChild(listElm.firstChild);
+        let doc = event.target.ownerDocument;
+
+        let listElm = event.target;
+        while (listElm && listElm.nodeName != 'richlistbox') listElm = listElm.parentNode;
+
+        let item = PassFF.Menu.getItem(event.target);
+
+        if (item) {
+            PassFF.Menu.createItemMenuList(doc, listElm, item);
+        } else {
+            PassFF.Menu.createItemsMenuList(doc, listElm, PassFF.Pass.rootItems);
         }
-
-        let matchItems  = PassFF.Pass.getMatchingItems(search, 6);
-        matchItems.forEach(function(item) {
-            if (!item.isField()) {
-                let listItemElm = document.createElement("richlistitem");
-                listItemElm.item = item;
-                let descElm = document.createElement("label")
-                descElm.setAttribute("value", item.fullKey());
-                descElm.setAttribute("keydown", PassFF.Menu.listItemkeyPress);
-                listItemElm.appendChild(descElm);
-                listElm.appendChild(listItemElm);
-            }
-        });
     },
 
-    /*openSearchPanel : function() {
-        let searchPanel = document.getElementById('search-panel');
-        searchPanel.openPopup(document.getElementById('passff-button'), 'after_start', 0, 0, false, false);
+    createMatchingSearchList : function(event) {
+        let doc = event.target.ownerDocument;
+        PassFF.Menu.createItemsMenuList(doc, doc.getElementById(PassFF.Ids.contextlist), PassFF.Pass.getMatchingItems(event.target.value, 6));
     },
-
-    onPanelShow : function() {
-        let searchPanel = document.getElementById('search-panel');
-        let inputText = searchPanel.getElementsByAttribute('id', 'search')[0]
-        inputText.focus();
-        inputText.setSelectionRange(0, inputText.value.length)
-    },*/
 
     openPreferences : function() {
         if (null == this._preferencesWindow || this._preferencesWindow.closed) {
@@ -306,7 +301,61 @@ PassFF.Menu = {
 
         this._preferencesWindow.focus();
     },
-    createMenuInternal : function(document, item, label) {
+
+    createItemMenuList : function(document, listElm, item) {
+        console.debug("[PassFF]", "Create item menu", item);
+
+        if (item.isLeaf()) {
+            PassFF.Menu.createLeafMenuList(document, listElm, item)
+        } else {
+            PassFF.Menu.createItemsMenuList(document, listElm, item.children);
+        }
+        let parentMenuItem = PassFF.Menu.createMenuItem(document, item.parent, "..", PassFF.Menu.listItemSelected, PassFF.Menu.listItemkeyPress)
+        listElm.insertBefore(parentMenuItem, listElm.firstChild);
+    },
+
+    createItemsMenuList : function(document, listElm, items) {
+        console.debug("[PassFF]", "Create children menu list", items, listElm.nodeName, listElm.getAttribute("id"));
+
+        while (listElm.hasChildNodes()) listElm.removeChild(listElm.firstChild);
+
+        items.forEach(function(item) {
+            if (!item.isField()) listElm.appendChild(PassFF.Menu.createMenuItem(document, item, item.fullKey(), PassFF.Menu.listItemSelected, PassFF.Menu.listItemkeyPress));
+        });
+    },
+
+    createLeafMenuList : function(document, listElm, item) {
+        console.debug("[PassFF]", "Create leaf menu list", item);
+
+        while (listElm.hasChildNodes()) listElm.removeChild(listElm.firstChild);
+
+        listElm.appendChild(PassFF.Menu.createMenuItem(document, item, PassFF.gsfm("passff.menu.fill")                , PassFF.Menu.autoFillMenuClick));
+        listElm.appendChild(PassFF.Menu.createMenuItem(document, item, PassFF.gsfm("passff.menu.fill_and_submit")     , PassFF.Menu.autoFillAndSubmitMenuClick));
+        listElm.appendChild(PassFF.Menu.createMenuItem(document, item, PassFF.gsfm("passff.menu.goto_fill_and_submit"), PassFF.Menu.gotoAutoFillAndSubmitMenuClick));
+        listElm.appendChild(PassFF.Menu.createMenuItem(document, item, PassFF.gsfm("passff.menu.copy_login")          , PassFF.Menu.copyToClipboard));
+        listElm.appendChild(PassFF.Menu.createMenuItem(document, item, PassFF.gsfm("passff.menu.copy_password")       , PassFF.Menu.copyToClipboard));
+        listElm.appendChild(PassFF.Menu.createMenuItem(document, item, PassFF.gsfm("passff.menu.display")             , PassFF.Menu.displayItemData));
+    },
+
+    createMenuItem : function(document, item, label, onClick, onKeydown) {
+        let listItemElm = document.createElement("richlistitem");
+        listItemElm.item = item;
+
+        let xulName = document.createElement('hbox');
+        let descElm = document.createElement("label")
+        descElm.setAttribute("role", label);
+        descElm.setAttribute("value", label);
+
+        listItemElm.addEventListener("click", onClick);
+        listItemElm.addEventListener("keydown", onKeydown);
+
+        xulName.appendChild(descElm);
+        listItemElm.appendChild(xulName);
+
+        return listItemElm;
+    },
+
+    /*createMenuInternal : function(document, item, label) {
         if(item.isField()) return null;
         let menu = document.createElement("menu");
         menu.item = item
@@ -326,9 +375,9 @@ PassFF.Menu = {
 
         menu.appendChild(menuPopupDyn);
         return menu;
-    },
+    },*/
 
-    createCommandMenu: function(document, menuPopupDyn) {
+    /*createCommandMenu: function(document, menuPopupDyn) {
         let passwordLabel = PassFF.gsfm("passff.menu.copy_password");
         let loginLabel = PassFF.gsfm("passff.menu.copy_login");
         let fillLabel = PassFF.gsfm("passff.menu.fill");
@@ -341,8 +390,8 @@ PassFF.Menu = {
         menuPopupDyn.appendChild(this.createSubmenu(document, gotoFillAndSubmitLabel, "goto_fill_and_submit", PassFF.Menu.gotoAutoFillAndSubmitMenuClick));
         menuPopupDyn.appendChild(this.createSubmenu(document, loginLabel, "login", PassFF.Menu.copyToClipboard));
         menuPopupDyn.appendChild(this.createSubmenu(document, passwordLabel, "password", PassFF.Menu.copyToClipboard));
-        menuPopupDyn.appendChild(this.createSubmenu(document, displayLabel, "display", PassFF.Menu.display));
-    },
+        menuPopupDyn.appendChild(this.createSubmenu(document, displayLabel, "display", PassFF.Menu.displayItemData));
+    },*/
 
     //refresh : function(document) {
         //(function() { PassFF.Preferences._init(); }).apply(PassFF.Preferences);
@@ -352,14 +401,14 @@ PassFF.Menu = {
         //PassFF.Menu.createContextualMenu(window);
     //},
 
-    createSubmenu : function(document, label, attribute, action) {
+    /*createSubmenu : function(document, label, attribute, action) {
         let submenu = document.createElement("menuitem");
         submenu.setAttribute("label", label);
         submenu.dataKey = attribute;
         submenu.addEventListener("click", action);
 
         return submenu;
-    },
+    },*/
 
     //menuClick : function(event) {
         //event.stopPropagation();
@@ -406,7 +455,7 @@ PassFF.Menu = {
         }
     },
 
-    display : function(event) {
+    displayItemData : function(event) {
         let item = PassFF.Menu.getItem(event.target);
         let passwordData = PassFF.Pass.getPasswordData(item);
         let login = passwordData["login"];
@@ -436,18 +485,7 @@ PassFF.Menu = {
 
     createContextualMenu : function(aWindow) {
         console.debug("[PassFF]", "createContextualMenu", aWindow.content.location.href);
-        let document = aWindow.document;
-        let contextualMenu = document.getElementById("passff-contextual-menu")
-
-        while (contextualMenu.hasChildNodes()) {
-            contextualMenu.removeChild(contextualMenu.lastChild);
-        }
-
-        let items = PassFF.Pass.getUrlMatchingItems(aWindow.content.location.href);
-        for(let i = 0 ; i < items.length ; i++) {
-            let item = items[i];
-            let itemMenu = this.createMenuInternal(document, item, item.fullKey())
-            if (itemMenu) contextualMenu.appendChild(itemMenu);
-        }
+        let doc = aWindow.document;
+        PassFF.Menu.createItemsMenuList(doc, doc.getElementById(PassFF.Ids.contextlist), PassFF.Pass.getUrlMatchingItems(aWindow.content.location.href));
     }
 };
