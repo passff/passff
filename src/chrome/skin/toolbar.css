@@ -38,12 +38,7 @@
   }
   #passff-entries-list {
     width: 100em;
-    height: 20em;
-    max-height: 100em;
-  }
-  #passff-context-list {
-    width: 100em;
-    height: 20em;
-    max-height: 100em;
+    height: 12em;
+    max-height: 40em;
   }
 }

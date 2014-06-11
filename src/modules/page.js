@@ -83,19 +83,19 @@ PassFF.Page = {
   isPasswordInput   : function(input)         { return input.type == "password" || (input.type == "text" && PassFF.Page.hasGoodName(input.name, PassFF.Preferences.passwordInputNames)); },
   isLoginInput      : function(input)         { return (input.type == "text" || input.type == "email") && PassFF.Page.hasGoodName(input.name, PassFF.Preferences.loginInputNames); },
 
-  getLoginInputs    : function(document)         {
+  getLoginInputs    : function(doc)         {
     let result = new Array();
-    let inputs = document.getElementsByTagName("input")
+    let inputs = doc.getElementsByTagName("input")
     for (var i = 0; i < inputs.length; i++) { 
       if (PassFF.Page.isLoginInput(inputs[i])) result.push(inputs[i]);
     }
     return result;
-    //return Array.prototype.slice.call(document.getElementsByTagName("input")).filter(PassFF.Page.isLoginInput);
+    //return Array.prototype.slice.call(doc.getElementsByTagName("input")).filter(PassFF.Page.isLoginInput);
   },
 
-  getPasswordInputs : function(document)         {
+  getPasswordInputs : function(doc)         {
     let result = new Array();
-    let inputs = document.getElementsByTagName("input")
+    let inputs = doc.getElementsByTagName("input")
     for (var i = 0; i < inputs.length; i++) { 
       if (PassFF.Page.isPasswordInput(inputs[i])) result.push(inputs[i]);
     }
