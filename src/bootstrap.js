@@ -66,17 +66,16 @@ let PassFF = {
         menubar: "passff-menubar",
         optionsmenu: "passff-options-menu",
         optionsmenupopup: "passff-options-menupopup",
-        //treemenu: "passff-tree-menu",
-        //contextualmenu: "passff-contextual-menu",
-        //menu: "passff-menu",
-        //menuseparator: "passff-menu-separator"
     },
 
 
     stringBufferService : null,
     _timers : [],
 
-    gsfm : function(key) { return PassFF.stringBundle.GetStringFromName(key); },
+    gsfm : function(key, params) {
+        if (params != undefined) return  PassFF.stringBundle.formatStringFromName(key, params, params.length)
+        return PassFF.stringBundle.GetStringFromName(key);
+    },
 
     init : function() {
         let enumerator = Services.wm.getEnumerator("navigator:browser");
