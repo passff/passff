@@ -79,7 +79,7 @@ PassFF.Pass = {
     let stdout = result.stdout;
     this._rootItems = [];
     this._items = [];
-    console.debug("[PassFF]", stdout);
+    //console.debug("[PassFF]", stdout);
     let lines = stdout.split("\n");
     let re = /(.*[|`])+-- (.*)/;
     let curParent = null;

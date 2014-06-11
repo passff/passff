@@ -21,23 +21,25 @@ const NS_XUL = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const {classes: Cc, interfaces: Ci, utils: Cu} = Components;
 
 
+const stringBundleService = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService);
 Cu.import("resource:///modules/CustomizableUI.jsm");
 Cu.import("resource://gre/modules/AddonManager.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 
 var console = Cu.import("resource://gre/modules/devtools/Console.jsm", {}).console;
 
-function install(aData, aReason) {}
-function uninstall(aData, aReason) {}
+function install(aData, aReason) { console.debug("[PassFF]", "install") }
+function uninstall(aData, aReason) { console.debug("[PassFF]", "uninstall") }
 
 function startup({id}) AddonManager.getAddonByID(id, function(addon) {
+    console.debug("[PassFF]", "startup");
     Cu.import("chrome://passff/content/subprocess.jsm");
     // Load various javascript includes for helper functions
     ["common", "preferences", "pass", "menu", "page"].forEach(function(fileName) {
         let fileURI = addon.getResourceURI("modules/" + fileName + ".js");
         Services.scriptloader.loadSubScript(fileURI.spec, global);
     });
-    let stringBundleService = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService);
+
     PassFF.stringBundle = stringBundleService.createBundle("chrome://passff/locale/strings.properties");
 
     PassFF.Preferences._init();
@@ -47,7 +49,10 @@ function startup({id}) AddonManager.getAddonByID(id, function(addon) {
     PassFF.init();
 });
 
-function shutdown(aData, aReason) { PassFF.uninit(); }
+function shutdown(aData, aReason) { 
+    console.debug("[PassFF]", "shutdown");
+    PassFF.uninit();
+}
 
 let PassFF = {
     Ids : {
@@ -71,16 +76,13 @@ let PassFF = {
     stringBufferService : null,
     _timers : [],
 
-    gsfm : function(key) {
-        return PassFF.stringBundle.GetStringFromName(key);
-    },
+    gsfm : function(key) { return PassFF.stringBundle.GetStringFromName(key); },
 
     init : function() {
         let enumerator = Services.wm.getEnumerator("navigator:browser");
         while (enumerator.hasMoreElements()) {
             this.windowListener.addUI(enumerator.getNext());
         }
-
 
         Services.wm.addListener(this.windowListener);
 
@@ -94,21 +96,17 @@ let PassFF = {
             tooltiptext : PassFF.gsfm("passff.toolbar.button.tooltip"),
             onViewShowing : function (aEvent) {
                 let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-                timer.initWithCallback( { notify : function() { PassFF.showPassFFPanel(aEvent.target.ownerDocument); } }, 100, Ci.nsITimer.TYPE_ONE_SHOT);
+                timer.initWithCallback( { notify : function() { aEvent.target.ownerDocument.getElementById(PassFF.Ids.searchbox).focus(); } }, 100, Ci.nsITimer.TYPE_ONE_SHOT);
                 PassFF._timers.push(timer);
             },
             onViewHiding : function (aEvent) {
             return false;
-                //aEvent.target.ownerDocument.getElementById("passff-iframe").webNavigation.reload(Ci.nsIWebNavigation.LOAD_FLAGS_NONE);
             }
         });
     },
 
-    showPassFFPanel : function(aDocument) {
-     aDocument.getElementById(PassFF.Ids.searchbox).focus();
-    },
-
     uninit : function() {
+        stringBundleService.flushBundles();
         CustomizableUI.destroyWidget(PassFF.Ids.button);
         Services.wm.removeListener(this.windowListener);
         let enumerator = Services.wm.getEnumerator("navigator:browser");
@@ -132,9 +130,7 @@ let PassFF = {
             this._uri = Services.io.newURI("chrome://passff/skin/toolbar.css", null, null);
             aWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowUtils).loadSheet(this._uri, 1);
 
-            //PassFF.Menu.createMenu(doc);
-            PassFF.Menu.createItemsMenuList(doc, doc.getElementById(PassFF.Ids.entrieslist), PassFF.Pass.rootItems);
-            PassFF.Menu.createContextualMenu(aWindow);
+            PassFF.Menu.createContextualMenu(doc, aWindow.content.location.href);
 
             let toggleKeyset = doc.createElementNS(NS_XUL, "keyset");
             toggleKeyset.setAttribute("id", PassFF.Ids.keyset);
@@ -176,12 +172,11 @@ let PassFF = {
 
         onLocationChange: function(aBrowser, aWebProgress, aRequest, aLocation) {
             console.debug("[PassFF]", "Location changed", aBrowser.ownerGlobal.content.location.href)
-            PassFF.Menu.createContextualMenu(aBrowser.ownerGlobal);
+            PassFF.Menu.createContextualMenu(aBrowser.ownerDocument, aBrowser.ownerGlobal.content.location.href);
         },
 
         webPageLoaded : function(event) {
-            //if ((event.originalTarget.nodeName == '#document') && (event.originalTarget.defaultView.location.href == gBrowser.currentURI.spec))
-            let doc = event.originalTarget; // doc is document that triggered the event
+            let doc = event.originalTarget;
             let win = doc.defaultView;
             if (doc.nodeName == "#document" && win == win.top) {
                 console.debug("[PassFF]", "Content loaded", event, PassFF.Preferences.autoFill, PassFF.Page.getPasswordInputs(doc).length);
@@ -206,6 +201,7 @@ let PassFF = {
 
         tabSelect : function(event) {
             console.debug("[PassFF]", "Tab Selected", event.target);
+            PassFF.Menu.createContextualMenu(event.target.ownerDocument, event.target.ownerGlobal.content.location.href);
             PassFF.Menu.createContextualMenu(event.target.ownerGlobal);
         },
 
