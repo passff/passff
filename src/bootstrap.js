@@ -136,8 +136,8 @@ let PassFF = {
             // add hotkey
             let (toggleKey = doc.createElementNS(NS_XUL, "key")) {
                 toggleKey.setAttribute("id", PassFF.Ids.key);
-                toggleKey.setAttribute("key", "t");
-                toggleKey.setAttribute("modifiers", "control,alt");
+                toggleKey.setAttribute("key", PassFF.Preferences.shortcutKey);
+                toggleKey.setAttribute("modifiers", PassFF.Preferences.shortcutMod);
                 toggleKey.setAttribute("oncommand", "void(0);");
                 toggleKey.addEventListener("command", function(event) {
                     event.target.ownerDocument.getElementById(PassFF.Ids.button).click();

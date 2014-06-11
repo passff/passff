@@ -17,7 +17,30 @@
       <preference id="passff-pass_dir-pref" name="extensions.passff.storeDir" type="string" />
       <preference id="passff-pass_git-pref" name="extensions.passff.storeGit" type="string" />
       <preference id="passff-auto_fill-pref" name="extensions.passff.autoFill" type="bool" />
+      <preference id="passff-shortcut_key-pref" name="extensions.passff.shortcutKey" type="string" />
+      <preference id="passff-shortcut_mod-pref" name="extensions.passff.shortcutMod" type="string" />
     </preferences>
+    <groupbox>
+      <caption label="&passff.preferences.shortcut_caption;"/>
+      <grid>
+        <columns>
+          <column flex="1"/>
+          <column flex="2"/>
+        </columns>
+        <rows>
+          <row>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.shortcut_mod_tooltip;" control="shortcut_mod" value="&passff.preferences.shortcut_mod_label;"/>
+              <textbox  tooltiptext= "&passff.preferences.shortcut_mod_tooltip;" id="shortcut_mod" preference="passff-shortcut_mod-pref" type="string"/>
+            </vbox>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.shortcut_key_tooltip;" control="shortcut_key" value="&passff.preferences.shortcut_key_label;"/>
+              <textbox  tooltiptext= "&passff.preferences.shortcut_key_tooltip;" id="shortcut_key" preference="passff-shortcut_key-pref" type="string"/>
+            </vbox>
+          </row>
+        </rows>
+      </grid>
+    </groupbox>
     <groupbox>
       <caption label="&passff.preferences.page_caption;"/>
       <grid>
