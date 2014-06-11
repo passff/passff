@@ -15,7 +15,9 @@ PassFF.Preferences = {
         storeDir           : "",
         storeGit           : "",
         gpgAgentInfo       : ".gpg-agent-info",
-        autoFill           : false
+        autoFill           : false,
+        shortcutKey        : "t",
+        shortcutMod        : "control,alt"
     },
 
     _init : function() {
@@ -44,7 +46,9 @@ PassFF.Preferences = {
             storeDir           : this.storeDir,
             storeGit           : this.storeGit,
             gpgAgentEnv        : this.gpgAgentEnv,
-            autoFill           : this.autoFill
+            autoFill           : this.autoFill,
+            shortcutKey        : this.shortcutKey,
+            shortcutMod        : this.shortcutMod
         });
     },
 
@@ -59,6 +63,8 @@ PassFF.Preferences = {
     get storeGit()           { return (this._params.storeGit.value.trim().length > 0 ? this._params.storeGit.value : this._environment.get('PASSWORD_STORE_GIT')); },
     get gpgAgentEnv()        { return this._gpgAgentEnv; },
     get autoFill()           { return this._params.autoFill.value; },
+    get shortcutKey()        { return this._params.shortcutKey.value; },
+    get shortcutMod()        { return this._params.shortcutMod.value; },
 
     setGpgAgentEnv : function() {
         let gpgAgentInfo = this._params.gpgAgentInfo.value;
