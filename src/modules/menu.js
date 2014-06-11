@@ -35,6 +35,7 @@ PassFF.Menu = {
 
         let richlistbox = doc.createElement("richlistbox");
         richlistbox.setAttribute("id", PassFF.Ids.entrieslist);
+        richlistbox.addEventListener("keydown", PassFF.Menu.onListItemkeyPress);
 
         //********* menubar
         let refreshitem = doc.createElement("menuitem");
@@ -74,7 +75,7 @@ PassFF.Menu = {
         return panel;
     },
 
-    onSearchKeyDown : function(event) {
+    onSearchKeydown : function(event) {
         console.debug("[PassFF]", "Search keydown", event);
         let doc = event.target.ownerDocument;
         if(event.keyCode == 40) {
@@ -95,23 +96,10 @@ PassFF.Menu = {
         }
     },
 
-    onRefresh : function(event) {
-        (function() { PassFF.Preferences._init(); }).apply(PassFF.Preferences);
-        (function() { PassFF.Pass.init(); }).apply(PassFF.Pass);
-
-        PassFF.Menu.createContextualMenu(event.target.ownerDocument, event.target.ownerGlobal.content.location.href);
-    },
-
-    //onPreferences : function(event) {
-        //if (null == this._preferencesWindow || this._preferencesWindow.closed) {
-            //let instantApply = Application.prefs.get("browser.preferences.instantApply");
-            //let features = "chrome,titlebar,toolbar,centerscreen" + (instantApply.value ? ",dialog=no" : ",modal");
-            //this._preferencesWindow = window.openDialog( "chrome://passff/content/preferencesWindow.xul", "passff-preferences-window", features);
-        //}
-        //this._preferencesWindow.focus();
-    //},
-    onPreferences : function(event) {
-        event.target.ownerGlobal.openDialog( "chrome://passff/content/preferencesWindow.xul", "passff-preferences-window", "chrome,titlebar,toolbar,modal");
+    onSearchKeyup : function(event) {
+        let doc = event.target.ownerDocument;
+        PassFF.Menu.clearMenuList(doc);
+        PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.getMatchingItems(event.target.value, 6));
     },
 
     onListItemkeyPress : function(event) {
@@ -120,19 +108,9 @@ PassFF.Menu = {
             let item = PassFF.Menu.getItem(event.target.selectedItem);
             PassFF.Menu.goToItemUrl(item, event.shiftKey);
             CustomizableUI.hidePanelForNode(event.target);
+        } else {
+            event.target.ownerDocument.getElementById(PassFF.Ids.searchbox).focus();
         }
-    },
-
-    onContextButtonCommand : function(event) {
-        console.debug("[PassFF]", "All button command", event);
-        PassFF.Menu.createContextualMenu(event.target.ownerDocument, event.target.ownerGlobal.content.location.href);
-    },
-
-    onRootButtonCommand : function(event) {
-        console.debug("[PassFF]", "All button command", event);
-        let doc = event.target.ownerDocument;
-        PassFF.Menu.clearMenuList(doc);
-        PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.rootItems);
     },
 
     onListItemSelected :function(event) {
@@ -148,10 +126,27 @@ PassFF.Menu = {
         }
     },
 
-    onSearchKeyup : function(event) {
+    onContextButtonCommand : function(event) {
+        console.debug("[PassFF]", "All button command", event);
+        PassFF.Menu.createContextualMenu(event.target.ownerDocument, event.target.ownerGlobal.content.location.href);
+    },
+
+    onRootButtonCommand : function(event) {
+        console.debug("[PassFF]", "All button command", event);
         let doc = event.target.ownerDocument;
         PassFF.Menu.clearMenuList(doc);
-        PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.getMatchingItems(event.target.value, 6));
+        PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.rootItems);
+    },
+
+    onRefresh : function(event) {
+        (function() { PassFF.Preferences._init(); }).apply(PassFF.Preferences);
+        (function() { PassFF.Pass.init(); }).apply(PassFF.Pass);
+
+        PassFF.Menu.createContextualMenu(event.target.ownerDocument, event.target.ownerGlobal.content.location.href);
+    },
+
+    onPreferences : function(event) {
+        event.target.ownerGlobal.openDialog( "chrome://passff/content/preferencesWindow.xul", "passff-preferences-window", "chrome,titlebar,toolbar,modal");
     },
 
     onAutoFillMenuClick : function(event) {
@@ -180,20 +175,21 @@ PassFF.Menu = {
         let passwordData = PassFF.Pass.getPasswordData(item);
         let login = passwordData["login"];
         let password = passwordData["password"];
-        let title = PassFF.Menu._stringBundle.GetStringFromName("passff.display.title");
-        let desc = PassFF.Menu._stringBundle.formatStringFromName("passff.display.description", [login, password], 2);
+        let title = PassFF.gsfm("passff.display.title");
+        let desc = PassFF.gsfm("passff.display.description", [login, password], 2)
         CustomizableUI.hidePanelForNode(event.target);
         PassFF.Menu._promptService.alert(null, title, desc);
     },
 
     onCopyToClipboard : function(event) {
+        console.debug("[PassFF]", "copy to clipboard", event);
         event.stopPropagation();
         let str = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
         let trans = Cc["@mozilla.org/widget/transferable;1"].createInstance(Ci.nsITransferable);
         let clip = Cc["@mozilla.org/widget/clipboard;1"].getService(Ci.nsIClipboard);
         let item = PassFF.Menu.getItem(event.target);
         let passwordData = PassFF.Pass.getPasswordData(item);
-        str.data = passwordData[event.target.dataKey];
+        str.data = passwordData[PassFF.Menu.getDataKey(event.target)];
         trans.addDataFlavor('text/unicode');
         trans.setTransferData('text/unicode', str, str.data.length * 2);
         clip.setData(trans, null, Ci.nsIClipboard.kGlobalClipboard);
@@ -212,10 +208,8 @@ PassFF.Menu = {
         if (item.hasFields() || item.isLeaf()) PassFF.Menu.createLeafMenuList(doc, item);
         if (!item.isLeaf()) PassFF.Menu.createItemsMenuList(doc, item.children);
 
-        let parentMenuItem = PassFF.Menu.createMenuItem(doc, item.parent, "..", PassFF.Menu.onListItemSelected, PassFF.Menu.onListItemkeyPress)
-
         let listElm = doc.getElementById(PassFF.Ids.entrieslist);
-        listElm.insertBefore(parentMenuItem, listElm.firstChild);
+        listElm.insertBefore(PassFF.Menu.createMenuItem(doc, item.parent, "..", PassFF.Menu.onListItemSelected), listElm.firstChild);
     },
 
     createContextualMenu : function(doc, url) {
@@ -230,7 +224,7 @@ PassFF.Menu = {
         console.debug("[PassFF]", "Create children menu list", items);
         let listElm = doc.getElementById(PassFF.Ids.entrieslist);
         items.forEach(function(item) {
-            if (!item.isField()) listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, item.fullKey(), PassFF.Menu.onListItemSelected, PassFF.Menu.onListItemkeyPress));
+            if (!item.isField()) listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, item.fullKey(), PassFF.Menu.onListItemSelected));
         });
     },
 
@@ -240,12 +234,12 @@ PassFF.Menu = {
         listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.fill")                , PassFF.Menu.onAutoFillMenuClick));
         listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.fill_and_submit")     , PassFF.Menu.onAutoFillAndSubmitMenuClick));
         listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.goto_fill_and_submit"), PassFF.Menu.onGotoAutoFillAndSubmitMenuClick));
-        listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.copy_login")          , PassFF.Menu.onCopyToClipboard));
-        listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.copy_password")       , PassFF.Menu.onCopyToClipboard));
+        listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.copy_login")          , PassFF.Menu.onCopyToClipboard, "login"));
+        listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.copy_password")       , PassFF.Menu.onCopyToClipboard, "password"));
         listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.display")             , PassFF.Menu.onDisplayItemData));
     },
 
-    createMenuItem : function(doc, item, label, onClick, onKeydown) {
+    createMenuItem : function(doc, item, label, onClick, attribute) {
         let descElm = doc.createElement("label")
         descElm.setAttribute("value", label);
 
@@ -254,8 +248,8 @@ PassFF.Menu = {
 
         let listItemElm = doc.createElement("richlistitem");
         listItemElm.item = item;
+        listItemElm.dataKey = attribute;
         listItemElm.addEventListener("click", onClick);
-        listItemElm.addEventListener("keydown", onKeydown);
         listItemElm.appendChild(xulName);
 
         return listItemElm;
@@ -279,8 +273,12 @@ PassFF.Menu = {
         }
     },
 
-    getItem : function(menuItem) {
-        while (menuItem && menuItem.item == undefined) menuItem = menuItem.parentNode;
-        return menuItem ? menuItem.item : null;
+    getDataKey : function(node) {
+        while (node && node.dataKey == undefined) node = node.parentNode;
+        return node ? node.dataKey : null;
+    },
+    getItem : function(node) {
+        while (node && node.item == undefined) node = node.parentNode;
+        return node ? node.item : null;
     }
 };
