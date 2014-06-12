@@ -1,37 +1,7 @@
 PassFF.Page = {
-  //_console : Cu.import("resource://gre/modules/devtools/Console.jsm", {}).console,
   _autoSubmittedUrls : new Array(),
   itemToUse : null,
-  init : function() {
-    //if(typeof(gBrowser) != "undefined" && gBrowser.tabContainer != undefined) {
-      //gBrowser.addEventListener("DOMContentLoaded", this.onPageLoad, false);
-      //gBrowser.tabContainer.addEventListener("TabSelect", this.onTabSelect, false);
-    //}
-  },
-
-  //onPageLoad : function(event) {
-    //let doc = event.originalTarget;
-    //let win = doc.defaultView;
-    //// if (doc.nodeName == "#document") return;
-    //if (win != win.top) return;
-    //// if (win.frameElement) return;
-    //let url = win.location.href
-
-    //let matchItems = PassFF.Pass.getUrlMatchingItems(url);
-    //PassFF.BrowserOverlay.createContextualMenu(matchItems);
-
-    //if (!PassFF.Preferences.autoFill || PassFF.Page.getPasswordInputs().length == 0) return;
-
-    //PassFF.Page._console.info("[PassFF]", "Start auto-fill")
-    //let bestFitItem = PassFF.Page.itemToUse;
-    //if (!bestFitItem) bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
-
-    //if(bestFitItem) {
-      //PassFF.Page.fillInputs(bestFitItem);
-      //if (PassFF.Page.itemToUse || PassFF.Pass.getItemsLeafs(matchItems).length == 1) PassFF.Page.submit(url);
-    //}
-    //PassFF.Page.itemToUse = null;
-  //},
+  init : function() { },
 
   fillInputs : function(doc, item) {
     console.debug("[PassFF]", "Fill inputs", item)
@@ -69,36 +39,12 @@ PassFF.Page = {
     }
   },
 
-  //onTabSelect : function(event) {
-    //let window = Services.wm.getMostRecentWindow("navigator:browser");
-    //let matchItems  = PassFF.Pass.getUrlMatchingItems(window.gBrowser.content.location.href);
-    //PassFF.BrowserOverlay.createContextualMenu(matchItems);
-  //},
-
   setLoginInputs    : function(doc, login)    { PassFF.Page.getLoginInputs(doc).forEach(function(loginInput) { loginInput.value = login; }); },
   setPasswordInputs : function(doc, password) { PassFF.Page.getPasswordInputs(doc).forEach(function(passwordInput) { passwordInput.value = password; }); },
   isPasswordInput   : function(input)         { return input.type == "password" || (input.type == "text" && PassFF.Page.hasGoodName(input.name, PassFF.Preferences.passwordInputNames)); },
   isLoginInput      : function(input)         { return (input.type == "text" || input.type == "email") && PassFF.Page.hasGoodName(input.name, PassFF.Preferences.loginInputNames); },
-
-  getLoginInputs    : function(doc)         {
-    let result = new Array();
-    let inputs = doc.getElementsByTagName("input")
-    for (var i = 0; i < inputs.length; i++) { 
-      if (PassFF.Page.isLoginInput(inputs[i])) result.push(inputs[i]);
-    }
-    return result;
-    //return Array.prototype.slice.call(doc.getElementsByTagName("input")).filter(PassFF.Page.isLoginInput);
-  },
-
-  getPasswordInputs : function(doc)         {
-    let result = new Array();
-    let inputs = doc.getElementsByTagName("input")
-    for (var i = 0; i < inputs.length; i++) { 
-      if (PassFF.Page.isPasswordInput(inputs[i])) result.push(inputs[i]);
-    }
-    return result;
-  //return Array.prototype.slice.call(content.getElementsByTagName("input")).filter(PassFF.Page.isPasswordInput);
-  },
+  getLoginInputs    : function(doc)           { return Array.prototype.slice.call(doc.getElementsByTagName("input")).filter(PassFF.Page.isLoginInput); },
+  getPasswordInputs : function(doc)           { return Array.prototype.slice.call(content.getElementsByTagName("input")).filter(PassFF.Page.isPasswordInput); },
 
   getSubmitButton : function(form) {
     let submitBtns = Array.prototype.slice.call(form.getElementsByTagName("button")).filter( function(input) { return input.type == "submit" } )
@@ -108,9 +54,7 @@ PassFF.Page = {
   },
 
   searchParentForm : function(input) {
-    while(input != null && input.tagName.toLowerCase() != 'form') {
-      input = input.parentNode;
-    }
+    while(input != null && input.tagName.toLowerCase() != 'form') input = input.parentNode;
     return input;
   },
 
@@ -125,9 +69,7 @@ PassFF.Page = {
 
   removeFromArray : function(array, value) {
     let index = array.indexOf(value);
-    if (index >= 0) {
-      array.splice(index, 1);
-    }
+    if (index >= 0) array.splice(index, 1);
     return index >= 0;
   }
 };
