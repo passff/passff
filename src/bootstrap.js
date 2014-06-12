@@ -133,7 +133,7 @@ let PassFF = {
 
             this.addShortcuts(doc);
 
-            aWindow.gBrowser.addEventListener('load', this.webPageLoaded, true);
+            aWindow.gBrowser.addEventListener('load', this.onWebPageLoaded, true);
             aWindow.gBrowser.addTabsProgressListener(this);
             aWindow.gBrowser.tabContainer.addEventListener("TabSelect", this.tabSelect, false);
 
@@ -164,9 +164,7 @@ let PassFF = {
                 toggleKey.setAttribute("key", PassFF.Preferences.shortcutKey);
                 toggleKey.setAttribute("modifiers", PassFF.Preferences.shortcutMod);
                 toggleKey.setAttribute("oncommand", "void(0);");
-                toggleKey.addEventListener("command", function(event) {
-                    event.target.ownerDocument.getElementById(PassFF.Ids.button).click();
-                }, true);
+                toggleKey.addEventListener("command", function(event) { event.target.ownerDocument.getElementById(PassFF.Ids.button).click(); }, true);
                 doc.getElementById("mainKeyset").parentNode.appendChild(toggleKeyset).appendChild(toggleKey);
             }
 
@@ -177,9 +175,6 @@ let PassFF = {
             if (keySet) keySet.parentNode.removeChild(keySet);
         },
 
-        /**
-        * Removes all added UI elements.
-        */
         removeUI : function(aWindow) {
             let doc = aWindow.document;
 
@@ -190,7 +185,7 @@ let PassFF = {
 
             aWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowUtils).removeSheet(this._uri, 1);
 
-            aWindow.gBrowser.removeEventListener("load", this.webPageLoaded, true);
+            aWindow.gBrowser.removeEventListener("load", this.onWebPageLoaded, true);
             aWindow.gBrowser.removeTabsProgressListener(this);
             aWindow.gBrowser.tabContainer.removeEventListener("TabSelect", this.tabSelect, false);
 
@@ -202,7 +197,7 @@ let PassFF = {
             PassFF.Menu.createContextualMenu(aBrowser.ownerDocument, aBrowser.ownerGlobal.content.location.href);
         },
 
-        webPageLoaded : function(event) {
+        onWebPageLoaded : function(event) {
             let doc = event.originalTarget;
             let win = doc.defaultView;
             if (doc.nodeName == "#document" && win == win.top) {
