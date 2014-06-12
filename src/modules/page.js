@@ -44,7 +44,7 @@ PassFF.Page = {
   isPasswordInput   : function(input)         { return input.type == "password" || (input.type == "text" && PassFF.Page.hasGoodName(input.name, PassFF.Preferences.passwordInputNames)); },
   isLoginInput      : function(input)         { return (input.type == "text" || input.type == "email") && PassFF.Page.hasGoodName(input.name, PassFF.Preferences.loginInputNames); },
   getLoginInputs    : function(doc)           { return Array.prototype.slice.call(doc.getElementsByTagName("input")).filter(PassFF.Page.isLoginInput); },
-  getPasswordInputs : function(doc)           { return Array.prototype.slice.call(content.getElementsByTagName("input")).filter(PassFF.Page.isPasswordInput); },
+  getPasswordInputs : function(doc)           { return Array.prototype.slice.call(doc.getElementsByTagName("input")).filter(PassFF.Page.isPasswordInput); },
 
   getSubmitButton : function(form) {
     let submitBtns = Array.prototype.slice.call(form.getElementsByTagName("button")).filter( function(input) { return input.type == "submit" } )

@@ -151,15 +151,15 @@ PassFF.Menu = {
 
     onAutoFillMenuClick : function(event) {
         event.stopPropagation();
-        let item = PassFF.Menu.getItem(event.target);
-        PassFF.Page.fillInputs(item);
+        CustomizableUI.hidePanelForNode(event.target);
+        PassFF.Page.fillInputs(event.target.ownerGlobal.content.document, PassFF.Menu.getItem(event.target));
     },
 
     onAutoFillAndSubmitMenuClick : function(event) {
         event.stopPropagation();
-        let doc = event.target.ownerDocument
-        let item = PassFF.Menu.getItem(event.target);
-        PassFF.Page.fillInputs(doc, item);
+        CustomizableUI.hidePanelForNode(event.target);
+        let doc = event.target.ownerGlobal.content.document
+        PassFF.Page.fillInputs(doc, PassFF.Menu.getItem(event.target));
         PassFF.Page.submit(doc, event.target.ownerGlobal.content.location.href);
     },
 
