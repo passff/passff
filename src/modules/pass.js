@@ -141,11 +141,7 @@ PassFF.Pass = {
     });
   },
 
-  findBestFitItem : function(items, url) {
-    let leafs = PassFF.Pass.getItemsLeafs(items);
-    console.info("[PassFF]", "Found best fit items : ", leafs);
-    return leafs.length > 0 ? leafs[0] : null;
-  },
+  findBestFitItem : function(items, url) { return items[0]; },
 
   getItemsLeafs : function(items) {
     let leafs = new Array();
