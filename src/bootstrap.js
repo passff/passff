@@ -78,6 +78,7 @@ let PassFF = {
     },
 
     init : function() {
+        console.debug("[PassFF]", "init");
         let enumerator = Services.wm.getEnumerator("navigator:browser");
         while (enumerator.hasMoreElements()) {
             this.windowListener.addUI(enumerator.getNext());
@@ -105,8 +106,9 @@ let PassFF = {
     },
 
     uninit : function() {
-        stringBundleService.flushBundles();
+        console.debug("[PassFF]", "uninit");
         CustomizableUI.destroyWidget(PassFF.Ids.button);
+        stringBundleService.flushBundles();
         Services.wm.removeListener(this.windowListener);
         let enumerator = Services.wm.getEnumerator("navigator:browser");
         while (enumerator.hasMoreElements()) {
