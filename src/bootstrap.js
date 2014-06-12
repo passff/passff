@@ -131,6 +131,31 @@ let PassFF = {
 
             PassFF.Menu.createContextualMenu(doc, aWindow.content.location.href);
 
+            this.addShortcuts(doc);
+
+            aWindow.gBrowser.addEventListener('load', this.webPageLoaded, true);
+            aWindow.gBrowser.addTabsProgressListener(this);
+            aWindow.gBrowser.tabContainer.addEventListener("TabSelect", this.tabSelect, false);
+
+            this.curBranch = Services.prefs.getBranch("extensions.passff.");
+            this.curBranch.addObserver("", this, false);
+
+        },
+
+        observe : function(aSubject, aTopic, aData) {
+            console.debug("[PassFF]", "Preferences change", aTopic, aData);
+            if("shortcutKey" == aData || shortcutMod == aData) {
+                let enumerator = Services.wm.getEnumerator("navigator:browser");
+                while (enumerator.hasMoreElements()) {
+                    let aWindow = enumerator.getNext();
+                    this.removeShortcuts(aWindow.document);
+                    this.addShortcuts(aWindow.document);
+                }
+            }
+        },
+
+
+        addShortcuts : function(doc) {
             let toggleKeyset = doc.createElementNS(NS_XUL, "keyset");
             toggleKeyset.setAttribute("id", PassFF.Ids.keyset);
             // add hotkey
@@ -145,9 +170,11 @@ let PassFF = {
                 doc.getElementById("mainKeyset").parentNode.appendChild(toggleKeyset).appendChild(toggleKey);
             }
 
-            aWindow.gBrowser.addEventListener('load', this.webPageLoaded, true);
-            aWindow.gBrowser.addTabsProgressListener(this);
-            aWindow.gBrowser.tabContainer.addEventListener("TabSelect", this.tabSelect, false);
+        },
+
+        removeShortcuts : function(doc) {
+            let keySet = doc.getElementById(PassFF.Ids.keyset);
+            if (keySet) keySet.parentNode.removeChild(keySet);
         },
 
         /**
@@ -159,14 +186,15 @@ let PassFF = {
             let panel = doc.getElementById(PassFF.Ids.panel);
             if (panel) panel.parentNode.removeChild(panel);
 
-            let keySet = doc.getElementById(PassFF.Ids.keyset);
-            if (keySet) keySet.parentNode.removeChild(keySet);
+            this.removeShortcuts(doc);
 
             aWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowUtils).removeSheet(this._uri, 1);
 
             aWindow.gBrowser.removeEventListener("load", this.webPageLoaded, true);
             aWindow.gBrowser.removeTabsProgressListener(this);
             aWindow.gBrowser.tabContainer.removeEventListener("TabSelect", this.tabSelect, false);
+
+            this.curBranch.removeObserver("", this);
         },
 
         onLocationChange: function(aBrowser, aWebProgress, aRequest, aLocation) {

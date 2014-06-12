@@ -30,12 +30,12 @@
         <rows>
           <row>
             <vbox>
-              <label tooltiptext= "&passff.preferences.shortcut_mod_tooltip;" control="shortcut_mod" value="&passff.preferences.shortcut_mod_label;"/>
-              <textbox  tooltiptext= "&passff.preferences.shortcut_mod_tooltip;" id="shortcut_mod" preference="passff-shortcut_mod-pref" type="string"/>
+              <label tooltiptext= "&passff.preferences.shortcut_mod_tooltip;" id="shortcut_mod_label" control="shortcut_mod" value="&passff.preferences.shortcut_mod_label;"/>
+              <textbox tooltiptext= "&passff.preferences.shortcut_mod_tooltip;" id="shortcut_mod" preference="passff-shortcut_mod-pref" type="string" />
             </vbox>
             <vbox>
-              <label tooltiptext= "&passff.preferences.shortcut_key_tooltip;" control="shortcut_key" value="&passff.preferences.shortcut_key_label;"/>
-              <textbox  tooltiptext= "&passff.preferences.shortcut_key_tooltip;" id="shortcut_key" preference="passff-shortcut_key-pref" type="string"/>
+              <label tooltiptext= "&passff.preferences.shortcut_key_tooltip;" id="shortcut_key_label" control="shortcut_key" value="&passff.preferences.shortcut_key_label;"/>
+              <textbox tooltiptext= "&passff.preferences.shortcut_key_tooltip;" id="shortcut_key" preference="passff-shortcut_key-pref" type="string"/>
             </vbox>
           </row>
         </rows>
@@ -56,12 +56,12 @@
           </row>
           <row>
             <vbox>
-              <label tooltiptext= "&passff.preferences.password_input_names_tooltip;" control="passwordInputNames" value="&passff.preferences.password_input_names_label;"/>
+              <label tooltiptext= "&passff.preferences.password_input_names_tooltip;" id="passwordInputNames_label" control="passwordInputNames" value="&passff.preferences.password_input_names_label;"/>
               <textbox tooltiptext= "&passff.preferences.password_input_names_tooltip;" id="passwordInputNames" preference="passff-passwordInputNames-pref" type="string"/>
             </vbox>
             <vbox>
-              <label tooltiptext= "&passff.preferences.login_input_names_tooltip;" control="loginInputNames" value="&passff.preferences.login_input_names_label;"/>
-              <textbox  tooltiptext= "&passff.preferences.login_input_names_tooltip;" id="loginInputNames" preference="passff-loginInputNames-pref" type="string"/>
+              <label tooltiptext= "&passff.preferences.login_input_names_tooltip;" control="loginInputNames_label" value="&passff.preferences.login_input_names_label;"/>
+              <textbox tooltiptext= "&passff.preferences.login_input_names_tooltip;" id="loginInputNames" preference="passff-loginInputNames-pref" type="string"/>
             </vbox>
           </row>
         </rows>
@@ -79,17 +79,17 @@
         <rows>
           <row>
             <vbox>
-              <label tooltiptext= "&passff.preferences.password_field_names_tooltip;" control="passwordFieldNames" value="&passff.preferences.password_field_names_label;"/>
+              <label tooltiptext= "&passff.preferences.password_field_names_tooltip;" id="passwordFieldNames_label" control="passwordFieldNames" value="&passff.preferences.password_field_names_label;"/>
               <textbox tooltiptext= "&passff.preferences.password_field_names_tooltip;" id="passwordFieldNames" preference="passff-passwordFieldNames-pref" type="string"/>
             </vbox>
             <vbox>
-              <label tooltiptext= "&passff.preferences.url_field_names_tooltip;" control="urlFieldNames" value="&passff.preferences.url_field_names_label;"/>
+              <label tooltiptext= "&passff.preferences.url_field_names_tooltip;" id="urlFieldNames_label" control="urlFieldNames" value="&passff.preferences.url_field_names_label;"/>
               <textbox tooltiptext= "&passff.preferences.url_field_names_tooltip;" id="urlFieldNames" preference="passff-urlFieldNames-pref" type="string"/>
             </vbox>
           </row>
           <row>
             <vbox>
-              <label tooltiptext= "&passff.preferences.login_field_names_tooltip;" control="loginFieldNames" value="&passff.preferences.login_field_names_label;"/>
+              <label tooltiptext= "&passff.preferences.login_field_names_tooltip;" id="loginFieldNames_label" control="loginFieldNames" value="&passff.preferences.login_field_names_label;"/>
               <textbox tooltiptext= "&passff.preferences.login_field_names_tooltip;" id="loginFieldNames" preference="passff-loginFieldNames-pref" type="string"/>
             </vbox>
           </row>
@@ -107,27 +107,27 @@
         <rows>
           <row>
             <vbox>
-              <label tooltiptext= "&passff.preferences.command_tooltip;" control="command" value="&passff.preferences.command_label;"/>
+              <label tooltiptext= "&passff.preferences.command_tooltip;" id="command_label" control="command" value="&passff.preferences.command_label;"/>
               <textbox tooltiptext= "&passff.preferences.command_tooltip;" id="command" preference="passff-command-pref" type="string"/>
             </vbox>
           </row>
           <row>
             <vbox>
-              <label tooltiptext= "&passff.preferences.home_tooltip;" control="home" value="&passff.preferences.home_label;"/>
+              <label tooltiptext= "&passff.preferences.home_tooltip;" id="home_label" control="home" value="&passff.preferences.home_label;"/>
               <textbox tooltiptext= "&passff.preferences.home_tooltip;" id="home" preference="passff-home-pref" type="string"/>
             </vbox>
             <vbox>
-              <label tooltiptext= "&passff.preferences.gpg_agent_info_tooltip;" control="gpg_agent_info" value="&passff.preferences.gpg_agent_info_label;"/>
+              <label tooltiptext= "&passff.preferences.gpg_agent_info_tooltip;" id="gpg_agent_info_label" control="gpg_agent_info" value="&passff.preferences.gpg_agent_info_label;"/>
               <textbox tooltiptext= "&passff.preferences.gpg_agent_info_tooltip;" id="gpg_agent_info" preference="passff-gpg_agent_info-pref" type="string"/>
             </vbox>
           </row>
           <row>
             <vbox>
-              <label tooltiptext= "&passff.preferences.pass_dir_tooltip;" control="pass_dir" value="&passff.preferences.pass_dir_label;"/>
+              <label tooltiptext= "&passff.preferences.pass_dir_tooltip;" id="pass_dir_label" control="pass_dir" value="&passff.preferences.pass_dir_label;"/>
               <textbox tooltiptext= "&passff.preferences.pass_dir_tooltip;" id="pass_dir" preference="passff-pass_dir-pref" type="string"/>
             </vbox>
             <vbox>
-              <label tooltiptext= "&passff.preferences.pass_git_tooltip;" control="pass_git" value="&passff.preferences.pass_git_label;"/>
+              <label tooltiptext= "&passff.preferences.pass_git_tooltip;" id="pass_git_label" control="pass_git" value="&passff.preferences.pass_git_label;"/>
               <textbox tooltiptext= "&passff.preferences.pass_git_tooltip;" id="pass_git" preference="passff-pass_git-pref" type="string"/>
             </vbox>
           </row>
