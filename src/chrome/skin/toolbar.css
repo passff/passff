@@ -17,28 +17,36 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 @-moz-document url("chrome://browser/content/browser.xul") {
-  #passff-button {
-    list-style-image: url("chrome://passff/skin/passff_medium.png");
-  }
+    #passff-button {
+        list-style-image: url("chrome://passff/skin/passff_medium.png");
+    }
 
-  #passff-button[cui-areatype="menu-panel"],
-  toolbarpaletteitem[place="palette"] > #passff-button {
-    list-style-image: url("chrome://passff/skin/passff_large.png");
-  }
+    #passff-button[cui-areatype="menu-panel"],
+    toolbarpaletteitem[place="palette"] > #passff-button {
+        list-style-image: url("chrome://passff/skin/passff_large.png");
+    }
 
-  /* Necessary to mimic the behavior of all other buttons, which are darker when
+    toolbar[iconsize="large"] #passff-button {
+        list-style-image: url("chrome://passff/skin/passff_medium.png");
+    }
+
+    toolbar[iconsize="small"] #passff-button {
+        list-style-image: url("chrome://passff/skin/passff_small.png");
+    }
+
+    /* Necessary to mimic the behavior of all other buttons, which are darker when
     pressed.
-  #aus-view-button:hover:active:not([disabled="true"]):not([cui-areatype="menu-panel"]) {
+    #aus-view-button:hover:active:not([disabled="true"]):not([cui-areatype="menu-panel"]) {
     list-style-image: url("chrome://aus-view/skin/icon32-dark.png");
-  }*/
+    }*/
 
-  #passff-panel {
+#passff-panel {
     width: 100em;
     max-height: 100em;
-  }
-  #passff-entries-list {
+}
+#passff-entries-list {
     width: 100em;
     height: 12em;
     max-height: 40em;
-  }
+}
 }
