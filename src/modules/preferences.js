@@ -82,7 +82,8 @@ PassFF.Preferences = {
             console.info("[PassFF]", "Retrieve Gpg agent variable from environment");
             PassFF.Preferences._gpgAgentEnv = [
                 "GPG_AGENT_INFO=" + this._environment.get('GPG_AGENT_INFO'),
-                "GNOME_KEYRING_CONTROL = " + this._environment.get('GNOME_KEYRING_CONTROL'),
+                "GNOME_KEYRING_CONTROL=" + this._environment.get('GNOME_KEYRING_CONTROL'),
+                "PATH=" + this._environment.get('PATH')
                 //"SSH_AUTH_SOCK=" + this._environment.get('SSH_AUTH_SOCK'),
                 //"SSH_AGENT_PID=" + this._environment.get('SSH_AGENT_PID')
             ]
