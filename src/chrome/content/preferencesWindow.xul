@@ -3,7 +3,7 @@
 
 <!DOCTYPE overlay SYSTEM "chrome://passff/locale/preferences.dtd">
 
-<prefwindow xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<prefwindow id="passff-prefwindow" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <prefpane id="saveoptions" label="Backups">
     <preferences>
       <preference id="passff-passwordInputNames-pref" name="extensions.passff.passwordInputNames" type="string" />
