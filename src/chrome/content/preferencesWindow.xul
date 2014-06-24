@@ -17,6 +17,7 @@
       <preference id="passff-pass_dir-pref" name="extensions.passff.storeDir" type="string" />
       <preference id="passff-pass_git-pref" name="extensions.passff.storeGit" type="string" />
       <preference id="passff-auto_fill-pref" name="extensions.passff.autoFill" type="bool" />
+      <preference id="passff-auto_submit-pref" name="extensions.passff.autoSubmit" type="bool" />
       <preference id="passff-shortcut_key-pref" name="extensions.passff.shortcutKey" type="string" />
       <preference id="passff-shortcut_mod-pref" name="extensions.passff.shortcutMod" type="string" />
     </preferences>
@@ -52,6 +53,9 @@
           <row>
             <vbox>
               <checkbox tooltiptext="&passff.preferences.auto_fill_tooltip;" label="&passff.preferences.auto_fill_label;" id="auto_fill" preference="passff-auto_fill-pref"/>
+            </vbox>
+            <vbox>
+              <checkbox tooltiptext="&passff.preferences.auto_submit_tooltip;" label="&passff.preferences.auto_submit_label;" id="auto_submit" preference="passff-auto_submit-pref"/>
             </vbox>
           </row>
           <row>

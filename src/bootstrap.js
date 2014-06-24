@@ -99,9 +99,7 @@ let PassFF = {
                 timer.initWithCallback( { notify : function() { aEvent.target.ownerDocument.getElementById(PassFF.Ids.searchbox).focus(); } }, 100, Ci.nsITimer.TYPE_ONE_SHOT);
                 PassFF._timers.push(timer);
             },
-            onViewHiding : function (aEvent) {
-            return false;
-            }
+            onViewHiding : function (aEvent) { return false; }
         });
     },
 
@@ -220,13 +218,13 @@ let PassFF = {
                 }
 
                 PassFF.Page.itemToUse = null;
+                PassFF.Page._autoSubmittedUrls = new Array();
             }
         },
 
         tabSelect : function(event) {
             console.debug("[PassFF]", "Tab Selected", event.target);
             PassFF.Menu.createContextualMenu(event.target.ownerDocument, event.target.ownerGlobal.content.location.href);
-            PassFF.Menu.createContextualMenu(event.target.ownerGlobal);
         },
 
         onOpenWindow : function(aXULWindow) {

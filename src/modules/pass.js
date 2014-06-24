@@ -153,7 +153,7 @@ PassFF.Pass = {
   getItemLeafs : function(item) {
     let leafs = new Array();
     if (item.isLeaf()) {
-      leafs.push(item);
+      if(!item.isField()) leafs.push(item);
     } else {
       item.children.forEach(function(child) { leafs = leafs.concat(PassFF.Pass.getItemLeafs(child)); });
     }
