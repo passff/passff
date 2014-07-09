@@ -136,17 +136,10 @@ PassFF.Pass = {
   },
 
   getUrlMatchingItems : function(url) {
-    //return this._items.filter(function(item){
-      //return !item.isField() && url.search(new RegExp(item.key,"i")) >= 0;
-    //});
-    let result = this._items.filter(function(item){
-      if (item.isField()) return false;
-      let itemKeyIndexInUrl = url.search(new RegExp(item.key,"i"));
-      let itemKeyFoundInUrl = itemKeyIndexInUrl >= 0;
-      return itemKeyFoundInUrl;
-    })
-    console.debug("[PassFF]", "getUrlMatchingItems", result);
-    return result;
+    return this._items.filter(function(item){
+      let regExp = item.key.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+      return !item.isField() && url.search(new RegExp(regExp,"i")) >= 0;
+    });
   },
 
   findBestFitItem : function(items, url) { return items[0]; },
