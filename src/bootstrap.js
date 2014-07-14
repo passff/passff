@@ -86,21 +86,42 @@ let PassFF = {
 
         Services.wm.addListener(this.windowListener);
 
-        // create widget and add it to the main toolbar.
-        CustomizableUI.createWidget( {
-            id : PassFF.Ids.button,
-            type : "view",
-            viewId : PassFF.Ids.panel,
-            defaultArea : CustomizableUI.AREA_NAVBAR,
-            label : PassFF.gsfm("passff.toolbar.button.label"),
-            tooltiptext : PassFF.gsfm("passff.toolbar.button.tooltip"),
-            onViewShowing : function (aEvent) {
-                let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-                timer.initWithCallback( { notify : function() { aEvent.target.ownerDocument.getElementById(PassFF.Ids.searchbox).focus(); } }, 100, Ci.nsITimer.TYPE_ONE_SHOT);
-                PassFF._timers.push(timer);
-            },
-            onViewHiding : function (aEvent) { return false; }
-        });
+        PassFF.waitForPanel();
+    },
+
+    waitForPanel : function() {
+        console.debug("[PassFF]", "Wait panels");
+        let panelsCreated = true;
+        let enumerator = Services.wm.getEnumerator("navigator:browser");
+        while (enumerator.hasMoreElements()) {
+            let aWindow = enumerator.getNext();
+            if (aWindow.document.getElementById(PassFF.Ids.panel) == null) {
+                panelsCreated = false;
+                break;
+            }
+        }
+        if (panelsCreated) {
+            console.debug("[PassFF]", "Panels found");
+            // create widget and add it to the main toolbar.
+            CustomizableUI.createWidget( {
+                id : PassFF.Ids.button,
+                type : "view",
+                viewId : PassFF.Ids.panel,
+                defaultArea : CustomizableUI.AREA_NAVBAR,
+                label : PassFF.gsfm("passff.toolbar.button.label"),
+                tooltiptext : PassFF.gsfm("passff.toolbar.button.tooltip"),
+                onViewShowing : function (aEvent) {
+                    let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+                    timer.initWithCallback( { notify : function() { aEvent.target.ownerDocument.getElementById(PassFF.Ids.searchbox).focus(); } }, 100, Ci.nsITimer.TYPE_ONE_SHOT);
+                    PassFF._timers.push(timer);
+                },
+                onViewHiding : function (aEvent) { return false; }
+            });
+        } else {
+            console.debug("[PassFF]", "Wait panels3");
+            let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+            timer.initWithCallback( { notify : function() { PassFF.waitForPanel() } }, 100, Ci.nsITimer.TYPE_ONE_SHOT);
+        }
     },
 
     uninit : function() {
