@@ -79,16 +79,33 @@ let PassFF = {
 
     init : function() {
         console.debug("[PassFF]", "init");
-        let enumerator = Services.wm.getEnumerator("navigator:browser");
-        while (enumerator.hasMoreElements()) {
-            this.windowListener.addUI(enumerator.getNext());
-        }
 
-        Services.wm.addListener(this.windowListener);
-
-        PassFF.waitForPanel();
+        PassFF.waitForDocuments();
     },
 
+    waitForDocuments: function() {
+        console.debug("[PassFF]", "Wait documents");
+        let documentsCreated = true;
+        let enumerator = Services.wm.getEnumerator("navigator:browser");
+        while (enumerator.hasMoreElements()) {
+            let aWindow = enumerator.getNext();
+            if (aWindow == null || aWindow.document == null || aWindow.gBrowser == null) {
+                documentsCreated = false;
+                break;
+            }
+        }
+        if (documentsCreated) {
+            console.debug("[PassFF]", "Documents found");
+            let enumerator = Services.wm.getEnumerator("navigator:browser");
+            while (enumerator.hasMoreElements()) {
+                this.windowListener.addUI(enumerator.getNext());
+            }
+            PassFF.waitForPanel();
+        } else {
+            let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+            timer.initWithCallback( { notify : function() { PassFF.waitForDocuments() } }, 100, Ci.nsITimer.TYPE_ONE_SHOT);
+        }
+    },
     waitForPanel : function() {
         console.debug("[PassFF]", "Wait panels");
         let panelsCreated = true;
@@ -117,8 +134,8 @@ let PassFF = {
                 },
                 onViewHiding : function (aEvent) { return false; }
             });
+            Services.wm.addListener(this.windowListener);
         } else {
-            console.debug("[PassFF]", "Wait panels3");
             let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
             timer.initWithCallback( { notify : function() { PassFF.waitForPanel() } }, 100, Ci.nsITimer.TYPE_ONE_SHOT);
         }
