@@ -298,6 +298,7 @@ const OVERLAPPED = new ctypes.StructType("OVERLAPPED");
 //UNIX definitions
 const pid_t = ctypes.int32_t;
 const WNOHANG = 1;
+const F_GETFD = 1;
 const F_SETFL = 4;
 
 const LIBNAME       = 0;
@@ -448,7 +449,7 @@ function subprocess_win32(options) {
         stdoutWorker = null,
         stderrWorker = null,
         pendingWriteCount = 0,
-        readers = options.mergeStderr ? 1 : 2,
+        readers = 2,
         stdinOpenState = 2,
         error = '',
         output = '';
@@ -704,19 +705,9 @@ function subprocess_win32(options) {
         if(!CreatePipe(hOutputReadTmp.address(), hOutputWrite.address(), sa.address(), 0))
             LogError('CreatePipe hOutputReadTmp failed');
 
-        if(options.mergeStderr) {
-          // Create a duplicate of the output write handle for the std error
-          // write handle. This is necessary in case the child application
-          // closes one of its std output handles.
-          if (!DuplicateHandle(GetCurrentProcess(), hOutputWrite,
-                               GetCurrentProcess(), hErrorWrite.address(), 0,
-                               true, DUPLICATE_SAME_ACCESS))
-             LogError("DuplicateHandle hOutputWrite failed");
-        } else {
-            // Create error pipe.
-            if(!CreatePipe(hErrorReadTmp.address(), hErrorWrite.address(), sa.address(), 0))
-                LogError('CreatePipe hErrorReadTmp failed');
-        }
+        // Create error pipe.
+        if(!CreatePipe(hErrorReadTmp.address(), hErrorWrite.address(), sa.address(), 0))
+            LogError('CreatePipe hErrorReadTmp failed');
 
         // Create input pipe.
         if (!CreatePipe(hInputRead.address(),hInputWriteTmp.address(),sa.address(), 0))
@@ -733,14 +724,13 @@ function subprocess_win32(options) {
                              DUPLICATE_SAME_ACCESS))
              LogError("DupliateHandle hOutputReadTmp failed");
 
-        if(!options.mergeStderr) {
-            if (!DuplicateHandle(GetCurrentProcess(), hErrorReadTmp,
-                             GetCurrentProcess(),
-                             hErrorRead.address(), // Address of new handle.
-                             0, false, // Make it uninheritable.
-                             DUPLICATE_SAME_ACCESS))
-             LogError("DupliateHandle hErrorReadTmp failed");
-        }
+        if (!DuplicateHandle(GetCurrentProcess(), hErrorReadTmp,
+                         GetCurrentProcess(),
+                         hErrorRead.address(), // Address of new handle.
+                         0, false, // Make it uninheritable.
+                         DUPLICATE_SAME_ACCESS))
+         LogError("DupliateHandle hErrorReadTmp failed");
+
         if (!DuplicateHandle(GetCurrentProcess(), hInputWriteTmp,
                              GetCurrentProcess(),
                              hInputWrite.address(), // Address of new handle.
@@ -750,8 +740,7 @@ function subprocess_win32(options) {
 
         // Close inheritable copies of the handles.
         if (!CloseHandle(hOutputReadTmp)) LogError("CloseHandle hOutputReadTmp failed");
-        if(!options.mergeStderr)
-            if (!CloseHandle(hErrorReadTmp)) LogError("CloseHandle hErrorReadTmp failed");
+        if (!CloseHandle(hErrorReadTmp)) LogError("CloseHandle hErrorReadTmp failed");
         if (!CloseHandle(hInputWriteTmp)) LogError("CloseHandle failed");
 
         var pi = new PROCESS_INFORMATION();
@@ -792,7 +781,7 @@ function subprocess_win32(options) {
         //return values
         child.stdin = hInputWrite;
         child.stdout = hOutputRead;
-        child.stderr = options.mergeStderr ? undefined : hErrorRead;
+        child.stderr = hErrorRead;
         child.process = pi.hProcess;
         return pi.hProcess;
     }
@@ -954,10 +943,11 @@ function subprocess_win32(options) {
         });
 
 
-        if (!options.mergeStderr) stderrWorker = createReader(child.stderr, "stderr", function (data) {
-            if(options.stderr) {
+        stderrWorker = createReader(child.stderr, "stderr", function (data) {
+            var output = options.mergeStderr ? 'stdout' : 'stderr';
+            if(options[output]) {
                 setTimeout(function() {
-                    options.stderr(data);
+                    options[output](data);
                 }, 0);
             } else {
                 error += data;
@@ -1081,7 +1071,7 @@ function subprocess_unix(options) {
         stdoutWorker = null,
         stderrWorker = null,
         pendingWriteCount = 0,
-        readers = options.mergeStderr ? 1 : 2,
+        readers = 2,
         stdinOpenState = OPEN,
         error = '',
         output = '';
@@ -1094,6 +1084,67 @@ function subprocess_unix(options) {
                          pid_t
     );
 
+    //NULL terminated array of strings, argv[0] will be command >> + 2
+    var argv = ctypes.char.ptr.array(options.arguments.length + 2);
+    var envp = ctypes.char.ptr.array(options.environment.length + 1);
+
+    // posix_spawn_file_actions_t is a complex struct that may be different on
+    // each platform. We do not care about its attributes, we don't need to
+    // get access to them, but we do need to allocate the right amount
+    // of memory for it.
+    // At 2013/10/28, its size was 80 on linux, but better be safe (and larger),
+    // than crash when posix_spawn_file_actions_init fill `action` with zeros.
+    // Use `gcc sizeof_fileaction.c && ./a.out` to check that size.
+    var posix_spawn_file_actions_t = ctypes.uint8_t.array(100);
+
+    //int posix_spawn(pid_t *restrict pid, const char *restrict path,
+    //   const posix_spawn_file_actions_t *file_actions,
+    //   const posix_spawnattr_t *restrict attrp,
+    //   char *const argv[restrict], char *const envp[restrict]);
+    var posix_spawn = libc.declare("posix_spawn",
+                         ctypes.default_abi,
+                         ctypes.int,
+                         pid_t.ptr,
+                         ctypes.char.ptr,
+                         posix_spawn_file_actions_t.ptr,
+                         ctypes.voidptr_t,
+                         argv,
+                         envp
+    );
+
+    //int posix_spawn_file_actions_init(posix_spawn_file_actions_t *file_actions);
+    var posix_spawn_file_actions_init = libc.declare("posix_spawn_file_actions_init",
+                         ctypes.default_abi,
+                         ctypes.int,
+                         posix_spawn_file_actions_t.ptr
+    );
+
+    //int posix_spawn_file_actions_destroy(posix_spawn_file_actions_t *file_actions);
+    var posix_spawn_file_actions_destroy = libc.declare("posix_spawn_file_actions_destroy",
+                         ctypes.default_abi,
+                         ctypes.int,
+                         posix_spawn_file_actions_t.ptr
+    );
+
+    // int posix_spawn_file_actions_adddup2(posix_spawn_file_actions_t *
+    //                                      file_actions, int fildes, int newfildes);
+    var posix_spawn_file_actions_adddup2 = libc.declare("posix_spawn_file_actions_adddup2",
+                         ctypes.default_abi,
+                         ctypes.int,
+                         posix_spawn_file_actions_t.ptr,
+                         ctypes.int,
+                         ctypes.int
+    );
+
+    // int posix_spawn_file_actions_addclose(posix_spawn_file_actions_t *
+    //                                       file_actions, int fildes);
+    var posix_spawn_file_actions_addclose = libc.declare("posix_spawn_file_actions_addclose",
+                         ctypes.default_abi,
+                         ctypes.int,
+                         posix_spawn_file_actions_t.ptr,
+                         ctypes.int
+    );
+
     //int pipe(int pipefd[2]);
     var pipefd = ctypes.int.array(2);
     var pipe = libc.declare("pipe",
@@ -1102,35 +1153,10 @@ function subprocess_unix(options) {
                          pipefd
     );
 
-    //int dup(int oldfd);
-    var dup= libc.declare("dup",
-                          ctypes.default_abi,
-                          ctypes.int,
-                          ctypes.int
-    );
-
     //int close(int fd);
     var close = libc.declare("close",
                           ctypes.default_abi,
                           ctypes.int,
-                          ctypes.int
-    );
-
-    //NULL terminated array of strings, argv[0] will be command >> + 2
-    var argv = ctypes.char.ptr.array(options.arguments.length + 2);
-    var envp = ctypes.char.ptr.array(options.environment.length + 1);
-    var execve = libc.declare("execve",
-                          ctypes.default_abi,
-                          ctypes.int,
-                          ctypes.char.ptr,
-                          argv,
-                          envp
-    );
-
-    //void exit(int status);
-    var exit = libc.declare("exit",
-                          ctypes.default_abi,
-                          ctypes.void_t,
                           ctypes.int
     );
 
@@ -1196,8 +1222,7 @@ function subprocess_unix(options) {
             i;
         _in = new pipefd();
         _out = new pipefd();
-        if(!options.mergeStderr)
-            _err = new pipefd();
+        _err = new pipefd();
 
         var _args = argv();
         args.unshift(command);
@@ -1220,68 +1245,79 @@ function subprocess_unix(options) {
             close(_in[1]);
             return -1;
         }
-        if(!options.mergeStderr) {
-            rc = pipe(_err);
-            fcntl(_err[0], F_SETFL, getPlatformValue(O_NONBLOCK));
-            if (rc < 0) {
-                close(_in[0]);
-                close(_in[1]);
-                close(_out[0]);
-                close(_out[1]);
-                return -1;
-            }
+        rc = pipe(_err);
+        fcntl(_err[0], F_SETFL, getPlatformValue(O_NONBLOCK));
+        if (rc < 0) {
+            close(_in[0]);
+            close(_in[1]);
+            close(_out[0]);
+            close(_out[1]);
+            return -1;
         }
 
-        pid = fork();
-        if (pid > 0) { // parent
-            close(_in[0]);
-            close(_out[1]);
-            if(!options.mergeStderr)
-                close(_err[1]);
-            child.stdin  = _in[1];
-            child.stdinFd = _in;
-            child.stdout = _out[0];
-            child.stderr = options.mergeStderr ? undefined : _err[0];
-            child.pid = pid;
-            return pid;
-        } else if (pid == 0) { // child
-            if (workdir) {
-                if (chdir(workdir) < 0) {
-                    exit(126);
-                }
-            }
-            closeOtherFds(_in[0], _out[1], options.mergeStderr ? _out[1] : _err[1]);
-            close(_in[1]);
-            close(_out[0]);
-            if(!options.mergeStderr)
-                close(_err[0]);
-            close(0);
-            dup(_in[0]);
-            close(1);
-            dup(_out[1]);
-            close(2);
-            dup(options.mergeStderr ? _out[1] : _err[1]);
-            execve(command, _args, _envp);
-            exit(1);
-        } else {
-            // we should not really end up here
-            if(!options.mergeStderr) {
-                close(_err[0]);
-                close(_err[1]);
-            }
-            close(_out[0]);
-            close(_out[1]);
-            close(_in[0]);
-            close(_in[1]);
-            throw("Fatal - failed to create subprocess '"+command+"'");
+        let STDIN_FILENO = 0;
+        let STDOUT_FILENO = 1;
+        let STDERR_FILENO = 2;
+
+        let action = posix_spawn_file_actions_t();
+        posix_spawn_file_actions_init(action.address());
+
+        posix_spawn_file_actions_adddup2(action.address(), _in[0], STDIN_FILENO);
+        posix_spawn_file_actions_addclose(action.address(), _in[1]);
+        posix_spawn_file_actions_addclose(action.address(), _in[0]);
+
+        posix_spawn_file_actions_adddup2(action.address(), _out[1], STDOUT_FILENO);
+        posix_spawn_file_actions_addclose(action.address(), _out[1]);
+        posix_spawn_file_actions_addclose(action.address(), _out[0]);
+
+        posix_spawn_file_actions_adddup2(action.address(), _err[1], STDERR_FILENO);
+        posix_spawn_file_actions_addclose(action.address(), _err[1]);
+        posix_spawn_file_actions_addclose(action.address(), _err[0]);
+
+        // posix_spawn doesn't support setting a custom workdir for the child,
+        // so change the cwd in the parent process before launching the child process.
+        if (workdir) {
+          if (chdir(workdir) < 0) {
+            throw new Error("Unable to change workdir before launching child process");
+          }
         }
+
+        closeOtherFds(action, _in[1], _out[0], _err[0]);
+
+        let id = pid_t(0);
+        let rv = posix_spawn(id.address(), command, action.address(), null, _args, _envp);
+        posix_spawn_file_actions_destroy(action.address());
+        if (rv != 0) {
+          // we should not really end up here
+          close(_err[0]);
+          close(_err[1]);
+          close(_out[0]);
+          close(_out[1]);
+          close(_in[0]);
+          close(_in[1]);
+          throw new Error("Fatal - failed to create subprocess '"+command+"'");
+        }
+        pid = id.value;
+
+        close(_in[0]);
+        close(_out[1]);
+        close(_err[1]);
+        child.stdin  = _in[1];
+        child.stdout = _out[0];
+        child.stderr = _err[0];
+        child.pid = pid;
 
         return pid;
     }
 
 
     // close any file descriptors that are not required for the process
-    function closeOtherFds(fdIn, fdOut, fdErr) {
+    function closeOtherFds(action, fdIn, fdOut, fdErr) {
+        // Unfortunately on mac, any fd registered in posix_spawn_file_actions_addclose
+        // that can't be closed correctly will make posix_spawn fail...
+        // Even if we ensure registering only still opened fds.
+        if (gXulRuntime.OS == "Darwin")
+            return;
 
         var maxFD = 256; // arbitrary max
 
@@ -1317,8 +1353,9 @@ function subprocess_unix(options) {
         // close any file descriptors
         // fd's 0-2 are already closed
         for (var i = 3; i < maxFD; i++) {
-            if (i != fdIn && i != fdOut && i != fdErr)
-                close(i);
+            if (i != fdIn && i != fdOut && i != fdErr && fcntl(i, F_GETFD, -1) >= 0) {
+                posix_spawn_file_actions_addclose(action.address(), i);
+            }
         }
     }
 
@@ -1495,15 +1532,17 @@ function subprocess_unix(options) {
             }
         });
 
-        if (!options.mergeStderr) stderrWorker = createReader(child.stderr, "stderr", function (data) {
-            if(options.stderr) {
+        stderrWorker = createReader(child.stderr, "stderr", function (data) {
+            var output = options.mergeStderr ? 'stdout' : 'stderr';
+            if(options[output]) {
                 setTimeout(function() {
-                    options.stderr(data);
-                 }, 0);
+                    options[output](data);
+                }, 0);
             } else {
                 error += data;
             }
         });
+
     }
 
     function cleanup() {

@@ -156,7 +156,7 @@ function writePipe(pipe, data) {
 
         let bytesWritten = libcFunc.write(pipe, pData, numBytes);
         if (bytesWritten != numBytes) {
-            closePipe();
+            closePipe(pipe);
             libc.close();
             postMessage({ msg: "error", data: "error: wrote "+bytesWritten+" instead of "+numBytes+" bytes"});
             close();
@@ -257,7 +257,7 @@ function readPipe(pipe, charset, pid, bufferedOutput) {
     if (bufferedOutput)
       postMessage({msg: "data", data: dataStr, count: dataStr.length});
 
-    libcFunc.close(pipe);
+    closePipe(pipe);
     postMessage({msg: "done", data: exitCode });
     libc.close();
     close();
