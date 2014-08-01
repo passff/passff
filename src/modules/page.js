@@ -16,7 +16,7 @@ PassFF.Page = {
     if (!PassFF.Page.removeFromArray(PassFF.Page._autoSubmittedUrls, url)) {
 
       let passwords = PassFF.Page.getPasswordInputs(doc);
-      if (PassFF.Preferences.autoSubmit && passwords.length > 0) {
+      if (passwords.length > 0) {
         console.debug("[PassFF]", "Url never submit. Submit it", url);
         let form = PassFF.Page.searchParentForm(passwords[0]);
         if (form) {

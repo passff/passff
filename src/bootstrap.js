@@ -241,7 +241,7 @@ let PassFF = {
             if (doc.nodeName == "#document" && win == win.top) {
                 console.debug("[PassFF]", "Content loaded", event, PassFF.Preferences.autoFill, PassFF.Page.getPasswordInputs(doc).length);
 
-                if (PassFF.Preferences.autoFill && PassFF.Page.getPasswordInputs(doc).length > 0) {
+                if ((PassFF.Page.itemToUse || PassFF.Preferences.autoFill) && PassFF.Page.getPasswordInputs(doc).length > 0) {
                     let url = win.location.href
                     let matchItems = PassFF.Pass.getUrlMatchingItems(url);
 
@@ -251,7 +251,7 @@ let PassFF = {
 
                     if(bestFitItem) {
                         PassFF.Page.fillInputs(doc, bestFitItem);
-                        if (PassFF.Page.itemToUse || PassFF.Pass.getItemsLeafs(matchItems).length == 1) PassFF.Page.submit(doc, url);
+                        if ((PassFF.Page.itemToUse || PassFF.Preferences.autoSubmit) && PassFF.Pass.getItemsLeafs(matchItems).length == 1) PassFF.Page.submit(doc, url);
                     }
                 }
 
