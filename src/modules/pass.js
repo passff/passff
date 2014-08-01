@@ -41,24 +41,29 @@ PassFF.Pass = {
       });
     }
 
-    PassFF.Pass.setLogin(result);
+    PassFF.Pass.setLogin(result, item);
     PassFF.Pass.setPassword(result);
 
     return result;
   },
 
   setPassword : function(passwordData) {
+    let password = undefined;
     for(let i = 0 ; i < PassFF.Preferences.passwordFieldNames.length; i++) {
-      let password = passwordData[PassFF.Preferences.passwordFieldNames[i].toLowerCase()];
-      if (password != undefined) return passwordData.password = password;
+      password = passwordData[PassFF.Preferences.passwordFieldNames[i].toLowerCase()];
+      if (password != undefined) break;
     }
+    passwordData.password = password
   },
 
-  setLogin : function(passwordData) {
+  setLogin : function(passwordData, item) {
+    let login = undefined;
     for(let i = 0 ; i < PassFF.Preferences.loginFieldNames.length; i++) {
-      let login = passwordData[PassFF.Preferences.loginFieldNames[i].toLowerCase()];
-      if (login != undefined) return passwordData.login = login;
+      login = passwordData[PassFF.Preferences.loginFieldNames[i].toLowerCase()];
+      if (login != undefined) break;
     }
+    if (login == undefined) login = item.key;
+    passwordData.login = login
   },
 
   isLoginField: function(name) {
@@ -179,7 +184,7 @@ PassFF.Pass = {
     let p = subprocess.call(params);
     p.wait();
     if (result.exitCode != 0) {
-      console.warn("[PassFF]", result.stderr, result.stdout);
+      console.warn("[PassFF]", result.exitCode, result.stderr, result.stdout);
     } else {
       console.info("[PassFF]", "pass script execution ok");
     }
