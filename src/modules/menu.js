@@ -84,14 +84,16 @@ PassFF.Menu = {
             if(listElm.firstChild) listElm.firstChild.selected = false;
             listElm.selectItem(listElm.firstChild)
             listElm.focus();
+            event.stopPropagation();
             return false;
         }
         if(event.keyCode == 13) {
             let listElm = doc.getElementById(PassFF.Ids.entrieslist);
             listElm.selectItem(listElm.firstChild)
             console.debug("[PassFF]", "Selected item", listElm.selectedItem)
+            //listElm.selectedItem.click();
             let item = PassFF.Menu.getItem(listElm.selectedItem);
-            PassFF.Menu.goToItemUrl(item, event.shiftKey);
+            PassFF.Menu.goToItemUrl(item, event.shiftKey, true);
             CustomizableUI.hidePanelForNode(event.target);
         }
     },
@@ -106,7 +108,7 @@ PassFF.Menu = {
         console.debug("[PassFF]", "List item keydown", event);
         if(event.keyCode == 13) {
             let item = PassFF.Menu.getItem(event.target.selectedItem);
-            PassFF.Menu.goToItemUrl(item, event.shiftKey);
+            PassFF.Menu.goToItemUrl(item, event.shiftKey, true);
             CustomizableUI.hidePanelForNode(event.target);
         } else if(event.keyCode != 40 && event.keyCode != 39) {
             event.target.ownerDocument.getElementById(PassFF.Ids.searchbox).focus();
@@ -163,11 +165,20 @@ PassFF.Menu = {
         PassFF.Page.submit(doc, event.target.ownerGlobal.content.location.href);
     },
 
+    onGoto : function(event) {
+        event.stopPropagation();
+        let item = PassFF.Menu.getItem(event.target);
+        console.debug("[PassFF]", "Goto item url", item);
+        CustomizableUI.hidePanelForNode(event.target);
+        PassFF.Menu.goToItemUrl(item, event.button != 0, false);
+    },
+
     onGotoAutoFillAndSubmitMenuClick : function(event) {
         event.stopPropagation();
         let item = PassFF.Menu.getItem(event.target);
+        console.debug("[PassFF]", "Goto item url fill and submit", item);
         CustomizableUI.hidePanelForNode(event.target);
-        PassFF.Menu.goToItemUrl(item, event.button != 0);
+        PassFF.Menu.goToItemUrl(item, event.button != 0, true);
     },
 
     onDisplayItemData : function(event) {
@@ -234,6 +245,7 @@ PassFF.Menu = {
         listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.fill")                , PassFF.Menu.onAutoFillMenuClick));
         listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.fill_and_submit")     , PassFF.Menu.onAutoFillAndSubmitMenuClick));
         listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.goto_fill_and_submit"), PassFF.Menu.onGotoAutoFillAndSubmitMenuClick));
+        listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.goto")                , PassFF.Menu.onGoto));
         listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.copy_login")          , PassFF.Menu.onCopyToClipboard, "login"));
         listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.copy_password")       , PassFF.Menu.onCopyToClipboard, "password"));
         listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.display")             , PassFF.Menu.onDisplayItemData));
@@ -255,10 +267,10 @@ PassFF.Menu = {
         return listItemElm;
     },
 
-    goToItemUrl: function(item, newTab) {
+    goToItemUrl: function(item, newTab, autoFillAndSubmit) {
         if (item == null || item == undefined) return;
 
-        PassFF.Page.itemToUse = item;
+        if (autoFillAndSubmit) PassFF.Page.itemToUse = item;
         let passwordData = PassFF.Pass.getPasswordData(item);
         let url = passwordData.url;
         if (url == null || url == undefined) url = item.key;
