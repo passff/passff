@@ -18,7 +18,7 @@ PassFF.Menu = {
         let searchtextbox = doc.createElement("textbox");
         searchtextbox.setAttribute("id", PassFF.Ids.searchbox);
         searchtextbox.setAttribute("clickSelectsAll", "true");
-        searchtextbox.addEventListener("keypress",PassFF.Menu.onSearchKeydown);
+        searchtextbox.addEventListener("keypress",PassFF.Menu.onSearchKeypress);
         searchtextbox.addEventListener("keyup",PassFF.Menu.onSearchKeyup);
 
         let buttonroot = doc.createElement("button");
@@ -75,7 +75,7 @@ PassFF.Menu = {
         return panel;
     },
 
-    onSearchKeydown : function(event) {
+    onSearchKeypress : function(event) {
         console.debug("[PassFF]", "Search keydown", event);
         let doc = event.target.ownerDocument;
         if(event.keyCode == 40) {
