@@ -108,7 +108,7 @@ PassFF.Menu = {
             let item = PassFF.Menu.getItem(event.target.selectedItem);
             PassFF.Menu.goToItemUrl(item, event.shiftKey);
             CustomizableUI.hidePanelForNode(event.target);
-        } else {
+        } else if(event.keyCode != 40 && event.keyCode != 39) {
             event.target.ownerDocument.getElementById(PassFF.Ids.searchbox).focus();
         }
     },
