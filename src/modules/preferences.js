@@ -10,7 +10,7 @@ PassFF.Preferences = {
         loginFieldNames    : "login,user,username,id",
         passwordFieldNames : "passwd,password,pass",
         urlFieldNames      : "url,http",
-        command            : "/bin/pass",
+        command            : "/usr/bin/pass",
         home               : "",
         storeDir           : "",
         storeGit           : "",
