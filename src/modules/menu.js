@@ -107,10 +107,16 @@ PassFF.Menu = {
     onListItemkeyPress : function(event) {
         console.debug("[PassFF]", "List item keydown", event);
         if(event.keyCode == 13) {
+            //event.target.selectedItem.click();
             let item = PassFF.Menu.getItem(event.target.selectedItem);
             PassFF.Menu.goToItemUrl(item, event.shiftKey, true);
             CustomizableUI.hidePanelForNode(event.target);
-        } else if(event.keyCode != 40 && event.keyCode != 39) {
+        } else if(event.keyCode == 39) {
+            let item = PassFF.Menu.getItem(event.target.selectedItem);
+            let doc = event.target.ownerDocument;
+            PassFF.Menu.clearMenuList(doc);
+            PassFF.Menu.createLeafMenuList(doc, item);
+        } else if(event.keyCode != 40 && event.keyCode != 38) {
             event.target.ownerDocument.getElementById(PassFF.Ids.searchbox).focus();
         }
     },
