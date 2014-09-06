@@ -178,7 +178,6 @@ PassFF.Pass = {
   },
 
   executePass : function(arguments) {
-    
     let result = null;
     let params = {
       command     : PassFF.Preferences.command,

@@ -77,6 +77,7 @@ PassFF.Menu = {
 
     onSearchKeypress : function(event) {
         console.debug("[PassFF]", "Search keydown", event);
+        if(event.ctrlKey || event.altKey) return false;
         let doc = event.target.ownerDocument;
         if(event.keyCode == 40) {
             console.debug("[PassFF]", "Arrow down")
@@ -100,6 +101,8 @@ PassFF.Menu = {
     },
 
     onSearchKeyup : function(event) {
+        console.debug("[PassFF]", "Search keyup", event);
+        if(event.keyCode <= 20) return false;
         let doc = event.target.ownerDocument;
         PassFF.Menu.clearMenuList(doc);
         PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.getMatchingItems(event.target.value, 6));
@@ -137,18 +140,19 @@ PassFF.Menu = {
     },
 
     onContextButtonCommand : function(event) {
-        console.debug("[PassFF]", "All button command", event);
+        console.debug("[PassFF]", "Context button command", event);
         PassFF.Menu.createContextualMenu(event.target.ownerDocument, event.target.ownerGlobal.content.location.href);
     },
 
     onRootButtonCommand : function(event) {
-        console.debug("[PassFF]", "All button command", event);
+        console.debug("[PassFF]", "Root button command", event);
         let doc = event.target.ownerDocument;
         PassFF.Menu.clearMenuList(doc);
         PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.rootItems);
     },
 
     onRefresh : function(event) {
+        console.debug("[PassFF]", "Refresh", event);
         (function() { PassFF.Preferences._init(); }).apply(PassFF.Preferences);
         (function() { PassFF.Pass.init(); }).apply(PassFF.Pass);
 
@@ -241,6 +245,7 @@ PassFF.Menu = {
 
     createItemsMenuList : function(doc, items) {
         console.debug("[PassFF]", "Create children menu list", items);
+        //console.debug("[PassFF]", "Create children menu list", new Error().stack);
         let listElm = doc.getElementById(PassFF.Ids.entrieslist);
         items.forEach(function(item) {
             if (!item.isField()) listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, item.fullKey(), PassFF.Menu.onListItemSelected, null, function(event) {
