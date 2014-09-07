@@ -79,48 +79,52 @@ PassFF.Menu = {
         console.debug("[PassFF]", "Search keydown", event);
         if(event.ctrlKey || event.altKey) return false;
         let doc = event.target.ownerDocument;
-        if(event.keyCode == 40) {
-            console.debug("[PassFF]", "Arrow down")
+        if(event.keyCode == 40 || event.keyCode == 13) {
+            console.debug("[PassFF]", "Select first child")
             let listElm = doc.getElementById(PassFF.Ids.entrieslist);
-            if(listElm.firstChild) listElm.firstChild.selected = false;
-            listElm.selectItem(listElm.firstChild)
+            if(listElm.firstChild) {
+                listElm.firstChild.selected = false;
+                listElm.selectItem(listElm.firstChild)
+            }
             listElm.focus();
             event.stopPropagation();
-            return false;
         }
-        if(event.keyCode == 13) {
-            let listElm = doc.getElementById(PassFF.Ids.entrieslist);
-            listElm.selectItem(listElm.firstChild)
-            console.debug("[PassFF]", "Selected item", listElm.selectedItem)
-            if (listElm.selectedItem.onEnterPress) {
-                listElm.selectedItem.onEnterPress(event);
-            } else {
-                listElm.selectedItem.click();
-            }
-        }
+        PassFF.Menu.keyPressManagement(event);
+        return false;
     },
 
     onSearchKeyup : function(event) {
         console.debug("[PassFF]", "Search keyup", event);
         if(event.keyCode <= 20) return false;
         let doc = event.target.ownerDocument;
-        PassFF.Menu.clearMenuList(doc);
         PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.getMatchingItems(event.target.value, 6));
     },
 
     onListItemkeyPress : function(event) {
         console.debug("[PassFF]", "List item keydown", event);
+        PassFF.Menu.keyPressManagement(event);
+    },
+    keyPressManagement : function(event) {
+        let doc = event.target.ownerDocument;
+        let listElm = doc.getElementById(PassFF.Ids.entrieslist);
         if(event.keyCode == 13) {
-            if (event.target.selectedItem.onEnterPress) {
-                event.target.selectedItem.onEnterPress(event);
+            if (listElm.selectedItem.onEnterPress) {
+                listElm.selectedItem.onEnterPress(event);
             } else {
-                event.target.selectedItem.click();
+                listElm.selectedItem.click();
             }
         } else if(event.keyCode == 39) {
-            let item = PassFF.Menu.getItem(event.target.selectedItem);
+            let item = PassFF.Menu.getItem(listElm.selectedItem);
             let doc = event.target.ownerDocument;
-            PassFF.Menu.clearMenuList(doc);
-            PassFF.Menu.createLeafMenuList(doc, item);
+            PassFF.Menu.createItemMenuList(doc, item);
+        } else if(event.keyCode == 37) {
+            let doc = event.target.ownerDocument;
+            let item = PassFF.Menu.getItem(listElm.firstChild);
+            if (item) {
+                PassFF.Menu.createItemMenuList(doc, item);
+            } else {
+                PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.rootItems);
+            }
         } else if(event.keyCode != 40 && event.keyCode != 38) {
             event.target.ownerDocument.getElementById(PassFF.Ids.searchbox).focus();
         }
@@ -131,7 +135,6 @@ PassFF.Menu = {
         let doc = event.target.ownerDocument;
         let item = PassFF.Menu.getItem(event.target);
 
-        PassFF.Menu.clearMenuList(doc);
         if (item) {
             PassFF.Menu.createItemMenuList(doc, item);
         } else {
@@ -147,7 +150,6 @@ PassFF.Menu = {
     onRootButtonCommand : function(event) {
         console.debug("[PassFF]", "Root button command", event);
         let doc = event.target.ownerDocument;
-        PassFF.Menu.clearMenuList(doc);
         PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.rootItems);
     },
 
@@ -229,7 +231,7 @@ PassFF.Menu = {
 
         PassFF.Menu.clearMenuList(doc);
         if (item.hasFields() || item.isLeaf()) PassFF.Menu.createLeafMenuList(doc, item);
-        if (!item.isLeaf()) PassFF.Menu.createItemsMenuList(doc, item.children);
+        if (!item.isLeaf()) PassFF.Menu.createItemsMenuList(doc, item.children, false);
 
         let listElm = doc.getElementById(PassFF.Ids.entrieslist);
         listElm.insertBefore(PassFF.Menu.createMenuItem(doc, item.parent, "..", PassFF.Menu.onListItemSelected), listElm.firstChild);
@@ -239,24 +241,29 @@ PassFF.Menu = {
         console.debug("[PassFF]", "createContextualMenu", url);
         let items = PassFF.Pass.getUrlMatchingItems(url);
         if (items.length == 0) items = PassFF.Pass.rootItems
-        PassFF.Menu.clearMenuList(doc);
         PassFF.Menu.createItemsMenuList(doc, items);
     },
 
-    createItemsMenuList : function(doc, items) {
-        console.debug("[PassFF]", "Create children menu list", items);
+    createItemsMenuList : function(doc, items, cleanMenu) {
+        console.debug("[PassFF]", "Create children menu list", items, cleanMenu);
+        if (cleanMenu == undefined || cleanMenu == true) PassFF.Menu.clearMenuList(doc);
         //console.debug("[PassFF]", "Create children menu list", new Error().stack);
         let listElm = doc.getElementById(PassFF.Ids.entrieslist);
         items.forEach(function(item) {
-            if (!item.isField()) listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, item.fullKey(), PassFF.Menu.onListItemSelected, null, function(event) {
-                let item = PassFF.Menu.getItem(this);
-                PassFF.Menu.goToItemUrl(item, event.shiftKey, true);
-                CustomizableUI.hidePanelForNode(event.target);
-            } ));
+            if (!item.isField()) {
+                let onEnter = null;
+                if (item.isLeaf() || item.hasFields()) onEnter = function(event) {
+                    let item = PassFF.Menu.getItem(this);
+                    PassFF.Menu.goToItemUrl(item, event.shiftKey, true);
+                    CustomizableUI.hidePanelForNode(event.target);
+                }
+                listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, item.fullKey(), PassFF.Menu.onListItemSelected, null, onEnter));
+            }
         });
     },
 
     createLeafMenuList : function(doc, item) {
+        PassFF.Menu.clearMenuList(doc);
         console.debug("[PassFF]", "Create leaf menu list", item);
         let listElm = doc.getElementById(PassFF.Ids.entrieslist);
         listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.fill")                , PassFF.Menu.onAutoFillMenuClick));

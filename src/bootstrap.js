@@ -202,6 +202,7 @@ let PassFF = {
                 toggleKey.setAttribute("key", PassFF.Preferences.shortcutKey);
                 toggleKey.setAttribute("modifiers", PassFF.Preferences.shortcutMod);
                 toggleKey.setAttribute("oncommand", "void(0);");
+                //toggleKey.addEventListener("command", function(event) { PassFF.Menu.createStaticMenu(event.target.ownerDocument).style = "display: visible";}, true);
                 toggleKey.addEventListener("command", function(event) { event.target.ownerDocument.getElementById(PassFF.Ids.button).click(); }, true);
                 doc.getElementById("mainKeyset").parentNode.appendChild(toggleKeyset).appendChild(toggleKey);
             }
