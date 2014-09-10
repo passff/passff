@@ -252,7 +252,7 @@ let PassFF = {
 
                     if(bestFitItem) {
                         PassFF.Page.fillInputs(doc, bestFitItem);
-                        if ((PassFF.Page.itemToUse || PassFF.Preferences.autoSubmit) && PassFF.Pass.getItemsLeafs(matchItems).length == 1) PassFF.Page.submit(doc, url);
+                        if (PassFF.Page.itemToUse || (PassFF.Preferences.autoSubmit && PassFF.Pass.getItemsLeafs(matchItems).length == 1)) PassFF.Page.submit(doc, url);
                     }
                 }
 
