@@ -35,7 +35,8 @@ PassFF.Menu = {
 
         let richlistbox = doc.createElement("richlistbox");
         richlistbox.setAttribute("id", PassFF.Ids.entrieslist);
-        richlistbox.addEventListener("keydown", PassFF.Menu.onListItemkeyPress);
+        richlistbox.addEventListener("keydown", PassFF.Menu.onListItemkeydown);
+        richlistbox.addEventListener("keyup", PassFF.Menu.onListItemkeyup);
 
         //********* menubar
         let refreshitem = doc.createElement("menuitem");
@@ -79,14 +80,17 @@ PassFF.Menu = {
         console.debug("[PassFF]", "Search keydown", event);
         if(event.ctrlKey || event.altKey) return false;
         let doc = event.target.ownerDocument;
-        if(event.keyCode == 40 || event.keyCode == 13) {
+        if(event.keyCode == 40 || event.keyCode == 13 || event.keyCode == 39) {
             console.debug("[PassFF]", "Select first child")
             let listElm = doc.getElementById(PassFF.Ids.entrieslist);
             if(listElm.firstChild) {
                 listElm.firstChild.selected = false;
-                listElm.selectItem(listElm.firstChild)
+                let item = listElm.firstChild;
+                if (event.keyCode == 40) item = item.nextSibling;
+                listElm.selectItem(item)
+                item.selected = true;
             }
-            listElm.focus();
+            if(event.keyCode != 39) listElm.focus();
             event.stopPropagation();
         }
         PassFF.Menu.keyPressManagement(event);
@@ -95,15 +99,24 @@ PassFF.Menu = {
 
     onSearchKeyup : function(event) {
         console.debug("[PassFF]", "Search keyup", event);
-        if(event.keyCode <= 20) return false;
+        if(event.keyCode <= 46) return false;
         let doc = event.target.ownerDocument;
         PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.getMatchingItems(event.target.value, 6));
     },
 
-    onListItemkeyPress : function(event) {
+    onListItemkeydown : function(event) {
         console.debug("[PassFF]", "List item keydown", event);
         PassFF.Menu.keyPressManagement(event);
     },
+    onListItemkeyup : function(event) {
+        console.debug("[PassFF]", "List item keyup", event);
+        if(event.keyCode == 39) {
+            let searchInputElm = doc.getElementById(PassFF.Ids.searchbox);
+            searchInputElm.focus()
+            event.stopPropagation();
+        }
+    },
+
     keyPressManagement : function(event) {
         let doc = event.target.ownerDocument;
         let listElm = doc.getElementById(PassFF.Ids.entrieslist);
@@ -296,6 +309,7 @@ PassFF.Menu = {
     goToItemUrl: function(item, newTab, autoFillAndSubmit) {
         if (item == null || item == undefined) return;
 
+        console.debug("[PassFF]", "go to item url", item, newTab, autoFillAndSubmit);
         if (autoFillAndSubmit) PassFF.Page.itemToUse = item;
         let passwordData = PassFF.Pass.getPasswordData(item);
         let url = passwordData.url;
