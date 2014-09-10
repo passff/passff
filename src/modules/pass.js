@@ -84,6 +84,10 @@ PassFF.Pass = {
     let stdout = result.stdout;
     this._rootItems = [];
     this._items = [];
+    // replace utf8 box characters with traditional ascii tree
+    stdout = stdout.replace(/[\u2514\u251C]\u2500\u2500/g,"|--");
+    //remove colors
+    stdout = stdout.replace(/\x1B\[[^m]*m/g, "");
     //console.debug("[PassFF]", stdout);
     let lines = stdout.split("\n");
     let re = /(.*[|`])+-- (.*)/;
@@ -179,9 +183,16 @@ PassFF.Pass = {
 
   executePass : function(arguments) {
     let result = null;
+    let args = new Array();
+    PassFF.Preferences.commandArgs.forEach(function(val){
+        args.push(val);
+    });
+    arguments.forEach(function(val){
+        args.push(val);
+    })
     let params = {
       command     : PassFF.Preferences.command,
-      arguments   : arguments,
+      arguments   : args,
       environment : this.getEnvParams(),
       charset     : 'UTF-8',
       workdir     : PassFF.Preferences.home,

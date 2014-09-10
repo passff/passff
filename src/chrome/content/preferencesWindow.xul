@@ -12,6 +12,7 @@
       <preference id="passff-passwordFieldNames-pref" name="extensions.passff.passwordFieldNames" type="string" />
       <preference id="passff-urlFieldNames-pref" name="extensions.passff.urlFieldNames" type="string" />
       <preference id="passff-command-pref" name="extensions.passff.command" type="string" />
+      <preference id="passff-commandArgs-pref" name="extensions.passff.commandArgs" type="string" />
       <preference id="passff-home-pref" name="extensions.passff.home" type="string" />
       <preference id="passff-gpg_agent_info-pref" name="extensions.passff.gpgAgentInfo" type="string" />
       <preference id="passff-pass_dir-pref" name="extensions.passff.storeDir" type="string" />
@@ -113,6 +114,12 @@
             <vbox>
               <label tooltiptext= "&passff.preferences.command_tooltip;" id="command_label" control="command" value="&passff.preferences.command_label;"/>
               <textbox tooltiptext= "&passff.preferences.command_tooltip;" id="command" preference="passff-command-pref" type="string"/>
+            </vbox>
+          </row>
+          <row>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.commandArgs_tooltip;" id="commandArgs_label" control="commandArgs" value="&passff.preferences.commandArgs_label;"/>
+              <textbox tooltiptext= "&passff.preferences.commandArgs_tooltip;" id="commandArgs" preference="passff-commandArgs-pref" type="string"/>
             </vbox>
           </row>
           <row>

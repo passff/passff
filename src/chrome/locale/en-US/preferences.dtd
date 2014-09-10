@@ -14,6 +14,8 @@
 <!ENTITY passff.preferences.url_field_names_tooltip      "Comma separated list of field names. The first matching field in the url data will be used as login">
 <!ENTITY passff.preferences.command_label                "Pass command">
 <!ENTITY passff.preferences.command_tooltip              "The pass script path">
+<!ENTITY passff.preferences.commandArgs_label                "Pass command line arguments">
+<!ENTITY passff.preferences.commandArgs_tooltip              "The pass command line arguments">
 <!ENTITY passff.preferences.home_label                   "User home">
 <!ENTITY passff.preferences.home_tooltip                 "User home. If empty, use environment user home">
 <!ENTITY passff.preferences.gpg_agent_info_label         "Gpg agent info file">

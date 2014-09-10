@@ -11,6 +11,7 @@ PassFF.Preferences = {
         passwordFieldNames : "passwd,password,pass",
         urlFieldNames      : "url,http",
         command            : "/usr/bin/pass",
+        commandArgs        : "",
         home               : "",
         storeDir           : "",
         storeGit           : "",
@@ -43,6 +44,7 @@ PassFF.Preferences = {
             passwordFieldNames : this.passwordFieldNames,
             urlFieldNames      : this.urlFieldNames,
             command            : this.command,
+            commandArgs        : this.commandArgs,
             home               : this.home,
             storeDir           : this.storeDir,
             storeGit           : this.storeGit,
@@ -60,6 +62,7 @@ PassFF.Preferences = {
     get passwordFieldNames() { return this._params.passwordFieldNames.value.split(",");},
     get urlFieldNames()      { return this._params.urlFieldNames.value.split(",");},
     get command()            { return this._params.command.value; },
+    get commandArgs()        { return this._params.commandArgs.value.split(" "); },
     get home()               { return (this._params.home.value.trim().length > 0 ? this._params.home.value : this._environment.get('HOME')); },
     get storeDir()           { return (this._params.storeDir.value.trim().length > 0 ? this._params.storeDir.value : this._environment.get('PASSWORD_STORE_DIR')); },
     get storeGit()           { return (this._params.storeGit.value.trim().length > 0 ? this._params.storeGit.value : this._environment.get('PASSWORD_STORE_GIT')); },
@@ -71,7 +74,7 @@ PassFF.Preferences = {
 
     setGpgAgentEnv : function() {
         let gpgAgentInfo = this._params.gpgAgentInfo.value;
-        let filename = (gpgAgentInfo.indexOf("/") != 0 ? this.home + "/" : "") + gpgAgentInfo;
+        let filename = (gpgAgentInfo.indexOf(FileUtils.directorySeparator) != 0 ? this.home + FileUtils.directorySeparator : "") + gpgAgentInfo;
         let file = new FileUtils.File(filename);
         console.debug("[PassFF]", "Check Gpg agent file existance : " + filename);
         if (file.exists() && file.isFile()) {
