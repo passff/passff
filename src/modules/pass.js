@@ -185,7 +185,7 @@ PassFF.Pass = {
     let result = null;
     let args = new Array();
     PassFF.Preferences.commandArgs.forEach(function(val){
-        args.push(val);
+        if(val && val.trim().length() > 0) args.push(val);
     });
     arguments.forEach(function(val){
         args.push(val);
