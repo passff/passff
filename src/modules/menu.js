@@ -110,6 +110,7 @@ PassFF.Menu = {
     },
     onListItemkeyup : function(event) {
         console.debug("[PassFF]", "List item keyup", event);
+        if(event.keyCode <= 46) return false;
         if(event.keyCode == 39) {
             let searchInputElm = doc.getElementById(PassFF.Ids.searchbox);
             searchInputElm.focus()
