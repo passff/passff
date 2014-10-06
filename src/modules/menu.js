@@ -210,18 +210,19 @@ PassFF.Menu = {
     },
 
     onDisplayItemData : function(event) {
+        CustomizableUI.hidePanelForNode(event.target);
         let item = PassFF.Menu.getItem(event.target);
         let passwordData = PassFF.Pass.getPasswordData(item);
         let login = passwordData["login"];
         let password = passwordData["password"];
         let title = PassFF.gsfm("passff.display.title");
         let desc = PassFF.gsfm("passff.display.description", [login, password], 2)
-        CustomizableUI.hidePanelForNode(event.target);
         PassFF.Menu._promptService.alert(null, title, desc);
     },
 
     onCopyToClipboard : function(event) {
         console.debug("[PassFF]", "copy to clipboard", event);
+        CustomizableUI.hidePanelForNode(event.target);
         event.stopPropagation();
         let str = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
         let trans = Cc["@mozilla.org/widget/transferable;1"].createInstance(Ci.nsITransferable);
@@ -232,7 +233,6 @@ PassFF.Menu = {
         trans.addDataFlavor('text/unicode');
         trans.setTransferData('text/unicode', str, str.data.length * 2);
         clip.setData(trans, null, Ci.nsIClipboard.kGlobalClipboard);
-        CustomizableUI.hidePanelForNode(event.target);
     },
 
     clearMenuList : function(doc) {
