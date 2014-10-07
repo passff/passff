@@ -267,9 +267,9 @@ PassFF.Menu = {
             if (!item.isField()) {
                 let onEnter = null;
                 if (item.isLeaf() || item.hasFields()) onEnter = function(event) {
+                    CustomizableUI.hidePanelForNode(event.target);
                     let item = PassFF.Menu.getItem(this);
                     PassFF.Menu.goToItemUrl(item, event.shiftKey, true);
-                    CustomizableUI.hidePanelForNode(event.target);
                 }
                 listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, item.fullKey(), PassFF.Menu.onListItemSelected, null, onEnter));
             }
