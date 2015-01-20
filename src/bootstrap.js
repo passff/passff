@@ -241,22 +241,23 @@ let PassFF = {
             let win = doc.defaultView;
             if (doc.nodeName == "#document" && win == win.top) {
                 console.debug("[PassFF]", "Content loaded", event, PassFF.Preferences.autoFill, PassFF.Page.getPasswordInputs(doc).length);
-
-                if ((PassFF.Page.itemToUse || PassFF.Preferences.autoFill) && PassFF.Page.getPasswordInputs(doc).length > 0) {
+                
+                if(!PassFF.Page.autoFillAndSubmitPending 
+                   && PassFF.Preferences.autoFill
+                   && PassFF.Page.getPasswordInputs(doc).length > 0) {
                     let url = win.location.href
                     let matchItems = PassFF.Pass.getUrlMatchingItems(url);
 
-                    console.info("[PassFF]", "Start auto-fill")
-                    let bestFitItem = PassFF.Page.itemToUse;
-                    if (!bestFitItem) bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
+                    console.info("[PassFF]", "Start pref-auto-fill")
+                    let bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
 
                     if(bestFitItem) {
                         PassFF.Page.fillInputs(doc, bestFitItem);
-                        if (PassFF.Page.itemToUse || (PassFF.Preferences.autoSubmit && PassFF.Pass.getItemsLeafs(matchItems).length == 1)) PassFF.Page.submit(doc, url);
+                        if (PassFF.Preferences.autoSubmit && PassFF.Pass.getItemsLeafs(matchItems).length == 1)
+                            PassFF.Page.submit(doc, url);
                     }
                 }
-
-                PassFF.Page.itemToUse = null;
+                
                 PassFF.Page._autoSubmittedUrls = new Array();
             }
         },

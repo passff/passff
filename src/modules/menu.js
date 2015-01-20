@@ -311,7 +311,6 @@ PassFF.Menu = {
         if (item == null || item == undefined) return;
 
         console.debug("[PassFF]", "go to item url", item, newTab, autoFillAndSubmit);
-        if (autoFillAndSubmit) PassFF.Page.itemToUse = item;
         let passwordData = PassFF.Pass.getPasswordData(item);
         let url = passwordData.url;
         if (url == null || url == undefined) url = item.key;
@@ -323,6 +322,19 @@ PassFF.Menu = {
             } else {
                 window.content.location.href = url;
             }
+            if(autoFillAndSubmit) {
+                PassFF.Page.autoFillAndSubmitPending = true;
+                let currentTabBrowser = window.gBrowser.getBrowserForTab(window.gBrowser.selectedTab);
+                currentTabBrowser.addEventListener("load", function load(event) {
+                    console.info("[PassFF]", "Start auto-fill")
+                    currentTabBrowser.removeEventListener("load", load, true);
+                    PassFF.Page.autoFillAndSubmitPending = false;
+                    let doc = event.originalTarget;
+                    PassFF.Page.fillInputs(doc, item);
+                    PassFF.Page.submit(doc, url);
+                }, true);
+            }
+            
         }
     },
 
