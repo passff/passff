@@ -257,7 +257,7 @@ let PassFF = {
                             PassFF.Page.submit(doc, url);
                     }
                 }
-                
+
                 PassFF.Page._autoSubmittedUrls = new Array();
             }
         },
