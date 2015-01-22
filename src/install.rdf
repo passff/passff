@@ -7,7 +7,7 @@
     <em:id>passff@invicem.pro</em:id>
     <em:name>zx2c4 pass manager addon</em:name>
     <em:description>Addon allowing to access your zx2c4 password repository from Firefox</em:description>
-    <em:version>v1-pre-release-12</em:version>
+    <em:version>v1-pre-release-14</em:version>
     <em:creator>Johan Venant</em:creator>
     <em:homepageURL>http://invicem.pro/pages/passff.html</em:homepageURL>
     <em:type>2</em:type>
@@ -18,7 +18,7 @@
     <em:targetApplication>
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-        <em:minVersion>29.0a1</em:minVersion>
+        <em:minVersion>30.*</em:minVersion>
         <em:maxVersion>30.*</em:maxVersion>
       </Description>
     </em:targetApplication>
