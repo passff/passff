@@ -17,10 +17,7 @@ PassFF.Pass = {
         if(!PassFF.Pass._promptService.confirm(null, title, desc)) return;
         executionResult = PassFF.Pass.executePass(args);
       }
-      if (executionResult.exitCode != 0) {
-        PassFF.Pass._promptService.alert(null, "Error", executionResult.stderr);
-        return;
-      }
+      if (executionResult.exitCode != 0)  return;
 
       let lines = executionResult.stdout.split("\n");
       result.password = lines[0];
@@ -201,13 +198,19 @@ PassFF.Pass = {
       mergeStderr : false,
       done        : function(data) { result = data }
     }
-    log.debug("[PassFF]", "Execute pass", params);
-    let p = subprocess.call(params);
-    p.wait();
-    if (result.exitCode != 0) {
-      log.warn("[PassFF]", result.exitCode, result.stderr, result.stdout);
-    } else {
-      log.info("[PassFF]", "pass script execution ok");
+    log.debug("Execute pass", params);
+    try {
+      let p = subprocess.call(params);
+      p.wait();
+      if (result.exitCode != 0) {
+        log.warn(result.exitCode, result.stderr, result.stdout);
+      } else {
+        log.info("pass script execution ok");
+      }
+    } catch (ex) {
+        PassFF.Pass._promptService.alert(null, "Error executing pass script", ex.message);
+        log.error("[PassFF]", "Error executing pass script", ex);
+        result = { exitCode : -1 }
     }
     return result;
   },
