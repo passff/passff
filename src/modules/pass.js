@@ -88,7 +88,7 @@ PassFF.Pass = {
     stdout = stdout.replace(/[\u2514\u251C]\u2500\u2500/g,"|--");
     //remove colors
     stdout = stdout.replace(/\x1B\[[^m]*m/g, "");
-    //console.debug("[PassFF]", stdout);
+    //log.debug("[PassFF]", stdout);
     let lines = stdout.split("\n");
     let re = /(.*[|`])+-- (.*)/;
     let curParent = null;
@@ -124,7 +124,7 @@ PassFF.Pass = {
         if (item.depth == 0) this._rootItems.push(item);
       }
     }
-    console.debug("[PassFF]", "Found Items", this._rootItems);
+    log.debug("[PassFF]", "Found Items", this._rootItems);
   },
 
   getMatchingItems : function(search, limit) {
@@ -154,12 +154,12 @@ PassFF.Pass = {
   findBestFitItem : function(items, url) { 
     let bestFitItem = null;
     items.forEach(function(item) {
-      console.debug("[PassFF]", "Found Items", item, item.isLeaf());
+      log.debug("[PassFF]", "Found Items", item, item.isLeaf());
       if (item.isLeaf()) {
         if (bestFitItem == null || item.key.length > bestFitItem.key.length) bestFitItem = item;
       }
     });
-    console.debug("[PassFF]", "Best fit item", bestFitItem);
+    log.debug("[PassFF]", "Best fit item", bestFitItem);
     return bestFitItem;
   },
 
@@ -200,13 +200,13 @@ PassFF.Pass = {
       mergeStderr : false,
       done        : function(data) { result = data }
     }
-    console.debug("[PassFF]", "Execute pass", params);
+    log.debug("[PassFF]", "Execute pass", params);
     let p = subprocess.call(params);
     p.wait();
     if (result.exitCode != 0) {
-      console.warn("[PassFF]", result.exitCode, result.stderr, result.stdout);
+      log.warn("[PassFF]", result.exitCode, result.stderr, result.stdout);
     } else {
-      console.info("[PassFF]", "pass script execution ok");
+      log.info("[PassFF]", "pass script execution ok");
     }
     return result;
   },

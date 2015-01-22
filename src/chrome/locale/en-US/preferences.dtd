@@ -1,5 +1,6 @@
 <!ENTITY passff.preferences.page_caption                 "Html page autofill behavior">
 <!ENTITY passff.preferences.pass_caption                 "Pass script parameters">
+<!ENTITY passff.preferences.others_caption                 "Others parameters">
 <!ENTITY passff.preferences.fields_caption               "Fields parameters">
 <!ENTITY passff.preferences.fields_description           "Fields are used to find data inside your passwords repository. PassFF will try to find the login, password or url value inside the password data (using the standard syntax) or trying to find a matching child node name">
 <!ENTITY passff.preferences.password_input_names_label   "Password input names">
@@ -33,3 +34,5 @@
 <!ENTITY passff.preferences.shortcut_key_tooltip         "The shortcut key used to open the PassFF panel">
 <!ENTITY passff.preferences.shortcut_mod_label           "Shortcut modifier">
 <!ENTITY passff.preferences.shortcut_mod_tooltip         "The shortcut modifiers used to open the PassFF panel. A combinaison of (control, alt, shift) words separated by a comma (,)">
+<!ENTITY passff.preferences.log_enabled_label              "Enable logs">
+<!ENTITY passff.preferences.log_enabled_tooltip            "Enable debug logs in web console">

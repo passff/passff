@@ -77,11 +77,11 @@ PassFF.Menu = {
     },
 
     onSearchKeypress : function(event) {
-        console.debug("[PassFF]", "Search keydown", event);
+        log.debug("[PassFF]", "Search keydown", event);
         if(event.ctrlKey || event.altKey) return false;
         let doc = event.target.ownerDocument;
         if(event.keyCode == 40 || event.keyCode == 13 || event.keyCode == 39) {
-            console.debug("[PassFF]", "Select first child")
+            log.debug("[PassFF]", "Select first child")
             let listElm = doc.getElementById(PassFF.Ids.entrieslist);
             if(listElm.firstChild) {
                 listElm.firstChild.selected = false;
@@ -98,18 +98,18 @@ PassFF.Menu = {
     },
 
     onSearchKeyup : function(event) {
-        console.debug("[PassFF]", "Search keyup", event);
+        log.debug("[PassFF]", "Search keyup", event);
         if(event.keyCode <= 46) return false;
         let doc = event.target.ownerDocument;
         PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.getMatchingItems(event.target.value, 6));
     },
 
     onListItemkeydown : function(event) {
-        console.debug("[PassFF]", "List item keydown", event);
+        log.debug("[PassFF]", "List item keydown", event);
         PassFF.Menu.keyPressManagement(event);
     },
     onListItemkeyup : function(event) {
-        console.debug("[PassFF]", "List item keyup", event);
+        log.debug("[PassFF]", "List item keyup", event);
         if(event.keyCode <= 46) return false;
         if(event.keyCode == 39) {
             let searchInputElm = doc.getElementById(PassFF.Ids.searchbox);
@@ -145,7 +145,7 @@ PassFF.Menu = {
     },
 
     onListItemSelected :function(event) {
-        console.debug("[PassFF]", "List item selected", event);
+        log.debug("[PassFF]", "List item selected", event);
         let doc = event.target.ownerDocument;
         let item = PassFF.Menu.getItem(event.target);
 
@@ -157,18 +157,18 @@ PassFF.Menu = {
     },
 
     onContextButtonCommand : function(event) {
-        console.debug("[PassFF]", "Context button command", event);
+        log.debug("[PassFF]", "Context button command", event);
         PassFF.Menu.createContextualMenu(event.target.ownerDocument, event.target.ownerGlobal.content.location.href);
     },
 
     onRootButtonCommand : function(event) {
-        console.debug("[PassFF]", "Root button command", event);
+        log.debug("[PassFF]", "Root button command", event);
         let doc = event.target.ownerDocument;
         PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.rootItems);
     },
 
     onRefresh : function(event) {
-        console.debug("[PassFF]", "Refresh", event);
+        log.debug("[PassFF]", "Refresh", event);
         (function() { PassFF.Preferences._init(); }).apply(PassFF.Preferences);
         (function() { PassFF.Pass.init(); }).apply(PassFF.Pass);
 
@@ -196,7 +196,7 @@ PassFF.Menu = {
     onGoto : function(event) {
         event.stopPropagation();
         let item = PassFF.Menu.getItem(event.target);
-        console.debug("[PassFF]", "Goto item url", item);
+        log.debug("[PassFF]", "Goto item url", item);
         CustomizableUI.hidePanelForNode(event.target);
         PassFF.Menu.goToItemUrl(item, event.button != 0, false);
     },
@@ -204,7 +204,7 @@ PassFF.Menu = {
     onGotoAutoFillAndSubmitMenuClick : function(event) {
         event.stopPropagation();
         let item = PassFF.Menu.getItem(event.target);
-        console.debug("[PassFF]", "Goto item url fill and submit", item);
+        log.debug("[PassFF]", "Goto item url fill and submit", item);
         CustomizableUI.hidePanelForNode(event.target);
         PassFF.Menu.goToItemUrl(item, event.button != 0, true);
     },
@@ -221,7 +221,7 @@ PassFF.Menu = {
     },
 
     onCopyToClipboard : function(event) {
-        console.debug("[PassFF]", "copy to clipboard", event);
+        log.debug("[PassFF]", "copy to clipboard", event);
         CustomizableUI.hidePanelForNode(event.target);
         event.stopPropagation();
         let str = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
@@ -241,7 +241,7 @@ PassFF.Menu = {
     },
 
     createItemMenuList : function(doc, item) {
-        console.debug("[PassFF]", "Create item menu", item);
+        log.debug("[PassFF]", "Create item menu", item);
 
         PassFF.Menu.clearMenuList(doc);
         if (item.hasFields() || item.isLeaf()) PassFF.Menu.createLeafMenuList(doc, item);
@@ -252,16 +252,16 @@ PassFF.Menu = {
     },
 
     createContextualMenu : function(doc, url) {
-        console.debug("[PassFF]", "createContextualMenu", url);
+        log.debug("[PassFF]", "createContextualMenu", url);
         let items = PassFF.Pass.getUrlMatchingItems(url);
         if (items.length == 0) items = PassFF.Pass.rootItems
         PassFF.Menu.createItemsMenuList(doc, items);
     },
 
     createItemsMenuList : function(doc, items, cleanMenu) {
-        console.debug("[PassFF]", "Create children menu list", items, cleanMenu);
+        log.debug("[PassFF]", "Create children menu list", items, cleanMenu);
         if (cleanMenu == undefined || cleanMenu == true) PassFF.Menu.clearMenuList(doc);
-        //console.debug("[PassFF]", "Create children menu list", new Error().stack);
+        //log.debug("[PassFF]", "Create children menu list", new Error().stack);
         let listElm = doc.getElementById(PassFF.Ids.entrieslist);
         items.forEach(function(item) {
             if (!item.isField()) {
@@ -278,7 +278,7 @@ PassFF.Menu = {
 
     createLeafMenuList : function(doc, item) {
         PassFF.Menu.clearMenuList(doc);
-        console.debug("[PassFF]", "Create leaf menu list", item);
+        log.debug("[PassFF]", "Create leaf menu list", item);
         let listElm = doc.getElementById(PassFF.Ids.entrieslist);
         listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.fill")                , PassFF.Menu.onAutoFillMenuClick));
         listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.fill_and_submit")     , PassFF.Menu.onAutoFillAndSubmitMenuClick));
@@ -310,7 +310,7 @@ PassFF.Menu = {
     goToItemUrl: function(item, newTab, autoFillAndSubmit) {
         if (item == null || item == undefined) return;
 
-        console.debug("[PassFF]", "go to item url", item, newTab, autoFillAndSubmit);
+        log.debug("[PassFF]", "go to item url", item, newTab, autoFillAndSubmit);
         let passwordData = PassFF.Pass.getPasswordData(item);
         let url = passwordData.url;
         if (url == null || url == undefined) url = item.key;
@@ -326,7 +326,7 @@ PassFF.Menu = {
                 PassFF.Page.autoFillAndSubmitPending = true;
                 let currentTabBrowser = window.gBrowser.getBrowserForTab(window.gBrowser.selectedTab);
                 currentTabBrowser.addEventListener("load", function load(event) {
-                    console.info("[PassFF]", "Start auto-fill")
+                    log.info("[PassFF]", "Start auto-fill")
                     currentTabBrowser.removeEventListener("load", load, true);
                     PassFF.Page.autoFillAndSubmitPending = false;
                     let doc = event.originalTarget;

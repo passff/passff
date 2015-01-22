@@ -18,7 +18,8 @@ PassFF.Preferences = {
         autoFill           : false,
         autoSubmit         : false,
         shortcutKey        : "t",
-        shortcutMod        : "control,alt"
+        shortcutMod        : "control,alt",
+        logEnabled         : false
     },
 
     _init : function() {
@@ -36,7 +37,7 @@ PassFF.Preferences = {
 
         this.setGpgAgentEnv();
 
-        console.info("[PassFF]", "Preferences initialised", {
+        log.info("[PassFF]", "Preferences initialised", {
             passwordInputNames : this.passwordInputNames,
             loginInputNames    : this.loginInputNames,
             loginFieldNames    : this.loginFieldNames,
@@ -51,7 +52,8 @@ PassFF.Preferences = {
             autoFill           : this.autoFill,
             autoSubmit         : this.autoSubmit,
             shortcutKey        : this.shortcutKey,
-            shortcutMod        : this.shortcutMod
+            shortcutMod        : this.shortcutMod,
+            logEnabled         : this.logEnabled
         });
     },
 
@@ -67,31 +69,32 @@ PassFF.Preferences = {
     get storeGit()           { return this._params.storeGit.value.trim().length > 0 ? this._params.storeGit.value : this._environment.get('PASSWORD_STORE_GIT'); },
     get gpgAgentEnv()        { return this._gpgAgentEnv; },
     get autoFill()           { return this._params.autoFill.value; },
-    get autoSubmit()           { return this._params.autoSubmit.value; },
+    get autoSubmit()         { return this._params.autoSubmit.value; },
     get shortcutKey()        { return this._params.shortcutKey.value; },
     get shortcutMod()        { return this._params.shortcutMod.value; },
+    get logEnabled()         { return this._params.logEnabled.value; },
 
     setGpgAgentEnv : function() {
         let gpgAgentInfo = this._params.gpgAgentInfo.value;
         let filename = OS.Path.split(gpgAgentInfo).absolute ? gpgAgentInfo : OS.Path.join(this.home, gpgAgentInfo);
-        console.info("[PassFF]", "Try to retrieve Gpg agent variable from file " + filename);
+        log.info("[PassFF]", "Try to retrieve Gpg agent variable from file " + filename);
         let promise = OS.File.read(filename); // Read the complete file as an array
         let decoder = new TextDecoder();
         let that = this;
         promise = promise.then(
             function onSuccess(array) {
-                console.info("[PassFF]", "Retrieve Gpg agent variable from file");
+                log.info("[PassFF]", "Retrieve Gpg agent variable from file");
                 PassFF.Preferences._gpgAgentEnv =  decoder.decode(array).split("\n")
-                console.debug("[PassFF]", "Set Gpg agent variable :", PassFF.Preferences._gpgAgentEnv);
+                log.debug("[PassFF]", "Set Gpg agent variable :", PassFF.Preferences._gpgAgentEnv);
             },
             function onError(reason) {
-                console.info("[PassFF]", "Can't read file. Retrieve Gpg agent variable from environment");
+                log.info("[PassFF]", "Can't read file. Retrieve Gpg agent variable from environment");
                 PassFF.Preferences._gpgAgentEnv = [
                     "GPG_AGENT_INFO=" + that._environment.get('GPG_AGENT_INFO'),
                     "GNOME_KEYRING_CONTROL=" + that._environment.get('GNOME_KEYRING_CONTROL'),
                     "PATH=" + that._environment.get('PATH')
                 ]
-                console.debug("[PassFF]", "Set Gpg agent variable :", PassFF.Preferences._gpgAgentEnv);
+                log.debug("[PassFF]", "Set Gpg agent variable :", PassFF.Preferences._gpgAgentEnv);
             }
         );
     }

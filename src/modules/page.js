@@ -4,7 +4,7 @@ PassFF.Page = {
   init : function() { },
 
   fillInputs : function(doc, item) {
-    console.debug("[PassFF]", "Fill inputs", item)
+    log.debug("[PassFF]", "Fill inputs", item)
     let passwordData = PassFF.Pass.getPasswordData(item);
     if (passwordData) {
       PassFF.Page.setLoginInputs(doc, passwordData.login);
@@ -17,25 +17,25 @@ PassFF.Page = {
 
       let passwords = PassFF.Page.getPasswordInputs(doc);
       if (passwords.length > 0) {
-        console.debug("[PassFF]", "Url never submit. Submit it", url);
+        log.debug("[PassFF]", "Url never submit. Submit it", url);
         let form = PassFF.Page.searchParentForm(passwords[0]);
         if (form) {
-          console.debug("[PassFF]", "Found form to submit", form);
+          log.debug("[PassFF]", "Found form to submit", form);
           PassFF.Page._autoSubmittedUrls.push(url);
           let submitBtn = PassFF.Page.getSubmitButton(form);
           if (submitBtn) {
-            console.info("[PassFF]", "Click submit button");
+            log.info("[PassFF]", "Click submit button");
             submitBtn.click();
           } else {
-            console.info("[PassFF]", "Submit form");
+            log.info("[PassFF]", "Submit form");
             form.submit();
           }
         } else {
-          console.debug("[PassFF]", "No form found to submit");
+          log.debug("[PassFF]", "No form found to submit");
         }
       }
     } else {
-      console.info("[PassFF]", "Url already submit. skip it");
+      log.info("[PassFF]", "Url already submit. skip it");
     }
   },
 

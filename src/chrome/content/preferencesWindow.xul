@@ -21,6 +21,7 @@
       <preference id="passff-auto_submit-pref" name="extensions.passff.autoSubmit" type="bool" />
       <preference id="passff-shortcut_key-pref" name="extensions.passff.shortcutKey" type="string" />
       <preference id="passff-shortcut_mod-pref" name="extensions.passff.shortcutMod" type="string" />
+      <preference id="passff-log_enabled-pref" name="extensions.passff.logEnabled" type="bool" />
     </preferences>
     <groupbox>
       <caption label="&passff.preferences.shortcut_caption;"/>
@@ -140,6 +141,23 @@
             <vbox>
               <label tooltiptext= "&passff.preferences.pass_git_tooltip;" id="pass_git_label" control="pass_git" value="&passff.preferences.pass_git_label;"/>
               <textbox tooltiptext= "&passff.preferences.pass_git_tooltip;" id="pass_git" preference="passff-pass_git-pref" type="string"/>
+            </vbox>
+          </row>
+        </rows>
+      </grid>
+    </groupbox>
+    <separator class="groove-thin"/>
+    <groupbox>
+      <caption label="&passff.preferences.others_caption;"/>
+      <grid>
+        <columns>
+          <column flex="1"/>
+          <column flex="2"/>
+        </columns>
+        <rows>
+          <row>
+            <vbox>
+              <checkbox tooltiptext="&passff.preferences.log_enabled_tooltip;" label="&passff.preferences.log_enabled_label;" id="auto_fill" preference="passff-log_enabled-pref"/>
             </vbox>
           </row>
         </rows>
