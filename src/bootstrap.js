@@ -28,15 +28,22 @@ Cu.import("resource://gre/modules/Services.jsm");
 
 var console = Cu.import("resource://gre/modules/devtools/Console.jsm", {}).console;
 var log = {
-    debug : function() { if (PassFF.Preferences && PassFF.Preferences.logEnabled) console.debug.apply(console, arguments); },
-    info : function() { if (PassFF.Preferences && PassFF.Preferences.logEnabled) console.info.apply(console, arguments); }
+    debug : function() { if (PassFF.Preferences && PassFF.Preferences.logEnabled) console.debug.apply(console, this.generateParams(arguments)); },
+    info : function() { if (PassFF.Preferences && PassFF.Preferences.logEnabled) console.info.apply(console, this.generateParams(arguments)); },
+    warn : function() { console.warn.apply(console, this.generateParams(arguments)); },
+    error : function() { console.error.apply(console, this.generateParams(arguments)); },
+    generateParams: function(args) {
+        var argsArray = Array.slice(args)
+        argsArray.unshift("[PassFF]");
+        return argsArray;
+    }
 }
 
-function install(aData, aReason) { log.debug("[PassFF]", "install") }
-function uninstall(aData, aReason) { log.debug("[PassFF]", "uninstall") }
+function install(aData, aReason) { log.debug("install") }
+function uninstall(aData, aReason) { log.debug("uninstall") }
 
 function startup({id}) AddonManager.getAddonByID(id, function(addon) {
-    log.debug("[PassFF]", "startup");
+    log.debug("startup");
     Cu.import("chrome://passff/content/subprocess.jsm");
     // Load various javascript includes for helper functions
     ["common", "preferences", "pass", "menu", "page"].forEach(function(fileName) {
@@ -54,7 +61,7 @@ function startup({id}) AddonManager.getAddonByID(id, function(addon) {
 });
 
 function shutdown(aData, aReason) { 
-    log.debug("[PassFF]", "shutdown");
+    log.debug("shutdown");
     PassFF.uninit();
 }
 
@@ -90,13 +97,13 @@ let PassFF = {
     },
 
     init : function() {
-        log.debug("[PassFF]", "init");
+        log.debug("init");
 
         PassFF.waitForDocuments();
     },
 
     waitForDocuments: function() {
-        log.debug("[PassFF]", "Wait documents");
+        log.debug("Wait documents");
         let documentsCreated = true;
         let enumerator = Services.wm.getEnumerator("navigator:browser");
         while (enumerator.hasMoreElements()) {
@@ -107,7 +114,7 @@ let PassFF = {
             }
         }
         if (documentsCreated) {
-            log.debug("[PassFF]", "Documents found");
+            log.debug("Documents found");
             let enumerator = Services.wm.getEnumerator("navigator:browser");
             while (enumerator.hasMoreElements()) {
                 this.windowListener.addUI(enumerator.getNext());
@@ -119,7 +126,7 @@ let PassFF = {
         }
     },
     waitForPanel : function() {
-        log.debug("[PassFF]", "Wait panels");
+        log.debug("Wait panels");
         let panelsCreated = true;
         let enumerator = Services.wm.getEnumerator("navigator:browser");
         while (enumerator.hasMoreElements()) {
@@ -130,7 +137,7 @@ let PassFF = {
             }
         }
         if (panelsCreated) {
-            log.debug("[PassFF]", "Panels found");
+            log.debug("Panels found");
             // create widget and add it to the main toolbar.
             CustomizableUI.createWidget( {
                 id : PassFF.Ids.button,
@@ -154,7 +161,7 @@ let PassFF = {
     },
 
     uninit : function() {
-        log.debug("[PassFF]", "uninit");
+        log.debug("uninit");
         CustomizableUI.destroyWidget(PassFF.Ids.button);
         stringBundleService.flushBundles();
         Services.wm.removeListener(this.windowListener);
@@ -170,7 +177,7 @@ let PassFF = {
         * Adds the panel view for the button on all windows.
         */
         addUI : function(aWindow) {
-            log.debug("[PassFF]", "Add panel to new window");
+            log.debug("Add panel to new window");
 
             let doc = aWindow.document;
             let menuPanel = PassFF.Menu.createStaticMenu(doc);
@@ -193,7 +200,7 @@ let PassFF = {
         },
 
         observe : function(aSubject, aTopic, aData) {
-            log.debug("[PassFF]", "Preferences change", aTopic, aData);
+            log.debug("Preferences change", aTopic, aData);
             if("shortcutKey" == aData || shortcutMod == aData) {
                 let enumerator = Services.wm.getEnumerator("navigator:browser");
                 while (enumerator.hasMoreElements()) {
@@ -244,7 +251,7 @@ let PassFF = {
         },
 
         onLocationChange: function(aBrowser, aWebProgress, aRequest, aLocation) {
-            log.debug("[PassFF]", "Location changed", aBrowser.ownerGlobal.content.location.href)
+            log.debug("Location changed", aBrowser.ownerGlobal.content.location.href)
             PassFF.Menu.createContextualMenu(aBrowser.ownerDocument, aBrowser.ownerGlobal.content.location.href);
         },
 
@@ -252,7 +259,7 @@ let PassFF = {
             let doc = event.originalTarget;
             let win = doc.defaultView;
             if (doc.nodeName == "#document" && win == win.top) {
-                log.debug("[PassFF]", "Content loaded", event, PassFF.Preferences.autoFill, PassFF.Page.getPasswordInputs(doc).length);
+                log.debug("Content loaded", event, PassFF.Preferences.autoFill, PassFF.Page.getPasswordInputs(doc).length);
                 
                 if(!PassFF.Page.autoFillAndSubmitPending 
                    && PassFF.Preferences.autoFill
@@ -260,7 +267,7 @@ let PassFF = {
                     let url = win.location.href
                     let matchItems = PassFF.Pass.getUrlMatchingItems(url);
 
-                    log.info("[PassFF]", "Start pref-auto-fill")
+                    log.info("Start pref-auto-fill")
                     let bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
 
                     if(bestFitItem) {
@@ -275,7 +282,7 @@ let PassFF = {
         },
 
         tabSelect : function(event) {
-            log.debug("[PassFF]", "Tab Selected", event.target);
+            log.debug("Tab Selected", event.target);
             PassFF.Menu.createContextualMenu(event.target.ownerDocument, event.target.ownerGlobal.content.location.href);
         },
 

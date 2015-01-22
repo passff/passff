@@ -88,8 +88,9 @@ PassFF.Pass = {
     stdout = stdout.replace(/[\u2514\u251C]\u2500\u2500/g,"|--");
     //remove colors
     stdout = stdout.replace(/\x1B\[[^m]*m/g, "");
-    //log.debug("[PassFF]", stdout);
+    //log.debug(stdout);
     let lines = stdout.split("\n");
+
     let re = /(.*[|`])+-- (.*)/;
     let curParent = null;
     for(let i = 0 ; i < lines.length; i++) {
@@ -124,7 +125,7 @@ PassFF.Pass = {
         if (item.depth == 0) this._rootItems.push(item);
       }
     }
-    log.debug("[PassFF]", "Found Items", this._rootItems);
+    log.debug("Found Items", this._rootItems);
   },
 
   getMatchingItems : function(search, limit) {
@@ -154,12 +155,12 @@ PassFF.Pass = {
   findBestFitItem : function(items, url) { 
     let bestFitItem = null;
     items.forEach(function(item) {
-      log.debug("[PassFF]", "Found Items", item, item.isLeaf());
+      log.debug("Found Items", item, item.isLeaf());
       if (item.isLeaf()) {
         if (bestFitItem == null || item.key.length > bestFitItem.key.length) bestFitItem = item;
       }
     });
-    log.debug("[PassFF]", "Best fit item", bestFitItem);
+    log.debug("Best fit item", bestFitItem);
     return bestFitItem;
   },
 
@@ -229,5 +230,3 @@ PassFF.Pass = {
   get rootItems() {return this._rootItems;}
 
 };
-
-(function() { this.init() }).apply(PassFF.Pass);

@@ -37,7 +37,7 @@ PassFF.Preferences = {
 
         this.setGpgAgentEnv();
 
-        log.info("[PassFF]", "Preferences initialised", {
+        log.info("Preferences initialised", {
             passwordInputNames : this.passwordInputNames,
             loginInputNames    : this.loginInputNames,
             loginFieldNames    : this.loginFieldNames,
@@ -77,24 +77,24 @@ PassFF.Preferences = {
     setGpgAgentEnv : function() {
         let gpgAgentInfo = this._params.gpgAgentInfo.value;
         let filename = OS.Path.split(gpgAgentInfo).absolute ? gpgAgentInfo : OS.Path.join(this.home, gpgAgentInfo);
-        log.info("[PassFF]", "Try to retrieve Gpg agent variable from file " + filename);
+        log.info("Try to retrieve Gpg agent variable from file " + filename);
         let promise = OS.File.read(filename); // Read the complete file as an array
         let decoder = new TextDecoder();
         let that = this;
         promise = promise.then(
             function onSuccess(array) {
-                log.info("[PassFF]", "Retrieve Gpg agent variable from file");
+                log.info("Retrieve Gpg agent variable from file");
                 PassFF.Preferences._gpgAgentEnv =  decoder.decode(array).split("\n")
-                log.debug("[PassFF]", "Set Gpg agent variable :", PassFF.Preferences._gpgAgentEnv);
+                log.debug("Set Gpg agent variable :", PassFF.Preferences._gpgAgentEnv);
             },
             function onError(reason) {
-                log.info("[PassFF]", "Can't read file. Retrieve Gpg agent variable from environment");
+                log.info("Can't read file. Retrieve Gpg agent variable from environment");
                 PassFF.Preferences._gpgAgentEnv = [
                     "GPG_AGENT_INFO=" + that._environment.get('GPG_AGENT_INFO'),
                     "GNOME_KEYRING_CONTROL=" + that._environment.get('GNOME_KEYRING_CONTROL'),
                     "PATH=" + that._environment.get('PATH')
                 ]
-                log.debug("[PassFF]", "Set Gpg agent variable :", PassFF.Preferences._gpgAgentEnv);
+                log.debug("Set Gpg agent variable :", PassFF.Preferences._gpgAgentEnv);
             }
         );
     }
