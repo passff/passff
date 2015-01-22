@@ -1,6 +1,6 @@
 PassFF.Page = {
   _autoSubmittedUrls : new Array(),
-  itemToUse : null,
+  autoFillAndSubmitPending : false,
   init : function() { },
 
   fillInputs : function(doc, item) {
