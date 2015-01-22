@@ -2,6 +2,7 @@
 * Controls the browser overlay for the PassFF extension.
 */
 PassFF.Menu = {
+    _currentMenuIndex : null,
     _stringBundle : null,
     _promptService : Cc["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService),
 
@@ -12,6 +13,7 @@ PassFF.Menu = {
         panel.setAttribute("id", PassFF.Ids.panel);
 
         let searchlabel = doc.createElement("label");
+        searchlabel.setAttribute("id", PassFF.Ids.searchboxlabel);
         searchlabel.setAttribute("control", PassFF.Ids.searchbox);
         searchlabel.setAttribute("value", PassFF.gsfm("passff.toolbar.search.label"));
 
@@ -22,14 +24,17 @@ PassFF.Menu = {
         searchtextbox.addEventListener("keyup",PassFF.Menu.onSearchKeyup);
 
         let buttonroot = doc.createElement("button");
+        buttonroot.setAttribute("id", PassFF.Ids.rootbutton);
         buttonroot.setAttribute("label", PassFF.gsfm("passff.button.root.label"));
         buttonroot.addEventListener("command", PassFF.Menu.onRootButtonCommand);
 
         let buttoncontext = doc.createElement("button");
+        buttoncontext.setAttribute("id", PassFF.Ids.contextbutton);
         buttoncontext.setAttribute("label", PassFF.gsfm("passff.button.context.label"));
         buttoncontext.addEventListener("command", PassFF.Menu.onContextButtonCommand);
 
         let buttonsbox = doc.createElement("hbox");
+        buttonsbox.setAttribute("id", PassFF.Ids.buttonsbox);
         buttonsbox.appendChild(buttonroot);
         buttonsbox.appendChild(buttoncontext);
 
@@ -40,10 +45,12 @@ PassFF.Menu = {
 
         //********* menubar
         let refreshitem = doc.createElement("menuitem");
+        refreshitem.setAttribute("id", PassFF.Ids.refreshmenuitem);
         refreshitem.setAttribute("label", PassFF.gsfm("passff.toolbar.refresh.label"));
         refreshitem.addEventListener("click", PassFF.Menu.onRefresh);
 
         let prefsitem = doc.createElement("menuitem");
+        prefsitem.setAttribute("id", PassFF.Ids.prefsmenuitem);
         prefsitem.setAttribute("label", PassFF.gsfm("passff.toolbar.preferences.label"));
         prefsitem.addEventListener("click", PassFF.Menu.onPreferences);
 
@@ -58,6 +65,7 @@ PassFF.Menu = {
         optionmenu.appendChild(menupopup);
 
         let menubar = doc.createElement("menubar");
+        menubar.setAttribute("id", PassFF.Ids.menubar);
         menubar.setAttribute("orient", "vertical");
         menubar.setAttribute("id", PassFF.Ids.menubar);
         menubar.appendChild(optionmenu);
@@ -238,6 +246,7 @@ PassFF.Menu = {
     clearMenuList : function(doc) {
         let listElm = doc.getElementById(PassFF.Ids.entrieslist);
         while (listElm.hasChildNodes()) listElm.removeChild(listElm.firstChild);
+        PassFF.Menu._currentMenuIndex = 0;
     },
 
     createItemMenuList : function(doc, item) {
@@ -291,12 +300,15 @@ PassFF.Menu = {
 
     createMenuItem : function(doc, item, label, onClick, attribute, onEnterPress) {
         let descElm = doc.createElement("label")
+        descElm.setAttribute("id", PassFF.Ids.menu + "label" + PassFF.Menu._currentMenuIndex);
         descElm.setAttribute("value", label);
 
         let xulName = doc.createElement('hbox');
+        xulName.setAttribute("id", PassFF.Ids.menu + "hbox" + PassFF.Menu._currentMenuIndex);
         xulName.appendChild(descElm);
 
         let listItemElm = doc.createElement("richlistitem");
+        listItemElm.setAttribute("id", PassFF.Ids.menu + "richlistitem" + PassFF.Menu._currentMenuIndex);
         listItemElm.item = item;
         listItemElm.dataKey = attribute;
         listItemElm.addEventListener("click", onClick);
@@ -304,6 +316,7 @@ PassFF.Menu = {
         listItemElm.onEnterPress = onEnterPress;
         listItemElm.appendChild(xulName);
 
+        PassFF.Menu._currentMenuIndex++;
         return listItemElm;
     },
 
