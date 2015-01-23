@@ -71,6 +71,11 @@ from the plugin preferences you will be able to set :
   - The pass script path.
   - Pass home. If empty, use User home.
   - Location of the gpg agent info file containing environment variables (relative to the home).
+  
+
+### Thanks
+
+This plugin use [subprocess](https://github.com/bit/subprocess) to launch pass script
 
 This is a beta. For test purpose only
 =========
