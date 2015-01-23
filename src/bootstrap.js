@@ -89,7 +89,7 @@ let PassFF = {
 
 
     stringBufferService : null,
-    _timers : [],
+    _timers : null,
 
     gsfm : function(key, params) {
         if (params != undefined) return  PassFF.stringBundle.formatStringFromName(key, params, params.length)
@@ -98,7 +98,7 @@ let PassFF = {
 
     init : function() {
         log.debug("init");
-
+        PassFF._timers = [];
         PassFF.waitForDocuments();
     },
 
@@ -123,6 +123,7 @@ let PassFF = {
         } else {
             let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
             timer.initWithCallback( { notify : function() { PassFF.waitForDocuments() } }, 100, Ci.nsITimer.TYPE_ONE_SHOT);
+            PassFF._timers.push(timer);
         }
     },
     waitForPanel : function() {
@@ -157,6 +158,7 @@ let PassFF = {
         } else {
             let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
             timer.initWithCallback( { notify : function() { PassFF.waitForPanel() } }, 100, Ci.nsITimer.TYPE_ONE_SHOT);
+            PassFF._timers.push(timer);
         }
     },
 
@@ -260,7 +262,6 @@ let PassFF = {
             let win = doc.defaultView;
             if (doc.nodeName == "#document" && win == win.top) {
                 log.debug("Content loaded", event, PassFF.Preferences.autoFill, PassFF.Page.getPasswordInputs(doc).length);
-                
                 if(!PassFF.Page.autoFillAndSubmitPending 
                    && PassFF.Preferences.autoFill
                    && PassFF.Page.getPasswordInputs(doc).length > 0) {
