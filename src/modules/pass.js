@@ -94,7 +94,7 @@ PassFF.Pass = {
       let match = re.exec(lines[i]);
       if(match != null) {
         let curDepth = (match[1].length - 1) / 4;
-        let key = match[2].replace(/\\ /g, ' ').replace(/ -> .*/g, '').replace(/.pgp$/, '');
+        let key = match[2].replace(/\\ /g, ' ').replace(/ -> .*/g,'');
         while (curParent != null && curParent.depth >= curDepth) {
           curParent = curParent.parent;
         }
