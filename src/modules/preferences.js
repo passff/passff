@@ -86,6 +86,7 @@ PassFF.Preferences = {
                 log.info("Retrieve Gpg agent variable from file");
                 PassFF.Preferences._gpgAgentEnv =  decoder.decode(array).split("\n")
                 log.debug("Set Gpg agent variable :", PassFF.Preferences._gpgAgentEnv);
+                return Promise.resolve("OK");
             },
             function onError(reason) {
                 log.info("Can't read file. Retrieve Gpg agent variable from environment");
@@ -95,8 +96,12 @@ PassFF.Preferences = {
                     "PATH=" + that._environment.get('PATH')
                 ]
                 log.debug("Set Gpg agent variable :", PassFF.Preferences._gpgAgentEnv);
+                return Promise.resolve("OK");
             }
         );
+        promise.catch(function onError(reason) {
+            log.error("Fail to set gpg agent variable", reason);
+        });
     }
 };
 
