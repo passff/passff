@@ -1,3 +1,5 @@
+Cu.importGlobalProperties(['URL']);
+
 PassFF.Pass = {
   _items : [],
   _rootItems : [],
@@ -142,10 +144,12 @@ PassFF.Pass = {
     return result;
   },
 
-  getUrlMatchingItems : function(url) {
+  getUrlMatchingItems : function(urlStr) {
+    let url = new URL(urlStr);
+    log.debug("Find items for :", url);
     return this._items.filter(function(item){
       let regExp = item.key.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-      return !item.isField() && url.search(new RegExp(regExp,"i")) >= 0;
+      return !item.isField() && url.host.search(new RegExp(regExp,"i")) >= 0;
     });
   },
 
