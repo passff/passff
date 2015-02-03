@@ -146,7 +146,7 @@ PassFF.Pass = {
 
   getUrlMatchingItems : function(urlStr) {
     let url = new URL(urlStr);
-    log.debug("Find items for :", url);
+    log.debug("Search items for :", url);
     return this._items.filter(function(item){
       let regExp = item.key.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
       return !item.isField() && url.host.search(new RegExp(regExp,"i")) >= 0;
@@ -187,7 +187,7 @@ PassFF.Pass = {
     let result = null;
     let args = new Array();
     PassFF.Preferences.commandArgs.forEach(function(val){
-        if(val && val.trim().length() > 0) args.push(val);
+        if(val && val.trim().length > 0) args.push(val);
     });
     arguments.forEach(function(val){
         args.push(val);
