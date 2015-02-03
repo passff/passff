@@ -53,7 +53,7 @@ function startup({id}) AddonManager.getAddonByID(id, function(addon) {
 
     PassFF.stringBundle = stringBundleService.createBundle("chrome://passff/locale/strings.properties");
 
-    PassFF.Preferences._init();
+    PassFF.Preferences.init();
     PassFF.Pass.init();
     PassFF.Menu.init();
     PassFF.Page.init();

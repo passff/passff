@@ -177,7 +177,7 @@ PassFF.Menu = {
 
     onRefresh : function(event) {
         log.debug("Refresh", event);
-        (function() { PassFF.Preferences._init(); }).apply(PassFF.Preferences);
+        (function() { PassFF.Preferences.init(); }).apply(PassFF.Preferences);
         (function() { PassFF.Pass.init(); }).apply(PassFF.Pass);
 
         PassFF.Menu.createContextualMenu(event.target.ownerDocument, event.target.ownerGlobal.content.location.href);

@@ -22,7 +22,7 @@ PassFF.Preferences = {
         logEnabled         : false
     },
 
-    _init : function() {
+    init : function() {
         let application = Cc["@mozilla.org/fuel/application;1"].getService(Ci.fuelIApplication);
 
         let branch = Services.prefs.getDefaultBranch("extensions.passff.");
@@ -104,5 +104,3 @@ PassFF.Preferences = {
         });
     }
 };
-
-(function() { this._init(); }).apply(PassFF.Preferences);
