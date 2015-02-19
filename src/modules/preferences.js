@@ -86,8 +86,14 @@ PassFF.Preferences = {
         let that = this;
         promise = promise.then(
             function onSuccess(array) {
+                let re = /^([^=]+=[^;]+)/
                 log.info("Retrieve Gpg agent variable from file");
-                PassFF.Preferences._gpgAgentEnv =  decoder.decode(array).split("\n")
+                //PassFF.Preferences._gpgAgentEnv =  decoder.decode(array).split("\n")
+                PassFF.Preferences._gpgAgentEnv = new Array();
+                decoder.decode(array).split("\n").forEach(function(line) {
+                    if(re.test(line)) PassFF.Preferences._gpgAgentEnv.push(re.exec(line)[0]);
+                });
+
                 log.debug("Set Gpg agent variable :", PassFF.Preferences._gpgAgentEnv);
                 return Promise.resolve("OK");
             },
