@@ -4,11 +4,15 @@ PassFF.Page = {
   init : function() { },
 
   fillInputs : function(doc, item) {
-    log.debug("Fill inputs", item)
     let passwordData = PassFF.Pass.getPasswordData(item);
     if (passwordData) {
-      PassFF.Page.setLoginInputs(doc, passwordData.login);
-      PassFF.Page.setPasswordInputs(doc, passwordData.password);
+      log.debug("Fill inputs", item)
+      PassFF.Page.setInputs(doc, passwordData);
+      log.debug("Found iframes size : ", doc.getElementsByTagName("iframe").length);
+      Array.prototype.slice.call(doc.getElementsByTagName("iframe")).forEach(function(iframe) {
+        log.debug("Fill iframe inputs", iframe)
+        PassFF.Page.setInputs(iframe.contentDocument, passwordData);
+      });
     }
   },
 
@@ -39,12 +43,13 @@ PassFF.Page = {
     }
   },
 
-  setLoginInputs    : function(doc, login)    { PassFF.Page.getLoginInputs(doc).forEach(function(loginInput) { loginInput.value = login; }); },
-  setPasswordInputs : function(doc, password) { PassFF.Page.getPasswordInputs(doc).forEach(function(passwordInput) { passwordInput.value = password; }); },
-  isPasswordInput   : function(input)         { return input.type == "password" || (input.type == "text" && PassFF.Page.hasGoodName(input.name, PassFF.Preferences.passwordInputNames)); },
-  isLoginInput      : function(input)         { return (input.type == "text" || input.type == "email") && PassFF.Page.hasGoodName(input.name, PassFF.Preferences.loginInputNames); },
-  getLoginInputs    : function(doc)           { return Array.prototype.slice.call(doc.getElementsByTagName("input")).filter(PassFF.Page.isLoginInput); },
-  getPasswordInputs : function(doc)           { return Array.prototype.slice.call(doc.getElementsByTagName("input")).filter(PassFF.Page.isPasswordInput); },
+  setInputs         : function(doc, passwordData) { PassFF.Page.setLoginInputs(doc, passwordData.login); PassFF.Page.setPasswordInputs(doc, passwordData.password); },
+  setLoginInputs    : function(doc, login)        { PassFF.Page.getLoginInputs(doc).forEach(function(loginInput) { loginInput.value = login; }); },
+  setPasswordInputs : function(doc, password)     { PassFF.Page.getPasswordInputs(doc).forEach(function(passwordInput) { passwordInput.value = password; }); },
+  isPasswordInput   : function(input)             { return input.type == "password" || (input.type == "text" && PassFF.Page.hasGoodName(input.name, PassFF.Preferences.passwordInputNames)); },
+  isLoginInput      : function(input)             { return (input.type == "text" || input.type == "email" || input.type == "tel") && PassFF.Page.hasGoodName(input.name, PassFF.Preferences.loginInputNames); },
+  getLoginInputs    : function(doc)               { return Array.prototype.slice.call(doc.getElementsByTagName("input")).filter(PassFF.Page.isLoginInput); },
+  getPasswordInputs : function(doc)               { return Array.prototype.slice.call(doc.getElementsByTagName("input")).filter(PassFF.Page.isPasswordInput); },
 
   getSubmitButton : function(form) {
     let submitBtns = Array.prototype.slice.call(form.getElementsByTagName("button")).filter( function(input) { return input.type == "submit" } )
