@@ -93,6 +93,8 @@ PassFF.Preferences = {
                 decoder.decode(array).split("\n").forEach(function(line) {
                     if(re.test(line)) PassFF.Preferences._gpgAgentEnv.push(re.exec(line)[0]);
                 });
+                PassFF.Preferences._gpgAgentEnv.push("GNOME_KEYRING_CONTROL=" + that._environment.get('GNOME_KEYRING_CONTROL'))
+                PassFF.Preferences._gpgAgentEnv.push("PATH=" + that._environment.get('PATH'))
 
                 log.debug("Set Gpg agent variable :", PassFF.Preferences._gpgAgentEnv);
                 return Promise.resolve("OK");
