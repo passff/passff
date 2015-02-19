@@ -5,13 +5,14 @@ PassFF.Page = {
 
   fillInputs : function(doc, item) {
     let passwordData = PassFF.Pass.getPasswordData(item);
-    if (passwordData) {
-      log.debug("Fill inputs", item)
-      PassFF.Page.setInputs(doc, passwordData);
-      log.debug("Found iframes size : ", doc.getElementsByTagName("iframe").length);
+    if (passwordData) PassFF.Page.processDoc(doc, passwordData, 0);
+  },
+
+  processDoc : function(doc, passwordData, depth) {
+    PassFF.Page.setInputs(doc, passwordData);
+    if (depth <= PassFF.Preferences.iframeSearchDepth) {
       Array.prototype.slice.call(doc.getElementsByTagName("iframe")).forEach(function(iframe) {
-        log.debug("Fill iframe inputs", iframe)
-        PassFF.Page.setInputs(iframe.contentDocument, passwordData);
+        PassFF.Page.processDoc(iframe.contentDocument, passwordData, depth++);
       });
     }
   },

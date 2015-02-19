@@ -19,7 +19,8 @@ PassFF.Preferences = {
         autoSubmit         : false,
         shortcutKey        : "t",
         shortcutMod        : "control,alt",
-        logEnabled         : false
+        logEnabled         : false,
+        iframeSearchDepth  : 5
     },
 
     init : function() {
@@ -53,7 +54,8 @@ PassFF.Preferences = {
             autoSubmit         : this.autoSubmit,
             shortcutKey        : this.shortcutKey,
             shortcutMod        : this.shortcutMod,
-            logEnabled         : this.logEnabled
+            logEnabled         : this.logEnabled,
+            iframeSearchDepth  : this.iframeSearchDepth
         });
     },
 
@@ -72,7 +74,7 @@ PassFF.Preferences = {
     get autoSubmit()         { return this._params.autoSubmit.value; },
     get shortcutKey()        { return this._params.shortcutKey.value; },
     get shortcutMod()        { return this._params.shortcutMod.value; },
-    get logEnabled()         { return this._params.logEnabled.value; },
+    get iframeSearchDepth()  { return this._params.iframeSearchDepth.value; },
 
     setGpgAgentEnv : function() {
         let gpgAgentInfo = this._params.gpgAgentInfo.value;
