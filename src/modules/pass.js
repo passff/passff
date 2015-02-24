@@ -155,12 +155,27 @@ PassFF.Pass = {
     });
   },
 
-  findBestFitItem : function(items, url) { 
-    let bestFitItem = null;
+  findBestFitItem : function(items, urlStr) { 
+    let url = new URL(urlStr);
+    if (items.length == 0) return null;
+    let bestFitItem = items[0];
+    let bestFitItemQuality = -1;
     items.forEach(function(item) {
       log.debug("Found Items", item, item.isLeaf());
       if (item.isLeaf()) {
-        if (bestFitItem == null || item.key.length > bestFitItem.key.length) bestFitItem = item;
+        let hostToMatch = url.host;
+        let itemQuality =  hostToMatch.split("\.").length;
+        do {
+          log.debug("does key", item.fullKey(), "match", hostToMatch);
+          if (item.fullKey().search(new RegExp(hostToMatch.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'),"i")) >= 0) break;
+          hostToMatch = hostToMatch.replace(/[^\.]+\./,"");
+          itemQuality--;
+        } while(hostToMatch.split("\.").length > 1);
+
+        if (itemQuality >= bestFitItemQuality && item.key.length > bestFitItem.key.length) {
+          bestFitItem = item;
+          bestFitItemQuality = itemQuality;
+        }
       }
     });
     log.debug("Best fit item", bestFitItem);

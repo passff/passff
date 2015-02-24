@@ -264,7 +264,7 @@ let PassFF = {
                 log.debug("Content loaded", event, PassFF.Preferences.autoFill, PassFF.Page.getPasswordInputs(doc).length);
                 if(!PassFF.Page.autoFillAndSubmitPending 
                    && PassFF.Preferences.autoFill
-                   && PassFF.Page.getPasswordInputs(doc).length > 0) {
+                   && (PassFF.Page.getPasswordInputs(doc).length > 0 || PassFF.Page.getLoginInputs(doc).length > 0)) {
                     let url = win.location.href
                     let matchItems = PassFF.Pass.getUrlMatchingItems(url);
 
