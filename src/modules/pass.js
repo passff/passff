@@ -148,8 +148,10 @@ PassFF.Pass = {
     let url = new URL(urlStr);
     log.debug("Search items for :", url);
     return this._items.filter(function(item){
-      let regExp = item.key.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-      return !item.isField() && url.host.search(new RegExp(regExp,"i")) >= 0;
+      if (item.isField() || url.host.length == 0) return false;
+      let hostSplit = url.host.split("\.");
+      let siteName = hostSplit.length >= 2 ? hostSplit[hostSplit.length - 2] : url.host;
+      return item.fullKey().search(new RegExp(siteName.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'),"i")) >= 0;
     });
   },
 
