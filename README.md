@@ -73,6 +73,10 @@ from the plugin preferences you will be able to set :
   - Location of the gpg agent info file containing environment variables (relative to the home).
   
 
+### Issues with OS X
+
+If you're experiencing problems running passff on OS X, try setting "Pass command" to ````/bin/bash```` and "Pass command line arguments" to ````--login [pass binary location]````. If pass was installed with default Homebrew configuration the ````[pass binary location]```` should be ````/usr/local/bin/pass````.
+
 ### Thanks
 
 This plugin use [subprocess](https://github.com/bit/subprocess) to launch pass script
