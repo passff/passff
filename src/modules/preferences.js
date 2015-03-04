@@ -11,6 +11,8 @@ PassFF.Preferences = {
         urlFieldNames      : "url,http",
         command            : "/usr/bin/pass",
         commandArgs        : "",
+        shell              : "/bin/bash",
+        shellArgs          : "",
         home               : "",
         storeDir           : "",
         storeGit           : "",
@@ -20,7 +22,8 @@ PassFF.Preferences = {
         shortcutKey        : "t",
         shortcutMod        : "control,alt",
         logEnabled         : false,
-        iframeSearchDepth  : 5
+        iframeSearchDepth  : 5,
+        callType           : "direct"
     },
 
     init : function() {
@@ -46,6 +49,8 @@ PassFF.Preferences = {
             urlFieldNames      : this.urlFieldNames,
             command            : this.command,
             commandArgs        : this.commandArgs,
+            shell              : this.shell,
+            shellArgs          : this.shellArgs,
             home               : this.home,
             storeDir           : this.storeDir,
             storeGit           : this.storeGit,
@@ -55,7 +60,8 @@ PassFF.Preferences = {
             shortcutKey        : this.shortcutKey,
             shortcutMod        : this.shortcutMod,
             logEnabled         : this.logEnabled,
-            iframeSearchDepth  : this.iframeSearchDepth
+            iframeSearchDepth  : this.iframeSearchDepth,
+            callType           : this.callType
         });
     },
 
@@ -66,6 +72,8 @@ PassFF.Preferences = {
     get urlFieldNames()      { return this._params.urlFieldNames.value.split(",");},
     get command()            { return this._params.command.value; },
     get commandArgs()        { return this._params.commandArgs.value.split(" "); },
+    get shell()            { return this._params.shell.value; },
+    get shellArgs()        { return this._params.shellArgs.value.split(" "); },
     get home()               { return this._params.home.value.trim().length > 0 ? this._params.home.value : OS.Constants.Path.homeDir },
     get storeDir()           { return this._params.storeDir.value.trim().length > 0 ? this._params.storeDir.value : this._environment.get('PASSWORD_STORE_DIR'); },
     get storeGit()           { return this._params.storeGit.value.trim().length > 0 ? this._params.storeGit.value : this._environment.get('PASSWORD_STORE_GIT'); },
@@ -76,6 +84,7 @@ PassFF.Preferences = {
     get shortcutMod()        { return this._params.shortcutMod.value; },
     get logEnabled()         { return this._params.logEnabled.value; },
     get iframeSearchDepth()  { return this._params.iframeSearchDepth.value; },
+    get callType()           { return this._params.callType.value; },
 
     setGpgAgentEnv : function() {
         let gpgAgentInfo = this._params.gpgAgentInfo.value;

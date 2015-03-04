@@ -4,6 +4,36 @@
 <!DOCTYPE overlay SYSTEM "chrome://passff/locale/preferences.dtd">
 
 <prefwindow id="passff-prefwindow" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<script>
+  function updateCallTypeUi(){
+    let direct = document.getElementById("callType").value == "direct";
+    if(direct) {
+      document.getElementById("gpg_agent_info_label").removeAttribute("disabled");
+      document.getElementById("gpg_agent_info").removeAttribute("disabled");
+      document.getElementById("pass_dir_label").removeAttribute("disabled");
+      document.getElementById("pass_dir").removeAttribute("disabled");
+      document.getElementById("pass_git_label").removeAttribute("disabled");
+      document.getElementById("pass_git").removeAttribute("disabled");
+
+      document.getElementById("shell_label").setAttribute("disabled", true);
+      document.getElementById("shell").setAttribute("disabled", true);
+      document.getElementById("shellArgs_label").setAttribute("disabled", true);
+      document.getElementById("shellArgs").setAttribute("disabled", true);
+    } else {
+      document.getElementById("gpg_agent_info_label").setAttribute("disabled", true);
+      document.getElementById("gpg_agent_info").setAttribute("disabled", true);
+      document.getElementById("pass_dir_label").setAttribute("disabled", true);
+      document.getElementById("pass_dir").setAttribute("disabled", true);
+      document.getElementById("pass_git_label").setAttribute("disabled", true);
+      document.getElementById("pass_git").setAttribute("disabled", true);
+
+      document.getElementById("shell_label").removeAttribute("disabled");
+      document.getElementById("shell").removeAttribute("disabled");
+      document.getElementById("shellArgs_label").removeAttribute("disabled");
+      document.getElementById("shellArgs").removeAttribute("disabled");
+    }
+  }
+</script>
   <prefpane id="saveoptions" label="Backups">
     <preferences>
       <preference id="passff-passwordInputNames-pref" name="extensions.passff.passwordInputNames" type="string" />
@@ -13,6 +43,8 @@
       <preference id="passff-urlFieldNames-pref" name="extensions.passff.urlFieldNames" type="string" />
       <preference id="passff-command-pref" name="extensions.passff.command" type="string" />
       <preference id="passff-commandArgs-pref" name="extensions.passff.commandArgs" type="string" />
+      <preference id="passff-shell-pref" name="extensions.passff.shell" type="string" />
+      <preference id="passff-shellArgs-pref" name="extensions.passff.shellArgs" type="string" />
       <preference id="passff-home-pref" name="extensions.passff.home" type="string" />
       <preference id="passff-gpg_agent_info-pref" name="extensions.passff.gpgAgentInfo" type="string" />
       <preference id="passff-pass_dir-pref" name="extensions.passff.storeDir" type="string" />
@@ -22,6 +54,7 @@
       <preference id="passff-shortcut_key-pref" name="extensions.passff.shortcutKey" type="string" />
       <preference id="passff-shortcut_mod-pref" name="extensions.passff.shortcutMod" type="string" />
       <preference id="passff-log_enabled-pref" name="extensions.passff.logEnabled" type="bool" />
+      <preference id="passff-callType-pref" name="extensions.passff.callType" type="string" />
     </preferences>
     <groupbox>
       <caption label="&passff.preferences.shortcut_caption;"/>
@@ -108,32 +141,37 @@
       <grid>
         <columns>
           <column flex="1"/>
-          <column flex="2"/>
+          <column flex="5"/>
         </columns>
         <rows>
-          <row>
-            <vbox>
-              <label tooltiptext= "&passff.preferences.command_tooltip;" id="command_label" control="command" value="&passff.preferences.command_label;"/>
-              <textbox tooltiptext= "&passff.preferences.command_tooltip;" id="command" preference="passff-command-pref" type="string"/>
-            </vbox>
-          </row>
-          <row>
-            <vbox>
-              <label tooltiptext= "&passff.preferences.commandArgs_tooltip;" id="commandArgs_label" control="commandArgs" value="&passff.preferences.commandArgs_label;"/>
-              <textbox tooltiptext= "&passff.preferences.commandArgs_tooltip;" id="commandArgs" preference="passff-commandArgs-pref" type="string"/>
-            </vbox>
-          </row>
           <row>
             <vbox>
               <label tooltiptext= "&passff.preferences.home_tooltip;" id="home_label" control="home" value="&passff.preferences.home_label;"/>
               <textbox tooltiptext= "&passff.preferences.home_tooltip;" id="home" preference="passff-home-pref" type="string"/>
             </vbox>
+          </row>
+          <row>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.command_tooltip;" id="command_label" control="command" value="&passff.preferences.command_label;"/>
+              <textbox tooltiptext= "&passff.preferences.command_tooltip;" id="command" preference="passff-command-pref" type="string"/>
+            </vbox>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.commandArgs_tooltip;" id="commandArgs_label" control="commandArgs" value="&passff.preferences.commandArgs_label;"/>
+              <textbox tooltiptext= "&passff.preferences.commandArgs_tooltip;" id="commandArgs" preference="passff-commandArgs-pref" type="string"/>
+            </vbox>
+          </row>
+        </rows>
+      </grid>
+      <radiogroup onselect="updateCallTypeUi()" id="callType" preference="passff-callType-pref">
+        <hbox>
+          <groupbox flex="1" style="margin:5px;border:1px solid ThreeDShadow;-moz-border-radius:5px;padding:5px;">
+            <caption>
+              <radio id="direct" value="direct" label="&passff.preferences.direct_radio_label;"/>
+            </caption>
             <vbox>
               <label tooltiptext= "&passff.preferences.gpg_agent_info_tooltip;" id="gpg_agent_info_label" control="gpg_agent_info" value="&passff.preferences.gpg_agent_info_label;"/>
               <textbox tooltiptext= "&passff.preferences.gpg_agent_info_tooltip;" id="gpg_agent_info" preference="passff-gpg_agent_info-pref" type="string"/>
             </vbox>
-          </row>
-          <row>
             <vbox>
               <label tooltiptext= "&passff.preferences.pass_dir_tooltip;" id="pass_dir_label" control="pass_dir" value="&passff.preferences.pass_dir_label;"/>
               <textbox tooltiptext= "&passff.preferences.pass_dir_tooltip;" id="pass_dir" preference="passff-pass_dir-pref" type="string"/>
@@ -142,9 +180,22 @@
               <label tooltiptext= "&passff.preferences.pass_git_tooltip;" id="pass_git_label" control="pass_git" value="&passff.preferences.pass_git_label;"/>
               <textbox tooltiptext= "&passff.preferences.pass_git_tooltip;" id="pass_git" preference="passff-pass_git-pref" type="string"/>
             </vbox>
-          </row>
-        </rows>
-      </grid>
+          </groupbox>
+          <groupbox flex="1" style="margin: 5px;border: 1px solid ThreeDShadow;-moz-border-radius: 5px;padding: 5px;">
+            <caption>
+              <radio id="shell_rdio" value="shell" label="&passff.preferences.shell_radio_label;"/>
+            </caption>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.shell_tooltip;" id="shell_label" control="shell" value="&passff.preferences.shell_label;"/>
+              <textbox tooltiptext= "&passff.preferences.shell_tooltip;" id="shell" preference="passff-shell-pref" type="string"/>
+            </vbox>
+            <vbox>
+              <label tooltiptext= "&passff.preferences.shellArgs_tooltip;" id="shellArgs_label" control="shellArgs" value="&passff.preferences.shellArgs_label;"/>
+              <textbox tooltiptext= "&passff.preferences.shellArgs_tooltip;" id="shellArgs" preference="passff-shellArgs-pref" type="string"/>
+            </vbox>
+          </groupbox>
+        </hbox>
+      </radiogroup>
     </groupbox>
     <separator class="groove-thin"/>
     <groupbox>

@@ -203,7 +203,7 @@ let PassFF = {
 
         observe : function(aSubject, aTopic, aData) {
             log.debug("Preferences change", aTopic, aData);
-            if("shortcutKey" == aData || shortcutMod == aData) {
+            if("shortcutKey" == aData || "shortcutMod" == aData) {
                 let enumerator = Services.wm.getEnumerator("navigator:browser");
                 while (enumerator.hasMoreElements()) {
                     let aWindow = enumerator.getNext();

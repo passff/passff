@@ -185,7 +185,6 @@ PassFF.Pass = {
         let bestFitItem = items[0];
         let bestFitItemQuality = -1;
         items.forEach(function(item) {
-            log.debug("Found Items", item, item.isLeaf());
             if (item.isLeaf()) {
                 let curItemQuality = PassFF.Pass.getItemQuality(item, urlStr);
                 if (curItemQuality.quality > bestFitItemQuality && item.key.length > bestFitItem.key.length) {
@@ -219,19 +218,28 @@ PassFF.Pass = {
     executePass : function(arguments) {
         let result = null;
         let args = new Array();
-        PassFF.Preferences.commandArgs.forEach(function(val){
-            if(val && val.trim().length > 0) args.push(val);
-        });
-        arguments.forEach(function(val){
-            args.push(val);
-        })
+        let command = null;
+        if (PassFF.Preferences.callType == "direct") {
+            command = PassFF.Preferences.command;
+            environment = this.getEnvParams();
+            PassFF.Preferences.commandArgs.forEach(function(val) { if(val && val.trim().length > 0) args.push(val); });
+            arguments.forEach(function(val) { args.push(val); })
+
+        } else {
+            command = PassFF.Preferences.shell;
+            environment = ["HOME=" + PassFF.Preferences.home];
+            let passCmd = PassFF.Preferences.command
+            PassFF.Preferences.commandArgs.forEach(function(val) { if(val && val.trim().length > 0) passCmd += " " + val });
+            arguments.forEach(function(val) { passCmd += " " + val });
+            PassFF.Preferences.shellArgs.forEach(function(val) { if(val && val.trim().length > 0) args.push(val); })
+            args.push("-c");
+            args.push(passCmd.trim());
+        }
         let params = {
-            command     : PassFF.Preferences.command,
+            command     : command,
             arguments   : args,
-            environment : this.getEnvParams(),
+            environment : environment,
             charset     : 'UTF-8',
-            //workdir     : PassFF.Preferences.home,
-            //stdout      : function(data) { output += data },
             mergeStderr : false,
             done        : function(data) { result = data }
         }
@@ -240,7 +248,7 @@ PassFF.Pass = {
             let p = subprocess.call(params);
             p.wait();
             if (result.exitCode != 0) {
-                log.warn(result.exitCode, result.stderr, result.stdout);
+                log.warn("pass script execution ko", result.exitCode, result.stderr, result.stdout);
             } else {
                 log.info("pass script execution ok");
             }
@@ -267,6 +275,7 @@ PassFF.Pass = {
 
         return params;
     },
+
     get rootItems() {return this._rootItems;}
 
 };
