@@ -87,15 +87,14 @@ PassFF.Pass = {
         stdout = stdout.replace(/[\u2514\u251C]\u2500\u2500/g,"|--");
         //remove colors
         stdout = stdout.replace(/\x1B\[[^m]*m/g, "");
-        //log.debug(stdout);
         let lines = stdout.split("\n");
 
-        let re = /(.*[|`])+-- (.*)/;
+        let re = /(.*[|`;])+-- (.*)/;
         let curParent = null;
         for(let i = 0 ; i < lines.length; i++) {
             let match = re.exec(lines[i]);
             if(match != null) {
-                let curDepth = (match[1].length - 1) / 4;
+                let curDepth = (match[1].replace("&middot;", "`").length - 1) / 4;
                 let key = match[2].replace(/\\ /g, ' ').replace(/ -> .*/g,'');
                 while (curParent != null && curParent.depth >= curDepth) {
                     curParent = curParent.parent;
@@ -251,6 +250,7 @@ PassFF.Pass = {
                 log.warn("pass script execution ko", result.exitCode, result.stderr, result.stdout);
             } else {
                 log.info("pass script execution ok");
+                //log.info(result.stdout);
             }
         } catch (ex) {
             PassFF.Pass._promptService.alert(null, "Error executing pass script", ex.message);
@@ -269,7 +269,7 @@ PassFF.Pass = {
 
     },
 
-    getEnvParams : function() { return ["HOME=" + PassFF.Preferences.home, "DISPLAY=:0.0"]; },
+    getEnvParams : function() { return ["HOME=" + PassFF.Preferences.home, "DISPLAY=:0.0", "TREE_CHARSET=ISO-8859-1"]; },
     getDirectEnvParams : function() {
         var params = ["PATH=" + PassFF.Preferences.path];
         if (PassFF.Preferences.storeDir.trim().length > 0) params.push("PASSWORD_STORE_DIR=" + PassFF.Preferences.storeDir);
