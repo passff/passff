@@ -39,8 +39,6 @@ PassFF.Preferences = {
             this._params[key] = application.prefs.get("extensions.passff." + key);
         }
 
-        this.setGpgAgentEnv();
-
         log.info("Preferences initialised", {
             passwordInputNames : this.passwordInputNames,
             loginInputNames    : this.loginInputNames,
@@ -54,7 +52,7 @@ PassFF.Preferences = {
             home               : this.home,
             storeDir           : this.storeDir,
             storeGit           : this.storeGit,
-            gpgAgentEnv        : this.gpgAgentEnv,
+            //gpgAgentEnv        : this._gpgAgentEnv,
             autoFill           : this.autoFill,
             autoSubmit         : this.autoSubmit,
             shortcutKey        : this.shortcutKey,
@@ -72,12 +70,13 @@ PassFF.Preferences = {
     get urlFieldNames()      { return this._params.urlFieldNames.value.split(",");},
     get command()            { return this._params.command.value; },
     get commandArgs()        { return this._params.commandArgs.value.split(" "); },
-    get shell()            { return this._params.shell.value; },
-    get shellArgs()        { return this._params.shellArgs.value.split(" "); },
+    get shell()              { return this._params.shell.value; },
+    get shellArgs()          { return this._params.shellArgs.value.split(" "); },
     get home()               { return this._params.home.value.trim().length > 0 ? this._params.home.value : OS.Constants.Path.homeDir },
     get storeDir()           { return this._params.storeDir.value.trim().length > 0 ? this._params.storeDir.value : this._environment.get('PASSWORD_STORE_DIR'); },
     get storeGit()           { return this._params.storeGit.value.trim().length > 0 ? this._params.storeGit.value : this._environment.get('PASSWORD_STORE_GIT'); },
-    get gpgAgentEnv()        { return this._gpgAgentEnv; },
+    get path()               { return this._environment.get('PATH'); },
+    get gpgAgentEnv()        { if (this._gpgAgentEnv == null) this.setGpgAgentEnv(); return this._gpgAgentEnv; },
     get autoFill()           { return this._params.autoFill.value; },
     get autoSubmit()         { return this._params.autoSubmit.value; },
     get shortcutKey()        { return this._params.shortcutKey.value; },
@@ -97,13 +96,11 @@ PassFF.Preferences = {
             function onSuccess(array) {
                 let re = /^([^=]+=[^;]+)/
                 log.info("Retrieve Gpg agent variable from file");
-                //PassFF.Preferences._gpgAgentEnv =  decoder.decode(array).split("\n")
                 PassFF.Preferences._gpgAgentEnv = new Array();
                 decoder.decode(array).split("\n").forEach(function(line) {
                     if(re.test(line)) PassFF.Preferences._gpgAgentEnv.push(re.exec(line)[0]);
                 });
                 PassFF.Preferences._gpgAgentEnv.push("GNOME_KEYRING_CONTROL=" + that._environment.get('GNOME_KEYRING_CONTROL'))
-                PassFF.Preferences._gpgAgentEnv.push("PATH=" + that._environment.get('PATH'))
 
                 log.debug("Set Gpg agent variable :", PassFF.Preferences._gpgAgentEnv);
                 return Promise.resolve("OK");
@@ -112,8 +109,7 @@ PassFF.Preferences = {
                 log.info("Can't read file. Retrieve Gpg agent variable from environment");
                 PassFF.Preferences._gpgAgentEnv = [
                     "GPG_AGENT_INFO=" + that._environment.get('GPG_AGENT_INFO'),
-                    "GNOME_KEYRING_CONTROL=" + that._environment.get('GNOME_KEYRING_CONTROL'),
-                    "PATH=" + that._environment.get('PATH')
+                    "GNOME_KEYRING_CONTROL=" + that._environment.get('GNOME_KEYRING_CONTROL')
                 ]
                 log.debug("Set Gpg agent variable :", PassFF.Preferences._gpgAgentEnv);
                 return Promise.resolve("OK");

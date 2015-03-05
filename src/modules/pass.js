@@ -219,15 +219,15 @@ PassFF.Pass = {
         let result = null;
         let args = new Array();
         let command = null;
+        let environment = this.getEnvParams();
         if (PassFF.Preferences.callType == "direct") {
             command = PassFF.Preferences.command;
-            environment = this.getEnvParams();
+            environment = environment.concat(this.getDirectEnvParams());
             PassFF.Preferences.commandArgs.forEach(function(val) { if(val && val.trim().length > 0) args.push(val); });
             arguments.forEach(function(val) { args.push(val); })
 
         } else {
             command = PassFF.Preferences.shell;
-            environment = ["HOME=" + PassFF.Preferences.home];
             let passCmd = PassFF.Preferences.command
             PassFF.Preferences.commandArgs.forEach(function(val) { if(val && val.trim().length > 0) passCmd += " " + val });
             arguments.forEach(function(val) { passCmd += " " + val });
