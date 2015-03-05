@@ -261,14 +261,17 @@ PassFF.Pass = {
     },
 
     init : function() {
+        subprocess.registerDebugHandler(function(m) {log.debug("[subprocess]", m)})
+        subprocess.registerLogHandler(function(m) {log.error("[subprocess]", m)})
         this.initItems();
         let stringBundleService = Cc["@mozilla.org/intl/stringbundle;1"].getService(Ci.nsIStringBundleService);
         this._stringBundle = stringBundleService.createBundle("chrome://passff/locale/strings.properties");
 
     },
 
-    getEnvParams : function() {
-        var params = ["HOME=" + PassFF.Preferences.home, "DISPLAY=:0.0"];
+    getEnvParams : function() { return ["HOME=" + PassFF.Preferences.home, "DISPLAY=:0.0"]; },
+    getDirectEnvParams : function() {
+        var params = ["PATH=" + PassFF.Preferences.path];
         if (PassFF.Preferences.storeDir.trim().length > 0) params.push("PASSWORD_STORE_DIR=" + PassFF.Preferences.storeDir);
         if (PassFF.Preferences.storeGit.trim().length > 0) params.push("PASSWORD_STORE_GIT=" + PassFF.Preferences.storeGit);
         if (PassFF.Preferences.gpgAgentEnv != null) params = params.concat(PassFF.Preferences.gpgAgentEnv);
