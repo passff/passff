@@ -1,6 +1,8 @@
 passff
 ======
 
+[![Join the chat at https://gitter.im/jvenant/passff](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jvenant/passff?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 **[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** manager addon for firefox
 
 
