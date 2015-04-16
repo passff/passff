@@ -75,7 +75,6 @@ let PassFF = {
         searchboxlabel: "passff-search-box-label",
         entrieslist: "passff-entries-list",
         contextlist: "passff-context-list",
-        menubar: "passff-menubar",
         optionsmenu: "passff-options-menu",
         optionsmenupopup: "passff-options-menupopup",
         rootbutton: "passff-root-button",
