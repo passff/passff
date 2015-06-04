@@ -44,31 +44,31 @@ PassFF.Menu = {
         richlistbox.addEventListener("keyup", PassFF.Menu.onListItemkeyup);
 
         //********* menubar
-        let refreshitem = doc.createElement("menuitem");
+        let refreshitem = doc.createElement("button");
         refreshitem.setAttribute("id", PassFF.Ids.refreshmenuitem);
         refreshitem.setAttribute("label", PassFF.gsfm("passff.toolbar.refresh.label"));
         refreshitem.addEventListener("click", PassFF.Menu.onRefresh);
 
-        let prefsitem = doc.createElement("menuitem");
+        let prefsitem = doc.createElement("button");
         prefsitem.setAttribute("id", PassFF.Ids.prefsmenuitem);
         prefsitem.setAttribute("label", PassFF.gsfm("passff.toolbar.preferences.label"));
         prefsitem.addEventListener("click", PassFF.Menu.onPreferences);
 
-        let menupopup = doc.createElement("menupopup");
-        menupopup.setAttribute("id", PassFF.Ids.optionsmenupopup);
-        menupopup.appendChild(refreshitem);
-        menupopup.appendChild(prefsitem);
+        //let menupopup = doc.createElement("menupopup");
+        //menupopup.setAttribute("id", PassFF.Ids.optionsmenupopup);
+        //menupopup.appendChild(refreshitem);
+        //menupopup.appendChild(prefsitem);
 
-        let optionmenu = doc.createElement("menu")
-        optionmenu.setAttribute("id", PassFF.Ids.optionmenu);
-        optionmenu.setAttribute("label", PassFF.gsfm("passff.toolbar.options.label"));
-        optionmenu.appendChild(menupopup);
+        //let optionmenu = doc.createElement("menu")
+        //optionmenu.setAttribute("id", PassFF.Ids.optionmenu);
+        //optionmenu.setAttribute("label", PassFF.gsfm("passff.toolbar.options.label"));
+        //optionmenu.appendChil(menupopup);
 
-        let menubar = doc.createElement("menubar");
-        menubar.setAttribute("id", PassFF.Ids.menubar);
-        menubar.setAttribute("orient", "vertical");
-        menubar.setAttribute("id", PassFF.Ids.menubar);
-        menubar.appendChild(optionmenu);
+        //let menubar = doc.createElement("menubar");
+        //menubar.setAttribute("id", PassFF.Ids.menubar);
+        //menubar.setAttribute("orient", "vertical");
+        //menubar.setAttribute("id", PassFF.Ids.menubar);
+        //menubar.appendChild(optionmenu);
         //******** menubar
 
         let separator = doc.createElement("menuseparator");
@@ -79,7 +79,9 @@ PassFF.Menu = {
         panel.appendChild(buttonsbox);
         panel.appendChild(separator);
         panel.appendChild(richlistbox);
-        panel.appendChild(menubar);
+        panel.appendChild(refreshitem);
+        panel.appendChild(prefsitem);
+        //panel.appendChild(menubar);
 
         return panel;
     },
