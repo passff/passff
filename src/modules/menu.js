@@ -12,13 +12,9 @@ PassFF.Menu = {
         let panel = doc.createElement("panelview");
         panel.setAttribute("id", PassFF.Ids.panel);
 
-        let searchlabel = doc.createElement("label");
-        searchlabel.setAttribute("id", PassFF.Ids.searchboxlabel);
-        searchlabel.setAttribute("control", PassFF.Ids.searchbox);
-        searchlabel.setAttribute("value", PassFF.gsfm("passff.toolbar.search.label"));
-
         let searchtextbox = doc.createElement("textbox");
         searchtextbox.setAttribute("id", PassFF.Ids.searchbox);
+        searchtextbox.setAttribute("placeholder", PassFF.gsfm("passff.toolbar.search.placeholder"));
         searchtextbox.setAttribute("clickSelectsAll", "true");
         searchtextbox.addEventListener("keypress",PassFF.Menu.onSearchKeypress);
         searchtextbox.addEventListener("keyup",PassFF.Menu.onSearchKeyup);
@@ -74,7 +70,6 @@ PassFF.Menu = {
         let separator = doc.createElement("menuseparator");
         separator.setAttribute("id", PassFF.Ids.menuseparator);
 
-        panel.appendChild(searchlabel);
         panel.appendChild(searchtextbox);
         panel.appendChild(buttonsbox);
         panel.appendChild(separator);
