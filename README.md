@@ -76,7 +76,9 @@ From the plugin preferences you will be able to set:
 
 ### Issues with OS X
 
-If you're experiencing problems running passff on OS X, try setting "Pass command" to ````/bin/bash```` and "Pass command line arguments" to ````--login [pass binary location]````. If pass was installed with the default Homebrew configuration, the ````[pass binary location]```` should be ````/usr/local/bin/pass````.
+If you're experiencing problems running passff on OS X, first try using the "through shell" approach in the preferences.
+
+You could also try setting "Pass command" to ````/bin/bash```` and "Pass command line arguments" to ````--login [pass binary location]````. If pass was installed with the default Homebrew configuration, the ````[pass binary location]```` should be ````/usr/local/bin/pass````.
 
 ### Thanks
 
