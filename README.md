@@ -83,3 +83,4 @@ If you're experiencing problems running passff on OS X, try setting "Pass comman
 This plugin uses [subprocess](https://github.com/bit/subprocess) to launch the pass script.
 
 This is a beta. For testing purposes only.
+==========================================
