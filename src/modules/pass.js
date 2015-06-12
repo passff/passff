@@ -8,7 +8,7 @@ PassFF.Pass = {
     //_pp : null,
 
     getPasswordData : function(item) {
-        let result = {};
+        let matches = {};
         if (!item.children || item.children.length === 0) { // multiline-style item
             let args = new Array();
             args.push(item.fullKey());
@@ -22,20 +22,20 @@ PassFF.Pass = {
             if (executionResult.exitCode != 0)  return;
 
             let lines = executionResult.stdout.split("\n");
-            result.password = lines[0];
+            matches.password = lines[0];
             for (let i = 1 ; i < lines.length; i++) {
                 let line = lines[i];
                 let splitPos = line.indexOf(":");
                 if (splitPos >= 0) {
                     let attributeName = line.substring(0, splitPos).toLowerCase();
                     let attributeValue = line.substring(splitPos + 1)
-                    result[attributeName] = attributeValue.trim();
+                    matches[attributeName] = attributeValue.trim();
                 }
             }
         } else { // hierarchical-style item
             item.children.forEach(function(child){
                 if (child.isField()) {
-                    result[child.key] = PassFF.Pass.getPasswordData(child).password;
+                    matches[child.key] = PassFF.Pass.getPasswordData(child).password;
                 }
             });
         }
@@ -126,21 +126,31 @@ PassFF.Pass = {
         log.debug("Found Items", this._rootItems);
     },
 
-    getMatchingItems : function(search, limit) {
+    getMatchingItems: function(search, limit) {
         let searchRegex = ''
-        for(i=0; i<search.length; i++) searchRegex += search.charAt(i) + ".*";
+        for (let i = 0; i < search.length; i++) {
+            searchRegex += search.charAt(i) + '.*';
+        }
 
-        let BreakException= {};
-        let result = new Array();
+        let BreakException = {};
+        let matches = [];
+
         try {
             this._items.forEach(function(item) {
-                if ((item.isLeaf() || item.hasFields()) && item.fullKey().search(new RegExp(searchRegex)) >= 0) result.push(item);
-                if (result.length == limit) throw BreakException;
-            })
-        } catch(e) {
-            if (e!==BreakException) throw e;
+                let regex = new RegExp(searchRegex, PassFF.Preferences.caseInsensitiveSearch ? 'i' : '');
+                if ((item.isLeaf() || item.hasFields()) && item.fullKey().search(regex) >= 0) {
+                    matches.push(item);
+                }
+                if (matches.length == limit) {
+                    throw BreakException;
+                }
+            });
+        } catch (e) {
+            if (e !== BreakException) {
+                throw e;
+            }
         }
-        return result;
+        return matches;
     },
 
     getUrlMatchingItems : function(urlStr) {

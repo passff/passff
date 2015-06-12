@@ -39,6 +39,7 @@
       <preference id="shortcut-modifier" name="extensions.passff.shortcutMod" type="string" />
       <preference id="logging-enabled" name="extensions.passff.logEnabled" type="bool" />
       <preference id="pass-call-method" name="extensions.passff.callType" type="string" />
+      <preference id="case-insensitive-search" name="extensions.passff.caseInsensitiveSearch" type="bool" />
     </preferences>
     <tabbox>
       <tabs>
@@ -65,6 +66,12 @@
               </row>
               <row>
                 <checkbox tooltiptext="&passff.preferences.log_enabled_tooltip;" label="&passff.preferences.log_enabled_label;" id="auto_fill" preference="logging-enabled"/>
+              </row>
+              <row>
+                <checkbox tooltiptext="&passff.preferences.case-insensitive-search-tooltip;"
+                          label="&passff.preferences.case-insensitive-search;"
+                          id="search_case_insensitive"
+                          preference="case-insensitive-search"/>
               </row>
             </rows>
           </grid>

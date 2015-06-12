@@ -2,6 +2,8 @@
 <!ENTITY passff.preferences.tab.autofilling              "Auto-filling">
 <!ENTITY passff.preferences.tab.fields                   "Fields">
 <!ENTITY passff.preferences.tab.script                   "Pass Script">
+<!ENTITY passff.preferences.case-insensitive-search      "Case-insensitive searching">
+<!ENTITY passff.preferences.case-insensitive-search-tooltip "This will treat upper- and lowercase characters the same when searching for pass files">
 <!ENTITY passff.preferences.page_caption                 "Html page autofill behavior">
 <!ENTITY passff.preferences.pass_caption                 "Pass script parameters">
 <!ENTITY passff.preferences.others_caption               "Others parameters">
