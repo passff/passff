@@ -7,7 +7,8 @@
     }
     
     #callType {
-        min-width: 25em;
+        min-width: 325px;
+        min-height: 165px;
     }
     
     .call-method-caption {

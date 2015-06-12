@@ -157,6 +157,7 @@
               </rows>
             </grid>
             <radiogroup onselect="updateCallTypeUi()" id="callType" preference="pass-call-method">
+            <!-- WARNING: If the content of this radiogroup is changed, please update the #callType selector in skin/preferences.css -->
               <vbox>
                 <radio id="direct" value="direct" label="&passff.preferences.direct_radio_label;"/>
                 <radio id="shell_rdio" value="shell" label="&passff.preferences.shell_radio_label;"/>
