@@ -1,3 +1,7 @@
+<!ENTITY passff.preferences.tab.general                  "General">
+<!ENTITY passff.preferences.tab.autofilling              "Auto-filling">
+<!ENTITY passff.preferences.tab.fields                   "Fields">
+<!ENTITY passff.preferences.tab.script                   "Pass Script">
 <!ENTITY passff.preferences.page_caption                 "Html page autofill behavior">
 <!ENTITY passff.preferences.pass_caption                 "Pass script parameters">
 <!ENTITY passff.preferences.others_caption               "Others parameters">
@@ -15,12 +19,12 @@
 <!ENTITY passff.preferences.url_field_names_tooltip      "Comma separated list of field names. The first matching field in the url data will be used as login">
 <!ENTITY passff.preferences.command_label                "Pass command">
 <!ENTITY passff.preferences.command_tooltip              "The pass script path">
-<!ENTITY passff.preferences.commandArgs_label            "Pass command line arguments">
-<!ENTITY passff.preferences.commandArgs_tooltip          "The pass command line arguments">
+<!ENTITY passff.preferences.commandArgs_label            "Arguments">
+<!ENTITY passff.preferences.commandArgs_tooltip          "Arguments to pass to the pass script when run">
 <!ENTITY passff.preferences.shell_label                  "Pass shell">
 <!ENTITY passff.preferences.shell_tooltip                "The shell to use">
-<!ENTITY passff.preferences.shellArgs_label              "Pass shell line arguments">
-<!ENTITY passff.preferences.shellArgs_tooltip            "The pass shell line arguments">
+<!ENTITY passff.preferences.shellArgs_label              "Shell arguments">
+<!ENTITY passff.preferences.shellArgs_tooltip            "Arguments to start the shell with">
 <!ENTITY passff.preferences.home_label                   "User home">
 <!ENTITY passff.preferences.home_tooltip                 "User home. If empty, use environment user home">
 <!ENTITY passff.preferences.gpg_agent_info_label         "Gpg agent info file">
