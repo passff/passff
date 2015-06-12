@@ -1,5 +1,5 @@
 <!ENTITY tab.general                  "General">
-<!ENTITY tab.autofilling              "Auto-filling">
+<!ENTITY tab.autofilling              "Autofilling">
 <!ENTITY tab.fields                   "Fields">
 <!ENTITY tab.script                   "Pass Script">
 <!ENTITY case-insensitive-search      "Case-insensitive searching">
