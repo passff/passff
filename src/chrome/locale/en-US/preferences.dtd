@@ -46,5 +46,7 @@
 <!ENTITY passff.preferences.shortcut_mod_tooltip         "The shortcut modifiers used to open the PassFF panel. A combinaison of (control, alt, shift) words separated by a comma (,)">
 <!ENTITY passff.preferences.log_enabled_label              "Enable logs">
 <!ENTITY passff.preferences.log_enabled_tooltip            "Enable debug logs in web console">
+<!ENTITY passff.preferences.callmethod-tooltip "Choose the method passff will use to run the pass script">
+<!ENTITY passff.preferences.callmethod "Script call method">
 <!ENTITY passff.preferences.direct_radio_label            "Direct call">
 <!ENTITY passff.preferences.shell_radio_label            "Through shell">

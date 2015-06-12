@@ -1,12 +1,15 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 @-moz-document url("chrome://passff/content/preferencesWindow.xul") {
+    spacer {
+        height: 12px;
+    }
         
     .horizontal-pair label {
         text-align: right;
     }
     
-    #callType {
+    #callmethod-container {
         min-width: 325px;
         min-height: 165px;
     }

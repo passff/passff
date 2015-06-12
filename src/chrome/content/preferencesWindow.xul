@@ -64,14 +64,13 @@
                 <label tooltiptext="&passff.preferences.shortcut_key_tooltip;" id="shortcut_key_label" control="shortcut_key" value="&passff.preferences.shortcut_key_label;"/>
                 <textbox tooltiptext="&passff.preferences.shortcut_key_tooltip;" id="shortcut_key" preference="shortcut-key" type="string"/>
               </row>
-              <row>
-                <checkbox tooltiptext="&passff.preferences.log_enabled_tooltip;" label="&passff.preferences.log_enabled_label;" id="auto_fill" preference="logging-enabled"/>
+              <row class="horizontal-pair" align="center">
+                <label tooltiptext="&passff.preferences.case-insensitive-search-tooltip;" value="&passff.preferences.log_enabled_label;"/>
+                <checkbox tooltiptext="&passff.preferences.log_enabled_tooltip;" id="auto_fill" preference="logging-enabled"/>
               </row>
-              <row>
-                <checkbox tooltiptext="&passff.preferences.case-insensitive-search-tooltip;"
-                          label="&passff.preferences.case-insensitive-search;"
-                          id="search_case_insensitive"
-                          preference="case-insensitive-search"/>
+              <row class="horizontal-pair" align="center">
+                <label tooltiptext="&passff.preferences.case-insensitive-search-tooltip;" value="&passff.preferences.case-insensitive-search;"/>
+                <checkbox tooltiptext="&passff.preferences.case-insensitive-search-tooltip;" id="search_case_insensitive" preference="case-insensitive-search"/>
               </row>
             </rows>
           </grid>
@@ -83,10 +82,14 @@
               <column flex="5"/>
             </columns>
             <rows>
-              <vbox>
-                <checkbox tooltiptext="&passff.preferences.auto_fill_tooltip;" label="&passff.preferences.auto_fill_label;" id="auto_fill" preference="page-auto-fill"/>
-                <checkbox tooltiptext="&passff.preferences.auto_submit_tooltip;" label="&passff.preferences.auto_submit_label;" id="auto_submit" preference="page-auto-submit"/>
-              </vbox>
+              <row class="horizontal-pair" align="center">
+                <label tooltiptext="&passff.preferences.auto_fill_tooltip;" value="&passff.preferences.auto_fill_label;"/>
+                <checkbox tooltiptext="&passff.preferences.auto_fill_tooltip;" id="auto_fill" preference="page-auto-fill"/>
+              </row>
+              <row class="horizontal-pair" align="center">
+                <label tooltiptext="&passff.preferences.auto_submit_tooltip;" value="&passff.preferences.auto_submit_label;"/>
+                <checkbox tooltiptext="&passff.preferences.auto_submit_tooltip;" id="auto_submit" preference="page-auto-submit"/>
+              </row>
               <row class="horizontal-pair" align="baseline">
                 <label tooltiptext="&passff.preferences.password_input_names_tooltip;" id="passwordInputNames_label" control="passwordInputNames" value="&passff.preferences.password_input_names_label;"/>
                 <textbox tooltiptext="&passff.preferences.password_input_names_tooltip;" id="passwordInputNames" preference="page-password-fields" type="string"/>
@@ -154,14 +157,21 @@
                   <label tooltiptext="&passff.preferences.commandArgs_tooltip;" id="commandArgs_label" control="commandArgs" value="&passff.preferences.commandArgs_label;"/>
                   <textbox tooltiptext="&passff.preferences.commandArgs_tooltip;" id="commandArgs" preference="command-line-args" type="string"/>
                 </row>
+                <spacer flex="1"/>
+                <row class="horizontal-pair" align="center">
+                  <label tooltiptext="&passff.preferences.callmethod-tooltip;" value="&passff.preferences.callmethod;"/>
+                  <radiogroup onselect="updateCallTypeUi()" id="callType" preference="pass-call-method">
+                    <hbox>
+                      <radio id="shell_rdio" value="shell" label="&passff.preferences.shell_radio_label;"/>
+                      <radio id="direct" value="direct" label="&passff.preferences.direct_radio_label;"/>
+                    </hbox>
+                  </radiogroup>
+                </row>
               </rows>
             </grid>
-            <radiogroup onselect="updateCallTypeUi()" id="callType" preference="pass-call-method">
+            
             <!-- WARNING: If the content of this radiogroup is changed, please update the #callType selector in skin/preferences.css -->
-              <vbox>
-                <radio id="direct" value="direct" label="&passff.preferences.direct_radio_label;"/>
-                <radio id="shell_rdio" value="shell" label="&passff.preferences.shell_radio_label;"/>
-              </vbox>
+            <box id="callmethod-container">
               <groupbox id="box-callmethod-direct" flex="1">
                 <grid>
                   <columns>
@@ -202,7 +212,7 @@
                   </rows>
                 </grid>
               </groupbox>
-            </radiogroup>
+            </box>
           </vbox>
         </tabpanel>
       </tabpanels>
