@@ -20,25 +20,25 @@
   </script>
   <prefpane id="saveoptions">
     <preferences>
-      <preference id="passff-passwordInputNames-pref" name="extensions.passff.passwordInputNames" type="string" />
-      <preference id="passff-loginInputNames-pref" name="extensions.passff.loginInputNames" type="string" />
-      <preference id="passff-loginFieldNames-pref" name="extensions.passff.loginFieldNames" type="string" />
-      <preference id="passff-passwordFieldNames-pref" name="extensions.passff.passwordFieldNames" type="string" />
-      <preference id="passff-urlFieldNames-pref" name="extensions.passff.urlFieldNames" type="string" />
-      <preference id="passff-command-pref" name="extensions.passff.command" type="string" />
-      <preference id="passff-commandArgs-pref" name="extensions.passff.commandArgs" type="string" />
-      <preference id="passff-shell-pref" name="extensions.passff.shell" type="string" />
-      <preference id="passff-shellArgs-pref" name="extensions.passff.shellArgs" type="string" />
-      <preference id="passff-home-pref" name="extensions.passff.home" type="string" />
-      <preference id="passff-gpg_agent_info-pref" name="extensions.passff.gpgAgentInfo" type="string" />
-      <preference id="passff-pass_dir-pref" name="extensions.passff.storeDir" type="string" />
-      <preference id="passff-pass_git-pref" name="extensions.passff.storeGit" type="string" />
-      <preference id="passff-auto_fill-pref" name="extensions.passff.autoFill" type="bool" />
-      <preference id="passff-auto_submit-pref" name="extensions.passff.autoSubmit" type="bool" />
-      <preference id="passff-shortcut_key-pref" name="extensions.passff.shortcutKey" type="string" />
-      <preference id="passff-shortcut_mod-pref" name="extensions.passff.shortcutMod" type="string" />
-      <preference id="passff-log_enabled-pref" name="extensions.passff.logEnabled" type="bool" />
-      <preference id="passff-callType-pref" name="extensions.passff.callType" type="string" />
+      <preference id="page-password-fields" name="extensions.passff.passwordInputNames" type="string" />
+      <preference id="page-login-fields" name="extensions.passff.loginInputNames" type="string" />
+      <preference id="passfile-login-fields" name="extensions.passff.loginFieldNames" type="string" />
+      <preference id="passfile-password-fields" name="extensions.passff.passwordFieldNames" type="string" />
+      <preference id="passfile-url-fields" name="extensions.passff.urlFieldNames" type="string" />
+      <preference id="command-line" name="extensions.passff.command" type="string" />
+      <preference id="command-line-args" name="extensions.passff.commandArgs" type="string" />
+      <preference id="shell" name="extensions.passff.shell" type="string" />
+      <preference id="shell-args" name="extensions.passff.shellArgs" type="string" />
+      <preference id="user-home" name="extensions.passff.home" type="string" />
+      <preference id="gpg-agent-info" name="extensions.passff.gpgAgentInfo" type="string" />
+      <preference id="pass-directory" name="extensions.passff.storeDir" type="string" />
+      <preference id="pass-git-directory" name="extensions.passff.storeGit" type="string" />
+      <preference id="page-auto-fill" name="extensions.passff.autoFill" type="bool" />
+      <preference id="page-auto-submit" name="extensions.passff.autoSubmit" type="bool" />
+      <preference id="shortcut-key" name="extensions.passff.shortcutKey" type="string" />
+      <preference id="shortcut-modifier" name="extensions.passff.shortcutMod" type="string" />
+      <preference id="logging-enabled" name="extensions.passff.logEnabled" type="bool" />
+      <preference id="pass-call-method" name="extensions.passff.callType" type="string" />
     </preferences>
     <tabbox>
       <tabs>
@@ -57,14 +57,14 @@
             <rows>
               <row class="horizontal-pair" align="baseline">
                 <label tooltiptext="&passff.preferences.shortcut_mod_tooltip;" id="shortcut_mod_label" control="shortcut_mod" value="&passff.preferences.shortcut_mod_label;"/>
-                <textbox tooltiptext="&passff.preferences.shortcut_mod_tooltip;" id="shortcut_mod" preference="passff-shortcut_mod-pref" type="string" />
+                <textbox tooltiptext="&passff.preferences.shortcut_mod_tooltip;" id="shortcut_mod" preference="shortcut-modifier" type="string" />
               </row>
               <row class="horizontal-pair" align="baseline">
                 <label tooltiptext="&passff.preferences.shortcut_key_tooltip;" id="shortcut_key_label" control="shortcut_key" value="&passff.preferences.shortcut_key_label;"/>
-                <textbox tooltiptext="&passff.preferences.shortcut_key_tooltip;" id="shortcut_key" preference="passff-shortcut_key-pref" type="string"/>
+                <textbox tooltiptext="&passff.preferences.shortcut_key_tooltip;" id="shortcut_key" preference="shortcut-key" type="string"/>
               </row>
               <row>
-                <checkbox tooltiptext="&passff.preferences.log_enabled_tooltip;" label="&passff.preferences.log_enabled_label;" id="auto_fill" preference="passff-log_enabled-pref"/>
+                <checkbox tooltiptext="&passff.preferences.log_enabled_tooltip;" label="&passff.preferences.log_enabled_label;" id="auto_fill" preference="logging-enabled"/>
               </row>
             </rows>
           </grid>
@@ -77,16 +77,16 @@
             </columns>
             <rows>
               <vbox>
-                <checkbox tooltiptext="&passff.preferences.auto_fill_tooltip;" label="&passff.preferences.auto_fill_label;" id="auto_fill" preference="passff-auto_fill-pref"/>
-                <checkbox tooltiptext="&passff.preferences.auto_submit_tooltip;" label="&passff.preferences.auto_submit_label;" id="auto_submit" preference="passff-auto_submit-pref"/>
+                <checkbox tooltiptext="&passff.preferences.auto_fill_tooltip;" label="&passff.preferences.auto_fill_label;" id="auto_fill" preference="page-auto-fill"/>
+                <checkbox tooltiptext="&passff.preferences.auto_submit_tooltip;" label="&passff.preferences.auto_submit_label;" id="auto_submit" preference="page-auto-submit"/>
               </vbox>
               <row class="horizontal-pair" align="baseline">
                 <label tooltiptext="&passff.preferences.password_input_names_tooltip;" id="passwordInputNames_label" control="passwordInputNames" value="&passff.preferences.password_input_names_label;"/>
-                <textbox tooltiptext="&passff.preferences.password_input_names_tooltip;" id="passwordInputNames" preference="passff-passwordInputNames-pref" type="string"/>
+                <textbox tooltiptext="&passff.preferences.password_input_names_tooltip;" id="passwordInputNames" preference="page-password-fields" type="string"/>
               </row>
               <row class="horizontal-pair" align="baseline">
                 <label tooltiptext="&passff.preferences.login_input_names_tooltip;" control="loginInputNames_label" value="&passff.preferences.login_input_names_label;"/>
-                <textbox tooltiptext="&passff.preferences.login_input_names_tooltip;" id="loginInputNames" preference="passff-loginInputNames-pref" type="string"/>
+                <textbox tooltiptext="&passff.preferences.login_input_names_tooltip;" id="loginInputNames" preference="page-login-fields" type="string"/>
               </row>
             </rows>
           </grid>
@@ -106,14 +106,14 @@
                          id="passwordFieldNames_label"
                          control="passwordFieldNames"
                          value="&passff.preferences.password_field_names_label;"/>
-                  <textbox tooltiptext="&passff.preferences.password_field_names_tooltip;" id="passwordFieldNames" preference="passff-passwordFieldNames-pref" type="string"/>
+                  <textbox tooltiptext="&passff.preferences.password_field_names_tooltip;" id="passwordFieldNames" preference="passfile-password-fields" type="string"/>
                 </row>
                 <row class="horizontal-pair" align="baseline">
                   <label tooltiptext="&passff.preferences.login_field_names_tooltip;"
                          id="loginFieldNames_label"
                          control="loginFieldNames"
                          value="&passff.preferences.login_field_names_label;"/>
-                  <textbox tooltiptext="&passff.preferences.login_field_names_tooltip;" id="loginFieldNames" preference="passff-loginFieldNames-pref" type="string"/>
+                  <textbox tooltiptext="&passff.preferences.login_field_names_tooltip;" id="loginFieldNames" preference="passfile-login-fields" type="string"/>
                 </row>
                 <row class="horizontal-pair" align="baseline">
                   <label align="baseline"
@@ -121,7 +121,7 @@
                          id="urlFieldNames_label"
                          control="urlFieldNames"
                          value="&passff.preferences.url_field_names_label;"/>
-                  <textbox tooltiptext="&passff.preferences.url_field_names_tooltip;" id="urlFieldNames" preference="passff-urlFieldNames-pref" type="string"/>
+                  <textbox tooltiptext="&passff.preferences.url_field_names_tooltip;" id="urlFieldNames" preference="passfile-url-fields" type="string"/>
                 </row>
               </rows>
             </grid>
@@ -137,19 +137,19 @@
               <rows>
                 <row class="horizontal-pair" align="baseline">
                   <label tooltiptext="&passff.preferences.home_tooltip;" id="home_label" control="home" value="&passff.preferences.home_label;"/>
-                  <textbox tooltiptext="&passff.preferences.home_tooltip;" id="home" preference="passff-home-pref" type="string"/>
+                  <textbox tooltiptext="&passff.preferences.home_tooltip;" id="home" preference="user-home" type="string"/>
                 </row>
                 <row class="horizontal-pair" align="baseline">
                   <label tooltiptext="&passff.preferences.command_tooltip;" id="command_label" control="command" value="&passff.preferences.command_label;"/>
-                  <textbox tooltiptext="&passff.preferences.command_tooltip;" id="command" preference="passff-command-pref" type="string"/>
+                  <textbox tooltiptext="&passff.preferences.command_tooltip;" id="command" preference="command-line" type="string"/>
                 </row>
                 <row class="horizontal-pair" align="baseline">
                   <label tooltiptext="&passff.preferences.commandArgs_tooltip;" id="commandArgs_label" control="commandArgs" value="&passff.preferences.commandArgs_label;"/>
-                  <textbox tooltiptext="&passff.preferences.commandArgs_tooltip;" id="commandArgs" preference="passff-commandArgs-pref" type="string"/>
+                  <textbox tooltiptext="&passff.preferences.commandArgs_tooltip;" id="commandArgs" preference="command-line-args" type="string"/>
                 </row>
               </rows>
             </grid>
-            <radiogroup onselect="updateCallTypeUi()" id="callType" preference="passff-callType-pref">
+            <radiogroup onselect="updateCallTypeUi()" id="callType" preference="pass-call-method">
               <vbox>
                 <radio id="direct" value="direct" label="&passff.preferences.direct_radio_label;"/>
                 <radio id="shell_rdio" value="shell" label="&passff.preferences.shell_radio_label;"/>
@@ -163,15 +163,15 @@
                   <rows>
                     <row class="horizontal-pair" align="baseline">
                       <label tooltiptext="&passff.preferences.gpg_agent_info_tooltip;" id="gpg_agent_info_label" control="gpg_agent_info" value="&passff.preferences.gpg_agent_info_label;"/>
-                      <textbox tooltiptext="&passff.preferences.gpg_agent_info_tooltip;" id="gpg_agent_info" preference="passff-gpg_agent_info-pref" type="string"/>
+                      <textbox tooltiptext="&passff.preferences.gpg_agent_info_tooltip;" id="gpg_agent_info" preference="gpg-agent-info" type="string"/>
                     </row>
                     <row class="horizontal-pair" align="baseline">
                       <label tooltiptext="&passff.preferences.pass_dir_tooltip;" id="pass_dir_label" control="pass_dir" value="&passff.preferences.pass_dir_label;"/>
-                      <textbox tooltiptext="&passff.preferences.pass_dir_tooltip;" id="pass_dir" preference="passff-pass_dir-pref" type="string"/>
+                      <textbox tooltiptext="&passff.preferences.pass_dir_tooltip;" id="pass_dir" preference="pass-directory" type="string"/>
                     </row>
                     <row class="horizontal-pair" align="baseline">
                       <label tooltiptext="&passff.preferences.pass_git_tooltip;" id="pass_git_label" control="pass_git" value="&passff.preferences.pass_git_label;"/>
-                      <textbox tooltiptext="&passff.preferences.pass_git_tooltip;" id="pass_git" preference="passff-pass_git-pref" type="string"/>
+                      <textbox tooltiptext="&passff.preferences.pass_git_tooltip;" id="pass_git" preference="pass-git-directory" type="string"/>
                     </row>
                   </rows>
                 </grid>
@@ -185,11 +185,11 @@
                   <rows>
                     <row class="horizontal-pair" align="baseline">
                       <label tooltiptext="&passff.preferences.shell_tooltip;" id="shell_label" control="shell" value="&passff.preferences.shell_label;"/>
-                      <textbox tooltiptext="&passff.preferences.shell_tooltip;" id="shell" preference="passff-shell-pref" type="string"/>
+                      <textbox tooltiptext="&passff.preferences.shell_tooltip;" id="shell" preference="shell" type="string"/>
                     </row>
                     <row class="horizontal-pair" align="baseline">
                       <label tooltiptext="&passff.preferences.shellArgs_tooltip;" id="shellArgs_label" control="shellArgs" value="&passff.preferences.shellArgs_label;"/>
-                      <textbox tooltiptext="&passff.preferences.shellArgs_tooltip;" id="shellArgs" preference="passff-shellArgs-pref" type="string"/>
+                      <textbox tooltiptext="&passff.preferences.shellArgs_tooltip;" id="shellArgs" preference="shell-args" type="string"/>
                     </row>
                   </rows>
                 </grid>
