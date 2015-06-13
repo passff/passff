@@ -27,13 +27,14 @@
     list-style-image: url("chrome://aus-view/skin/icon32-dark.png");
     }*/
 
-#passff-panel {
-    width: 100em;
-    max-height: 100em;
-}
-#passff-entries-list {
-    width: 100em;
-    height: 12em;
-    max-height: 40em;
-}
+    #passff-panel {
+        width: 100em;
+        max-height: 100em;
+    }
+
+    #passff-entries-list {
+        width: 100em;
+        height: 12em;
+        max-height: 40em;
+    }
 }
