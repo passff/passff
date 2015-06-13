@@ -13,7 +13,6 @@
     <em:type>2</em:type>
     <em:optionsURL>chrome://passff/content/preferencesWindow.xul</em:optionsURL>
     <!-- Mozilla Firefox -->
-    <em:iconURL>chrome://passff/skin/passff_large.png</em:iconURL>
     <em:bootstrap>true</em:bootstrap>
     <em:targetApplication>
       <Description>

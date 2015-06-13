@@ -18,20 +18,7 @@
 
 @-moz-document url("chrome://browser/content/browser.xul") {
     #passff-button {
-        list-style-image: url("chrome://passff/skin/passff_medium.png");
-    }
-
-    #passff-button[cui-areatype="menu-panel"],
-    toolbarpaletteitem[place="palette"] > #passff-button {
-        list-style-image: url("chrome://passff/skin/passff_large.png");
-    }
-
-    toolbar[iconsize="large"] #passff-button {
-        list-style-image: url("chrome://passff/skin/passff_medium.png");
-    }
-
-    toolbar[iconsize="small"] #passff-button {
-        list-style-image: url("chrome://passff/skin/passff_small.png");
+        list-style-image: url("chrome://passff/skin/toolbar-button.svg");
     }
 
     /* Necessary to mimic the behavior of all other buttons, which are darker when
