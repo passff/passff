@@ -8,7 +8,7 @@ PassFF.Pass = {
     //_pp : null,
 
     getPasswordData : function(item) {
-        let matches = {};
+        let result = {};
         if (!item.children || item.children.length === 0) { // multiline-style item
             let args = new Array();
             args.push(item.fullKey());
@@ -22,20 +22,20 @@ PassFF.Pass = {
             if (executionResult.exitCode != 0)  return;
 
             let lines = executionResult.stdout.split("\n");
-            matches.password = lines[0];
+            result.password = lines[0];
             for (let i = 1 ; i < lines.length; i++) {
                 let line = lines[i];
                 let splitPos = line.indexOf(":");
                 if (splitPos >= 0) {
                     let attributeName = line.substring(0, splitPos).toLowerCase();
                     let attributeValue = line.substring(splitPos + 1)
-                    matches[attributeName] = attributeValue.trim();
+                    result[attributeName] = attributeValue.trim();
                 }
             }
         } else { // hierarchical-style item
             item.children.forEach(function(child){
                 if (child.isField()) {
-                    matches[child.key] = PassFF.Pass.getPasswordData(child).password;
+                    result[child.key] = PassFF.Pass.getPasswordData(child).password;
                 }
             });
         }
