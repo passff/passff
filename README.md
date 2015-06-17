@@ -73,6 +73,10 @@ From the plugin preferences you will be able to set:
   - Pass home. If empty, use User home.
   - Location of the gpg agent info file containing environment variables (relative to the home).
 
+### See the logs
+
+To enable debug mode, just go in the addon preferences and check the "Enable logs" check box at the bottom of the dialog box. You then have to open the Browser console (Tools/Web Developper/Browser console)
+You should see many lines about passff. You could Filter on "[PassFF]" if you want
 
 ### Issues with OS X
 
