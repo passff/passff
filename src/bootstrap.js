@@ -145,7 +145,6 @@ let PassFF = {
                 viewId : PassFF.Ids.panel,
                 defaultArea : CustomizableUI.AREA_NAVBAR,
                 label : PassFF.gsfm("passff.toolbar.button.label"),
-                tooltiptext : PassFF.gsfm("passff.toolbar.button.tooltip"),
                 onViewShowing : function (aEvent) {
                     let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
                     timer.initWithCallback( { notify : function() { aEvent.target.ownerDocument.getElementById(PassFF.Ids.searchbox).focus(); } }, 100, Ci.nsITimer.TYPE_ONE_SHOT);
