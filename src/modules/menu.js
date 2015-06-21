@@ -264,27 +264,34 @@ PassFF.Menu = {
         PassFF.Menu.createItemsMenuList(doc, items);
     },
 
-    createItemsMenuList : function(doc, items, cleanMenu) {
+    createItemsMenuList: function(doc, items, cleanMenu) {
         log.debug("Create children menu list", items, cleanMenu);
-        if (cleanMenu == undefined || cleanMenu == true) PassFF.Menu.clearMenuList(doc);
-        //log.debug("Create children menu list", new Error().stack);
+
+        if (cleanMenu == undefined || cleanMenu) {
+            PassFF.Menu.clearMenuList(doc);
+        }
+
         let listElm = doc.getElementById(PassFF.Ids.entrieslist);
+
         items.forEach(function(item) {
-            if (!item.isField()) {
-                let onEnter = null;
-                if (item.isLeaf() || item.hasFields()) onEnter = function(event) {
-                    CustomizableUI.hidePanelForNode(event.target);
-                    let item = PassFF.Menu.getItem(this);
-                    PassFF.Menu.goToItemUrl(item, event.shiftKey, true);
-                }
-
-                let label = item.fullKey();
-                if (label != '..' && !item.isLeaf()) {
-                    label += '/';
-                }
-
-                listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, label, PassFF.Menu.onListItemSelected, null, onEnter));
+            if (item.isField()) {
+                return;
             }
+
+            let onEnter = null;
+            if (item.isLeaf() || item.hasFields()) {
+                onEnter = function(event) {
+                    CustomizableUI.hidePanelForNode(event.target);
+                    PassFF.Menu.goToItemUrl(PassFF.Menu.getItem(this), event.shiftKey, true);
+                };
+            }
+
+            let label = item.fullKey();
+            if (label != '..' && !item.isLeaf()) {
+                label += '/';
+            }
+
+            listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, label, PassFF.Menu.onListItemSelected, null, onEnter));
         });
     },
 
