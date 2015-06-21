@@ -277,7 +277,13 @@ PassFF.Menu = {
                     let item = PassFF.Menu.getItem(this);
                     PassFF.Menu.goToItemUrl(item, event.shiftKey, true);
                 }
-                listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, item.fullKey(), PassFF.Menu.onListItemSelected, null, onEnter));
+
+                let label = item.fullKey();
+                if (label != '..' && !item.isLeaf()) {
+                    label += '/';
+                }
+
+                listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, label, PassFF.Menu.onListItemSelected, null, onEnter));
             }
         });
     },
