@@ -1,5 +1,38 @@
 Cu.importGlobalProperties(['URL']);
 
+Item = function(depth, key, parent) {
+  this.children = [];
+  this.depth = depth;
+  this.key = key;
+  this.parent = parent;
+};
+
+Item.prototype.isLeaf = function() {
+  return this.children.length == 0;
+};
+
+Item.prototype.hasFields = function() {
+  return this.children.some(function (element) {
+    return element.isField();
+  });
+};
+
+Item.prototype.isField = function() {
+  return this.isLeaf() && (PassFF.Pass.isLoginField(this.key)
+                           || PassFF.Pass.isPasswordField(this.key)
+                           || PassFF.Pass.isUrlField(this.key));
+};
+
+Item.prototype.fullKey = function() {
+  let fullKey = this.key;
+  let loopParent = this.parent;
+  while (loopParent != null) {
+    fullKey = loopParent.key + '/' + fullKey;
+    loopParent = loopParent.parent;
+  }
+  return fullKey;
+};
+
 PassFF.Pass = {
     _items : [],
     _rootItems : [],
@@ -99,24 +132,7 @@ PassFF.Pass = {
                 while (curParent != null && curParent.depth >= curDepth) {
                     curParent = curParent.parent;
                 }
-                let item = {
-                    depth : curDepth,
-                    key : key,
-                    children : new Array(),
-                    parent : curParent,
-                    isLeaf : function() { return this.children.length == 0;},
-                    hasFields : function() { return this.children.some(function(element) { return element.isField(); }); },
-                    isField: function() { return this.isLeaf() && (PassFF.Pass.isLoginField(this.key) || PassFF.Pass.isPasswordField(this.key) || PassFF.Pass.isUrlField(this.key)); },
-                    fullKey : function() {
-                        let fullKey = this.key;
-                        let loopParent = this.parent;
-                        while (loopParent != null) {
-                            fullKey = loopParent.key + "/" + fullKey;
-                            loopParent = loopParent.parent;
-                        }
-                        return fullKey;
-                    }
-                }
+                let item = new Item(curDepth, key, curParent);
                 if(curParent != null) curParent.children.push(item);
                 curParent = item;
                 this._items.push(item);
