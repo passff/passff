@@ -88,5 +88,10 @@ You could also try setting "Pass command" to ````/bin/bash```` and "Pass command
 
 This plugin uses [subprocess](https://github.com/bit/subprocess) to launch the pass script.
 
+People contributing to the project :
+ * [Tobias Umbach](https://github.com/sometoby)
+ * [Lenz Weber](https://github.com/phryneas)
+ * [tuxor1337](https://github.com/tuxor1337)
+
 This is a beta. For testing purposes only.
 ==========================================
