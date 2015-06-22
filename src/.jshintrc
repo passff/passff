@@ -1,0 +1,10 @@
+{
+  "moz": true,
+  "globals": {
+    "AddonManager": false,
+    "Components": false,
+    "CustomizableUI": false,
+    "PassFF": true,
+    "Services": false
+  }
+}

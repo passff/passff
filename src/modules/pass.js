@@ -8,7 +8,7 @@ let Item = function(depth, key, parent) {
 };
 
 Item.prototype.isLeaf = function() {
-  return this.children.length == 0;
+  return this.children.length === 0;
 };
 
 Item.prototype.hasFields = function() {
@@ -18,15 +18,15 @@ Item.prototype.hasFields = function() {
 };
 
 Item.prototype.isField = function() {
-  return this.isLeaf() && (PassFF.Pass.isLoginField(this.key)
-                           || PassFF.Pass.isPasswordField(this.key)
-                           || PassFF.Pass.isUrlField(this.key));
+  return this.isLeaf() && (PassFF.Pass.isLoginField(this.key) ||
+                           PassFF.Pass.isPasswordField(this.key) ||
+                           PassFF.Pass.isUrlField(this.key));
 };
 
 Item.prototype.fullKey = function() {
   let fullKey = this.key;
   let loopParent = this.parent;
-  while (loopParent != null) {
+  while (loopParent !== null) {
     fullKey = loopParent.key + '/' + fullKey;
     loopParent = loopParent.parent;
   }
@@ -49,7 +49,7 @@ PassFF.Pass = {
       let gpgDecryptFailed = executionResult.stderr
                             .indexOf('gpg: decryption failed: No secret key') >= 0;
 
-      while (executionResult.exitCode != 0 && gpgDecryptFailed) {
+      while (executionResult.exitCode !== 0 && gpgDecryptFailed) {
         let title = PassFF.gsfm('passff.passphrase.title');
         let desc = PassFF.gsfm('passff.passphrase.description');
 
@@ -60,7 +60,7 @@ PassFF.Pass = {
         executionResult = PassFF.Pass.executePass(args);
       }
 
-      if (executionResult.exitCode != 0) {
+      if (executionResult.exitCode !== 0) {
         return;
       }
 
@@ -99,7 +99,7 @@ PassFF.Pass = {
         break;
       }
     }
-    passwordData.password = password
+    passwordData.password = password;
   },
 
   setLogin: function(passwordData, item) {
@@ -130,7 +130,7 @@ PassFF.Pass = {
 
   initItems: function() {
     let result = this.executePass([]);
-    if (result.exitCode != 0) {
+    if (result.exitCode !== 0) {
       return;
     }
 
@@ -157,20 +157,20 @@ PassFF.Pass = {
       let curDepth = (match[1].replace('&middot;', '`').length - 1) / 4;
       let key = match[2].replace(/\\ /g, ' ').replace(/ -> .*/g, '');
 
-      while (curParent != null && curParent.depth >= curDepth) {
+      while (curParent !== null && curParent.depth >= curDepth) {
         curParent = curParent.parent;
       }
 
       let item = new Item(curDepth, key, curParent);
 
-      if (curParent != null) {
+      if (curParent !== null) {
         curParent.children.push(item);
       }
 
       curParent = item;
       this._items.push(item);
 
-      if (item.depth == 0) {
+      if (item.depth === 0) {
         this._rootItems.push(item);
       }
     }
@@ -272,7 +272,7 @@ PassFF.Pass = {
   findBestFitItem: function(items, urlStr) {
     let url = new URL(urlStr);
 
-    if (items.length == 0) {
+    if (items.length === 0) {
       return null;
     }
 
@@ -374,7 +374,7 @@ PassFF.Pass = {
     try {
       let p = subprocess.call(params);
       p.wait();
-      if (result.exitCode != 0) {
+      if (result.exitCode !== 0) {
         log.warn('pass execution failed', result.exitCode, result.stderr, result.stdout);
       } else {
         log.info('pass script execution ok');
@@ -422,7 +422,7 @@ PassFF.Pass = {
       params.push('PASSWORD_STORE_GIT=' + PassFF.Preferences.storeGit);
     }
 
-    if (PassFF.Preferences.gpgAgentEnv != null) {
+    if (PassFF.Preferences.gpgAgentEnv !== null) {
       params = params.concat(PassFF.Preferences.gpgAgentEnv);
     }
 

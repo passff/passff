@@ -26,7 +26,7 @@ PassFF.Page = {
     }
 
     let passwords = PassFF.Page.getPasswordInputs(doc);
-    if (passwords.length == 0) {
+    if (passwords.length === 0) {
       return;
     }
 
@@ -75,8 +75,8 @@ PassFF.Page = {
   },
 
   isLoginInput: function(input) {
-    return ((input.type == 'text' || input.type == 'email' || input.type == 'tel')
-            && PassFF.Page.hasGoodName(input.name, PassFF.Preferences.loginInputNames));
+    return ((input.type == 'text' || input.type == 'email' || input.type == 'tel') &&
+            PassFF.Page.hasGoodName(input.name, PassFF.Preferences.loginInputNames));
   },
 
   getLoginInputs: function(doc) {
@@ -97,12 +97,12 @@ PassFF.Page = {
   getSubmitButton: function(form) {
     let origButtons = form.querySelectorAll('button[type=submit]');
 
-    if (origButtons.length == 0) {
+    if (origButtons.length === 0) {
       origButtons = Array.prototype.slice
                                    .call(form.querySelectorAll('input[type=submit]'));
     }
 
-    if (origButtons.length == 0) {
+    if (origButtons.length === 0) {
       return null;
     }
 
@@ -110,7 +110,7 @@ PassFF.Page = {
   },
 
   searchParentForm: function(input) {
-    while (input != null && input.tagName.toLowerCase() != 'form') {
+    while (input !== null && input.tagName.toLowerCase() != 'form') {
       input = input.parentNode;
     }
     return input;

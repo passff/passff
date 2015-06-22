@@ -13,6 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 **/
+/* jshint node: true */
 'use strict';
 
 const global = this;
@@ -78,7 +79,7 @@ function startup({id}) AddonManager.getAddonByID(id, function(addon) {
   PassFF.Preferences.init();
   PassFF.Pass.init();
   PassFF.init();
-});
+})
 
 function shutdown(aData, aReason) {
   log.debug('shutdown');
@@ -128,7 +129,7 @@ let PassFF = {
     let enumerator = Services.wm.getEnumerator('navigator:browser');
     while (enumerator.hasMoreElements()) {
       let aWindow = enumerator.getNext();
-      if (aWindow == null || aWindow.document == null || aWindow.gBrowser == null) {
+      if (aWindow === null || aWindow.document === null || aWindow.gBrowser === null) {
         documentsCreated = false;
         break;
       }
@@ -155,7 +156,7 @@ let PassFF = {
 
     while (enumerator.hasMoreElements()) {
       let aWindow = enumerator.getNext();
-      if (aWindow.document.getElementById(PassFF.Ids.panel) == null) {
+      if (aWindow.document.getElementById(PassFF.Ids.panel) === null) {
         panelsCreated = false;
         break;
       }
@@ -263,7 +264,7 @@ let PassFF = {
         event.target.ownerDocument.getElementById(PassFF.Ids.button).click();
       }, true);
 
-      doc.getElementById('mainKeyset').parentNode.appendChild(toggleKeyset)
+      doc.getElementById('mainKeyset').parentNode.appendChild(toggleKeyset);
     },
 
     removeShortcuts: function(doc) {
@@ -295,7 +296,7 @@ let PassFF = {
     },
 
     onLocationChange: function(aBrowser, aWebProgress, aRequest, aLocation) {
-      log.debug('Location changed', aBrowser.ownerGlobal.content.location.href)
+      log.debug('Location changed', aBrowser.ownerGlobal.content.location.href);
       PassFF.Menu.createContextualMenu(aBrowser.ownerDocument,
                                        aBrowser.ownerGlobal.content.location.href);
     },
@@ -315,22 +316,22 @@ let PassFF = {
         return;
       }
 
-      if (PassFF.Page.getPasswordInputs(doc).length == 0
-          || PassFF.Page.getLoginInputs(doc).length == 0) {
+      if (PassFF.Page.getPasswordInputs(doc).length === 0 ||
+          PassFF.Page.getLoginInputs(doc).length === 0) {
         return;
       }
 
       let url = win.location.href;
       let matchItems = PassFF.Pass.getUrlMatchingItems(url);
 
-      log.info('Start pref-auto-fill')
+      log.info('Start pref-auto-fill');
       let bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
 
       if (bestFitItem) {
         PassFF.Page.fillInputs(doc, bestFitItem);
 
-        if (PassFF.Preferences.autoSubmit
-            && PassFF.Pass.getItemsLeafs(matchItems).length == 1) {
+        if (PassFF.Preferences.autoSubmit &&
+            PassFF.Pass.getItemsLeafs(matchItems).length == 1) {
           PassFF.Page.submit(doc, url);
         }
       }

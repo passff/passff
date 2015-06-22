@@ -217,7 +217,7 @@ PassFF.Menu = {
     let item = PassFF.Menu.getItem(event.target);
     log.debug('Goto item url', item);
     CustomizableUI.hidePanelForNode(event.target);
-    PassFF.Menu.goToItemUrl(item, event.button != 0, false);
+    PassFF.Menu.goToItemUrl(item, event.button !== 0, false);
   },
 
   onGotoAutoFillAndSubmitMenuClick: function(event) {
@@ -226,15 +226,15 @@ PassFF.Menu = {
     let item = PassFF.Menu.getItem(event.target);
     log.debug('Goto item url fill and submit', item);
     CustomizableUI.hidePanelForNode(event.target);
-    PassFF.Menu.goToItemUrl(item, event.button != 0, true);
+    PassFF.Menu.goToItemUrl(item, event.button !== 0, true);
   },
 
   onDisplayItemData: function(event) {
     CustomizableUI.hidePanelForNode(event.target);
     let item = PassFF.Menu.getItem(event.target);
     let passwordData = PassFF.Pass.getPasswordData(item);
-    let login = passwordData['login'];
-    let password = passwordData['password'];
+    let login = passwordData.login;
+    let password = passwordData.password;
     let title = PassFF.gsfm('passff.display.title');
     let desc = PassFF.gsfm('passff.display.description', [login, password], 2);
     PassFF.Menu._promptService.alert(null, title, desc);
@@ -294,7 +294,7 @@ PassFF.Menu = {
   createContextualMenu: function(doc, url) {
     log.debug('createContextualMenu', url);
     let items = PassFF.Pass.getUrlMatchingItems(url);
-    if (items.length == 0) {
+    if (items.length === 0) {
       items = PassFF.Pass.rootItems;
     }
     PassFF.Menu.createItemsMenuList(doc, items);
@@ -303,7 +303,7 @@ PassFF.Menu = {
   createItemsMenuList: function(doc, items, cleanMenu) {
     log.debug('Create children menu list', items, cleanMenu);
 
-    if (cleanMenu == undefined || cleanMenu) {
+    if (cleanMenu === undefined || cleanMenu) {
       PassFF.Menu.clearMenuList(doc);
     }
 
@@ -355,8 +355,8 @@ PassFF.Menu = {
 
   createMenuItem: function(doc, item, label, onClick, attribute, onEnterPress) {
     let descElm = doc.createElement('label');
-    descElm.setAttribute('id', PassFF.Ids.menu + 'label'
-                               + PassFF.Menu._currentMenuIndex);
+    descElm.setAttribute('id', PassFF.Ids.menu + 'label' +
+                               PassFF.Menu._currentMenuIndex);
     descElm.setAttribute('value', label);
 
     let xulName = doc.createElement('hbox');
@@ -364,8 +364,8 @@ PassFF.Menu = {
     xulName.appendChild(descElm);
 
     let listItemElm = doc.createElement('richlistitem');
-    listItemElm.setAttribute('id', PassFF.Ids.menu + 'richlistitem'
-                             + PassFF.Menu._currentMenuIndex);
+    listItemElm.setAttribute('id', PassFF.Ids.menu + 'richlistitem' +
+                                   PassFF.Menu._currentMenuIndex);
     listItemElm.item = item;
     listItemElm.dataKey = attribute;
     listItemElm.addEventListener('click', onClick);
@@ -421,14 +421,14 @@ PassFF.Menu = {
   },
 
   getDataKey: function(node) {
-    while (node && node.dataKey == undefined) {
+    while (node && node.dataKey === undefined) {
       node = node.parentNode;
     }
     return node ? node.dataKey : null;
   },
 
   getItem: function(node) {
-    while (node && node.item == undefined) {
+    while (node && node.item === undefined) {
       node = node.parentNode;
     }
     return node ? node.item : null;

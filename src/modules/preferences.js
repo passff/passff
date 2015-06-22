@@ -98,7 +98,7 @@ PassFF.Preferences = {
       });
 
       let keyringControl = this._environment.get('GNOME_KEYRING_CONTROL');
-      PassFF.Preferences._gpgAgentEnv.push('GNOME_KEYRING_CONTROL=' + keyringControl)
+      PassFF.Preferences._gpgAgentEnv.push('GNOME_KEYRING_CONTROL=' + keyringControl);
 
       log.debug('Set Gpg agent variable:', PassFF.Preferences._gpgAgentEnv);
 
@@ -184,7 +184,7 @@ PassFF.Preferences = {
   },
 
   get gpgAgentEnv() {
-    if (this._gpgAgentEnv == null) {
+    if (this._gpgAgentEnv === null) {
       this.setGpgAgentEnv();
     }
     return this._gpgAgentEnv;
