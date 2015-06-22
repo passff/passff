@@ -1,6 +1,8 @@
-var EXPORTED_SYMBOLS = [ "PassFF" ];
+var EXPORTED_SYMBOLS = ['PassFF'];
 
 /**
  * PassFF namespace.
  */
-if ("undefined" == typeof(PassFF)) var PassFF = { };
+if ('undefined' == typeof(PassFF)) {
+  var PassFF = {};
+}
