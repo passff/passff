@@ -2,13 +2,13 @@
 * Controls the browser overlay for the PassFF extension.
 */
 PassFF.Menu = {
-    _currentMenuIndex : null,
-    _stringBundle : null,
-    _promptService : Cc["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService),
+    _currentMenuIndex: null,
+    _stringBundle: null,
+    _promptService: Cc["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService),
 
-    init : function() { },
+    init: function() {},
 
-    createStaticMenu : function(doc) {
+    createStaticMenu: function(doc) {
         let panel = doc.createElement("panelview");
         panel.setAttribute("id", PassFF.Ids.panel);
 
@@ -16,8 +16,8 @@ PassFF.Menu = {
         searchtextbox.setAttribute("id", PassFF.Ids.searchbox);
         searchtextbox.setAttribute("placeholder", PassFF.gsfm("passff.toolbar.search.placeholder"));
         searchtextbox.setAttribute("clickSelectsAll", "true");
-        searchtextbox.addEventListener("keypress",PassFF.Menu.onSearchKeypress);
-        searchtextbox.addEventListener("keyup",PassFF.Menu.onSearchKeyup);
+        searchtextbox.addEventListener("keypress", PassFF.Menu.onSearchKeypress);
+        searchtextbox.addEventListener("keyup", PassFF.Menu.onSearchKeyup);
 
         let buttonroot = doc.createElement("button");
         buttonroot.setAttribute("id", PassFF.Ids.rootbutton);
@@ -67,7 +67,7 @@ PassFF.Menu = {
         return panel;
     },
 
-    onSearchKeypress : function(event) {
+    onSearchKeypress: function(event) {
         log.debug("Search keydown", event);
         if(event.ctrlKey || event.altKey) return false;
         let doc = event.target.ownerDocument;
@@ -88,18 +88,19 @@ PassFF.Menu = {
         return false;
     },
 
-    onSearchKeyup : function(event) {
+    onSearchKeyup: function(event) {
         log.debug("Search keyup", event);
         if(event.keyCode <= 46) return false;
         let doc = event.target.ownerDocument;
         PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.getMatchingItems(event.target.value, 6));
     },
 
-    onListItemkeydown : function(event) {
+    onListItemkeydown: function(event) {
         log.debug("List item keydown", event);
         PassFF.Menu.keyPressManagement(event);
     },
-    onListItemkeyup : function(event) {
+
+    onListItemkeyup: function(event) {
         log.debug("List item keyup", event);
         if(event.keyCode <= 46) return false;
         if(event.keyCode == 39) {
@@ -109,7 +110,7 @@ PassFF.Menu = {
         }
     },
 
-    keyPressManagement : function(event) {
+    keyPressManagement: function(event) {
         let doc = event.target.ownerDocument;
         let listElm = doc.getElementById(PassFF.Ids.entrieslist);
         if(event.keyCode == 13) {
@@ -147,18 +148,18 @@ PassFF.Menu = {
         }
     },
 
-    onContextButtonCommand : function(event) {
+    onContextButtonCommand: function(event) {
         log.debug("Context button command", event);
         PassFF.Menu.createContextualMenu(event.target.ownerDocument, event.target.ownerGlobal.content.location.href);
     },
 
-    onRootButtonCommand : function(event) {
+    onRootButtonCommand: function(event) {
         log.debug("Root button command", event);
         let doc = event.target.ownerDocument;
         PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.rootItems);
     },
 
-    onRefresh : function(event) {
+    onRefresh: function(event) {
         log.debug("Refresh", event);
         (function() { PassFF.Preferences.init(); }).apply(PassFF.Preferences);
         (function() { PassFF.Pass.init(); }).apply(PassFF.Pass);
@@ -166,17 +167,17 @@ PassFF.Menu = {
         PassFF.Menu.createContextualMenu(event.target.ownerDocument, event.target.ownerGlobal.content.location.href);
     },
 
-    onPreferences : function(event) {
+    onPreferences: function(event) {
         event.target.ownerGlobal.openDialog( "chrome://passff/content/preferencesWindow.xul", "passff-preferences-window", "chrome,titlebar,toolbar,modal");
     },
 
-    onAutoFillMenuClick : function(event) {
+    onAutoFillMenuClick: function(event) {
         event.stopPropagation();
         CustomizableUI.hidePanelForNode(event.target);
         PassFF.Page.fillInputs(event.target.ownerGlobal.content.document, PassFF.Menu.getItem(event.target));
     },
 
-    onAutoFillAndSubmitMenuClick : function(event) {
+    onAutoFillAndSubmitMenuClick: function(event) {
         event.stopPropagation();
         CustomizableUI.hidePanelForNode(event.target);
         let doc = event.target.ownerGlobal.content.document
@@ -184,7 +185,7 @@ PassFF.Menu = {
         PassFF.Page.submit(doc, event.target.ownerGlobal.content.location.href);
     },
 
-    onGoto : function(event) {
+    onGoto: function(event) {
         event.stopPropagation();
         let item = PassFF.Menu.getItem(event.target);
         log.debug("Goto item url", item);
@@ -192,7 +193,7 @@ PassFF.Menu = {
         PassFF.Menu.goToItemUrl(item, event.button != 0, false);
     },
 
-    onGotoAutoFillAndSubmitMenuClick : function(event) {
+    onGotoAutoFillAndSubmitMenuClick: function(event) {
         event.stopPropagation();
         let item = PassFF.Menu.getItem(event.target);
         log.debug("Goto item url fill and submit", item);
@@ -200,7 +201,7 @@ PassFF.Menu = {
         PassFF.Menu.goToItemUrl(item, event.button != 0, true);
     },
 
-    onDisplayItemData : function(event) {
+    onDisplayItemData: function(event) {
         CustomizableUI.hidePanelForNode(event.target);
         let item = PassFF.Menu.getItem(event.target);
         let passwordData = PassFF.Pass.getPasswordData(item);
@@ -211,7 +212,7 @@ PassFF.Menu = {
         PassFF.Menu._promptService.alert(null, title, desc);
     },
 
-    onCopyToClipboard : function(event) {
+    onCopyToClipboard: function(event) {
         log.debug("copy to clipboard", event);
         CustomizableUI.hidePanelForNode(event.target);
         event.stopPropagation();
@@ -226,13 +227,13 @@ PassFF.Menu = {
         clip.setData(trans, null, Ci.nsIClipboard.kGlobalClipboard);
     },
 
-    clearMenuList : function(doc) {
+    clearMenuList: function(doc) {
         let listElm = doc.getElementById(PassFF.Ids.entrieslist);
         while (listElm.hasChildNodes()) listElm.removeChild(listElm.firstChild);
         PassFF.Menu._currentMenuIndex = 0;
     },
 
-    createItemMenuList : function(doc, item) {
+    createItemMenuList: function(doc, item) {
         log.debug("Create item menu", item);
 
         PassFF.Menu.clearMenuList(doc);
@@ -243,7 +244,7 @@ PassFF.Menu = {
         listElm.insertBefore(PassFF.Menu.createMenuItem(doc, item.parent, "..", PassFF.Menu.onListItemSelected), listElm.firstChild);
     },
 
-    createContextualMenu : function(doc, url) {
+    createContextualMenu: function(doc, url) {
         log.debug("createContextualMenu", url);
         let items = PassFF.Pass.getUrlMatchingItems(url);
         if (items.length == 0) items = PassFF.Pass.rootItems
@@ -281,7 +282,7 @@ PassFF.Menu = {
         });
     },
 
-    createLeafMenuList : function(doc, item) {
+    createLeafMenuList: function(doc, item) {
         PassFF.Menu.clearMenuList(doc);
         log.debug("Create leaf menu list", item);
         let listElm = doc.getElementById(PassFF.Ids.entrieslist);
@@ -294,7 +295,7 @@ PassFF.Menu = {
         listElm.appendChild(PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm("passff.menu.display")             , PassFF.Menu.onDisplayItemData));
     },
 
-    createMenuItem : function(doc, item, label, onClick, attribute, onEnterPress) {
+    createMenuItem: function(doc, item, label, onClick, attribute, onEnterPress) {
         let descElm = doc.createElement("label")
         descElm.setAttribute("id", PassFF.Ids.menu + "label" + PassFF.Menu._currentMenuIndex);
         descElm.setAttribute("value", label);
@@ -343,15 +344,16 @@ PassFF.Menu = {
                     PassFF.Page.submit(doc, url);
                 }, true);
             }
-            
+
         }
     },
 
-    getDataKey : function(node) {
+    getDataKey: function(node) {
         while (node && node.dataKey == undefined) node = node.parentNode;
         return node ? node.dataKey : null;
     },
-    getItem : function(node) {
+
+    getItem: function(node) {
         while (node && node.item == undefined) node = node.parentNode;
         return node ? node.item : null;
     }
