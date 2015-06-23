@@ -19,10 +19,10 @@
 <!ENTITY command_tooltip              "Команда для запуска pass">
 <!ENTITY commandArgs_label            "Аргументы">
 <!ENTITY commandArgs_tooltip          "Аргументы для скрипта">
-<!ENTITY shell_label                  "Pass shell">
-<!ENTITY shell_tooltip                "The shell to use">
-<!ENTITY shellArgs_label              "Shell arguments">
-<!ENTITY shellArgs_tooltip            "Arguments to start the shell with">
+<!ENTITY shell_label                  "Командная оболочка">
+<!ENTITY shell_tooltip                "Используемая командная оболочка">
+<!ENTITY shellArgs_label              "Аргументы для командной оболочки">
+<!ENTITY shellArgs_tooltip            "Аргументы используемые при запуске командной оболочки">
 <!ENTITY home_label                   "Домашняя директория">
 <!ENTITY home_tooltip                 "Домашняя директория. Если поле пустое, используется системная переменная HOME">
 <!ENTITY gpg_agent_info_label         "Файл info для gpg-агента">
