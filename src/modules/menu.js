@@ -11,55 +11,54 @@ PassFF.Menu = {
     let panel = doc.createElement('panelview');
     panel.setAttribute('id', PassFF.Ids.panel);
 
-    let searchtextbox = doc.createElement('textbox');
-    searchtextbox.setAttribute('id', PassFF.Ids.searchbox);
-    searchtextbox.setAttribute('placeholder',
+    let searchBox = doc.createElement('textbox');
+    searchBox.setAttribute('id', PassFF.Ids.searchbox);
+    searchBox.setAttribute('placeholder',
                                PassFF.gsfm('passff.toolbar.search.placeholder'));
-    searchtextbox.setAttribute('clickSelectsAll', 'true');
-    searchtextbox.addEventListener('keypress', PassFF.Menu.onSearchKeypress);
-    searchtextbox.addEventListener('keyup', PassFF.Menu.onSearchKeyup);
+    searchBox.setAttribute('clickSelectsAll', 'true');
+    searchBox.addEventListener('keypress', PassFF.Menu.onSearchKeypress);
+    searchBox.addEventListener('keyup', PassFF.Menu.onSearchKeyup);
 
-    let buttonroot = doc.createElement('button');
-    buttonroot.setAttribute('id', PassFF.Ids.rootbutton);
-    buttonroot.setAttribute('label', PassFF.gsfm('passff.button.root.label'));
-    buttonroot.addEventListener('command', PassFF.Menu.onRootButtonCommand);
+    let showAllButton = doc.createElement('button');
+    showAllButton.setAttribute('id', PassFF.Ids.rootbutton);
+    showAllButton.setAttribute('label', PassFF.gsfm('passff.button.root.label'));
+    showAllButton.addEventListener('command', PassFF.Menu.onRootButtonCommand);
 
-    let buttoncontext = doc.createElement('button');
-    buttoncontext.setAttribute('id', PassFF.Ids.contextbutton);
-    buttoncontext.setAttribute('label', PassFF.gsfm('passff.button.context.label'));
-    buttoncontext.addEventListener('command', PassFF.Menu.onContextButtonCommand);
+    let showMatchingButton = doc.createElement('button');
+    showMatchingButton.setAttribute('id', PassFF.Ids.contextbutton);
+    showMatchingButton.setAttribute('label', PassFF.gsfm('passff.button.context.label'));
+    showMatchingButton.addEventListener('command', PassFF.Menu.onContextButtonCommand);
 
-    let buttonsbox = doc.createElement('hbox');
-    buttonsbox.setAttribute('id', PassFF.Ids.buttonsbox);
-    buttonsbox.appendChild(buttonroot);
-    buttonsbox.appendChild(buttoncontext);
+    let showButtonsBox = doc.createElement('hbox');
+    showButtonsBox.setAttribute('id', PassFF.Ids.buttonsbox);
+    showButtonsBox.appendChild(showAllButton);
+    showButtonsBox.appendChild(showMatchingButton);
 
-    let richlistbox = doc.createElement('richlistbox');
-    richlistbox.setAttribute('id', PassFF.Ids.entrieslist);
-    richlistbox.addEventListener('keydown', PassFF.Menu.onListItemkeydown);
-    richlistbox.addEventListener('keyup', PassFF.Menu.onListItemkeyup);
+    let entryList = doc.createElement('richlistbox');
+    entryList.setAttribute('id', PassFF.Ids.entrieslist);
+    entryList.addEventListener('keydown', PassFF.Menu.onListItemkeydown);
+    entryList.addEventListener('keyup', PassFF.Menu.onListItemkeyup);
 
-    let refreshitem = doc.createElement('button');
-    refreshitem.setAttribute('id', PassFF.Ids.refreshmenuitem);
-    refreshitem.setAttribute('label', PassFF.gsfm('passff.toolbar.refresh.label'));
-    refreshitem.addEventListener('click', PassFF.Menu.onRefresh);
+    let refreshButton = doc.createElement('button');
+    refreshButton.setAttribute('id', PassFF.Ids.refreshmenuitem);
+    refreshButton.setAttribute('label', PassFF.gsfm('passff.toolbar.refresh.label'));
+    refreshButton.addEventListener('click', PassFF.Menu.onRefresh);
 
-    let prefsitem = doc.createElement('button');
-    prefsitem.setAttribute('id', PassFF.Ids.prefsmenuitem);
-    prefsitem.setAttribute('label', PassFF.gsfm('passff.toolbar.preferences.label'));
-    prefsitem.addEventListener('click', PassFF.Menu.onPreferences);
+    let prefsButton = doc.createElement('button');
+    prefsButton.setAttribute('id', PassFF.Ids.prefsmenuitem);
+    prefsButton.setAttribute('label', PassFF.gsfm('passff.toolbar.preferences.label'));
+    prefsButton.addEventListener('click', PassFF.Menu.onPreferences);
 
-    let optionsBox = doc.createElement('hbox');
-    optionsBox.appendChild(refreshItem);
-    optionsBox.appendChild(prefsItem);
+    let lowerButtonsBox = doc.createElement('hbox');
+    lowerButtonsBox.appendChild(refreshButton);
+    lowerButtonsBox.appendChild(prefsButton);
 
-    let separator = doc.createElement('menuseparator');
-
-    panel.appendChild(searchtextbox);
-    panel.appendChild(buttonsbox);
-    panel.appendChild(separator);
-    panel.appendChild(richlistbox);
-    panel.appendChild(optionsBox);
+    panel.appendChild(searchBox);
+    panel.appendChild(doc.createElement('menuseparator'));
+    panel.appendChild(showButtonsBox);
+    panel.appendChild(entryList);
+    panel.appendChild(doc.createElement('menuseparator'));
+    panel.appendChild(lowerButtonsBox);
 
     return panel;
   },

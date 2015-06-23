@@ -40,6 +40,72 @@ PassFF.Pass = {
                  .getService(Components.interfaces.nsIPromptService),
   _stringBundle: null,
 
+  init: function() {
+    subprocess.registerDebugHandler(function(m) {
+      log.debug('[subprocess]', m);
+    });
+    subprocess.registerLogHandler(function(m) {
+      log.error('[subprocess]', m);
+    });
+
+    this.initItems();
+
+    let stringBundleService = Cc['@mozilla.org/intl/stringbundle;1']
+                             .getService(Ci.nsIStringBundleService);
+
+    this._stringBundle = stringBundleService
+                        .createBundle('chrome://passff/locale/strings.properties');
+  },
+
+  initItems: function() {
+    let result = this.executePass([]);
+    if (result.exitCode !== 0) {
+      return;
+    }
+
+    this._rootItems = [];
+    this._items = [];
+
+    let stdout = result.stdout;
+    // replace utf8 box characters with traditional ascii tree
+    stdout = stdout.replace(/[\u2514\u251C]\u2500\u2500/g, '|--');
+    //remove colors
+    stdout = stdout.replace(/\x1B\[[^m]*m/g, '');
+
+    let lines = stdout.split('\n');
+    let re = /(.*[|`;])+-- (.*)/;
+    let curParent = null;
+
+    for (let i = 0; i < lines.length; i++) {
+      let match = re.exec(lines[i]);
+
+      if (!match) {
+        continue;
+      }
+
+      let curDepth = (match[1].replace('&middot;', '`').length - 1) / 4;
+      let key = match[2].replace(/\\ /g, ' ').replace(/ -> .*/g, '');
+
+      while (curParent !== null && curParent.depth >= curDepth) {
+        curParent = curParent.parent;
+      }
+
+      let item = new Item(curDepth, key, curParent);
+
+      if (curParent !== null) {
+        curParent.children.push(item);
+      }
+
+      curParent = item;
+      this._items.push(item);
+
+      if (item.depth === 0) {
+        this._rootItems.push(item);
+      }
+    }
+    log.debug('Found Items', this._rootItems);
+  },
+
   getPasswordData: function(item) {
     let result = {};
 
@@ -47,7 +113,7 @@ PassFF.Pass = {
       let args = [item.fullKey()];
       let executionResult = this.executePass(args);
       let gpgDecryptFailed = executionResult.stderr
-                            .indexOf('gpg: decryption failed: No secret key') >= 0;
+                             .indexOf('gpg: decryption failed: No secret key') >= 0;
 
       while (executionResult.exitCode !== 0 && gpgDecryptFailed) {
         let title = PassFF.gsfm('passff.passphrase.title');
@@ -126,55 +192,6 @@ PassFF.Pass = {
 
   isUrlField: function(name) {
     return PassFF.Preferences.urlFieldNames.indexOf(name) >= 0;
-  },
-
-  initItems: function() {
-    let result = this.executePass([]);
-    if (result.exitCode !== 0) {
-      return;
-    }
-
-    this._rootItems = [];
-    this._items = [];
-
-    let stdout = result.stdout;
-    // replace utf8 box characters with traditional ascii tree
-    stdout = stdout.replace(/[\u2514\u251C]\u2500\u2500/g, '|--');
-    //remove colors
-    stdout = stdout.replace(/\x1B\[[^m]*m/g, '');
-
-    let lines = stdout.split('\n');
-    let re = /(.*[|`;])+-- (.*)/;
-    let curParent = null;
-
-    for (let i = 0; i < lines.length; i++) {
-      let match = re.exec(lines[i]);
-
-      if (!match) {
-        continue;
-      }
-
-      let curDepth = (match[1].replace('&middot;', '`').length - 1) / 4;
-      let key = match[2].replace(/\\ /g, ' ').replace(/ -> .*/g, '');
-
-      while (curParent !== null && curParent.depth >= curDepth) {
-        curParent = curParent.parent;
-      }
-
-      let item = new Item(curDepth, key, curParent);
-
-      if (curParent !== null) {
-        curParent.children.push(item);
-      }
-
-      curParent = item;
-      this._items.push(item);
-
-      if (item.depth === 0) {
-        this._rootItems.push(item);
-      }
-    }
-    log.debug('Found Items', this._rootItems);
   },
 
   getMatchingItems: function(search, limit) {
@@ -385,22 +402,6 @@ PassFF.Pass = {
       result = { exitCode: -1 };
     }
     return result;
-  },
-
-  init: function() {
-    subprocess.registerDebugHandler(function(m) {
-      log.debug('[subprocess]', m);
-    });
-    subprocess.registerLogHandler(function(m) {
-      log.error('[subprocess]', m);
-    });
-    this.initItems();
-
-    let stringBundleService = Cc['@mozilla.org/intl/stringbundle;1']
-                             .getService(Ci.nsIStringBundleService);
-
-    this._stringBundle = stringBundleService
-                        .createBundle('chrome://passff/locale/strings.properties');
   },
 
   getEnvParams: function() {
