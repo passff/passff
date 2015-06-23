@@ -1,49 +1,48 @@
-<!ENTITY tab.general                     "General">
-<!ENTITY tab.autofilling                 "Autofilling">
-<!ENTITY tab.fields                      "Fields">
-<!ENTITY tab.script                      "Pass Script">
-<!ENTITY case-insensitive-search         "Case-insensitive searching">
+<!ENTITY tab.general                  "General">
+<!ENTITY tab.autofilling              "Autofilling">
+<!ENTITY tab.fields                   "Fields">
+<!ENTITY tab.script                   "Pass Script">
+<!ENTITY case-insensitive-search      "Case-insensitive searching">
 <!ENTITY case-insensitive-search-tooltip "This will treat upper- and lowercase characters the same when searching for pass files">
-<!ENTITY pass_caption                    "Pass script parameters">
-<!ENTITY others_caption                  "Others parameters">
-<!ENTITY fields_description              "Fields are used to find data inside your passwords repository. PassFF will try to find the login, password or url value inside the password data (using the standard syntax) or trying to find a matching child node name">
-<!ENTITY password_input_names_label      "Password input names">
-<!ENTITY password_input_names_tooltip    "Comma separated list of input names. Input field names in a html page containing one of those values will be filled with the password">
-<!ENTITY login_input_names_label         "Login input names">
-<!ENTITY login_input_names_tooltip       "Comma separated list of input names. Input field names in a html page containing one of those values will be filled with the login">
-<!ENTITY login_field_names_label         "Login field names">
-<!ENTITY login_field_names_tooltip       "Comma separated list of field names. The first matching field in the password data will be used as login">
-<!ENTITY password_field_names_label      "Password field names">
-<!ENTITY password_field_names_tooltip    "Comma separated list of field names. The first matching field in the password data will be used as login">
-<!ENTITY url_field_names_label           "Url field names">
-<!ENTITY url_field_names_tooltip         "Comma separated list of field names. The first matching field in the url data will be used as login">
-<!ENTITY command_label                   "Pass command">
-<!ENTITY command_tooltip                 "The pass script path">
-<!ENTITY commandArgs_label               "Arguments">
-<!ENTITY commandArgs_tooltip             "Arguments to pass to the pass script when run">
-<!ENTITY shell_label                     "Pass shell">
-<!ENTITY shell_tooltip                   "The shell to use">
-<!ENTITY shellArgs_label                 "Shell arguments">
-<!ENTITY shellArgs_tooltip               "Arguments to start the shell with">
-<!ENTITY home_label                      "User home">
-<!ENTITY home_tooltip                    "User home. If empty, use environment user home">
-<!ENTITY gpg_agent_info_label            "Gpg agent info file">
-<!ENTITY gpg_agent_info_tooltip          "Location of the gpg agent info file containing environment variables (relative to the user home or absolute). if not found, try to load variables from firefox environment">
-<!ENTITY pass_dir_label                  "Pass store dir">
-<!ENTITY pass_dir_tooltip                "Pass store dir (PASSWORD_STORE_DIR). If empty, use the current environment PASSWORD_STORE_DIR">
-<!ENTITY pass_git_label                  "Pass store git dir">
-<!ENTITY pass_git_tooltip                "Pass store git dir (PASSWORD_STORE_GIT). If empty, use the current environment PASSWORD_STORE_GIT">
-<!ENTITY auto_fill_label                 "Try to auto fill page login forms">
-<!ENTITY auto_fill_tooltip               "If set, will try to fill automatically the login forms searching a password key contained in the page url">
-<!ENTITY auto_submit_label               "Try to auto submit page login forms">
-<!ENTITY auto_submit_tooltip             "If set, will try to submit automatically the login forms searching a password key contained in the page url">
-<!ENTITY shortcut_key_label              "Shortcut key">
-<!ENTITY shortcut_key_tooltip            "The shortcut key used to open the PassFF panel">
-<!ENTITY shortcut_mod_label              "Shortcut modifier">
-<!ENTITY shortcut_mod_tooltip            "The shortcut modifiers used to open the PassFF panel. A combinaison of (control, alt, shift) words separated by a comma (,)">
-<!ENTITY log_enabled_label               "Enable logs">
-<!ENTITY log_enabled_tooltip             "Enable debug logs in web console">
-<!ENTITY callmethod-tooltip              "Choose the method passff will use to run the pass script">
-<!ENTITY callmethod                      "Script call method">
-<!ENTITY direct_radio_label              "Direct call">
-<!ENTITY shell_radio_label               "Through shell">
+<!ENTITY fields_description           "Fields are used to find data inside your passwords repository. PassFF will try to find the login, password or url value inside the password data (using the standard syntax) or trying to find a matching child node name">
+<!ENTITY password_input_names_label   "Password input names">
+<!ENTITY password_input_names_tooltip "Comma separated list of input names. Input field names in a html page containing one of those values will be filled with the password">
+<!ENTITY login_input_names_label      "Login input names">
+<!ENTITY login_input_names_tooltip    "Comma separated list of input names. Input field names in a html page containing one of those values will be filled with the login">
+<!ENTITY login_field_names_label      "Login field names">
+<!ENTITY login_field_names_tooltip    "Comma separated list of field names. The first matching field in the password data will be used as login">
+<!ENTITY password_field_names_label   "Password field names">
+<!ENTITY password_field_names_tooltip "Comma separated list of field names. The first matching field in the password data will be used as password">
+<!ENTITY url_field_names_label        "Url field names">
+<!ENTITY url_field_names_tooltip      "Comma separated list of field names. The first matching field in the password data will be used as url">
+<!ENTITY command_label                "Pass command">
+<!ENTITY command_tooltip              "The pass script path">
+<!ENTITY commandArgs_label            "Arguments">
+<!ENTITY commandArgs_tooltip          "Arguments to pass to the pass script when run">
+<!ENTITY shell_label                  "Pass shell">
+<!ENTITY shell_tooltip                "The shell to use">
+<!ENTITY shellArgs_label              "Shell arguments">
+<!ENTITY shellArgs_tooltip            "Arguments to start the shell with">
+<!ENTITY home_label                   "User home">
+<!ENTITY home_tooltip                 "User home. If empty, use environment user home">
+<!ENTITY gpg_agent_info_label         "Gpg agent info file">
+<!ENTITY gpg_agent_info_tooltip       "Location of the gpg agent info file containing environment variables (relative to the user home or absolute). if not found, try to load variables from firefox environment">
+<!ENTITY pass_dir_label               "Pass store dir">
+<!ENTITY pass_dir_tooltip             "Pass store dir (PASSWORD_STORE_DIR). If empty, use the current environment PASSWORD_STORE_DIR">
+<!ENTITY pass_git_label               "Pass store git dir">
+<!ENTITY pass_git_tooltip             "Pass store git dir (PASSWORD_STORE_GIT). If empty, use the current environment PASSWORD_STORE_GIT">
+<!ENTITY auto_fill_label              "Try to auto fill page login forms">
+<!ENTITY auto_fill_tooltip            "If set, will try to fill automatically the login forms searching a password key contained in the page url">
+<!ENTITY auto_submit_label              "Try to auto submit page login forms">
+<!ENTITY auto_submit_tooltip            "If set, will try to submit automatically the login forms searching a password key contained in the page url">
+<!ENTITY shortcut_caption             "Shortcut configuration">
+<!ENTITY shortcut_key_label           "Shortcut key">
+<!ENTITY shortcut_key_tooltip         "The shortcut key used to open the PassFF panel">
+<!ENTITY shortcut_mod_label           "Shortcut modifier">
+<!ENTITY shortcut_mod_tooltip         "The shortcut modifiers used to open the PassFF panel. A combination of (control, alt, shift) words separated by a comma (,)">
+<!ENTITY log_enabled_label              "Enable logs">
+<!ENTITY log_enabled_tooltip            "Enable debug logs in web console">
+<!ENTITY callmethod-tooltip "Choose the method passff will use to run the pass script">
+<!ENTITY callmethod "Script call method">
+<!ENTITY direct_radio_label            "Direct call">
+<!ENTITY shell_radio_label            "Through shell">
