@@ -31,6 +31,7 @@ var log = {
 (function() {
   function logPrototype() {
     if (PassFF.Preferences && PassFF.Preferences.logEnabled) {
+      // jshint validthis: true
       this.apply(console, log.generateArguments(arguments));
     }
   }
