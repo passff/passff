@@ -37,16 +37,16 @@
 <!ENTITY pass_git_tooltip             "Pass store git dir (PASSWORD_STORE_GIT). If empty, use the current environment PASSWORD_STORE_GIT">
 <!ENTITY auto_fill_label              "Try to auto fill page login forms">
 <!ENTITY auto_fill_tooltip            "If set, will try to fill automatically the login forms searching a password key contained in the page url">
-<!ENTITY auto_submit_label              "Try to auto submit page login forms">
-<!ENTITY auto_submit_tooltip            "If set, will try to submit automatically the login forms searching a password key contained in the page url">
+<!ENTITY auto_submit_label            "Try to auto submit page login forms">
+<!ENTITY auto_submit_tooltip          "If set, will try to submit automatically the login forms searching a password key contained in the page url">
 <!ENTITY shortcut_caption             "Shortcut configuration">
 <!ENTITY shortcut_key_label           "Shortcut key">
 <!ENTITY shortcut_key_tooltip         "The shortcut key used to open the PassFF panel">
 <!ENTITY shortcut_mod_label           "Shortcut modifier">
 <!ENTITY shortcut_mod_tooltip         "The shortcut modifiers used to open the PassFF panel. A combinaison of (control, alt, shift) words separated by a comma (,)">
-<!ENTITY log_enabled_label              "Enable logs">
-<!ENTITY log_enabled_tooltip            "Enable debug logs in web console">
-<!ENTITY callmethod-tooltip "Choose the method passff will use to run the pass script">
-<!ENTITY callmethod "Script call method">
-<!ENTITY direct_radio_label            "Direct call">
+<!ENTITY log_enabled_label            "Enable logs">
+<!ENTITY log_enabled_tooltip          "Enable debug logs in web console">
+<!ENTITY callmethod-tooltip           "Choose the method passff will use to run the pass script">
+<!ENTITY callmethod                   "Script call method">
+<!ENTITY direct_radio_label           "Direct call">
 <!ENTITY shell_radio_label            "Through shell">
