@@ -12,7 +12,7 @@ PassFF.Preferences = {
         command               : "/usr/bin/pass",
         commandArgs           : "",
         shell                 : "/bin/bash",
-        shellArgs             : "",
+        shellArgs             : "--login",
         home                  : "",
         storeDir              : "",
         storeGit              : "",
