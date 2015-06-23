@@ -4,10 +4,6 @@
 <!ENTITY tab.script                   "Скрипт pass">
 <!ENTITY case-insensitive-search      "Поиск без учета регистра">
 <!ENTITY case-insensitive-search-tooltip "Строчные и прописные буквы будут считатся одинаковыми при поиске файлов с паролями">
-<!ENTITY page_caption                 "Html page autofill behavior">
-<!ENTITY pass_caption                 "Параметры для скрипта pass">
-<!ENTITY others_caption               "Другие опции">
-<!ENTITY fields_caption               "Fields parameters">
 <!ENTITY fields_description           "Поля которые используются для поиска данных в вашем репозитарии паролей. PassFF пытается найти логин, пароль и адреса сайтов в файлах с паролями (испольуя стандартный синтаксис).">
 <!ENTITY password_input_names_label   "Имена полей для паролей">
 <!ENTITY password_input_names_tooltip "Список имен разделенных запятой. Поля с html-атрибутом 'name' равным одному из значений из этого списка будут заполнены паролями">
