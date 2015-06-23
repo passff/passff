@@ -39,7 +39,7 @@
 <!ENTITY shortcut_key_label           "Shortcut key">
 <!ENTITY shortcut_key_tooltip         "The shortcut key used to open the PassFF panel">
 <!ENTITY shortcut_mod_label           "Shortcut modifier">
-<!ENTITY shortcut_mod_tooltip         "The shortcut modifiers used to open the PassFF panel. A combinaiton of (control, alt, shift) words separated by a comma (,)">
+<!ENTITY shortcut_mod_tooltip         "The shortcut modifiers used to open the PassFF panel. A combination of (control, alt, shift) words separated by a comma (,)">
 <!ENTITY log_enabled_label              "Enable logs">
 <!ENTITY log_enabled_tooltip            "Enable debug logs in web console">
 <!ENTITY callmethod-tooltip "Choose the method passff will use to run the pass script">
