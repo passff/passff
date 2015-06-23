@@ -12,9 +12,9 @@
 <!ENTITY login_field_names_label      "Login field names">
 <!ENTITY login_field_names_tooltip    "Comma separated list of field names. The first matching field in the password data will be used as login">
 <!ENTITY password_field_names_label   "Password field names">
-<!ENTITY password_field_names_tooltip "Comma separated list of field names. The first matching field in the password data will be used as login">
+<!ENTITY password_field_names_tooltip "Comma separated list of field names. The first matching field in the password data will be used as password">
 <!ENTITY url_field_names_label        "Url field names">
-<!ENTITY url_field_names_tooltip      "Comma separated list of field names. The first matching field in the url data will be used as login">
+<!ENTITY url_field_names_tooltip      "Comma separated list of field names. The first matching field in the password data will be used as url">
 <!ENTITY command_label                "Pass command">
 <!ENTITY command_tooltip              "The pass script path">
 <!ENTITY commandArgs_label            "Arguments">
@@ -39,7 +39,7 @@
 <!ENTITY shortcut_key_label           "Shortcut key">
 <!ENTITY shortcut_key_tooltip         "The shortcut key used to open the PassFF panel">
 <!ENTITY shortcut_mod_label           "Shortcut modifier">
-<!ENTITY shortcut_mod_tooltip         "The shortcut modifiers used to open the PassFF panel. A combinaison of (control, alt, shift) words separated by a comma (,)">
+<!ENTITY shortcut_mod_tooltip         "The shortcut modifiers used to open the PassFF panel. A combination of (control, alt, shift) words separated by a comma (,)">
 <!ENTITY log_enabled_label              "Enable logs">
 <!ENTITY log_enabled_tooltip            "Enable debug logs in web console">
 <!ENTITY callmethod-tooltip "Choose the method passff will use to run the pass script">
