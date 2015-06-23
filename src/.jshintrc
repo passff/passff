@@ -2,10 +2,10 @@
   "moz": true,
   "globals": {
     "AddonManager": false,
-    "Cc": false,
-    "Ci": false,
+    "Cc": true,
+    "Ci": true,
     "Components": false,
-    "Cu": false,
+    "Cu": true,
     "CustomizableUI": false,
     "PassFF": true,
     "Promise": false,
