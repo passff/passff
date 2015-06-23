@@ -1,6 +1,9 @@
 /**
 * Controls the browser overlay for the PassFF extension.
 */
+/* jshint node: true */ 
+'use strict';
+
 PassFF.Menu = {
   _currentMenuIndex: null,
   _stringBundle: null,
@@ -121,6 +124,7 @@ PassFF.Menu = {
       return false;
     }
     if (event.keyCode == 39) {
+      // FIXME where is this doc coming from?
       let searchInputElm = doc.getElementById(PassFF.Ids.searchbox);
       searchInputElm.focus();
       event.stopPropagation();

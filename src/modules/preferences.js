@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 const {TextDecoder, OS} = Cu.import('resource://gre/modules/osfile.jsm', {});
 
 PassFF.Preferences = {

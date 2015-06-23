@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 PassFF.Page = {
   _autoSubmittedUrls: [],
   autoFillAndSubmitPending: false,
@@ -95,14 +98,14 @@ PassFF.Page = {
    * XXX why does this return a copy?
    */
   getSubmitButton: function(form) {
-    let origButtons = form.querySelectorAll('button[type=submit]');
+    let buttons = form.querySelectorAll('button[type=submit]');
 
-    if (origButtons.length === 0) {
-      origButtons = Array.prototype.slice
+    if (buttons.length === 0) {
+      buttons = Array.prototype.slice
                                    .call(form.querySelectorAll('input[type=submit]'));
     }
 
-    if (origButtons.length === 0) {
+    if (buttons.length === 0) {
       return null;
     }
 

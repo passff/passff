@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 Cu.importGlobalProperties(['URL']);
 
 let Item = function(depth, key, parent) {
@@ -297,7 +300,7 @@ PassFF.Pass = {
     let bestQuality = -1;
 
     items.forEach(function(curItem) {
-      if (item.isLeaf()) {
+      if (curItem.isLeaf()) {
         return;
       }
 
@@ -309,9 +312,9 @@ PassFF.Pass = {
       }
     });
 
-    log.debug('Best fit item', bestFitItem);
+    log.debug('Best fit item', bestItem);
 
-    return bestFitItem;
+    return bestItem;
   },
 
   getItemsLeafs: function(items) {
@@ -373,7 +376,7 @@ PassFF.Pass = {
         }
       });
       scriptArgs.push('-c');
-      scriptargs.push(passCmd.trim());
+      scriptArgs.push(passCmd.trim());
     }
 
     let params = {

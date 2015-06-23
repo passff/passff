@@ -2,9 +2,16 @@
   "moz": true,
   "globals": {
     "AddonManager": false,
+    "Cc": false,
+    "Ci": false,
     "Components": false,
+    "Cu": false,
     "CustomizableUI": false,
     "PassFF": true,
-    "Services": false
+    "Promise": false,
+    "Services": false,
+    "URL": false,
+    "log": true,
+    "subprocess": false
   }
 }
