@@ -84,11 +84,7 @@ If you're experiencing problems running passff on OS X, first try using the "thr
 
 You could also try setting "Pass command" to ````/bin/bash```` and "Pass command line arguments" to ````--login [pass binary location]````. If pass was installed with the default Homebrew configuration, the ````[pass binary location]```` should be ````/usr/local/bin/pass````.
 
-### Thanks
-
-This plugin uses [subprocess](https://github.com/bit/subprocess) to launch the pass script.
-
-People contributing to the project :
+### People contributing to the project
 
 Development and improvements
  * [Tobias Umbach](https://github.com/sometoby)
@@ -96,6 +92,11 @@ Development and improvements
  * [tuxor1337](https://github.com/tuxor1337)
 
 Russian translation : [Grigorii Horos](https://github.com/horosgrisa)
+
+### Thanks
+
+This plugin uses [subprocess](https://github.com/bit/subprocess) to launch the pass script.
+
 
 This is a beta. For testing purposes only.
 ==========================================
