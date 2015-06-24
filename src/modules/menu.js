@@ -12,7 +12,7 @@ PassFF.Menu = {
         let panel = doc.createElement("panelview");
         panel.setAttribute("id", PassFF.Ids.panel);
 
-		let searchtextbox = doc.createElement("textbox");
+        let searchtextbox = doc.createElement("textbox");
         searchtextbox.setAttribute("id", PassFF.Ids.searchbox);
         searchtextbox.setAttribute("placeholder", PassFF.gsfm("passff.toolbar.search.placeholder"));
         searchtextbox.setAttribute("clickSelectsAll", "true");
