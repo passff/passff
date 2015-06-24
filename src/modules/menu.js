@@ -56,7 +56,6 @@ PassFF.Menu = {
         optionbox.appendChild(prefsitem);
 
         let separator = doc.createElement("menuseparator");
-        separator.setAttribute("id", PassFF.Ids.menuseparator);
 
         panel.appendChild(searchtextbox);
         panel.appendChild(buttonsbox);
