@@ -35,7 +35,6 @@
 <!ENTITY auto_fill_tooltip                "Wenn gesetzt wird automatisch versucht, Loginformulare auszufüllen indem ein Passwort entsprechend der Seiten-URL ausgewählt wird.">
 <!ENTITY auto_submit_label                "Versuche, Loginseiten automatisch abzusenden.">
 <!ENTITY auto_submit_tooltip              "Wenn gesetzt wird automatisch versucht, Loginformulare abzusenden indem ein Passwort entsprechend der Seiten-URL ausgewählt wird.">
-<!ENTITY shortcut_caption                 "Tastenkombinationen">
 <!ENTITY shortcut_key_label               "Schnelltaste">
 <!ENTITY shortcut_key_tooltip             "Die Schnelltaste, um das PassFF-Fenster zu öffnen.">
 <!ENTITY shortcut_mod_label               "Schnelltasten-Modifikatoren">
