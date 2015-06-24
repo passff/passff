@@ -37,8 +37,8 @@
 <!ENTITY auto_submit_tooltip             "Если включено тогда автоматически заполнять и отправлять данные для входа из файла с паролями">
 <!ENTITY shortcut_key_label              "Быстрая клавиша">
 <!ENTITY shortcut_key_tooltip            "Быстрая клавиша используемая для открытия окна PassFF">
-<!ENTITY shortcut_mod_label              "Модификатор для быстрых клавиш">
-<!ENTITY shortcut_mod_tooltip            "Быстрые клавиши используемые для открытия окна PassFF. Комбинация из (Control, Alt, Shift) и других символов разделенных запятой (,)">
+<!ENTITY shortcut_mod_label              "Модификаторы для быстрой клавиши">
+<!ENTITY shortcut_mod_tooltip            "Модификаторы для быстрой клавиши используемые для открытия окна PassFF. Комбинация из (Control, Alt, Shift) и других символов разделенных запятой (,)">
 <!ENTITY log_enabled_label               "Включить ведение логов">
 <!ENTITY log_enabled_tooltip             "Включить логи в веб-консоли (F12)">
 <!ENTITY callmethod-tooltip              "Выберите метод который будет использоватся для запуска скрипта">
