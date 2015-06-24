@@ -1,6 +1,6 @@
 Cu.importGlobalProperties(['URL']);
 
-Item = function(depth, key, parent) {
+let Item = function(depth, key, parent) {
   this.children = [];
   this.depth = depth;
   this.key = key;
