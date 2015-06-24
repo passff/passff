@@ -16,8 +16,9 @@ PassFF.Menu = {
         searchtextbox.setAttribute("id", PassFF.Ids.searchbox);
         searchtextbox.setAttribute("placeholder", PassFF.gsfm("passff.toolbar.search.placeholder"));
         searchtextbox.setAttribute("clickSelectsAll", "true");
+        searchtextbox.setAttribute("type", "search");
         searchtextbox.addEventListener("keypress",PassFF.Menu.onSearchKeypress);
-        searchtextbox.addEventListener("keyup",PassFF.Menu.onSearchKeyup);
+        searchtextbox.addEventListener("input",PassFF.Menu.onSearchInput);
 
         let buttonroot = doc.createElement("button");
         buttonroot.setAttribute("id", PassFF.Ids.rootbutton);
@@ -55,11 +56,9 @@ PassFF.Menu = {
         optionbox.appendChild(refreshitem);
         optionbox.appendChild(prefsitem);
 
-        let separator = doc.createElement("menuseparator");
 
         panel.appendChild(searchtextbox);
         panel.appendChild(buttonsbox);
-        panel.appendChild(separator);
         panel.appendChild(richlistbox);
         panel.appendChild(optionbox);
 
@@ -88,7 +87,7 @@ PassFF.Menu = {
         return false;
     },
 
-    onSearchKeyup : function(event) {
+    onSearchInput : function(event) {
         log.debug("Search keyup", event);
         if(event.keyCode <= 46) return false;
         let doc = event.target.ownerDocument;
