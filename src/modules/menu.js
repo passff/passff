@@ -12,10 +12,11 @@ PassFF.Menu = {
         let panel = doc.createElement("panelview");
         panel.setAttribute("id", PassFF.Ids.panel);
 
-        let searchtextbox = doc.createElement("textbox");
+		let searchtextbox = doc.createElement("textbox");
         searchtextbox.setAttribute("id", PassFF.Ids.searchbox);
         searchtextbox.setAttribute("placeholder", PassFF.gsfm("passff.toolbar.search.placeholder"));
         searchtextbox.setAttribute("clickSelectsAll", "true");
+        searchtextbox.setAttribute("type", "search");
         searchtextbox.addEventListener("keypress",PassFF.Menu.onSearchKeypress);
         searchtextbox.addEventListener("keyup",PassFF.Menu.onSearchKeyup);
 
@@ -55,11 +56,9 @@ PassFF.Menu = {
         optionbox.appendChild(refreshitem);
         optionbox.appendChild(prefsitem);
 
-        let separator = doc.createElement("menuseparator");
 
         panel.appendChild(searchtextbox);
         panel.appendChild(buttonsbox);
-        panel.appendChild(separator);
         panel.appendChild(richlistbox);
         panel.appendChild(optionbox);
 
