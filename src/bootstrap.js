@@ -250,7 +250,9 @@ let PassFF = {
         event.target.ownerDocument.getElementById(PassFF.Ids.button).click();
       }, true);
 
-      doc.getElementById('mainKeyset').parentNode.appendChild(toggleKeyset);
+      doc.getElementById('mainKeyset').parentNode
+                                      .appendChild(toggleKeyset)
+                                      .appendChild(toggleKey);
     },
 
     removeShortcuts: function(doc) {
