@@ -129,8 +129,9 @@ let PassFF = {
       PassFF.waitForPanel();
     } else {
       let timer = Cc['@mozilla.org/timer;1'].createInstance(Ci.nsITimer);
-      timer.initWithCallback({notify: PassFF.waitForDocuments}, 100,
-                             Ci.nsITimer.TYPE_ONE_SHOT);
+      timer.initWithCallback({
+        notify: PassFF.waitForDocuments.bind(this)
+      }, 100, Ci.nsITimer.TYPE_ONE_SHOT);
       PassFF._timers.push(timer);
     }
   },
@@ -176,7 +177,7 @@ let PassFF = {
     } else {
       let timer = Cc['@mozilla.org/timer;1'].createInstance(Ci.nsITimer);
       timer.initWithCallback({
-        notify: PassFF.waitForPanel
+        notify: PassFF.waitForPanel.bind(this)
       }, 100, Ci.nsITimer.TYPE_ONE_SHOT);
       PassFF._timers.push(timer);
     }
