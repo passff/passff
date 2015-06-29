@@ -243,8 +243,6 @@ let PassFF = {
       toggleKey.setAttribute('id', PassFF.Ids.key);
       toggleKey.setAttribute('key', PassFF.Preferences.shortcutKey);
       toggleKey.setAttribute('modifiers', PassFF.Preferences.shortcutMod);
-
-      // XXX is this required?
       toggleKey.setAttribute('oncommand', 'void(0);');
 
       toggleKey.addEventListener('command', function(event) {
