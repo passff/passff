@@ -158,7 +158,7 @@ PassFF.Menu = {
     }
   },
 
-  onListItemSelected :function(event) {
+  onListItemSelected: function(event) {
     log.debug('List item selected', event);
     let doc = event.target.ownerDocument;
     let item = PassFF.Menu.getItem(event.target);
