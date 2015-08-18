@@ -411,7 +411,8 @@ PassFF.Pass = {
     return [
       'HOME=' + PassFF.Preferences.home,
       'DISPLAY=:0.0',
-      'TREE_CHARSET=ISO-8859-1'
+      'TREE_CHARSET=ISO-8859-1',
+      'GNUPGHOME=' + PassFF.Preferences.gnupgHome
     ];
   },
 

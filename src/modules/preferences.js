@@ -18,6 +18,7 @@ PassFF.Preferences = {
     shell                 : '/bin/bash',
     shellArgs             : '',
     home                  : '',
+    gnupgHome             : '',
     storeDir              : '',
     storeGit              : '',
     gpgAgentInfo          : '.gpg-agent-info',
@@ -166,6 +167,13 @@ PassFF.Preferences = {
       return this._params.home.value;
     }
     return OS.Constants.Path.homeDir;
+  },
+
+  get gnupgHome() {
+      if (this._params.gnupgHome.value.trim().length > 0) {
+          return this._params.gnupgHome.value;
+      }
+      return this._environment.get('GNUPGHOME');
   },
 
   get storeDir() {
