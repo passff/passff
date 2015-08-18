@@ -72,14 +72,15 @@ PassFF.Page = {
   },
 
   isPasswordInput: function(input) {
-    let hasGoodName = PassFF.Page.hasGoodName(input.name,
+    let hasGoodName = PassFF.Page.hasGoodName(input.name ? input.name : input.id,
                                               PassFF.Preferences.passwordInputNames);
     return (input.type == 'password' || (input.type == 'text' && hasGoodName));
   },
 
   isLoginInput: function(input) {
     return ((input.type == 'text' || input.type == 'email' || input.type == 'tel') &&
-            PassFF.Page.hasGoodName(input.name, PassFF.Preferences.loginInputNames));
+            PassFF.Page.hasGoodName(input.name ? input.name : input.id,
+                                    PassFF.Preferences.loginInputNames));
   },
 
   getLoginInputs: function(doc) {
