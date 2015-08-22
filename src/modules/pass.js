@@ -3,6 +3,9 @@
 
 Cu.importGlobalProperties(['URL']);
 
+let env = Components.classes["@mozilla.org/process/environment;1"].
+          getService(Components.interfaces.nsIEnvironment);
+
 let Item = function(depth, key, parent) {
   this.children = [];
   this.depth = depth;
@@ -410,7 +413,7 @@ PassFF.Pass = {
   getEnvParams: function() {
     return [
       'HOME=' + PassFF.Preferences.home,
-      'DISPLAY=:0.0',
+      'DISPLAY=' + env.exists('DISPLAY') ? env.get('DISPLAY') : ':0.0',
       'TREE_CHARSET=ISO-8859-1',
       'GNUPGHOME=' + PassFF.Preferences.gnupgHome
     ];
