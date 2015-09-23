@@ -413,7 +413,7 @@ PassFF.Pass = {
   getEnvParams: function() {
     return [
       'HOME=' + PassFF.Preferences.home,
-      'DISPLAY=' + env.exists('DISPLAY') ? env.get('DISPLAY') : ':0.0',
+      'DISPLAY=' + (env.exists('DISPLAY') ? env.get('DISPLAY') : ':0.0'),
       'TREE_CHARSET=ISO-8859-1',
       'GNUPGHOME=' + PassFF.Preferences.gnupgHome
     ];
