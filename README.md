@@ -80,9 +80,18 @@ You should see many lines about passff. You could Filter on "[PassFF]" if you wa
 
 ### Issues with OS X
 
-If you're experiencing problems running passff on OS X, first try using the "through shell" approach in the preferences.
+If you're experiencing problems running passff on OS X, try using the "through shell" approach in the preferences (under "Pass Script").
 
-You could also try setting "Pass command" to ````/bin/bash```` and "Pass command line arguments" to ````--login [pass binary location]````. If pass was installed with the default Homebrew configuration, the ````[pass binary location]```` should be ````/usr/local/bin/pass````.
+Configure the script's execution parameters appropriately:
+
+* Set "User home" to the absolute path to your home directory
+* Set "Pass command" to the path to the ````pass```` binary (if installed with homebrew, the default location is ````/usr/local/bin/pass````)
+* Set "Pass shell" to your preferred shell (e.g. ````/bin/bash````)
+* Set "Shell arguments" to ````--login````
+
+With those settings in place, the plugin should be able to find your passwords.
+
+If you're still having trouble, it may be due to a bug present in version 1.6.5 and earlier of pass. From your shell, check the output of ````pass list````. If the passwords listed end with ````.gpg````, then your version of pass contains the bug. The bug was fixed in [this commit](http://git.zx2c4.com/password-store/commit/?id=a619988f7986d72f4e0ac7256ce48596df6a2a34). You must update your version of ````pass```` or manually apply [this patch](http://git.zx2c4.com/password-store/patch/?id=a619988f7986d72f4e0ac7256ce48596df6a2a34) to the pass script on your machine.  Once ````pass list```` lists passwords with the ````.gpg```` stripped off, the plugin should work!
 
 ### People contributing to the project
 
