@@ -42,9 +42,11 @@ Current supported features are:
 Additionally, if you added a url property in your password info, you will be able to go there clicking directly on the password menu. (left-click same tab, middle-click new tab)
 
 The accepted format for the password info is:
-&lt;the_password&gt;
-login: &lt;the_login&gt;
-url: &lt;the_url&gt;
+```
+<the_password>
+login: <the_login>
+url: <the_url>
+```
 
 PassFF will also try to find login password and url inside the direct child of a pass node.
 For example, if you have a structure like this:
