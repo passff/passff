@@ -1,6 +1,8 @@
 /* jshint node: true */
 'use strict';
 
+var EXPORTED_SYMBOLS = ['PassFF'];
+
 const global = this;
 const NS_XUL = 'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul';
 
@@ -54,7 +56,7 @@ function startup({id}) AddonManager.getAddonByID(id, function(addon) {
   Cu.import('chrome://passff/content/subprocess.jsm');
 
   // Load various javascript includes for helper functions
-  ['common', 'preferences', 'pass', 'menu', 'page'].forEach(function(fileName) {
+  ['preferences', 'pass', 'menu', 'page'].forEach(function(fileName) {
     let fileURI = addon.getResourceURI('modules/' + fileName + '.js');
     Services.scriptloader.loadSubScript(fileURI.spec, global);
   });
