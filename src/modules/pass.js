@@ -262,7 +262,12 @@ PassFF.Pass = {
       let itemQuality = hostGroupToMatch.split('\.').length * 100 +
                         hostGroupToMatch.split('\.').length;
       let hostToMatch = hostGroupToMatch;
-
+      /*
+       * Return if item has children since it is a directory!
+       */
+      if (!item.isLeaf()) {
+          break;
+      }
       do {
         if (hostToMatch == tldName) {
           break;
