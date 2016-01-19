@@ -252,15 +252,14 @@ PassFF.Pass = {
 
   getItemQuality: function(item, urlStr) {
     let url = new URL(urlStr);
-    let hostGroupToMatch = url.host;
-    let hostGroupToMatchSplit = hostGroupToMatch.split('\.');
+    let hostGroupToMatch = url.host.replace(/^\.+/, '').replace(/\.+$/, '');
+    let hostGroupToMatchSplit = hostGroupToMatch.split('\.+');
     let tldName = '';
     if (hostGroupToMatchSplit.length >= 2) {
       tldName = hostGroupToMatchSplit[hostGroupToMatchSplit.length - 1];
     }
     do {
-      let itemQuality = hostGroupToMatch.split('\.').length * 100 +
-                        hostGroupToMatch.split('\.').length;
+      let itemQuality = hostGroupToMatch.split('\.+').length * 100 + hostGroupToMatch.split('\.+').length;
       let hostToMatch = hostGroupToMatch;
       /*
        * Return if item has children since it is a directory!
@@ -273,8 +272,7 @@ PassFF.Pass = {
           break;
         }
 
-        let regex = new RegExp(hostToMatch.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'),
-                               'i');
+        let regex = new RegExp(hostToMatch.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
         if (item.fullKey().search(regex) >= 0) {
           return {item: item, quality: itemQuality};
         }
@@ -283,14 +281,14 @@ PassFF.Pass = {
           break;
         }
 
-        hostToMatch = hostToMatch.replace(/[^\.]+\./, '');
+        hostToMatch = hostToMatch.replace(/[^\.]+\.+/, '');
         itemQuality--;
       } while (true);
 
       if (hostGroupToMatch.indexOf('.') < 0) {
         break;
       }
-      hostGroupToMatch = hostGroupToMatch.replace(/\.[^\.]+$/, '');
+      hostGroupToMatch = hostGroupToMatch.replace(/\.+[^\.]+$/, '');
 
     } while (true);
 
