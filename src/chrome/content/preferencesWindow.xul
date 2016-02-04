@@ -40,6 +40,7 @@
       <preference id="logging-enabled" name="extensions.passff.logEnabled" type="bool" />
       <preference id="pass-call-method" name="extensions.passff.callType" type="string" />
       <preference id="case-insensitive-search" name="extensions.passff.caseInsensitiveSearch" type="bool" />
+      <preference id="enter-behavior" name="extensions.passff.enterBehavior" type="int" />
     </preferences>
     <tabbox>
       <tabs>
@@ -71,6 +72,16 @@
               <row class="horizontal-pair" align="center">
                 <label tooltiptext="&case-insensitive-search-tooltip;" value="&case-insensitive-search;"/>
                 <checkbox tooltiptext="&case-insensitive-search-tooltip;" id="search_case_insensitive" preference="case-insensitive-search"/>
+              </row>
+              <row>
+                <label tooltiptext="&enter-behavior-tooltip;" value="&enter-behavior;"/>
+                <menulist tooltiptext="&enter-behavior-tooltip;" id="enterBehaviorMenu"  preference="enter-behavior">
+                  <menupopup>
+                    <menuitem label="Goto URL, Fill, Submit" value="0"/>
+                    <menuitem label="Fill, Submit" value="1"/>
+                    <menuitem label="Fill" value="2"/>
+                  </menupopup>
+                </menulist>
               </row>
             </rows>
           </grid>

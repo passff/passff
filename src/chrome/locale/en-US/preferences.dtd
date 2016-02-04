@@ -4,6 +4,8 @@
 <!ENTITY tab.script                      "Pass Script">
 <!ENTITY case-insensitive-search         "Case-insensitive searching">
 <!ENTITY case-insensitive-search-tooltip "This will treat upper- and lowercase characters the same when searching for pass files">
+<!ENTITY enter-behavior                  "Behavior of enter key">
+<!ENTITY enter-behavior-tooltip          "This determines the default behavior when pressing the enter key on an item in the menu">
 <!ENTITY fields_description              "Fields are used to find data inside your passwords repository. PassFF will try to find the login, password or url value inside the password data (using the standard syntax) or trying to find a matching child node name">
 <!ENTITY password_input_names_label      "Password input names">
 <!ENTITY password_input_names_tooltip    "Comma separated list of input names. Input field names in a html page containing one of those values will be filled with the password">

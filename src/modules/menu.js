@@ -321,7 +321,22 @@ PassFF.Menu = {
       if (item.isLeaf() || item.hasFields()) {
         onEnter = function(event) {
           CustomizableUI.hidePanelForNode(event.target);
-          PassFF.Menu.goToItemUrl(PassFF.Menu.getItem(this), event.shiftKey, true);
+	  let doc = event.target.ownerGlobal.content.document;
+	  switch (PassFF.Preferences.enterBehavior){
+	    case 0:
+	      //goto url, fill, submit
+	      PassFF.Menu.goToItemUrl(PassFF.Menu.getItem(this), event.shiftKey, true);
+	      break;
+	    case 1:
+	      //fill, submit
+	      PassFF.Page.fillInputs(doc, PassFF.Menu.getItem(this));
+	      PassFF.Page.submit(doc, event.target.ownerGlobal.content.location.href);
+	      break;
+	    case 2:
+	      //fill
+	      PassFF.Page.fillInputs(doc, PassFF.Menu.getItem(this));
+	      break;
+	  }
         };
       }
 
