@@ -30,8 +30,8 @@ PassFF.Preferences = {
     iframeSearchDepth     : 5,
     callType              : 'direct',
     caseInsensitiveSearch : false,
+    enterBehavior         : 0,
   },
-
   init: function() {
     let application = Cc['@mozilla.org/fuel/application;1']
                       .getService(Ci.fuelIApplication);
@@ -72,7 +72,8 @@ PassFF.Preferences = {
       logEnabled            : this.logEnabled,
       iframeSearchDepth     : this.iframeSearchDepth,
       callType              : this.callType,
-      caseInsensitiveSearch : this.caseInsensitiveSearch
+      caseInsensitiveSearch : this.caseInsensitiveSearch,
+      enterBehavior         : this.enterBehavior
     });
   },
 
@@ -231,5 +232,10 @@ PassFF.Preferences = {
 
   get caseInsensitiveSearch() {
     return this._params.caseInsensitiveSearch.value;
+  },
+  get enterBehavior() {
+    return this._params.enterBehavior.value;
   }
 };
+
+
