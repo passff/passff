@@ -9,7 +9,7 @@ PassFF.Preferences = {
   _gpgAgentEnv: null,
   _params: {
     passwordInputNames    : 'passwd,password,pass',
-    loginInputNames       : 'login,user,mail,email',
+    loginInputNames       : 'login,user,mail,email,username,opt_login,log,usr_name',
     loginFieldNames       : 'login,user,username,id',
     passwordFieldNames    : 'passwd,password,pass',
     urlFieldNames         : 'url,http',
