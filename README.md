@@ -17,21 +17,25 @@ It will try to auto fill and auto submit the login form if a matching password e
 - Download the last release of the plugin **[here](https://github.com/jvenant/passff/releases)**.
 - You can then manually install the plugin in Firefox from the addons page (Firefox/Add-ons/Install Add-on from File...)
 
+Alternatively, to use the git version:
+- Clone this repository
+- From the <code>$LOCAL_CLONE/src/</code> directory, execute <code>make</code>
+- Manually install the resulting plugin from the <code>$LOCAL_CLONE/bin/</code> directory
+
 ### Usage
 A black icon with a P should appear in your Firefox toolbar.
 From here, you will be able to browse your password repository
-or to search using a case sensitive **Fuzzy matching** algorithm.
+or search using a case sensitive **Fuzzy matching** algorithm.
 The shortcut to open the menu is: **Ctrl-y**
 So considering this repository
 * Internet
  * MySite1
  * MySite2
 * CoolStuf
-  * SuperSite1
-  * SuperSite2
+ * SuperSite1
+ * SuperSite2
 
 &lt;Ctrl-y&gt;M1&lt;Enter&gt; will send and authenticate you on MySite1 (&lt;Shift-Enter&gt; to open in a new tab)
-
 
 Current supported features are:
 - Fill and submit
@@ -39,14 +43,15 @@ Current supported features are:
 - Copy login to clipboard
 - Copy password to clipboard
 
-Additionally, if you added a url property in your password info, you will be able to go there clicking directly on the password menu. (left-click same tab, middle-click new tab)
+Additionally, if you added the url property in your password info, you will be able to go there by clicking directly on the password menu. (left-click same tab, middle-click new tab)
 
-The accepted format for the password info is:
+An accepted format for the password info is:
 ```
 <the_password>
 login: <the_login>
 url: <the_url>
 ```
+Additional password, username, and url tags may be defined through the preferences dialog.
 
 PassFF will also try to find login password and url inside the direct child of a pass node.
 For example, if you have a structure like this:
@@ -80,9 +85,12 @@ From the plugin preferences you will be able to set:
 To enable debug mode, just go in the addon preferences and check the "Enable logs" check box at the bottom of the dialog box. You then have to open the Browser console (Tools/Web Developper/Browser console)
 You should see many lines about passff. You could Filter on "[PassFF]" if you want
 
-### Issues with OS X
+### Issues
 
 If you're experiencing problems running passff on OS X, try using the "through shell" approach in the preferences (under "Pass Script").
+**NOTE:** This method may also be applicable if GPG fails to provide a pin entry
+dialog, or if you experience otherwise unexplained issues with incorrect login
+and/or password data.
 
 Configure the script's execution parameters appropriately:
 
