@@ -88,6 +88,7 @@ You should see many lines about passff. You could Filter on "[PassFF]" if you wa
 ### Issues
 
 If you're experiencing problems running passff on OS X, try using the "through shell" approach in the preferences (under "Pass Script").
+
 **NOTE:** This method may also be applicable if GPG fails to provide a pin entry
 dialog, or if you experience otherwise unexplained issues with incorrect login
 and/or password data.
