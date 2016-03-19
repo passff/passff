@@ -237,7 +237,7 @@ PassFF.Preferences = {
     return this._params.caseInsensitiveSearch;
   },
   get enterBehavior() {
-    return this._params.enterBehavior.value;
+    return this._params.enterBehavior;
   }
 };
 
