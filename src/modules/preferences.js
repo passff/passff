@@ -33,23 +33,25 @@ PassFF.Preferences = {
     enterBehavior         : 0,
   },
   init: function() {
-    let application = Cc['@mozilla.org/fuel/application;1']
-                      .getService(Ci.fuelIApplication);
 
-    let branch = Services.prefs.getDefaultBranch('extensions.passff.');
+    let defaultBranch = Services.prefs.getDefaultBranch('extensions.passff.');
+    let branch = Services.prefs.getBranch('extensions.passff.');
     for (let [key, val] in Iterator(PassFF.Preferences._params)) {
+    log.error("aaaaa ", key, val)
       switch (typeof val) {
         case 'boolean':
-          branch.setBoolPref(key, val);
+          defaultBranch.setBoolPref(key, val);
+          this._params[key] = branch.getBoolPref(key);
           break;
         case 'number':
-          branch.setIntPref(key, val);
+          defaultBranch.setIntPref(key, val);
+          this._params[key] = branch.getIntPref(key);
           break;
         case 'string':
-          branch.setCharPref(key, val);
+          defaultBranch.setCharPref(key, val);
+          this._params[key] = branch.getCharPref(key);
           break;
       }
-      this._params[key] = application.prefs.get('extensions.passff.' + key);
     }
 
     log.info('Preferences initialised', {
@@ -78,7 +80,7 @@ PassFF.Preferences = {
   },
 
   setGpgAgentEnv: function() {
-    let gpgAgentInfo = this._params.gpgAgentInfo.value;
+    let gpgAgentInfo = this._params.gpgAgentInfo;
     let filename;
 
     if (OS.Path.split(gpgAgentInfo).absolute) {
@@ -128,65 +130,66 @@ PassFF.Preferences = {
   },
 
   get passwordInputNames() {
-    return this._params.passwordInputNames.value.split(',');
+    log.error("aaaaa ")
+    return this._params.passwordInputNames.split(',');
   },
 
   get loginInputNames() {
-    return this._params.loginInputNames.value.split(',');
+    return this._params.loginInputNames.split(',');
   },
 
   get loginFieldNames() {
-    return this._params.loginFieldNames.value.split(',');
+    return this._params.loginFieldNames.split(',');
   },
 
   get passwordFieldNames() {
-    return this._params.passwordFieldNames.value.split(',');
+    return this._params.passwordFieldNames.split(',');
   },
 
   get urlFieldNames() {
-    return this._params.urlFieldNames.value.split(',');
+    return this._params.urlFieldNames.split(',');
   },
 
   get command() {
-    return this._params.command.value;
+    return this._params.command;
   },
 
   get commandArgs() {
-    return this._params.commandArgs.value.split(' ');
+    return this._params.commandArgs.split(' ');
   },
 
   get shell() {
-    return this._params.shell.value;
+    return this._params.shell;
   },
 
   get shellArgs() {
-    return this._params.shellArgs.value.split(' ');
+    return this._params.shellArgs.split(' ');
   },
 
   get home() {
-    if (this._params.home.value.trim().length > 0) {
-      return this._params.home.value;
+    if (this._params.home.trim().length > 0) {
+      return this._params.home;
     }
     return OS.Constants.Path.homeDir;
   },
 
   get gnupgHome() {
-      if (this._params.gnupgHome.value.trim().length > 0) {
-          return this._params.gnupgHome.value;
-      }
-      return this._environment.get('GNUPGHOME');
+    if (this._params.gnupgHome.trim().length > 0) {
+      return this._params.gnupgHome;
+    }
+    return this._environment.get('GNUPGHOME');
   },
 
   get storeDir() {
-    if (this._params.storeDir.value.trim().length > 0) {
-      return this._params.storeDir.value;
+    if (this._params.storeDir.trim().length > 0) {
+      return this._params.storeDir;
     }
     return this._environment.get('PASSWORD_STORE_DIR');
   },
 
   get storeGit() {
-    if (this._params.storeGit.value.trim().length > 0) {
-      return this._params.storeGit.value;
+    if (this._params.storeGit.trim().length > 0) {
+      return this._params.storeGit;
     }
     return this._environment.get('PASSWORD_STORE_GIT');
   },
@@ -203,35 +206,35 @@ PassFF.Preferences = {
   },
 
   get autoFill() {
-    return this._params.autoFill.value;
+    return this._params.autoFill;
   },
 
   get autoSubmit() {
-    return this._params.autoSubmit.value;
+    return this._params.autoSubmit;
   },
 
   get shortcutKey() {
-    return this._params.shortcutKey.value;
+    return this._params.shortcutKey;
   },
 
   get shortcutMod() {
-    return this._params.shortcutMod.value;
+    return this._params.shortcutMod;
   },
 
   get logEnabled() {
-    return this._params.logEnabled.value;
+    return this._params.logEnabled;
   },
 
   get iframeSearchDepth() {
-    return this._params.iframeSearchDepth.value;
+    return this._params.iframeSearchDepth;
   },
 
   get callType() {
-    return this._params.callType.value;
+    return this._params.callType;
   },
 
   get caseInsensitiveSearch() {
-    return this._params.caseInsensitiveSearch.value;
+    return this._params.caseInsensitiveSearch;
   },
   get enterBehavior() {
     return this._params.enterBehavior.value;
