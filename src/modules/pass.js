@@ -159,6 +159,7 @@ PassFF.Pass = {
 
     PassFF.Pass.setLogin(result, item);
     PassFF.Pass.setPassword(result);
+    PassFF.Pass.setOther(result);
 
     return result;
   },
@@ -188,6 +189,17 @@ PassFF.Pass = {
     passwordData.login = login;
   },
 
+  setOther: function(passwordData) {
+    let other = {};
+    Object.keys(passwordData).forEach(function(key) {
+      if (!PassFF.Pass.isOtherField(key) || PassFF.Pass.isLoginOrPasswordInputName(key)) {
+        return;
+      }
+      other[key] = passwordData[key];
+    });
+    passwordData._other = other;
+  },
+
   isLoginField: function(name) {
     return PassFF.Preferences.loginFieldNames.indexOf(name) >= 0;
   },
@@ -198,6 +210,15 @@ PassFF.Pass = {
 
   isUrlField: function(name) {
     return PassFF.Preferences.urlFieldNames.indexOf(name) >= 0;
+  },
+
+  isOtherField: function(name) {
+    return !(PassFF.Pass.isLoginField(name) || PassFF.Pass.isPasswordField(name) || PassFF.Pass.isUrlField(name));
+  },
+
+  isLoginOrPasswordInputName: function(name) {
+    return PassFF.Preferences.loginInputNames.indexOf(name) >= 0 ||
+            PassFF.Preferences.passwordInputNames.indexOf(name) >= 0;
   },
 
   getMatchingItems: function(search, limit) {

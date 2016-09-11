@@ -57,6 +57,7 @@ PassFF.Page = {
   setInputs: function(doc, passwordData) {
     PassFF.Page.setLoginInputs(doc, passwordData.login);
     PassFF.Page.setPasswordInputs(doc, passwordData.password);
+    PassFF.Page.setOtherInputs(doc, passwordData._other);
   },
 
   setLoginInputs: function(doc, login) {
@@ -68,6 +69,20 @@ PassFF.Page = {
   setPasswordInputs: function(doc, password) {
     PassFF.Page.getPasswordInputs(doc).forEach(function(passwordInput) {
       passwordInput.value = password;
+    });
+  },
+
+  setOtherInputs: function(doc, other) {
+    PassFF.Page.getOtherInputs(doc, other).forEach(function(otherInput) {
+      let value;
+      if (other.hasOwnProperty(otherInput.name)) {
+        value = other[otherInput.name];
+      } else if (other.hasOwnProperty(otherInput.id)) {
+        value = other[otherInput.id];
+      }
+      if (value) {
+        otherInput.value = value;
+      }
     });
   },
 
@@ -83,6 +98,14 @@ PassFF.Page = {
                                     PassFF.Preferences.loginInputNames));
   },
 
+  isOtherInputCheck: function(other) {
+    return function(input) {
+      return ((input.type == 'text' || input.type == 'email' || input.type == 'tel') &&
+              PassFF.Page.hasGoodName(input.name ? input.name : input.id,
+                                      Object.keys(other)));
+    }
+  },
+
   getLoginInputs: function(doc) {
     return Array.prototype.slice.call(doc.getElementsByTagName('input'))
                                 .filter(PassFF.Page.isLoginInput);
@@ -91,6 +114,11 @@ PassFF.Page = {
   getPasswordInputs: function(doc) {
     return Array.prototype.slice.call(doc.getElementsByTagName('input'))
                                 .filter(PassFF.Page.isPasswordInput);
+  },
+
+  getOtherInputs: function(doc, other) {
+    return Array.prototype.slice.call(doc.getElementsByTagName('input'))
+                                .filter(PassFF.Page.isOtherInputCheck(other));
   },
 
   /**
