@@ -7,7 +7,7 @@
         <em:id>passff@invicem.pro</em:id>
         <em:name>PassFF</em:name>
         <em:description>Integrates your zx2c4 password store into Firefox</em:description>
-        <em:version>0.1.31</em:version>
+        <em:version>0.1.32</em:version>
         <em:creator>Johan Venant et al.</em:creator>
         <em:developer>Tobias Umbach</em:developer>
         <em:developer>Lenz Weber</em:developer>
