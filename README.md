@@ -51,6 +51,7 @@ An accepted format for the password info is:
 <the_password>
 login: <the_login>
 url: <the_url>
+<other_inputfield_name> : <inputfield_value>
 ```
 Additional password, username, and url tags may be defined through the preferences dialog.
 
