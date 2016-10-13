@@ -9,7 +9,7 @@ let env = Components.classes["@mozilla.org/process/environment;1"].
 let Item = function(depth, key, parent) {
   this.children = [];
   this.depth = depth;
-  this.key = key;
+  this.key = key.replace(/\.gpg$/, '');
   this.parent = parent;
 };
 
