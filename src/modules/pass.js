@@ -368,7 +368,7 @@ PassFF.Pass = {
     return leafs;
   },
 
-  addNewPassword: function(name, password, additionalInfo) {
+  addNewPassword: function(name, password, additionalInfo, onSuccess, onError) {
     let fileContents = [password, additionalInfo].join('\n');
     let result = this.executePass(['insert', '-m', name], {
       stdin: function(stdin) {
@@ -377,18 +377,22 @@ PassFF.Pass = {
       }
     });
     if (result.exitCode === 0) {
-      PassFF.Menu.onRefresh();
+      onSuccess();
+    } else {
+      onError(result);
     }
   },
 
-  generateNewPassword: function(name, length, includeSymbols) {
+  generateNewPassword: function(name, length, includeSymbols, onSuccess, onError) {
     let args = ['generate', name, length.toString()];
     if (!includeSymbols) {
       args.push('-n');
     }
     let result = this.executePass(args);
     if (result.exitCode === 0) {
-      PassFF.Menu.onRefresh();
+      onSuccess();
+    } else {
+      onError(result);
     }
   },
 

@@ -52,9 +52,15 @@ PassFF.Menu = {
     prefsButton.setAttribute('label', PassFF.gsfm('passff.toolbar.preferences.label'));
     prefsButton.addEventListener('click', PassFF.Menu.onPreferences);
 
+    let newPasswordButton = doc.createElement('button');
+    newPasswordButton.setAttribute('id', PassFF.Ids.newpasswordmenuitem);
+    newPasswordButton.setAttribute('label', PassFF.gsfm('passff.toolbar.new_password.label'));
+    newPasswordButton.addEventListener('click', PassFF.Menu.onNewPassword);
+
     let lowerButtonsBox = doc.createElement('hbox');
     lowerButtonsBox.appendChild(refreshButton);
     lowerButtonsBox.appendChild(prefsButton);
+    lowerButtonsBox.appendChild(newPasswordButton);
 
     panel.appendChild(searchBox);
     panel.appendChild(doc.createElement('menuseparator'));
@@ -195,6 +201,17 @@ PassFF.Menu = {
     event.target.ownerGlobal.openDialog('chrome://passff/content/preferencesWindow.xul',
                                         'passff-preferences-window',
                                         'chrome,titlebar,toolbar,modal');
+  },
+
+  onNewPassword: function(event) {
+    let refreshFn = function() {
+      PassFF.Menu.onRefresh(event);
+    };
+    event.target.ownerGlobal.openDialog('chrome://passff/content/newPasswordWindow.xul',
+                                        'passff-new-password-window',
+                                        'chrome,titlebar,toolbar,modal',
+                                        PassFF.Pass,
+                                        refreshFn);
   },
 
   onAutoFillMenuClick: function(event) {
