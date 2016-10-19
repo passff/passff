@@ -368,6 +368,16 @@ PassFF.Pass = {
     return leafs;
   },
 
+
+  isPasswordNameTaken: function(name) {
+    for (let item of this._items) {
+      if (item.fullKey() === name) {
+        return true;
+      }
+    }
+    return false;
+  },
+
   addNewPassword: function(name, password, additionalInfo, onSuccess, onError) {
     let fileContents = [password, additionalInfo].join('\n');
     let result = this.executePass(['insert', '-m', name], {
