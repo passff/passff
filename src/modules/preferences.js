@@ -31,6 +31,9 @@ PassFF.Preferences = {
     callType              : 'direct',
     caseInsensitiveSearch : false,
     enterBehavior         : 0,
+    defaultPasswordLength : 16,
+    defaultIncludeSymbols : true,
+    preferInsert          : false,
   },
   init: function() {
 
