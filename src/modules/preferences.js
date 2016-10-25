@@ -30,10 +30,13 @@ PassFF.Preferences = (function() {
       callType              : 'direct',
       caseInsensitiveSearch : false,
       enterBehavior         : 0,
-    };
+    defaultPasswordLength : 16,
+    defaultIncludeSymbols : true,
+    preferInsert          : false,
+};
     let osString = Components.classes["@mozilla.org/xre/app-info;1"]
                              .getService(Components.interfaces.nsIXULRuntime)
-                             .OS;
+                               .OS;
     switch (osString) {
       case 'Darwin':
         Object.assign(defaultParams, {

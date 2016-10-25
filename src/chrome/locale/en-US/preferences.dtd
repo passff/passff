@@ -2,6 +2,7 @@
 <!ENTITY tab.autofilling                 "Autofilling">
 <!ENTITY tab.fields                      "Fields">
 <!ENTITY tab.script                      "Pass Script">
+<!ENTITY tab.adding                      "Adding Passwords">
 <!ENTITY case-insensitive-search         "Case-insensitive searching">
 <!ENTITY case-insensitive-search-tooltip "This will treat upper- and lowercase characters the same when searching for pass files">
 <!ENTITY enter-behavior                  "Behavior of enter key">
@@ -47,3 +48,11 @@
 <!ENTITY callmethod                      "Script call method">
 <!ENTITY direct_radio_label              "Direct call">
 <!ENTITY shell_radio_label               "Through shell">
+<!ENTITY default_length_tooltip          "The default value for the length of a generated password">
+<!ENTITY default_length_label            "Default password length">
+<!ENTITY default_include_symbols_tooltip "Whether generated passwords should include symbols by default">
+<!ENTITY default_include_symbols_label   "Include symbols by default">
+<!ENTITY preferred_new_method_tooltip    "Whether new passwords default to being generated or being inserted">
+<!ENTITY preferred_new_method_label      "Preferred new method">
+<!ENTITY prefer_generate                 "Generate">
+<!ENTITY prefer_insert                   "Insert">
