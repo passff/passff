@@ -78,8 +78,9 @@
                 <menulist tooltiptext="&enter-behavior-tooltip;" id="enterBehaviorMenu"  preference="enter-behavior">
                   <menupopup>
                     <menuitem label="Goto URL, Fill, Submit" value="0"/>
-                    <menuitem label="Fill, Submit" value="1"/>
-                    <menuitem label="Fill" value="2"/>
+                    <menuitem label="Goto URL, Fill" value="1"/>
+                    <menuitem label="Fill, Submit" value="2"/>
+                    <menuitem label="Fill" value="3"/>
                   </menupopup>
                 </menulist>
               </row>

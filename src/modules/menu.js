@@ -220,7 +220,7 @@ PassFF.Menu = {
     let item = PassFF.Menu.getItem(event.target);
     log.debug('Goto item url', item);
     CustomizableUI.hidePanelForNode(event.target);
-    PassFF.Menu.goToItemUrl(item, event.button !== 0, false);
+    PassFF.Menu.goToItemUrl(item, event.button !== 0, false, false);
   },
 
   onGotoAutoFillAndSubmitMenuClick: function(event) {
@@ -229,7 +229,7 @@ PassFF.Menu = {
     let item = PassFF.Menu.getItem(event.target);
     log.debug('Goto item url fill and submit', item);
     CustomizableUI.hidePanelForNode(event.target);
-    PassFF.Menu.goToItemUrl(item, event.button !== 0, true);
+    PassFF.Menu.goToItemUrl(item, event.button !== 0, true, true);
   },
 
   onDisplayItemData: function(event) {
@@ -321,22 +321,26 @@ PassFF.Menu = {
       if (item.isLeaf() || item.hasFields()) {
         onEnter = function(event) {
           CustomizableUI.hidePanelForNode(event.target);
-	  let doc = event.target.ownerGlobal.content.document;
-	  switch (PassFF.Preferences.enterBehavior){
-	    case 0:
-	      //goto url, fill, submit
-	      PassFF.Menu.goToItemUrl(PassFF.Menu.getItem(this), event.shiftKey, true);
-	      break;
-	    case 1:
-	      //fill, submit
-	      PassFF.Page.fillInputs(doc, PassFF.Menu.getItem(this));
-	      PassFF.Page.submit(doc, event.target.ownerGlobal.content.location.href);
-	      break;
-	    case 2:
-	      //fill
-	      PassFF.Page.fillInputs(doc, PassFF.Menu.getItem(this));
-	      break;
-	  }
+          let doc = event.target.ownerGlobal.content.document;
+          switch (PassFF.Preferences.enterBehavior){
+            case 0:
+              //goto url, fill, submit
+              PassFF.Menu.goToItemUrl(PassFF.Menu.getItem(this), event.shiftKey, true, true);
+              break;
+            case 1:
+              //goto url, fill
+              PassFF.Menu.goToItemUrl(PassFF.Menu.getItem(this), event.shiftKey, true, false);
+              break;
+            case 2:
+              //fill, submit
+              PassFF.Page.fillInputs(doc, PassFF.Menu.getItem(this));
+              PassFF.Page.submit(doc, event.target.ownerGlobal.content.location.href);
+              break;
+            case 3:
+              //fill
+              PassFF.Page.fillInputs(doc, PassFF.Menu.getItem(this));
+              break;
+          }
         };
       }
 
@@ -395,12 +399,12 @@ PassFF.Menu = {
     return listItemElm;
   },
 
-  goToItemUrl: function(item, newTab, autoFillAndSubmit) {
+  goToItemUrl: function(item, newTab, autoFill, submit) {
     if (!item) {
       return;
     }
 
-    log.debug('go to item url', item, newTab, autoFillAndSubmit);
+    log.debug('go to item url', item, newTab, autoFill, submit);
     let passwordData = PassFF.Pass.getPasswordData(item);
     let url = passwordData.url;
 
@@ -419,7 +423,7 @@ PassFF.Menu = {
       window.content.location.href = url;
     }
 
-    if (!autoFillAndSubmit) {
+    if (!autoFill) {
       return;
     }
 
@@ -434,7 +438,11 @@ PassFF.Menu = {
 
       let doc = event.originalTarget;
       PassFF.Page.fillInputs(doc, item);
-      PassFF.Page.submit(doc, url);
+
+      if (submit) {
+        log.info('Start submit');
+        PassFF.Page.submit(doc, url);
+      }
     }, true);
   },
 
