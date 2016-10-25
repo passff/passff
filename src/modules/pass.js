@@ -368,7 +368,45 @@ PassFF.Pass = {
     return leafs;
   },
 
-  executePass: function(args) {
+
+  isPasswordNameTaken: function(name) {
+    for (let item of this._items) {
+      if (item.fullKey() === name) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  addNewPassword: function(name, password, additionalInfo, onSuccess, onError) {
+    let fileContents = [password, additionalInfo].join('\n');
+    let result = this.executePass(['insert', '-m', name], {
+      stdin: function(stdin) {
+        stdin.write(password + '\n' + additionalInfo + '\n');
+        stdin.close();
+      }
+    });
+    if (result.exitCode === 0) {
+      onSuccess();
+    } else {
+      onError(result);
+    }
+  },
+
+  generateNewPassword: function(name, length, includeSymbols, onSuccess, onError) {
+    let args = ['generate', name, length.toString()];
+    if (!includeSymbols) {
+      args.push('-n');
+    }
+    let result = this.executePass(args);
+    if (result.exitCode === 0) {
+      onSuccess();
+    } else {
+      onError(result);
+    }
+  },
+
+  executePass: function(args, subprocessOverrides) {
     let result = null;
     let scriptArgs = [];
     let command = null;
@@ -416,6 +454,8 @@ PassFF.Pass = {
         result = data;
       }
     };
+
+    Object.assign(params, subprocessOverrides);
 
     log.debug('Execute pass', params);
     try {

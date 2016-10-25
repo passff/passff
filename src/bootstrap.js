@@ -91,6 +91,7 @@ let PassFF = {
     buttonsbox: 'passff-buttonsbox',
     refreshmenuitem: 'passff-refresh-menuitem',
     prefsmenuitem: 'passff-prefs-menuitem',
+    newpasswordmenuitem: 'passff-new-password-menuitem',
     menubar: 'passff-menubar',
     menu: 'passff-menu-',
   },
