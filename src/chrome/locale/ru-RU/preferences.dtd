@@ -2,8 +2,11 @@
 <!ENTITY tab.autofilling                 "Автозаполнение">
 <!ENTITY tab.fields                      "Поля">
 <!ENTITY tab.script                      "Скрипт pass">
+<!ENTITY tab.adding                      "Добавление паролей">
 <!ENTITY case-insensitive-search         "Поиск без учета регистра">
 <!ENTITY case-insensitive-search-tooltip "Строчные и прописные буквы будут считатся одинаковыми при поиске файлов с паролями">
+<!ENTITY enter-behavior                  "Поведение клавиши ввода">
+<!ENTITY enter-behavior-tooltip          "Определяет поведение по умолчанию при нажатии клавиши ввода на элементе меню">
 <!ENTITY fields_description              "Поля которые используются для поиска данных в вашем репозитарии паролей. PassFF пытается найти логин, пароль и адреса сайтов в файлах с паролями (испольуя стандартный синтаксис).">
 <!ENTITY password_input_names_label      "Имена полей для паролей">
 <!ENTITY password_input_names_tooltip    "Список имен разделенных запятой. Поля с html-атрибутом 'name' равным одному из значений из этого списка будут заполнены паролями">
@@ -45,3 +48,11 @@
 <!ENTITY callmethod                      "Метод запуска скрипта">
 <!ENTITY direct_radio_label              "Прямой запуск">
 <!ENTITY shell_radio_label               "Используя командную оболочку">
+<!ENTITY default_length_tooltip          "Длина пароля по умолчанию">
+<!ENTITY default_length_label            "Длина пароля по умолчанию">
+<!ENTITY default_include_symbols_tooltip "Должны ли сгенерированные пароли использовать и отличные от букв и цифр символы">
+<!ENTITY default_include_symbols_label   "Включать все символы по умолчанию">
+<!ENTITY preferred_new_method_tooltip    "Генерировать ли или вставлять новые пароли">
+<!ENTITY preferred_new_method_label      "Предпочтительный новый метод">
+<!ENTITY prefer_generate                 "Сгенерировать">
+<!ENTITY prefer_insert                   "Вставить">
