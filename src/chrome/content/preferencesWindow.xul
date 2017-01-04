@@ -51,7 +51,7 @@
         <tab label="&tab.autofilling;"/>
         <tab label="&tab.fields;"/>
         <tab label="&tab.script;"/>
-        <tab label="&tab.adding;"/>
+        <!--tab label="&tab.adding;"/-->
       </tabs>
       <tabpanels>
         <tabpanel orient="vertical" align="center" id="tab-general">
