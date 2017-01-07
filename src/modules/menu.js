@@ -255,7 +255,7 @@ PassFF.Menu = {
     let passwordData = PassFF.Pass.getPasswordData(item);
     let login = passwordData.login;
     let password = passwordData.password;
-    let url = passwordData.url;
+    let url = (passwordData.url) ? passwordData.url : '';
     let title = PassFF.gsfm('passff.display.title');
     let desc = PassFF.gsfm('passff.display.description', [login, password, url], 2);
     PassFF.Menu._promptService.alert(null, title, desc);
