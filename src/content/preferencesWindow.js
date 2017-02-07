@@ -5,14 +5,14 @@ PassFF.Preferences.init();
 
 function update_callTypeUI() {
     document.querySelectorAll(".shell_radio,.direct_radio").forEach(function (el) {
-        el.style.display = "block";
+        el.style.display = "none";
     });
     let cT = "direct";
     if (document.getElementById("pref_callType_shell").checked) {
         cT = "shell";
     }
     document.querySelectorAll("."+cT+"_radio").forEach(function (el) {
-        el.style.display = "none";
+        el.style.display = "block";
     });
 }
 

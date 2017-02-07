@@ -424,8 +424,8 @@ PassFF.Pass = {
       }
       return result;
     }, (ex) => {
-      window.alert('Error executing pass script' + "\n" + ex.message);
       log.error('Error executing pass script', ex);
+      window.alert('Error executing pass script' + "\n" + ex.message);
       return { exitCode: -1 };
     });
   },
