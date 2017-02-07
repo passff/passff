@@ -1,0 +1,79 @@
+
+html, body, div {
+    margin: 0; padding: 0; width: 100%;
+}
+
+body {
+    position: relative;
+    min-height: 380px;
+    padding: 0 0.2rem;
+    box-sizing: border-box;
+    min-width: 650px;
+}
+
+body > div {
+    display: inline;
+}
+
+div:last-of-type > label {
+    border-right: 1px #ccc solid;
+}
+
+div > label {
+    display: block;
+    padding: 0.1rem 0.2rem;
+    border-right: 1px #ccc solid;
+    border-left: 1px #ccc solid;
+    border-top: 1px #ccc solid;
+    margin-right: -1px;
+    float: left;
+    box-sizing: border-box;
+    height: 1.6rem;
+}
+
+div > input[type=radio] {
+    opacity: 0;
+    margin: 0;
+}
+
+div > input[type=radio]:checked ~ label {
+    background-color: #eee;
+    border-color: #000;
+    margin-right: 0;
+}
+
+div > input[type=radio]:checked ~ fieldset {
+    display: block;
+    clear: both;
+}
+
+fieldset {
+    line-height: 2.4rem;
+    text-align: left;
+    display: none;
+    position: absolute;
+    top: 1.6rem;
+    width: 99.3%;
+    box-sizing: border-box;
+    padding: 0.3rem; margin: 0;
+    border: 1px #000 solid;
+}
+
+fieldset p.text {
+    line-height: 1.2rem;
+    padding: 0.2rem;
+}
+
+fieldset p {
+    clear: both;
+    padding: 0; margin: 0;
+}
+
+fieldset p > label:first-child {
+    display: block;
+    float: left;
+    width: 23rem;
+    margin-right: 0.5rem;
+    text-align: right;
+}
+

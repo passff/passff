@@ -1,7 +1,7 @@
 /* jshint node: true */
 'use strict';
 
-const {TextDecoder, OS} = Cu.import('resource://gre/modules/osfile.jsm', {});
+//const {TextDecoder, OS} = Cu.import('resource://gre/modules/osfile.jsm', {});
 
 PassFF.Preferences = (function() {
 
@@ -30,50 +30,30 @@ PassFF.Preferences = (function() {
       callType              : 'direct',
       caseInsensitiveSearch : false,
       enterBehavior         : 0,
-    defaultPasswordLength : 16,
-    defaultIncludeSymbols : true,
-    preferInsert          : false,
-};
-    let osString = Components.classes["@mozilla.org/xre/app-info;1"]
-                             .getService(Components.interfaces.nsIXULRuntime)
-                               .OS;
-    switch (osString) {
-      case 'Darwin':
-        Object.assign(defaultParams, {
-          command   : '/usr/local/bin/pass',
-          shellArgs : '--login',
-          callType  : 'shell',
-        });
-        break;
-    }
+    };
+
     return defaultParams;
   };
 
   return {
+/*
     _environment: Cc['@mozilla.org/process/environment;1']
                   .getService(Components.interfaces.nsIEnvironment),
+*/
+    _environment: { get: function (env_var) { return ""; } },
     _gpgAgentEnv: null,
     _params: getDefaultParams(),
     init: function() {
-
-      let defaultBranch = Services.prefs.getDefaultBranch('extensions.passff.');
-      let branch = Services.prefs.getBranch('extensions.passff.');
       for (let [key, val] in Iterator(PassFF.Preferences._params)) {
       log.error("aaaaa ", key, val)
-        switch (typeof val) {
-          case 'boolean':
-            defaultBranch.setBoolPref(key, val);
-            this._params[key] = branch.getBoolPref(key);
-            break;
-          case 'number':
-            defaultBranch.setIntPref(key, val);
-            this._params[key] = branch.getIntPref(key);
-            break;
-          case 'string':
-            defaultBranch.setCharPref(key, val);
-            this._params[key] = branch.getCharPref(key);
-            break;
-        }
+        browser.storage.local.get(key).then(((res) => {
+          if (typeof res[key] === "undefined") {
+            let obj = {}; obj[key] = val;
+            browser.storage.local.set(obj);
+          } else {
+            this._params[key] = res[key];
+          }
+        }).bind(this));
       }
 
       log.info('Preferences initialised', {
@@ -102,6 +82,7 @@ PassFF.Preferences = (function() {
     },
 
     setGpgAgentEnv: function() {
+/*
       let gpgAgentInfo = this._params.gpgAgentInfo;
       let filename;
 
@@ -149,6 +130,11 @@ PassFF.Preferences = (function() {
       promise.catch(function onError(reason) {
         log.error('Failed to set gpg-agent variable', reason);
       });
+*/
+      this._gpgAgentEnv = [
+          'GPG_AGENT_INFO=' + this._environment.get('GPG_AGENT_INFO'),
+          'GNOME_KEYRING_CONTROL=' + this._environment.get('GNOME_KEYRING_CONTROL')
+      ];
     },
 
     get passwordInputNames() {
@@ -189,10 +175,13 @@ PassFF.Preferences = (function() {
     },
 
     get home() {
+/*
       if (this._params.home.trim().length > 0) {
         return this._params.home;
       }
       return OS.Constants.Path.homeDir;
+*/
+      return this._params.home;
     },
 
     get gnupgHome() {

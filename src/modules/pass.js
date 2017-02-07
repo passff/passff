@@ -1,10 +1,10 @@
 /* jshint node: true */
 'use strict';
 
-Cu.importGlobalProperties(['URL']);
-
+/*
 let env = Components.classes["@mozilla.org/process/environment;1"].
           getService(Components.interfaces.nsIEnvironment);
+*/
 
 let Item = function(depth, key, parent) {
   this.children = [];
@@ -42,29 +42,14 @@ Item.prototype.fullKey = function() {
 PassFF.Pass = {
   _items: [],
   _rootItems: [],
-  _promptService: Cc['@mozilla.org/embedcomp/prompt-service;1']
-                 .getService(Components.interfaces.nsIPromptService),
   _stringBundle: null,
 
   init: function() {
-    subprocess.registerDebugHandler(function(m) {
-      log.debug('[subprocess]', m);
-    });
-    subprocess.registerLogHandler(function(m) {
-      log.error('[subprocess]', m);
-    });
-
-    this.initItems();
-
-    let stringBundleService = Cc['@mozilla.org/intl/stringbundle;1']
-                             .getService(Ci.nsIStringBundleService);
-
-    this._stringBundle = stringBundleService
-                        .createBundle('chrome://passff/locale/strings.properties');
+    return this.initItems();
   },
 
   initItems: function() {
-    let result = this.executePass([]);
+    return this.executePass([]).then(((result) => {
     if (result.exitCode !== 0) {
       return;
     }
@@ -110,6 +95,7 @@ PassFF.Pass = {
       }
     }
     log.debug('Found Items', this._rootItems);
+    }).bind(this));
   },
 
   getPasswordData: function(item) {
@@ -117,7 +103,7 @@ PassFF.Pass = {
 
     if (item.isLeaf()) { // multiline-style item
       let args = [item.fullKey()];
-      let executionResult = this.executePass(args);
+      return this.executePass(args).then((executionResult) => {
       let gpgDecryptFailed = executionResult.stderr
                              .indexOf('gpg: decryption failed: No secret key') >= 0;
 
@@ -125,7 +111,7 @@ PassFF.Pass = {
         let title = PassFF.gsfm('passff.passphrase.title');
         let desc = PassFF.gsfm('passff.passphrase.description');
 
-        if (!PassFF.Pass._promptService.confirm(null, title, desc)) {
+        if (!window.confirm(title + "\n" + desc)) {
           return;
         }
 
@@ -149,19 +135,32 @@ PassFF.Pass = {
           result[attributeName] = attributeValue.trim();
         }
       }
+
+      PassFF.Pass.setLogin(result, item);
+      PassFF.Pass.setPassword(result);
+      PassFF.Pass.setOther(result);
+      return result;
+      });
     } else { // hierarchical-style item
       item.children.forEach(function(child) {
         if (child.isField()) {
           result[child.key] = PassFF.Pass.getPasswordData(child).password;
         }
       });
+      return Promise.all(result).then(function (results) {
+      let i = 0;
+      let result = {};
+      item.children.forEach(function (child) {
+        if (child.isField()) {
+          result[child.key] = results[i].password;
+        }
+      });
+      PassFF.Pass.setLogin(result, item);
+      PassFF.Pass.setPassword(result);
+      PassFF.Pass.setOther(result);
+      return result;
+      });
     }
-
-    PassFF.Pass.setLogin(result, item);
-    PassFF.Pass.setPassword(result);
-    PassFF.Pass.setOther(result);
-
-    return result;
   },
 
   setPassword: function(passwordData) {
@@ -368,44 +367,6 @@ PassFF.Pass = {
     return leafs;
   },
 
-
-  isPasswordNameTaken: function(name) {
-    for (let item of this._items) {
-      if (item.fullKey() === name) {
-        return true;
-      }
-    }
-    return false;
-  },
-
-  addNewPassword: function(name, password, additionalInfo, onSuccess, onError) {
-    let fileContents = [password, additionalInfo].join('\n');
-    let result = this.executePass(['insert', '-m', name], {
-      stdin: function(stdin) {
-        stdin.write(password + '\n' + additionalInfo + '\n');
-        stdin.close();
-      }
-    });
-    if (result.exitCode === 0) {
-      onSuccess();
-    } else {
-      onError(result);
-    }
-  },
-
-  generateNewPassword: function(name, length, includeSymbols, onSuccess, onError) {
-    let args = ['generate', name, length.toString()];
-    if (!includeSymbols) {
-      args.push('-n');
-    }
-    let result = this.executePass(args);
-    if (result.exitCode === 0) {
-      onSuccess();
-    } else {
-      onError(result);
-    }
-  },
-
   executePass: function(args, subprocessOverrides) {
     let result = null;
     let scriptArgs = [];
@@ -449,35 +410,31 @@ PassFF.Pass = {
       arguments: scriptArgs,
       environment: environment,
       charset: 'UTF-8',
-      mergeStderr: false,
-      done: function(data) {
-        result = data;
-      }
+      mergeStderr: false
     };
 
     Object.assign(params, subprocessOverrides);
 
     log.debug('Execute pass', params);
-    try {
-      let p = subprocess.call(params);
-      p.wait();
+    return browser.runtime.sendNativeMessage("passff", params).then((result) => {
       if (result.exitCode !== 0) {
         log.warn('pass execution failed', result.exitCode, result.stderr, result.stdout);
       } else {
         log.info('pass script execution ok');
       }
-    } catch (ex) {
-      PassFF.Pass._promptService.alert(null, 'Error executing pass script', ex.message);
+      return result;
+    }, (ex) => {
+      window.alert('Error executing pass script' + "\n" + ex.message);
       log.error('Error executing pass script', ex);
-      result = { exitCode: -1 };
-    }
-    return result;
+      return { exitCode: -1 };
+    });
   },
 
   getEnvParams: function() {
     return [
       'HOME=' + PassFF.Preferences.home,
-      'DISPLAY=' + (env.exists('DISPLAY') ? env.get('DISPLAY') : ':0.0'),
+//      'DISPLAY=' + (env.exists('DISPLAY') ? env.get('DISPLAY') : ':0.0'),
+      'DISPLAY=:0.0',
       'TREE_CHARSET=ISO-8859-1',
       'GNUPGHOME=' + PassFF.Preferences.gnupgHome
     ];
