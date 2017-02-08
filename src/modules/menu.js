@@ -239,14 +239,14 @@ PassFF.Menu = {
   },
 
   onDisplayItemData: function(event) {
+    PassFF.Menu._window.close();
     let item = PassFF.Menu.getItem(event.target);
     PassFF.Pass.getPasswordData(item).then((passwordData) => {
       let login = passwordData.login;
       let password = passwordData.password;
       let title = PassFF.gsfm('passff.display.title');
       let desc = PassFF.gsfm('passff.display.description', [login, password]);
-      PassFF.Menu._window.alert(title + "\n" + desc);
-      PassFF.Menu._window.close();
+      PassFF.alert(title + "\n" + desc);
     });
   },
 

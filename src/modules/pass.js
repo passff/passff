@@ -1,11 +1,6 @@
 /* jshint node: true */
 'use strict';
 
-/*
-let env = Components.classes["@mozilla.org/process/environment;1"].
-          getService(Components.interfaces.nsIEnvironment);
-*/
-
 let Item = function(depth, key, parent) {
   this.children = [];
   this.depth = depth;
@@ -375,7 +370,7 @@ PassFF.Pass = {
 
     if (PassFF.Preferences.callType == 'direct') {
       command = PassFF.Preferences.command;
-      environment = environment.concat(this.getDirectEnvParams());
+      Object.assign(environment, this.getDirectEnvParams());
       PassFF.Preferences.commandArgs.forEach(function(val) {
         if (val && val.trim().length > 0) {
           scriptArgs.push(val);
@@ -425,34 +420,33 @@ PassFF.Pass = {
       return result;
     }, (ex) => {
       log.error('Error executing pass script', ex);
-      window.alert('Error executing pass script' + "\n" + ex.message);
+      PassFF.alert('Error executing pass script' + "\n" + ex.message);
       return { exitCode: -1 };
     });
   },
 
   getEnvParams: function() {
-    return [
-      'HOME=' + PassFF.Preferences.home,
-//      'DISPLAY=' + (env.exists('DISPLAY') ? env.get('DISPLAY') : ':0.0'),
-      'DISPLAY=:0.0',
-      'TREE_CHARSET=ISO-8859-1',
-      'GNUPGHOME=' + PassFF.Preferences.gnupgHome
-    ];
+    return {
+      'HOME': PassFF.Preferences.home,
+      'DISPLAY': (PassFF.env.exists('DISPLAY') ? PassFF.env.get('DISPLAY') : ':0.0'),
+      'TREE_CHARSET': 'ISO-8859-1',
+      'GNUPGHOME': PassFF.Preferences.gnupgHome
+    };
   },
 
   getDirectEnvParams: function() {
-    var params = ['PATH=' + PassFF.Preferences.path];
+    var params = { 'PATH': PassFF.Preferences.path };
 
     if (PassFF.Preferences.storeDir.trim().length > 0) {
-      params.push('PASSWORD_STORE_DIR=' + PassFF.Preferences.storeDir);
+      params['PASSWORD_STORE_DIR'] = PassFF.Preferences.storeDir;
     }
 
     if (PassFF.Preferences.storeGit.trim().length > 0) {
-      params.push('PASSWORD_STORE_GIT=' + PassFF.Preferences.storeGit);
+      params['PASSWORD_STORE_GIT'] = PassFF.Preferences.storeGit;
     }
 
     if (PassFF.Preferences.gpgAgentEnv !== null) {
-      params = params.concat(PassFF.Preferences.gpgAgentEnv);
+      Object.assign(params, PassFF.Preferences.gpgAgentEnv);
     }
 
     return params;

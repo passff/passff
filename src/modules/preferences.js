@@ -1,8 +1,6 @@
 /* jshint node: true */
 'use strict';
 
-//const {TextDecoder, OS} = Cu.import('resource://gre/modules/osfile.jsm', {});
-
 PassFF.Preferences = (function() {
 
   let getDefaultParams = function() {
@@ -36,11 +34,6 @@ PassFF.Preferences = (function() {
   };
 
   return {
-/*
-    _environment: Cc['@mozilla.org/process/environment;1']
-                  .getService(Components.interfaces.nsIEnvironment),
-*/
-    _environment: { get: function (env_var) { return ""; } },
     _gpgAgentEnv: null,
     _params: getDefaultParams(),
     init: function() {
@@ -79,62 +72,11 @@ PassFF.Preferences = (function() {
         caseInsensitiveSearch : this.caseInsensitiveSearch,
         enterBehavior         : this.enterBehavior
       });
-    },
 
-    setGpgAgentEnv: function() {
-/*
-      let gpgAgentInfo = this._params.gpgAgentInfo;
-      let filename;
-
-      if (OS.Path.split(gpgAgentInfo).absolute) {
-        filename = gpgAgentInfo;
-      } else {
-        filename = OS.Path.join(this.home, gpgAgentInfo);
-      }
-      log.info('Try to retrieve Gpg agent variable from file ' + filename);
-
-      let promise = OS.File.read(filename); // Read the complete file as an array
-      let decoder = new TextDecoder();
-
-      let success = function(array) {
-        let re = /^([^=]+=[^;]+)/;
-        log.info('Retrieve Gpg agent variable from file');
-
-        PassFF.Preferences._gpgAgentEnv = [];
-        decoder.decode(array).split('\n').forEach(function(line) {
-          if(re.test(line)) {
-            PassFF.Preferences._gpgAgentEnv.push(re.exec(line)[0]);
-          }
-        });
-
-        let keyringControl = this._environment.get('GNOME_KEYRING_CONTROL');
-        PassFF.Preferences._gpgAgentEnv.push('GNOME_KEYRING_CONTROL=' + keyringControl);
-
-        log.debug('Set Gpg agent variable:', PassFF.Preferences._gpgAgentEnv);
-
-        return Promise.resolve('OK');
-      }.bind(this);
-
-      let error = function(reason) {
-        log.info('Can\'t read file. Getting gpg-agent variable from environment');
-        PassFF.Preferences._gpgAgentEnv = [
-          'GPG_AGENT_INFO=' + this._environment.get('GPG_AGENT_INFO'),
-          'GNOME_KEYRING_CONTROL=' + this._environment.get('GNOME_KEYRING_CONTROL')
-        ];
-        log.debug('Set gpg-agent variable :', PassFF.Preferences._gpgAgentEnv);
-        return Promise.resolve('OK');
-      }.bind(this);
-
-      promise = promise.then(success, error);
-
-      promise.catch(function onError(reason) {
-        log.error('Failed to set gpg-agent variable', reason);
-      });
-*/
-      this._gpgAgentEnv = [
-          'GPG_AGENT_INFO=' + this._environment.get('GPG_AGENT_INFO'),
-          'GNOME_KEYRING_CONTROL=' + this._environment.get('GNOME_KEYRING_CONTROL')
-      ];
+      let params = { command: "gpgAgentEnv" };
+      params['arguments'] = [this._params.gpgAgentInfo];
+      return browser.runtime.sendNativeMessage("passff", params)
+        .then(((result) => { this._gpgAgentEnv = result; }).bind(this));
     },
 
     get passwordInputNames() {
@@ -175,44 +117,38 @@ PassFF.Preferences = (function() {
     },
 
     get home() {
-/*
       if (this._params.home.trim().length > 0) {
         return this._params.home;
       }
-      return OS.Constants.Path.homeDir;
-*/
-      return this._params.home;
+      return PassFF.env.get('HOME');
     },
 
     get gnupgHome() {
       if (this._params.gnupgHome.trim().length > 0) {
         return this._params.gnupgHome;
       }
-      return this._environment.get('GNUPGHOME');
+      return PassFF.env.get('GNUPGHOME');
     },
 
     get storeDir() {
       if (this._params.storeDir.trim().length > 0) {
         return this._params.storeDir;
       }
-      return this._environment.get('PASSWORD_STORE_DIR');
+      return PassFF.env.get('PASSWORD_STORE_DIR');
     },
 
     get storeGit() {
       if (this._params.storeGit.trim().length > 0) {
         return this._params.storeGit;
       }
-      return this._environment.get('PASSWORD_STORE_GIT');
+      return PassFF.env.get('PASSWORD_STORE_GIT');
     },
 
     get path() {
-      return this._environment.get('PATH');
+      return PassFF.env.get('PATH');
     },
 
     get gpgAgentEnv() {
-      if (this._gpgAgentEnv === null) {
-        this.setGpgAgentEnv();
-      }
       return this._gpgAgentEnv;
     },
 

@@ -50,6 +50,15 @@ var PassFF = {
 
   tab_url: null,
 
+  env: {
+    _environment: {},
+    exists: function (key) { return this._environment.hasOwnProperty(key); },
+    get: function (key) {
+      if (this.exists(key)) return this._environment[key];
+      else return "";
+    }
+  },
+
   gsfm: function (key, params) {
     if (params) {
       return browser.i18n.getMessage(key, params);
@@ -57,8 +66,17 @@ var PassFF = {
     return browser.i18n.getMessage(key);
   },
 
+  alert: function(msg) {
+    browser.tabs.executeScript({code : 'alert(' + JSON.stringify(msg) + ');' });
+  },
+
   init: function() {
-    // not needed at the moment
+    return PassFF.init_env();
+  },
+
+  init_env: function () {
+    return browser.runtime.sendNativeMessage("passff", { command: "env" })
+    .then((result) => { PassFF.env._environment = result; });
   },
 
   init_tab: function (tab) {

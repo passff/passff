@@ -1,8 +1,6 @@
 /* jshint node: true */
 'use strict';
 
-PassFF.Preferences.init();
-
 function update_callTypeUI() {
     document.querySelectorAll(".shell_radio,.direct_radio").forEach(function (el) {
         el.style.display = "none";
@@ -36,7 +34,10 @@ function pref_bool_change_cb(key) {
     };
 }
 
+PassFF.Preferences.init();
+let promised_init = PassFF.init();
 window.onload = function () {
+  promised_init.then(() => {
     document.querySelectorAll("label,p.text,option").forEach(function (el) {
         el.textContent = PassFF.gsfm(el.textContent);
     });
@@ -74,4 +75,5 @@ window.onload = function () {
         }
       }
     }
+  });
 };
