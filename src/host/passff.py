@@ -46,7 +46,7 @@ elif receivedMessage['command'] == "gpgAgentEnv":
     if "GNOME_KEYRING_CONTROL" in env:
         gpgAgentEnv['GNOME_KEYRING_CONTROL'] = env['GNOME_KEYRING_CONTROL']
     else:
-        gpgAgentEnv['GNOME_KEYRING_CONTROL'] = None
+        gpgAgentEnv['GNOME_KEYRING_CONTROL'] = ""
 
     gpgAgentInfo = receivedMessage['arguments'][0]
     if os.path.isabs(gpgAgentInfo):
@@ -67,5 +67,6 @@ elif receivedMessage['command'] == "gpgAgentEnv":
         if "GPG_AGENT_INFO" in env:
             gpgAgentEnv['GPG_AGENT_INFO'] = env['GPG_AGENT_INFO']
         else:
-            gpgAgentEnv['GPG_AGENT_INFO'] = None
+            gpgAgentEnv['GPG_AGENT_INFO'] = ""
     sendMessage(encodeMessage(gpgAgentEnv))
+
