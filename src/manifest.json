@@ -20,7 +20,8 @@
     },
 
     "permissions": [
-        "activeTab",
+        "<all_urls>",
+        "tabs",
         "storage",
         "nativeMessaging",
         "clipboardWrite"
@@ -28,6 +29,17 @@
 
     "options_ui": {
         "page": "content/preferencesWindow.html"
+    },
+
+    "background": {
+        "scripts": [
+            "modules/main.js",
+            "modules/preferences.js",
+            "modules/pass.js",
+            "modules/page.js",
+            "modules/menu.js",
+            "background.js"
+        ]
     },
 
     "commands": {

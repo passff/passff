@@ -15,53 +15,33 @@ if (!String.prototype.format) {
 
 PassFF.Page = {
   _autoSubmittedUrls: [],
-  autoFillAndSubmitPending: false,
 
-  fillInputs: function(item) {
+  fillInputs: function(tabId, item) {
     return PassFF.Pass.getPasswordData(item).then((passwordData) => {
-        if (passwordData) {
-          PassFF.Page.processDoc(passwordData, 0);
-        }
+      if (passwordData) {
+        this._exec(tabId, `processDoc(doc, {0}, 0);`.format(JSON.stringify(passwordData)));
+      }
+      return tabId;
     });
   },
 
-  processDoc: function(passwordData, depth) {
-    PassFF.Page.setInputs(passwordData);
-    if (depth <= PassFF.Preferences.iframeSearchDepth) {
-/*
-      let iframes = doc.getElementsByTagName('iframe');
-      Array.prototype.slice.call(iframes).forEach(function(iframe) {
-        PassFF.Page.processDoc(iframe.contentDocument, passwordData, depth++);
-      });
-*/
-    }
+  submit: function(tabId, passwordData) {
+    this._exec(tabId, "submit();");
   },
 
-  submit: function(passwordData) {
-    this._exec("submit();");
-  },
-
-  setInputs: function(passwordData) {
-    this._exec(`
-        setLoginInputs({0});
-        setPasswordInputs({1});
-        setOtherInputs({2});`.format(
-            JSON.stringify(passwordData.login),
-            JSON.stringify(passwordData.password),
-            JSON.stringify(passwordData._other)
-        )
-    );
-  },
-
-  _exec: function (cmd) {
-    let code = this._contentScriptTemplate.format(
-        "loginInputNames = {0};passwordInputNames = {1};{2}".format(
+  _exec: function (tabId, cmd) {
+    let code = this._contentScriptTemplate.format(`
+        loginInputNames = {0};
+        passwordInputNames = {1};
+        iframeSearchDepth = {2};
+        {3}`.format(
             JSON.stringify(PassFF.Preferences.loginInputNames),
             JSON.stringify(PassFF.Preferences.passwordInputNames),
+            JSON.stringify(PassFF.Preferences.iframeSearchDepth),
             cmd
         )
     );
-    browser.tabs.executeScript({ code: code, runAt: "document_idle" });
+    browser.tabs.executeScript(tabId, { code: code, runAt: "document_idle" });
   },
 
 /******************************************************************************/
@@ -71,6 +51,7 @@ PassFF.Page = {
 var doc = document;
 var loginInputNames = [];
 var passwordInputNames = [];
+var iframeSearchDepth = 0;
 
 function getSubmitButton(form) {
   let buttons = form.querySelectorAll('button[type=submit]');
@@ -181,6 +162,22 @@ function setOtherInputs(other) {
       otherInput.value = value;
     }
   });
+}
+
+function setInputs(passwordData) {
+  setLoginInputs(passwordData.login);
+  setPasswordInputs(passwordData.password);
+  setOtherInputs(passwordData._other);
+}
+
+function processDoc(d, passwordData, depth) {
+  setInputs(passwordData);
+  if (depth <= iframeSearchDepth) {
+    let iframes = d.getElementsByTagName('iframe');
+    Array.prototype.slice.call(iframes).forEach(function(iframe) {
+      processDoc(iframe.contentDocument, passwordData, depth++);
+    });
+  }
 }
 {0}`
 /******************************************************************************/

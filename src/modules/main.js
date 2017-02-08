@@ -23,7 +23,8 @@ var log = {
 })();
 
 function getActiveTab() {
-  return browser.tabs.query({active: true, currentWindow: true});
+  return browser.tabs.query({active: true, currentWindow: true})
+         .then((tabs) => { return tabs[0]; });
 }
 
 var PassFF = {
@@ -68,12 +69,10 @@ var PassFF = {
 
     log.debug('Location changed', tab.url);
     PassFF.tab_url = tab.url;
-    PassFF.Menu.createContextualMenu(document, tab.url);
+    PassFF.Menu.createContextualMenu(null, PassFF.tab_url);
   },
 
   onTabUpdate: function () {
-    getActiveTab().then((tabs) => {
-        PassFF.init_tab(tabs[0]);
-    });
+    getActiveTab().then(PassFF.init_tab);
   }
 };

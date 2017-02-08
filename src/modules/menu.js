@@ -4,23 +4,26 @@
 /* jshint node: true */
 'use strict';
 
-function copyToClipboard(val) {
-    let field = document.getElementById("clipboardField");
-    field.value = val;
-    field.select();
-    document.execCommand("copy", false, null);
+function copyToClipboard(doc, val) {
+  let field = doc.getElementById("clipboardField");
+  field.value = val;
+  field.select();
+  doc.execCommand("copy", false, null);
 }
 
 PassFF.Menu = {
   _currentMenuIndex: null,
   _stringBundle: null,
+  _window: null,
 
-  init: function (doc) {
+  init: function (win) {
+    this._window = win;
+    let doc = win.document;
     PassFF.Menu.createStaticMenu(doc);
 
-    let searchInput = document.querySelector("input[type='text']");
+    let searchInput = doc.querySelector("input[type='text']");
     setTimeout(function () {
-        searchInput.focus();
+      searchInput.focus();
     }, 0);
   },
 
@@ -60,6 +63,10 @@ PassFF.Menu = {
     prefsButton.setAttribute('id', PassFF.Ids.prefsmenuitem);
     prefsButton.textContent = PassFF.gsfm('passff.toolbar.preferences.label');
     prefsButton.addEventListener('click', PassFF.Menu.onPreferences);
+
+    if (PassFF.tab_url !== null) {
+      PassFF.Menu.createContextualMenu(doc, PassFF.tab_url);
+    }
 
     return panel;
   },
@@ -189,56 +196,57 @@ PassFF.Menu = {
   },
 
   onPreferences: function(event) {
+    PassFF.Menu._window.close()
     browser.runtime.openOptionsPage();
-    window.close()
   },
 
   onAutoFillMenuClick: function(event) {
     event.stopPropagation();
 
-    PassFF.Page.fillInputs(PassFF.Menu.getItem(event.target)).then(() => {
-        window.close();
+    PassFF.Menu._window.close();
+    getActiveTab().then((tb) => {
+      PassFF.Page.fillInputs(tb.id, PassFF.Menu.getItem(event.target));
     });
   },
 
   onAutoFillAndSubmitMenuClick: function(event) {
     event.stopPropagation();
 
-    PassFF.Page.fillInputs(PassFF.Menu.getItem(event.target)).then(() => {
-        PassFF.Page.submit();
-        window.close();
+    PassFF.Menu._window.close();
+    getActiveTab().then((tb) => {
+      return PassFF.Page.fillInputs(tb.id, PassFF.Menu.getItem(event.target));
+    }).then((tabId) => {
+      PassFF.Page.submit(tabId);
     });
   },
 
   onGoto: function(event) {
     event.stopPropagation();
 
+    PassFF.Menu._window.close();
     let item = PassFF.Menu.getItem(event.target);
     log.debug('Goto item url', item);
-    PassFF.Menu.goToItemUrl(item, event.button !== 0, false).then(() => {
-        window.close();
-    });
+    PassFF.Menu.goToItemUrl(item, event.button !== 0, false);
   },
 
   onGotoAutoFillAndSubmitMenuClick: function(event) {
     event.stopPropagation();
 
+    PassFF.Menu._window.close();
     let item = PassFF.Menu.getItem(event.target);
     log.debug('Goto item url fill and submit', item);
-    PassFF.Menu.goToItemUrl(item, event.button !== 0, true).then(() => {
-        window.close();
-    });
+    PassFF.Menu.goToItemUrl(item, event.button !== 0, true);
   },
 
   onDisplayItemData: function(event) {
     let item = PassFF.Menu.getItem(event.target);
     PassFF.Pass.getPasswordData(item).then((passwordData) => {
-        let login = passwordData.login;
-        let password = passwordData.password;
-        let title = PassFF.gsfm('passff.display.title');
-        let desc = PassFF.gsfm('passff.display.description', [login, password]);
-        window.alert(title + "\n" + desc);
-        window.close();
+      let login = passwordData.login;
+      let password = passwordData.password;
+      let title = PassFF.gsfm('passff.display.title');
+      let desc = PassFF.gsfm('passff.display.description', [login, password]);
+      PassFF.Menu._window.alert(title + "\n" + desc);
+      PassFF.Menu._window.close();
     });
   },
 
@@ -248,8 +256,11 @@ PassFF.Menu = {
     log.debug('copy to clipboard', event);
     let item = PassFF.Menu.getItem(event.target);
     PassFF.Pass.getPasswordData(item).then((passwordData) => {
-        copyToClipboard(passwordData[PassFF.Menu.getDataKey(event.target)]);
-        window.close();
+      copyToClipboard(
+        event.target.ownerDocument,
+        passwordData[PassFF.Menu.getDataKey(event.target)]
+      );
+      PassFF.Menu._window.close();
     });
   },
 
@@ -279,6 +290,13 @@ PassFF.Menu = {
   },
 
   createContextualMenu: function(doc, url) {
+    if (doc === null) {
+      if (this._window !== null && this._window.document) {
+        doc = this._window.document;
+      } else {
+        return;
+      }
+    }
     log.debug('createContextualMenu', url);
     let items = PassFF.Pass.getUrlMatchingItems(url);
     if (items.length === 0) {
@@ -304,23 +322,25 @@ PassFF.Menu = {
       let onEnter = null;
       if (item.isLeaf() || item.hasFields()) {
         onEnter = function(event) {
+          PassFF.Menu._window.close();
           switch (PassFF.Preferences.enterBehavior){
             case 0:
               //goto url, fill, submit
-              PassFF.Menu.goToItemUrl(PassFF.Menu.getItem(this), event.shiftKey, true)
-              .then(() => { window.close(); });
+              PassFF.Menu.goToItemUrl(PassFF.Menu.getItem(this), event.shiftKey, true);
               break;
             case 1:
               //fill, submit
-              PassFF.Page.fillInputs(PassFF.Menu.getItem(this)).then(() => {
-                  PassFF.Page.submit();
-                  window.close();
+              getActiveTab().then((tb) => {
+                return PassFF.Page.fillInputs(tb.id, PassFF.Menu.getItem(this));
+              }).then((tabId) => {
+                 PassFF.Page.submit(tabId);
               });
               break;
             case 2:
               //fill
-              PassFF.Page.fillInputs(PassFF.Menu.getItem(this))
-              .then(() => { window.close(); });
+              getActiveTab().then((tb) => {
+                PassFF.Page.fillInputs(tb.id, PassFF.Menu.getItem(this));
+              });
               break;
           }
         };
@@ -377,6 +397,13 @@ PassFF.Menu = {
       return new Promise();
     }
 
+    let promised_tab = null;
+    if (newTab) {
+      promised_tab = browser.tabs.create({});
+    } else {
+      promised_tab = getActiveTab();
+    }
+
     log.debug('go to item url', item, newTab, autoFillAndSubmit);
     return PassFF.Pass.getPasswordData(item).then((passwordData) => {
       let url = passwordData.url;
@@ -389,23 +416,20 @@ PassFF.Menu = {
         url = 'http://' + url;
       }
 
-      let promised_tab = null;
-      if (newTab) {
-        promised_tab = browser.tabs.create({ "url": url });
-      } else {
-        promised_tab = browser.tabs.update({ "url": url });
-      }
-
-      if (!autoFillAndSubmit) {
-        return;
-      }
-
-      PassFF.Page.autoFillAndSubmitPending = true;
       return promised_tab.then(function (tb) {
-        log.info('Start auto-fill', tb.status);
-        return PassFF.Page.fillInputs(item).then(() => {
-          PassFF.Page.submit();
-          PassFF.Page.autoFillAndSubmitPending = false;
+        return browser.tabs.update(tb.id, { "url": url });
+      }).then(function (tb) {
+        if (!autoFillAndSubmit) {
+          return;
+        }
+        browser.tabs.onUpdated.addListener(function f(tabId, changeInfo, tab) {
+          if (tabId == tb.id && tab.status == "complete") {
+            browser.tabs.onUpdated.removeListener(f);
+            log.info('Start auto-fill');
+            PassFF.Page.fillInputs(tabId, item).then(() => {
+              PassFF.Page.submit(tabId);
+            });
+          }
         });
       });
     });

@@ -22,9 +22,11 @@ function pref_set(key, val) {
     browser.storage.local.set(obj);
 }
 
-function pref_str_change_cb(key) {
+function pref_str_change_cb(key, isInt) {
     return function (evt) {
-        pref_set(key, evt.target.value);
+        let val = evt.target.value;
+        if (isInt) val = parseInt(val);
+        pref_set(key, val);
     };
 }
 
@@ -55,7 +57,7 @@ window.onload = function () {
           el.addEventListener("change", pref_bool_change_cb(key));
         } else if (el.tagName == "SELECT") {
           el.value = val;
-          el.addEventListener("change", pref_str_change_cb(key));
+          el.addEventListener("change", pref_str_change_cb(key, true));
         }
       } else {
         el = document.querySelectorAll("input[name=pref_"+key+"]");
