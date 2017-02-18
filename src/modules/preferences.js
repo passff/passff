@@ -36,7 +36,7 @@ PassFF.Preferences = (function() {
   return {
     _gpgAgentEnv: null,
     _params: getDefaultParams(),
-    init: function() {
+    init: function(bgmode) {
       for (let [key, val] in Iterator(PassFF.Preferences._params)) {
       log.error("aaaaa ", key, val)
         browser.storage.local.get(key).then(((res) => {
@@ -49,34 +49,35 @@ PassFF.Preferences = (function() {
         }).bind(this));
       }
 
-      log.info('Preferences initialised', {
-        passwordInputNames    : this.passwordInputNames,
-        loginInputNames       : this.loginInputNames,
-        loginFieldNames       : this.loginFieldNames,
-        passwordFieldNames    : this.passwordFieldNames,
-        urlFieldNames         : this.urlFieldNames,
-        command               : this.command,
-        commandArgs           : this.commandArgs,
-        shell                 : this.shell,
-        shellArgs             : this.shellArgs,
-        home                  : this.home,
-        storeDir              : this.storeDir,
-        storeGit              : this.storeGit,
-        autoFill              : this.autoFill,
-        autoSubmit            : this.autoSubmit,
-        shortcutKey           : this.shortcutKey,
-        shortcutMod           : this.shortcutMod,
-        logEnabled            : this.logEnabled,
-        iframeSearchDepth     : this.iframeSearchDepth,
-        callType              : this.callType,
-        caseInsensitiveSearch : this.caseInsensitiveSearch,
-        enterBehavior         : this.enterBehavior
-      });
-
-      let params = { command: "gpgAgentEnv" };
-      params['arguments'] = [this._params.gpgAgentInfo];
-      return browser.runtime.sendNativeMessage("passff", params)
-        .then(((result) => { this._gpgAgentEnv = result; }).bind(this));
+      if (bgmode === true) {
+        log.info('Preferences initialised', {
+          passwordInputNames    : this.passwordInputNames,
+          loginInputNames       : this.loginInputNames,
+          loginFieldNames       : this.loginFieldNames,
+          passwordFieldNames    : this.passwordFieldNames,
+          urlFieldNames         : this.urlFieldNames,
+          command               : this.command,
+          commandArgs           : this.commandArgs,
+          shell                 : this.shell,
+          shellArgs             : this.shellArgs,
+          home                  : this.home,
+          storeDir              : this.storeDir,
+          storeGit              : this.storeGit,
+          autoFill              : this.autoFill,
+          autoSubmit            : this.autoSubmit,
+          shortcutKey           : this.shortcutKey,
+          shortcutMod           : this.shortcutMod,
+          logEnabled            : this.logEnabled,
+          iframeSearchDepth     : this.iframeSearchDepth,
+          callType              : this.callType,
+          caseInsensitiveSearch : this.caseInsensitiveSearch,
+          enterBehavior         : this.enterBehavior
+        });
+        let params = { command: "gpgAgentEnv" };
+        params['arguments'] = [this._params.gpgAgentInfo];
+        return browser.runtime.sendNativeMessage("passff", params)
+          .then(((result) => { this._gpgAgentEnv = result; }).bind(this));
+      }
     },
 
     get passwordInputNames() {
@@ -120,32 +121,32 @@ PassFF.Preferences = (function() {
       if (this._params.home.trim().length > 0) {
         return this._params.home;
       }
-      return PassFF.env.get('HOME');
+      return PassFF.Pass.env.get('HOME');
     },
 
     get gnupgHome() {
       if (this._params.gnupgHome.trim().length > 0) {
         return this._params.gnupgHome;
       }
-      return PassFF.env.get('GNUPGHOME');
+      return PassFF.Pass.env.get('GNUPGHOME');
     },
 
     get storeDir() {
       if (this._params.storeDir.trim().length > 0) {
         return this._params.storeDir;
       }
-      return PassFF.env.get('PASSWORD_STORE_DIR');
+      return PassFF.Pass.env.get('PASSWORD_STORE_DIR');
     },
 
     get storeGit() {
       if (this._params.storeGit.trim().length > 0) {
         return this._params.storeGit;
       }
-      return PassFF.env.get('PASSWORD_STORE_GIT');
+      return PassFF.Pass.env.get('PASSWORD_STORE_GIT');
     },
 
     get path() {
-      return PassFF.env.get('PATH');
+      return PassFF.Pass.env.get('PATH');
     },
 
     get gpgAgentEnv() {

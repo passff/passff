@@ -1,11 +1,12 @@
 /* jshint node: true */
 'use strict';
 
-let Item = function(depth, key, parent) {
+let Item = function(depth, key, parent, id) {
   this.children = [];
   this.depth = depth;
   this.key = key.replace(/\.gpg$/, '');
   this.parent = parent;
+  this.id = id;
 };
 
 Item.prototype.isLeaf = function() {
@@ -34,13 +35,45 @@ Item.prototype.fullKey = function() {
   return fullKey;
 };
 
+Item.prototype.toObject = function(export_children) {
+  let children = [];
+  if (export_children) {
+    children = this.children.map(function (c) { return c.toObject(false); });
+  }
+  return {
+    id: this.id,
+    parent: (this.parent === null) ? null : this.parent.toObject(false),
+    isLeaf: this.isLeaf(),
+    isField: this.isField(),
+    hasFields: this.hasFields(),
+    fullKey: this.fullKey(),
+    children: children
+  };
+};
+
 PassFF.Pass = {
   _items: [],
   _rootItems: [],
   _stringBundle: null,
 
+  env: {
+    _environment: {},
+    exists: function (key) { return this._environment.hasOwnProperty(key); },
+    get: function (key) {
+      if (this.exists(key)) return this._environment[key];
+      else return "";
+    }
+  },
+
+  init_env: function () {
+    return browser.runtime.sendNativeMessage("passff", { command: "env" })
+      .then((result) => { PassFF.Pass.env._environment = result; });
+  },
+
   init: function() {
-    return this.initItems();
+    return this.init_env().then(() => {
+      return PassFF.Pass.initItems();
+    });
   },
 
   initItems: function() {
@@ -76,7 +109,7 @@ PassFF.Pass = {
         curParent = curParent.parent;
       }
 
-      let item = new Item(curDepth, key, curParent);
+      let item = new Item(curDepth, key, curParent, this._items.length);
 
       if (curParent !== null) {
         curParent.children.push(item);
@@ -143,13 +176,13 @@ PassFF.Pass = {
         }
       });
       return Promise.all(result).then(function (results) {
-      let i = 0;
       let result = {};
-      item.children.forEach(function (child) {
+      for (let i = 0; i < item.children.length; i++) {
+        let child = item.children[i];
         if (child.isField()) {
           result[child.key] = results[i].password;
         }
-      });
+      }
       PassFF.Pass.setLogin(result, item);
       PassFF.Pass.setPassword(result);
       PassFF.Pass.setOther(result);
@@ -428,7 +461,7 @@ PassFF.Pass = {
   getEnvParams: function() {
     return {
       'HOME': PassFF.Preferences.home,
-      'DISPLAY': (PassFF.env.exists('DISPLAY') ? PassFF.env.get('DISPLAY') : ':0.0'),
+      'DISPLAY': (PassFF.Pass.env.exists('DISPLAY') ? PassFF.Pass.env.get('DISPLAY') : ':0.0'),
       'TREE_CHARSET': 'ISO-8859-1',
       'GNUPGHOME': PassFF.Preferences.gnupgHome
     };
@@ -450,6 +483,14 @@ PassFF.Pass = {
     }
 
     return params;
+  },
+
+  getItemById: function (id) {
+    if (id >= this._items.length) {
+      return null;
+    } else {
+      return this._items[id];
+    }
   },
 
   get rootItems() {

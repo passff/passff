@@ -1,10 +1,7 @@
 /* jshint node: true */
 'use strict';
 
-let promisedBg = browser.runtime.getBackgroundPage();
-
+PassFF.Preferences.init();
 window.onload = function () {
-    promisedBg.then((bg) => {
-        bg.PassFF.Menu.init(window);
-    });
+    PassFF.Menu.init();
 };

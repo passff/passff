@@ -16,6 +16,49 @@ if (!String.prototype.format) {
 PassFF.Page = {
   _autoSubmittedUrls: [],
 
+  goToItemUrl: function(item, newTab, autoFillAndSubmit) {
+    if (!item) {
+      return new Promise();
+    }
+
+    let promised_tab = null;
+    if (newTab) {
+      promised_tab = browser.tabs.create({});
+    } else {
+      promised_tab = getActiveTab();
+    }
+
+    log.debug('go to item url', item, newTab, autoFillAndSubmit);
+    return PassFF.Pass.getPasswordData(item).then((passwordData) => {
+      let url = passwordData.url;
+
+      if (!url) {
+        url = item.key;
+      }
+
+      if (!url.startsWith('http')) {
+        url = 'http://' + url;
+      }
+
+      return promised_tab.then(function (tb) {
+        return browser.tabs.update(tb.id, { "url": url });
+      }).then(function (tb) {
+        if (!autoFillAndSubmit) {
+          return;
+        }
+        browser.tabs.onUpdated.addListener(function f(tabId, changeInfo, tab) {
+          if (tabId == tb.id && tab.status == "complete") {
+            browser.tabs.onUpdated.removeListener(f);
+            log.info('Start auto-fill');
+            PassFF.Page.fillInputs(tabId, item).then(() => {
+              PassFF.Page.submit(tabId);
+            });
+          }
+        });
+      });
+    });
+  },
+
   fillInputs: function(tabId, item) {
     return PassFF.Pass.getPasswordData(item).then((passwordData) => {
       if (passwordData) {

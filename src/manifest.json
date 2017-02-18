@@ -37,7 +37,6 @@
             "modules/preferences.js",
             "modules/pass.js",
             "modules/page.js",
-            "modules/menu.js",
             "background.js"
         ]
     },
