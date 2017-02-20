@@ -127,10 +127,11 @@ var PassFF = {
     } else if (request.action == "Menu.onEnter") {
       let item = PassFF.Pass.getItemById(request.params[0]);
       let shiftKey = request.params[1];
+      log.debug("onEnter", item, shiftKey);
       switch (PassFF.Preferences.enterBehavior) {
         case 0:
           //goto url, fill, submit
-          PassFF.goToItemUrl(item, shiftKey, true);
+          PassFF.Page.goToItemUrl(item, shiftKey, true);
           break;
         case 1:
           //fill, submit
