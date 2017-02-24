@@ -131,9 +131,13 @@ var PassFF = {
       switch (PassFF.Preferences.enterBehavior) {
         case 0:
           //goto url, fill, submit
-          PassFF.Page.goToItemUrl(item, shiftKey, true);
+          PassFF.Page.goToItemUrl(item, shiftKey, true, true);
           break;
         case 1:
+          //goto url, fill
+          PassFF.Page.goToItemUrl(item, shiftKey, true, false);
+          break;
+        case 2:
           //fill, submit
           getActiveTab().then((tb) => {
             return PassFF.Page.fillInputs(tb.id, item);
@@ -141,7 +145,7 @@ var PassFF = {
             PassFF.Page.submit(tabId);
           });
           break;
-        case 2:
+        case 3:
           //fill
           getActiveTab().then((tb) => {
             PassFF.Page.fillInputs(tb.id, item);
@@ -150,7 +154,7 @@ var PassFF = {
       }
     } else if (request.action == "Page.goToItemUrl") {
       let item = PassFF.Pass.getItemById(request.params[0]);
-      PassFF.Page.goToItemUrl(item, request.params[1], request.params[2]);
+      PassFF.Page.goToItemUrl(item, request.params[1], request.params[2], request.params[3]);
     } else if (request.action == "Page.fillInputs") {
       let item = PassFF.Pass.getItemById(request.params[0]);
       let andSubmit = request.params[1];

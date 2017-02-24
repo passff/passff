@@ -16,7 +16,7 @@ if (!String.prototype.format) {
 PassFF.Page = {
   _autoSubmittedUrls: [],
 
-  goToItemUrl: function(item, newTab, autoFillAndSubmit) {
+  goToItemUrl: function(item, newTab, autoFill, submit) {
     if (!item) {
       return new Promise();
     }
@@ -28,7 +28,7 @@ PassFF.Page = {
       promised_tab = getActiveTab();
     }
 
-    log.debug('go to item url', item, newTab, autoFillAndSubmit);
+    log.debug('go to item url', item, newTab, autoFill, submit);
     return PassFF.Pass.getPasswordData(item).then((passwordData) => {
       let url = passwordData.url;
 
@@ -43,7 +43,7 @@ PassFF.Page = {
       return promised_tab.then(function (tb) {
         return browser.tabs.update(tb.id, { "url": url });
       }).then(function (tb) {
-        if (!autoFillAndSubmit) {
+        if (!autoFill) {
           return;
         }
         browser.tabs.onUpdated.addListener(function f(tabId, changeInfo, tab) {
@@ -51,7 +51,10 @@ PassFF.Page = {
             browser.tabs.onUpdated.removeListener(f);
             log.info('Start auto-fill');
             PassFF.Page.fillInputs(tabId, item).then(() => {
-              PassFF.Page.submit(tabId);
+              if (submit) {
+                log.info('Start submit');
+                PassFF.Page.submit(tabId);
+              }
             });
           }
         });

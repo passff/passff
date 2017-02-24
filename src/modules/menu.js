@@ -211,7 +211,7 @@ PassFF.Menu = {
 
     let item = PassFF.Menu.getItem(event.target);
     log.debug('Goto item url', item);
-    PassFF.bg_exec("Page.goToItemUrl", item, event.button !== 0, false);
+    PassFF.bg_exec("Page.goToItemUrl", item, event.button !== 0, false, false);
     window.close();
   },
 
@@ -220,7 +220,7 @@ PassFF.Menu = {
 
     let item = PassFF.Menu.getItem(event.target);
     log.debug('Goto item url fill and submit', item);
-    PassFF.bg_exec("Page.goToItemUrl", item, event.button !== 0, true);
+    PassFF.bg_exec("Page.goToItemUrl", item, event.button !== 0, true, true);
     window.close();
   },
 
