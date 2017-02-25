@@ -182,7 +182,9 @@ PassFF.Menu = {
   onRootButtonCommand: function(event) {
     log.debug('Root button command', event);
     let doc = event.target.ownerDocument;
-    PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.rootItems);
+    PassFF.bg_exec("Pass.rootItems").then((rootItems) => {
+      PassFF.Menu.createItemsMenuList(doc, rootItems);
+    });
   },
 
   onRefresh: function(event) {
