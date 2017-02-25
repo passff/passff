@@ -41,12 +41,12 @@ window.onload = function () {
     document.querySelectorAll("label,p.text,option").forEach(function (el) {
         el.textContent = PassFF.gsfm(el.textContent);
     });
-    
+
     for (let [key, cT] in Iterator(["shell", "direct"])) {
         document.getElementById("pref_callType_" + cT)
         .addEventListener("change", update_callTypeUI);
     }
-    
+
     for (let [key, val] in Iterator(PassFF.Preferences._params)) {
       let el = document.getElementById("pref_" + key);
       if (el !== null) {

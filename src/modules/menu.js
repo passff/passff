@@ -55,6 +55,11 @@ PassFF.Menu = {
     prefsButton.textContent = PassFF.gsfm('passff.toolbar.preferences.label');
     prefsButton.addEventListener('click', PassFF.Menu.onPreferences);
 
+    let newPasswordButton = doc.querySelector(".options button:last-child");
+    newPasswordButton.setAttribute('id', PassFF.Ids.newpasswordmenuitem);
+    newPasswordButton.textContent = PassFF.gsfm('passff.toolbar.new_password.label');
+    newPasswordButton.addEventListener('click', PassFF.Menu.onNewPassword);
+
     PassFF.Menu.createContextualMenu(doc);
 
     return panel;
@@ -191,6 +196,16 @@ PassFF.Menu = {
   onPreferences: function(event) {
     PassFF.bg_exec("openOptionsPage");
     window.close()
+  },
+
+  onNewPassword: function(event) {
+    browser.windows.create({
+      "url": browser.extension.getURL("content/newPasswordWindow.html"),
+      "width": 450,
+      "height": 330,
+      "type": "popup"
+    });
+    window.close();
   },
 
   onAutoFillMenuClick: function(event) {

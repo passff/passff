@@ -52,6 +52,7 @@ var PassFF = {
     buttonsbox: 'passff-buttonsbox',
     refreshmenuitem: 'passff-refresh-menuitem',
     prefsmenuitem: 'passff-prefs-menuitem',
+    newpasswordmenuitem: 'passff-new-password-menuitem',
     menubar: 'passff-menubar',
     menu: 'passff-menu-',
   },
@@ -124,6 +125,20 @@ var PassFF = {
     } else if (request.action == "Pass.getItemById") {
       let item = PassFF.Pass.getItemById(request.params[0]);
       sendResponse({ response: item.toObject(true) });
+    } else if (request.action == "Pass.addNewPassword") {
+      PassFF.Pass.addNewPassword.apply(PassFF.Pass, request.params)
+      .then((result) => {
+        sendResponse({ response: result });
+      });
+    } else if (request.action == "Pass.generateNewPassword") {
+      PassFF.Pass.generateNewPassword.apply(PassFF.Pass, request.params)
+      .then((result) => {
+        sendResponse({ response: result });
+      });
+    } else if (request.action == "Pass.isPasswordNameTaken") {
+      sendResponse({
+        response: PassFF.Pass.isPasswordNameTaken(request.params[0])
+      });
     } else if (request.action == "Menu.onEnter") {
       let item = PassFF.Pass.getItemById(request.params[0]);
       let shiftKey = request.params[1];

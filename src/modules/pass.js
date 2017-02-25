@@ -395,6 +395,37 @@ PassFF.Pass = {
     return leafs;
   },
 
+  isPasswordNameTaken: function(name) {
+    name = name.replace(/^\//, '');
+    for (let item of this._items) {
+      if (item.fullKey() === name) {
+        log.debug("Password name " + name + " already taken.");
+        return true;
+      }
+    }
+    return false;
+  },
+
+  addNewPassword: function(name, password, additionalInfo) {
+    let fileContents = [password, additionalInfo].join('\n');
+    return this.executePass(['insert', '-m', name], {
+      stdin: password + '\n' + additionalInfo + '\n'
+    }).then((result) => {
+      return result.exitCode === 0;
+    });
+  },
+
+  generateNewPassword: function(name, length, includeSymbols) {
+    let args = ['generate', name, length.toString()];
+    if (!includeSymbols) {
+      args.push('-n');
+    }
+    return this.executePass(args).then((result) => {
+      log.debug(result);
+      return result.exitCode === 0;
+    });
+  },
+
   executePass: function(args, subprocessOverrides) {
     let result = null;
     let scriptArgs = [];

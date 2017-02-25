@@ -31,12 +31,23 @@ if receivedMessage['command'][-4:] == "pass":
     for key, val in receivedMessage['environment'].items():
         env[key] = val
     cmd = [receivedMessage['command']] + receivedMessage['arguments']
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env)
-    proc.wait()
+    proc_params = {
+        'stdout': subprocess.PIPE,
+        'stderr': subprocess.PIPE,
+        'env': env
+    }
+    if 'stdin' in receivedMessage:
+      proc_params['stdin'] = subprocess.PIPE
+    proc = subprocess.Popen(cmd, **proc_params)
+    if 'stdin' in receivedMessage:
+      proc_in = bytes(receivedMessage['stdin'], receivedMessage['charset'])
+      proc_out, proc_err = proc.communicate(input=proc_in)
+    else:
+      proc_out, proc_err = proc.communicate()
     sendMessage(encodeMessage({
         "exitCode": proc.returncode,
-        "stdout": proc.stdout.read().decode(receivedMessage['charset']),
-        "stderr": proc.stderr.read().decode(receivedMessage['charset']),
+        "stdout": proc_out.decode(receivedMessage['charset']),
+        "stderr": proc_err.decode(receivedMessage['charset']),
         "other": ""
     }))
 elif receivedMessage['command'] == "env":

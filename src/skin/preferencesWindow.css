@@ -3,7 +3,7 @@ html, body, div {
     margin: 0; padding: 0; width: 100%;
 }
 
-body {
+div.tabbox {
     position: relative;
     min-height: 380px;
     padding: 0 0.2rem;
@@ -11,15 +11,15 @@ body {
     min-width: 650px;
 }
 
-body > div {
+div.tab {
     display: inline;
 }
 
-div:last-of-type > label {
+div.tab:last-of-type > label {
     border-right: 1px #ccc solid;
 }
 
-div > label {
+div.tab > label {
     display: block;
     padding: 0.1rem 0.2rem;
     border-right: 1px #ccc solid;
@@ -31,18 +31,18 @@ div > label {
     height: 1.6rem;
 }
 
-div > input[type=radio] {
+div.tab > input[type=radio] {
     opacity: 0;
     margin: 0;
 }
 
-div > input[type=radio]:checked ~ label {
+div.tab > input[type=radio]:checked ~ label {
     background-color: #eee;
     border-color: #000;
     margin-right: 0;
 }
 
-div > input[type=radio]:checked ~ fieldset {
+div.tab > input[type=radio]:checked ~ fieldset {
     display: block;
     clear: both;
 }

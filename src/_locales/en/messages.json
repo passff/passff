@@ -17,6 +17,9 @@
   "passff.menu.fill_and_submit": {
     "message": "Fill and submit"
   },
+  "passff.menu.goto_fill": {
+    "message": "Goto, fill"
+  },
   "passff.menu.goto_fill_and_submit": {
     "message": "Goto, fill and submit"
   },
@@ -230,5 +233,59 @@
   },
   "passff.prefs.prefer_insert": {
     "message": "Insert"
+  },
+  "passff.newpassword.window.title": {
+    "message": "New Password"
+  },
+  "passff.newpassword.window.header": {
+    "message": "Add a new password"
+  },
+  "passff.newpassword.tabs.generate": {
+    "message": "Generate"
+  },
+  "passff.newpassword.tabs.insert": {
+    "message": "Insert"
+  },
+  "passff.newpassword.inputs.password_name_label": {
+    "message": "Name"
+  },
+  "passff.newpassword.inputs.password_label": {
+    "message": "Password"
+  },
+  "passff.newpassword.inputs.password_confirmation_label": {
+    "message": "Confirm password"
+  },
+  "passff.newpassword.inputs.additional_info_label": {
+    "message": "Additional info"
+  },
+  "passff.newpassword.inputs.password_length_label": {
+    "message": "Length"
+  },
+  "passff.newpassword.inputs.include_symbols_label": {
+    "message": "Include symbols?"
+  },
+  "passff.newpassword.inputs.add_password_button_label": {
+    "message": "Insert password"
+  },
+  "passff.newpassword.inputs.generate_password_button_label": {
+    "message": "Generate password"
+  },
+  "passff.newpassword.inputs.overwrite_password_prompt": {
+    "message": "That password already exists. Are you sure you want to overwrite it?"
+  },
+  "passff.newpassword.errors.name_is_required": {
+    "message": "Name must be present"
+  },
+  "passff.newpassword.errors.password_is_required": {
+    "message": "Password must be present"
+  },
+  "passff.newpassword.errors.password_confirmation_mismatch": {
+    "message": "Password confirmation doesn't match"
+  },
+  "passff.newpassword.errors.pass_execution_failed": {
+    "message": "Oops, something went wrong"
+  },
+  "passff.newpassword.errors.unexpected_error": {
+    "message": "Sorry, an unexpected error occured"
   }
 }

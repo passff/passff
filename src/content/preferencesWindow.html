@@ -5,110 +5,129 @@
     <link rel="stylesheet" href="../skin/preferencesWindow.css" />
   </head>
   <body>
-    <div class="tab">
-      <input type="radio" name="tab_radio" id="tab0" checked="checked">
-      <label for="tab0">passff.prefs.tab.general</label>
-      <fieldset>
-        <p>
-          <label>passff.prefs.shortcut_mod_label</label>
-          <input type="text" id="pref_shortcutMod" value="" />
-        </p><p>
-          <label>passff.prefs.shortcut_key_label</label>
-          <input type="text" id="pref_shortcutKey" value="" />
-        </p><p>
-          <label>passff.prefs.log_enabled_label</label>
-          <input type="checkbox" id="pref_logEnabled" />
-        </p><p>
-          <label>passff.prefs.case-insensitive-search</label>
-          <input type="checkbox" id="pref_caseInsensitiveSearch" />
-        </p><p>
-          <label>passff.prefs.enter-behavior</label>
-          <select id="pref_enterBehavior">
-            <option value="0">passff.menu.goto_fill_and_submit</option>
-            <option value="1">passff.menu.goto_fill</option>
-            <option value="2">passff.menu.fill_and_submit</option>
-            <option value="3">passff.menu.fill</option>
-          </select>
-        </p>
-      </fieldset>
-    </div>
+    <div class="tabbox">
+      <div class="tab">
+        <input type="radio" name="tab_radio" id="tab0" checked="checked">
+        <label for="tab0">passff.prefs.tab.general</label>
+        <fieldset>
+          <p>
+            <label>passff.prefs.shortcut_mod_label</label>
+            <input type="text" id="pref_shortcutMod" value="" />
+          </p><p>
+            <label>passff.prefs.shortcut_key_label</label>
+            <input type="text" id="pref_shortcutKey" value="" />
+          </p><p>
+            <label>passff.prefs.log_enabled_label</label>
+            <input type="checkbox" id="pref_logEnabled" />
+          </p><p>
+            <label>passff.prefs.case-insensitive-search</label>
+            <input type="checkbox" id="pref_caseInsensitiveSearch" />
+          </p><p>
+            <label>passff.prefs.enter-behavior</label>
+            <select id="pref_enterBehavior">
+              <option value="0">passff.menu.goto_fill_and_submit</option>
+              <option value="1">passff.menu.goto_fill</option>
+              <option value="2">passff.menu.fill_and_submit</option>
+              <option value="3">passff.menu.fill</option>
+            </select>
+          </p>
+        </fieldset>
+      </div>
 
-    <div class="tab">
-      <input type="radio" name="tab_radio" id="tab1">
-      <label for="tab1">passff.prefs.tab.autofilling</label>
-      <fieldset>
-        <p>
-          <label>passff.prefs.auto_fill_label</label>
-          <input type="checkbox" id="pref_autoFill" />
-        </p><p>
-          <label>passff.prefs.auto_submit_label</label>
-          <input type="checkbox" id="pref_autoSubmit" />
-        </p><p>
-          <label>passff.prefs.password_input_names_label</label>
-          <input type="text" id="pref_passwordInputNames" value="" />
-        </p><p>
-          <label>passff.prefs.login_input_names_label</label>
-          <input type="text" id="pref_loginInputNames" value="" />
-        </p>
-      </fieldset>
-    </div>
+      <div class="tab">
+        <input type="radio" name="tab_radio" id="tab1">
+        <label for="tab1">passff.prefs.tab.autofilling</label>
+        <fieldset>
+          <p>
+            <label>passff.prefs.auto_fill_label</label>
+            <input type="checkbox" id="pref_autoFill" />
+          </p><p>
+            <label>passff.prefs.auto_submit_label</label>
+            <input type="checkbox" id="pref_autoSubmit" />
+          </p><p>
+            <label>passff.prefs.password_input_names_label</label>
+            <input type="text" id="pref_passwordInputNames" value="" />
+          </p><p>
+            <label>passff.prefs.login_input_names_label</label>
+            <input type="text" id="pref_loginInputNames" value="" />
+          </p>
+        </fieldset>
+      </div>
 
-    <div class="tab">
-      <input type="radio" name="tab_radio" id="tab2">
-      <label for="tab2">passff.prefs.tab.fields</label>
-      <fieldset>
-        <p class="text">passff.prefs.fields_description</p>
-        <p>
-          <label>passff.prefs.password_field_names_label</label>
-          <input type="text" id="pref_passwordFieldNames" value="" />
-        </p><p>
-          <label>passff.prefs.login_field_names_label</label>
-          <input type="text" id="pref_loginFieldNames" value="" />
-        </p><p>
-          <label>passff.prefs.url_field_names_label</label>
-          <input type="text" id="pref_urlFieldNames" value="" />
-        </p>
-      </fieldset>
-    </div>
+      <div class="tab">
+        <input type="radio" name="tab_radio" id="tab2">
+        <label for="tab2">passff.prefs.tab.fields</label>
+        <fieldset>
+          <p class="text">passff.prefs.fields_description</p>
+          <p>
+            <label>passff.prefs.password_field_names_label</label>
+            <input type="text" id="pref_passwordFieldNames" value="" />
+          </p><p>
+            <label>passff.prefs.login_field_names_label</label>
+            <input type="text" id="pref_loginFieldNames" value="" />
+          </p><p>
+            <label>passff.prefs.url_field_names_label</label>
+            <input type="text" id="pref_urlFieldNames" value="" />
+          </p>
+        </fieldset>
+      </div>
 
-    <div class="tab">
-      <input type="radio" name="tab_radio" id="tab3">
-      <label for="tab3">passff.prefs.tab.script</label>
-      <fieldset>
-        <p>
-          <label>passff.prefs.home_label</label>
-          <input type="text" id="pref_home" value="" />
-        </p><p>
-          <label>passff.prefs.command_label</label>
-          <input type="text" id="pref_command" value="" />
-        </p><p>
-          <label>passff.prefs.commandArgs_label</label>
-          <input type="text" id="pref_commandArgs" value="" />
-        </p><p>
-          <label>passff.prefs.callmethod</label>
-          <input type="radio" id="pref_callType_shell"
-                 name="pref_callType" value="shell" />
-            <label>passff.prefs.shell_radio_label</label>
-          <input type="radio" id="pref_callType_direct"
-                 name="pref_callType" value="direct" />
-            <label>passff.prefs.direct_radio_label</label>
-        </p><p class="shell_radio">
-          <label>passff.prefs.shell_label</label>
-          <input type="text" id="pref_shell" value="" />
-        </p><p class="shell_radio">
-          <label>passff.prefs.shellArgs_label</label>
-          <input type="text" id="pref_shellArgs" value="" />
-        </p><p class="direct_radio">
-          <label>passff.prefs.gpg_agent_info_label</label>
-          <input type="text" id="pref_gpgAgentInfo" value="" />
-        </p><p class="direct_radio">
-          <label>passff.prefs.pass_dir_label</label>
-          <input type="text" id="pref_storeDir" value="" />
-        </p><p class="direct_radio">
-          <label>passff.prefs.pass_git_label</label>
-          <input type="text" id="pref_storeGit" value="" />
-        </p>
-      </fieldset>
+      <div class="tab">
+        <input type="radio" name="tab_radio" id="tab3">
+        <label for="tab3">passff.prefs.tab.script</label>
+        <fieldset>
+          <p>
+            <label>passff.prefs.home_label</label>
+            <input type="text" id="pref_home" value="" />
+          </p><p>
+            <label>passff.prefs.command_label</label>
+            <input type="text" id="pref_command" value="" />
+          </p><p>
+            <label>passff.prefs.commandArgs_label</label>
+            <input type="text" id="pref_commandArgs" value="" />
+          </p><p>
+            <label>passff.prefs.callmethod</label>
+            <input type="radio" id="pref_callType_shell"
+                   name="pref_callType" value="shell" />
+              <label>passff.prefs.shell_radio_label</label>
+            <input type="radio" id="pref_callType_direct"
+                   name="pref_callType" value="direct" />
+              <label>passff.prefs.direct_radio_label</label>
+          </p><p class="shell_radio">
+            <label>passff.prefs.shell_label</label>
+            <input type="text" id="pref_shell" value="" />
+          </p><p class="shell_radio">
+            <label>passff.prefs.shellArgs_label</label>
+            <input type="text" id="pref_shellArgs" value="" />
+          </p><p class="direct_radio">
+            <label>passff.prefs.gpg_agent_info_label</label>
+            <input type="text" id="pref_gpgAgentInfo" value="" />
+          </p><p class="direct_radio">
+            <label>passff.prefs.pass_dir_label</label>
+            <input type="text" id="pref_storeDir" value="" />
+          </p><p class="direct_radio">
+            <label>passff.prefs.pass_git_label</label>
+            <input type="text" id="pref_storeGit" value="" />
+          </p>
+        </fieldset>
+      </div>
+
+      <div class="tab">
+        <input type="radio" name="tab_radio" id="tab4">
+        <label for="tab4">passff.prefs.tab.adding</label>
+        <fieldset>
+          <p>
+            <label>passff.prefs.default_length_label</label>
+            <input type="text" id="pref_defaultPasswordLength" value="" />
+          </p><p>
+            <label>passff.prefs.default_include_symbols_label</label>
+            <input type="checkbox" id="pref_defaultIncludeSymbols" />
+          </p><p>
+            <label>passff.prefs.preferred_new_method_label</label>
+            <input type="checkbox" id="pref_preferInsert" />
+          </p>
+        </fieldset>
+      </div>
     </div>
 
     <script src="../modules/main.js"></script>

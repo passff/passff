@@ -28,6 +28,9 @@ PassFF.Preferences = (function() {
       callType              : 'direct',
       caseInsensitiveSearch : false,
       enterBehavior         : 0,
+      defaultPasswordLength : 16,
+      defaultIncludeSymbols : true,
+      preferInsert          : false,
     };
 
     return defaultParams;
@@ -186,6 +189,15 @@ PassFF.Preferences = (function() {
     },
     get enterBehavior() {
       return this._params.enterBehavior;
+    },
+    get defaultPasswordLength() {
+      return this._params.defaultPasswordLength;
+    },
+    get defaultIncludeSymbols() {
+      return this._params.defaultIncludeSymbols;
+    },
+    get preferInsert() {
+      return this._params.preferInsert;
     }
   };
 })();
