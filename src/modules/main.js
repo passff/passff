@@ -129,11 +129,13 @@ var PassFF = {
       .then((result) => {
         sendResponse({ response: result });
       });
+      return true;
     } else if (request.action == "Pass.generateNewPassword") {
       PassFF.Pass.generateNewPassword.apply(PassFF.Pass, request.params)
       .then((result) => {
         sendResponse({ response: result });
       });
+      return true;
     } else if (request.action == "Pass.isPasswordNameTaken") {
       sendResponse({
         response: PassFF.Pass.isPasswordNameTaken(request.params[0])
@@ -185,6 +187,7 @@ var PassFF = {
       }).then(() => {
         sendResponse();
       });
+      return true;
     }
   }
 };

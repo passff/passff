@@ -67,7 +67,9 @@ function makePasswordAdder(validations, errorsContainerId, getInput, addPassword
         }).then((result) => {
           if (result) {
             PassFF.bg_exec("refresh");
-            window.close();
+            browser.windows.getCurrent().then((win) => {
+              browser.windows.remove(win.id);
+            });
           } else if (result === false) {
             window.alert(
               _("errors.pass_execution_failed") + ":\n" + JSON.stringify(result)
