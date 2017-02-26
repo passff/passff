@@ -51,7 +51,7 @@
         <tab label="&tab.autofilling;"/>
         <tab label="&tab.fields;"/>
         <tab label="&tab.script;"/>
-        <tab label="&tab.adding;"/>
+        <!--tab label="&tab.adding;"/-->
       </tabs>
       <tabpanels>
         <tabpanel orient="vertical" align="center" id="tab-general">
@@ -234,15 +234,15 @@
               <column flex="5"/>
             </columns>
             <rows>
-              <row class="horizontal-pair" align="baseline">
+              <!--row class="horizontal-pair" align="baseline">
                 <label tooltiptext="&default_length_tooltip;" id="default-length-label" control="default-legnth" value="&default_length_label;"/>
                 <textbox tooltiptext="&default_length_tooltip;" id="default-length" preference="default-password-length" type="number"/>
-              </row>
-              <row class="horizontal-pair" align="baseline">
+              </row-->
+              <!--row class="horizontal-pair" align="baseline">
                 <label tooltiptext="&default_include_symbols_tooltip;" id="default-include-symbols-label" control="default-include-symbols" value="&default_include_symbols_label;"/>
                 <checkbox tooltiptext="&default_include_symbols_tooltip;" id="default-include-symbols" preference="default-include-symbols"/>
-              </row>
-              <row class="horizontal-pair" align="baseline">
+              </row-->
+              <!--row class="horizontal-pair" align="baseline">
                 <label tooltiptext="&preferred_new_method_tooltip;" id="preferred-new-method-label" control="preferred-new-method" value="&preferred_new_method_label;"/>
                 <menulist id="preferred-new-method" tooltiptext="&preferred_new_method_tooltip;" preference="prefer-insert">
                   <menupopup>
@@ -250,7 +250,7 @@
                     <menuitem label="&prefer_insert;" value="true"/>
                   </menupopup>
                 </menulist>
-              </row>
+              </row-->
             </rows>
           </grid>
         </tabpanel>
