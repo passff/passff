@@ -14,10 +14,13 @@ PassFF.Page = {
 
   processDoc: function(doc, passwordData, depth) {
     PassFF.Page.setInputs(doc, passwordData);
-    if (depth <= PassFF.Preferences.iframeSearchDepth) {
-      let iframes = doc.getElementsByTagName('iframe');
-      Array.prototype.slice.call(iframes).forEach(function(iframe) {
-        PassFF.Page.processDoc(iframe.contentDocument, passwordData, depth++);
+    if (depth <= PassFF.Preferences.subpageSearchDepth) {
+      let subpages = [
+          ...doc.getElementsByTagName('iframe'),
+          ...doc.getElementsByTagName('frame')
+      ];
+      Array.prototype.slice.call(subpages).forEach(function(subpages) {
+        PassFF.Page.processDoc(subpages.contentDocument, passwordData, depth++);
       });
     }
   },
