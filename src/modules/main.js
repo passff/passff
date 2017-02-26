@@ -27,14 +27,6 @@ function getActiveTab() {
          .then((tabs) => { return tabs[0]; });
 }
 
-function copyToClipboard(val) {
-  document.oncopy = function(event) {
-    event.clipboardData.setData("text/plain", val);
-    event.preventDefault();
-  };
-  document.execCommand("Copy", false, null);
-}
-
 var PassFF = {
   Ids: {
     panel: 'passff-panel',
@@ -125,6 +117,13 @@ var PassFF = {
     } else if (request.action == "Pass.getItemById") {
       let item = PassFF.Pass.getItemById(request.params[0]);
       sendResponse({ response: item.toObject(true) });
+    } else if (request.action == "Pass.getPasswordData") {
+      let item = PassFF.Pass.getItemById(request.params[0]);
+      PassFF.Pass.getPasswordData(item).then((passwordData) => {
+        log.debug("sending response");
+        sendResponse({ response: passwordData });
+      });
+      return true;
     } else if (request.action == "Pass.addNewPassword") {
       PassFF.Pass.addNewPassword.apply(PassFF.Pass, request.params)
       .then((result) => {
@@ -177,21 +176,6 @@ var PassFF = {
         return PassFF.Page.fillInputs(tb.id, item);
       }).then((tabId) => {
         if (andSubmit) PassFF.Page.submit(tabId);
-      });
-    } else if (request.action == "copyToClipboard") {
-      log.debug("bg: copy to clipboard");
-      let item = PassFF.Pass.getItemById(request.params[0]);
-      PassFF.Pass.getPasswordData(item).then((passwordData) => {
-        copyToClipboard(passwordData[request.params[1]]);
-      });
-    } else if (request.action == "displayItemData") {
-      let item = PassFF.Pass.getItemById(request.params[0]);
-      PassFF.Pass.getPasswordData(item).then((passwordData) => {
-        let login = passwordData.login;
-        let password = passwordData.password;
-        let title = PassFF.gsfm('passff.display.title');
-        let desc = PassFF.gsfm('passff.display.description', [login, password]);
-        PassFF.alert(title + "\n" + desc);
       });
     } else if (request.action == "openOptionsPage") {
       browser.runtime.openOptionsPage();

@@ -242,17 +242,31 @@ PassFF.Menu = {
   },
 
   onDisplayItemData: function(event) {
-    PassFF.bg_exec("displayItemData", PassFF.Menu.getItem(event.target));
-    window.close();
+    PassFF.bg_exec("Pass.getPasswordData", PassFF.Menu.getItem(event.target))
+    .then((passwordData) => {
+      let login = passwordData.login;
+      let password = passwordData.password;
+      let title = PassFF.gsfm('passff.display.title');
+      let desc = PassFF.gsfm('passff.display.description', [login, password]);
+      window.alert(title + "\n" + desc);
+    });
   },
 
   onCopyToClipboard: function(event) {
     event.stopPropagation();
 
     log.debug('copy to clipboard', event);
-    let item = PassFF.Menu.getItem(event.target);
-    PassFF.bg_exec("copyToClipboard", item, PassFF.Menu.getDataKey(event.target));
-    window.close();
+    var doc = event.target.ownerDocument;
+    var item = PassFF.Menu.getItem(event.target);
+    var dataKey = PassFF.Menu.getDataKey(event.target);
+    PassFF.bg_exec("Pass.getPasswordData", item)
+    .then((passwordData) => {
+      let field = doc.getElementById("clipboardField");
+      field.value = passwordData[dataKey];
+      field.select();
+      doc.execCommand("copy", false, null);
+      window.close();
+    });
   },
 
   clearMenuList: function(doc) {
