@@ -41,7 +41,6 @@ PassFF.Preferences = (function() {
     _params: getDefaultParams(),
     init: function(bgmode) {
       for (let [key, val] in Iterator(PassFF.Preferences._params)) {
-      log.error("aaaaa ", key, val)
         browser.storage.local.get(key).then(((res) => {
           if (typeof res[key] === "undefined") {
             let obj = {}; obj[key] = val;
@@ -84,7 +83,6 @@ PassFF.Preferences = (function() {
     },
 
     get passwordInputNames() {
-      log.error("aaaaa ")
       return this._params.passwordInputNames.split(',');
     },
 

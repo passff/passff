@@ -167,6 +167,7 @@ PassFF.Pass = {
       PassFF.Pass.setLogin(result, item);
       PassFF.Pass.setPassword(result);
       PassFF.Pass.setOther(result);
+      PassFF.Pass.setText(result, executionResult.stdout);
       return result;
       });
     } else { // hierarchical-style item
@@ -225,6 +226,10 @@ PassFF.Pass = {
       other[key] = passwordData[key];
     });
     passwordData._other = other;
+  },
+
+  setText: function(passwordData, fullText) {
+    passwordData.fullText = output;
   },
 
   isLoginField: function(name) {
