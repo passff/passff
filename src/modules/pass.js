@@ -229,7 +229,7 @@ PassFF.Pass = {
   },
 
   setText: function(passwordData, fullText) {
-    passwordData.fullText = output;
+    passwordData.fullText = fullText;
   },
 
   isLoginField: function(name) {

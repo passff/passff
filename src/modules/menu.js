@@ -241,12 +241,7 @@ PassFF.Menu = {
   onDisplayItemData: function(event) {
     PassFF
       .bg_exec('Pass.getPasswordData', PassFF.Menu.getItem(event.target))
-      .then((passwordData) => {
-        let fullText = passwordData.fullText;
-        let title = PassFF.gsfm('passff.display.title');
-        let desc = PassFF.gsfm('passff.display.description', fullText);
-        window.alert(title + "\n" + desc);
-      });
+      .then((passwordData) => window.alert(passwordData.fullText));
   },
 
   onCopyToClipboard: function(event) {
