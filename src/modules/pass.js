@@ -1,16 +1,12 @@
 /* jshint node: true */
 'use strict';
 
-Cu.importGlobalProperties(['URL']);
-
-let env = Components.classes["@mozilla.org/process/environment;1"].
-          getService(Components.interfaces.nsIEnvironment);
-
-let Item = function(depth, key, parent) {
+let Item = function(depth, key, parent, id) {
   this.children = [];
   this.depth = depth;
   this.key = key.replace(/\.gpg$/, '');
   this.parent = parent;
+  this.id = id;
 };
 
 Item.prototype.isLeaf = function() {
@@ -39,32 +35,49 @@ Item.prototype.fullKey = function() {
   return fullKey;
 };
 
+Item.prototype.toObject = function(export_children) {
+  let children = [];
+  if (export_children) {
+    children = this.children.map(function (c) { return c.toObject(false); });
+  }
+  return {
+    id: this.id,
+    parent: (this.parent === null) ? null : this.parent.toObject(false),
+    isLeaf: this.isLeaf(),
+    isField: this.isField(),
+    hasFields: this.hasFields(),
+    fullKey: this.fullKey(),
+    children: children
+  };
+};
+
 PassFF.Pass = {
   _items: [],
   _rootItems: [],
-  _promptService: Cc['@mozilla.org/embedcomp/prompt-service;1']
-                 .getService(Components.interfaces.nsIPromptService),
   _stringBundle: null,
 
+  env: {
+    _environment: {},
+    exists: function (key) { return this._environment.hasOwnProperty(key); },
+    get: function (key) {
+      if (this.exists(key)) return this._environment[key];
+      else return "";
+    }
+  },
+
+  init_env: function () {
+    return browser.runtime.sendNativeMessage("passff", { command: "env" })
+      .then((result) => { PassFF.Pass.env._environment = result; });
+  },
+
   init: function() {
-    subprocess.registerDebugHandler(function(m) {
-      log.debug('[subprocess]', m);
+    return this.init_env().then(() => {
+      return PassFF.Pass.initItems();
     });
-    subprocess.registerLogHandler(function(m) {
-      log.error('[subprocess]', m);
-    });
-
-    this.initItems();
-
-    let stringBundleService = Cc['@mozilla.org/intl/stringbundle;1']
-                             .getService(Ci.nsIStringBundleService);
-
-    this._stringBundle = stringBundleService
-                        .createBundle('chrome://passff/locale/strings.properties');
   },
 
   initItems: function() {
-    let result = this.executePass([]);
+    return this.executePass([]).then(((result) => {
     if (result.exitCode !== 0) {
       return;
     }
@@ -96,7 +109,7 @@ PassFF.Pass = {
         curParent = curParent.parent;
       }
 
-      let item = new Item(curDepth, key, curParent);
+      let item = new Item(curDepth, key, curParent, this._items.length);
 
       if (curParent !== null) {
         curParent.children.push(item);
@@ -110,6 +123,7 @@ PassFF.Pass = {
       }
     }
     log.debug('Found Items', this._rootItems);
+    }).bind(this));
   },
 
   getPasswordData: function(item) {
@@ -117,7 +131,7 @@ PassFF.Pass = {
 
     if (item.isLeaf()) { // multiline-style item
       let args = [item.fullKey()];
-      let executionResult = this.executePass(args);
+      return this.executePass(args).then((executionResult) => {
       let gpgDecryptFailed = executionResult.stderr
                              .indexOf('gpg: decryption failed: No secret key') >= 0;
 
@@ -125,7 +139,7 @@ PassFF.Pass = {
         let title = PassFF.gsfm('passff.passphrase.title');
         let desc = PassFF.gsfm('passff.passphrase.description');
 
-        if (!PassFF.Pass._promptService.confirm(null, title, desc)) {
+        if (!window.confirm(title + "\n" + desc)) {
           return;
         }
 
@@ -149,19 +163,32 @@ PassFF.Pass = {
           result[attributeName] = attributeValue.trim();
         }
       }
+
+      PassFF.Pass.setLogin(result, item);
+      PassFF.Pass.setPassword(result);
+      PassFF.Pass.setOther(result);
+      return result;
+      });
     } else { // hierarchical-style item
       item.children.forEach(function(child) {
         if (child.isField()) {
           result[child.key] = PassFF.Pass.getPasswordData(child).password;
         }
       });
+      return Promise.all(result).then(function (results) {
+      let result = {};
+      for (let i = 0; i < item.children.length; i++) {
+        let child = item.children[i];
+        if (child.isField()) {
+          result[child.key] = results[i].password;
+        }
+      }
+      PassFF.Pass.setLogin(result, item);
+      PassFF.Pass.setPassword(result);
+      PassFF.Pass.setOther(result);
+      return result;
+      });
     }
-
-    PassFF.Pass.setLogin(result, item);
-    PassFF.Pass.setPassword(result);
-    PassFF.Pass.setOther(result);
-
-    return result;
   },
 
   setPassword: function(passwordData) {
@@ -368,42 +395,35 @@ PassFF.Pass = {
     return leafs;
   },
 
-
   isPasswordNameTaken: function(name) {
+    name = name.replace(/^\//, '');
     for (let item of this._items) {
       if (item.fullKey() === name) {
+        log.debug("Password name " + name + " already taken.");
         return true;
       }
     }
     return false;
   },
 
-  addNewPassword: function(name, password, additionalInfo, onSuccess, onError) {
+  addNewPassword: function(name, password, additionalInfo) {
     let fileContents = [password, additionalInfo].join('\n');
-    let result = this.executePass(['insert', '-m', name], {
-      stdin: function(stdin) {
-        stdin.write(password + '\n' + additionalInfo + '\n');
-        stdin.close();
-      }
+    return this.executePass(['insert', '-m', name], {
+      stdin: password + '\n' + additionalInfo + '\n'
+    }).then((result) => {
+      return result.exitCode === 0;
     });
-    if (result.exitCode === 0) {
-      onSuccess();
-    } else {
-      onError(result);
-    }
   },
 
-  generateNewPassword: function(name, length, includeSymbols, onSuccess, onError) {
+  generateNewPassword: function(name, length, includeSymbols) {
     let args = ['generate', name, length.toString()];
     if (!includeSymbols) {
       args.push('-n');
     }
-    let result = this.executePass(args);
-    if (result.exitCode === 0) {
-      onSuccess();
-    } else {
-      onError(result);
-    }
+    return this.executePass(args).then((result) => {
+      log.debug(result);
+      return result.exitCode === 0;
+    });
   },
 
   executePass: function(args, subprocessOverrides) {
@@ -414,7 +434,7 @@ PassFF.Pass = {
 
     if (PassFF.Preferences.callType == 'direct') {
       command = PassFF.Preferences.command;
-      environment = environment.concat(this.getDirectEnvParams());
+      Object.assign(environment, this.getDirectEnvParams());
       PassFF.Preferences.commandArgs.forEach(function(val) {
         if (val && val.trim().length > 0) {
           scriptArgs.push(val);
@@ -449,56 +469,59 @@ PassFF.Pass = {
       arguments: scriptArgs,
       environment: environment,
       charset: 'UTF-8',
-      mergeStderr: false,
-      done: function(data) {
-        result = data;
-      }
+      mergeStderr: false
     };
 
     Object.assign(params, subprocessOverrides);
 
     log.debug('Execute pass', params);
-    try {
-      let p = subprocess.call(params);
-      p.wait();
+    return browser.runtime.sendNativeMessage("passff", params).then((result) => {
       if (result.exitCode !== 0) {
         log.warn('pass execution failed', result.exitCode, result.stderr, result.stdout);
       } else {
         log.info('pass script execution ok');
       }
-    } catch (ex) {
-      PassFF.Pass._promptService.alert(null, 'Error executing pass script', ex.message);
+      return result;
+    }, (ex) => {
       log.error('Error executing pass script', ex);
-      result = { exitCode: -1 };
-    }
-    return result;
+      PassFF.alert('Error executing pass script' + "\n" + ex.message);
+      return { exitCode: -1 };
+    });
   },
 
   getEnvParams: function() {
-    return [
-      'HOME=' + PassFF.Preferences.home,
-      'DISPLAY=' + (env.exists('DISPLAY') ? env.get('DISPLAY') : ':0.0'),
-      'TREE_CHARSET=ISO-8859-1',
-      'GNUPGHOME=' + PassFF.Preferences.gnupgHome
-    ];
+    return {
+      'HOME': PassFF.Preferences.home,
+      'DISPLAY': (PassFF.Pass.env.exists('DISPLAY') ? PassFF.Pass.env.get('DISPLAY') : ':0.0'),
+      'TREE_CHARSET': 'ISO-8859-1',
+      'GNUPGHOME': PassFF.Preferences.gnupgHome
+    };
   },
 
   getDirectEnvParams: function() {
-    var params = ['PATH=' + PassFF.Preferences.path];
+    var params = { 'PATH': PassFF.Preferences.path };
 
     if (PassFF.Preferences.storeDir.trim().length > 0) {
-      params.push('PASSWORD_STORE_DIR=' + PassFF.Preferences.storeDir);
+      params['PASSWORD_STORE_DIR'] = PassFF.Preferences.storeDir;
     }
 
     if (PassFF.Preferences.storeGit.trim().length > 0) {
-      params.push('PASSWORD_STORE_GIT=' + PassFF.Preferences.storeGit);
+      params['PASSWORD_STORE_GIT'] = PassFF.Preferences.storeGit;
     }
 
     if (PassFF.Preferences.gpgAgentEnv !== null) {
-      params = params.concat(PassFF.Preferences.gpgAgentEnv);
+      Object.assign(params, PassFF.Preferences.gpgAgentEnv);
     }
 
     return params;
+  },
+
+  getItemById: function (id) {
+    if (id >= this._items.length) {
+      return null;
+    } else {
+      return this._items[id];
+    }
   },
 
   get rootItems() {

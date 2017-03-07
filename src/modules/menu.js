@@ -7,67 +7,55 @@
 PassFF.Menu = {
   _currentMenuIndex: null,
   _stringBundle: null,
-  _promptService: Cc['@mozilla.org/embedcomp/prompt-service;1']
-                 .getService(Components.interfaces.nsIPromptService),
+
+  init: function () {
+    let doc = document;
+    PassFF.Menu.createStaticMenu(doc);
+  },
 
   createStaticMenu: function(doc) {
-    let panel = doc.createElement('panelview');
+    let panel = doc.querySelector("body")
     panel.setAttribute('id', PassFF.Ids.panel);
 
-    let searchBox = doc.createElement('textbox');
+    let searchBox = doc.querySelector(".searchbar input[type=text]");
     searchBox.setAttribute('id', PassFF.Ids.searchbox);
     searchBox.setAttribute('placeholder',
                                PassFF.gsfm('passff.toolbar.search.placeholder'));
-    searchBox.setAttribute('clickSelectsAll', 'true');
+    searchBox.addEventListener("click", function (e) { e.target.select(); });
     searchBox.addEventListener('keypress', PassFF.Menu.onSearchKeypress);
     searchBox.addEventListener('keyup', PassFF.Menu.onSearchKeyup);
 
-    let showAllButton = doc.createElement('button');
+    let showAllButton = doc.querySelector(".results button:first-child");
     showAllButton.setAttribute('id', PassFF.Ids.rootbutton);
-    showAllButton.setAttribute('label', PassFF.gsfm('passff.button.root.label'));
-    showAllButton.addEventListener('command', PassFF.Menu.onRootButtonCommand);
+    showAllButton.textContent = PassFF.gsfm('passff.button.root.label');
+    showAllButton.addEventListener('click', PassFF.Menu.onRootButtonCommand);
 
-    let showMatchingButton = doc.createElement('button');
+    let showMatchingButton = doc.querySelector(".results button:first-child + button");
     showMatchingButton.setAttribute('id', PassFF.Ids.contextbutton);
-    showMatchingButton.setAttribute('label', PassFF.gsfm('passff.button.context.label'));
-    showMatchingButton.addEventListener('command', PassFF.Menu.onContextButtonCommand);
+    showMatchingButton.textContent = PassFF.gsfm('passff.button.context.label');
+    showMatchingButton.addEventListener('click', PassFF.Menu.onContextButtonCommand);
 
-    let showButtonsBox = doc.createElement('hbox');
-    showButtonsBox.setAttribute('id', PassFF.Ids.buttonsbox);
-    showButtonsBox.appendChild(showAllButton);
-    showButtonsBox.appendChild(showMatchingButton);
-
-    let entryList = doc.createElement('richlistbox');
+    let entryList = doc.querySelector(".results select");
     entryList.setAttribute('id', PassFF.Ids.entrieslist);
     entryList.addEventListener('keydown', PassFF.Menu.onListItemkeydown);
     entryList.addEventListener('keyup', PassFF.Menu.onListItemkeyup);
 
-    let refreshButton = doc.createElement('button');
+    let refreshButton = doc.querySelector(".options button:first-child");
     refreshButton.setAttribute('id', PassFF.Ids.refreshmenuitem);
-    refreshButton.setAttribute('label', PassFF.gsfm('passff.toolbar.refresh.label'));
+    refreshButton.textContent = PassFF.gsfm('passff.toolbar.refresh.label');
     refreshButton.addEventListener('click', PassFF.Menu.onRefresh);
 
-    let prefsButton = doc.createElement('button');
+    let prefsButton = doc.querySelector(".options button:first-child + button");
     prefsButton.setAttribute('id', PassFF.Ids.prefsmenuitem);
-    prefsButton.setAttribute('label', PassFF.gsfm('passff.toolbar.preferences.label'));
+    prefsButton.textContent = PassFF.gsfm('passff.toolbar.preferences.label');
     prefsButton.addEventListener('click', PassFF.Menu.onPreferences);
 
-    let newPasswordButton = doc.createElement('button');
+    let newPasswordButton = doc.querySelector(".options button:last-child");
     newPasswordButton.setAttribute('id', PassFF.Ids.newpasswordmenuitem);
-    newPasswordButton.setAttribute('label', PassFF.gsfm('passff.toolbar.new_password.label'));
+    newPasswordButton.textContent = PassFF.gsfm('passff.toolbar.new_password.label');
     newPasswordButton.addEventListener('click', PassFF.Menu.onNewPassword);
 
-    let lowerButtonsBox = doc.createElement('hbox');
-    lowerButtonsBox.appendChild(refreshButton);
-    lowerButtonsBox.appendChild(prefsButton);
-    lowerButtonsBox.appendChild(newPasswordButton);
-
-    panel.appendChild(searchBox);
-    panel.appendChild(doc.createElement('menuseparator'));
-    panel.appendChild(showButtonsBox);
-    panel.appendChild(entryList);
-    panel.appendChild(doc.createElement('menuseparator'));
-    panel.appendChild(lowerButtonsBox);
+    PassFF.Menu.createContextualMenu(doc);
 
     return panel;
   },
@@ -93,7 +81,6 @@ PassFF.Menu = {
           item = item.nextSibling;
         }
 
-        listElm.selectItem(item);
         item.selected = true;
       }
 
@@ -115,8 +102,10 @@ PassFF.Menu = {
     }
 
     let doc = event.target.ownerDocument;
-    let matchingItems = PassFF.Pass.getMatchingItems(event.target.value, 6);
-    PassFF.Menu.createItemsMenuList(doc, matchingItems);
+    PassFF.bg_exec("Pass.getMatchingItems", event.target.value, 6)
+    .then((matchingItems) => {
+        PassFF.Menu.createItemsMenuList(doc, matchingItems);
+    });
   },
 
   onListItemkeydown: function(event) {
@@ -142,25 +131,27 @@ PassFF.Menu = {
     let listElm = doc.getElementById(PassFF.Ids.entrieslist);
 
     if (event.keyCode == 13) {
-      if (listElm.selectedItem.onEnterPress) {
-        listElm.selectedItem.onEnterPress(event);
+      if (listElm.selectedIndex < 0) {
+        return;
+      } else if (listElm[listElm.selectedIndex].onEnterPress) {
+        listElm[listElm.selectedIndex].onEnterPress(event);
       } else {
-        listElm.selectedItem.click();
+        listElm[listElm.selectedIndex].click();
       }
     } else if (event.keyCode == 39) {
-      let item = PassFF.Menu.getItem(listElm.selectedItem);
-      let doc = event.target.ownerDocument;
+      let item = PassFF.Menu.getItem(listElm[listElm.selectedIndex]);
       PassFF.Menu.createItemMenuList(doc, item);
     } else if (event.keyCode == 37) {
-      let doc = event.target.ownerDocument;
       let item = PassFF.Menu.getItem(listElm.firstChild);
       if (item) {
         PassFF.Menu.createItemMenuList(doc, item);
       } else {
-        PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.rootItems);
+        PassFF.bg_exec("Pass.rootItems").then((rootItems) => {
+          PassFF.Menu.createItemsMenuList(doc, rootItems);
+        });
       }
-    } else if (event.keyCode != 40 && event.keyCode != 38) {
-      event.target.ownerDocument.getElementById(PassFF.Ids.searchbox).focus();
+    } else if (!event.shiftKey && event.keyCode != 40 && event.keyCode != 38) {
+      doc.getElementById(PassFF.Ids.searchbox).focus();
     }
   },
 
@@ -169,66 +160,62 @@ PassFF.Menu = {
     let doc = event.target.ownerDocument;
     let item = PassFF.Menu.getItem(event.target);
 
-    if (item) {
+    if (item !== null) {
       PassFF.Menu.createItemMenuList(doc, item);
     } else {
-      PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.rootItems);
+      PassFF.bg_exec("Pass.rootItems").then((rootItems) => {
+        PassFF.Menu.createItemsMenuList(doc, rootItems);
+      });
     }
   },
 
   onContextButtonCommand: function(event) {
     log.debug('Context button command', event);
-    PassFF.Menu.createContextualMenu(event.target.ownerDocument,
-                                     event.target.ownerGlobal.content.location.href);
+    PassFF.Menu.createContextualMenu(event.target.ownerDocument);
   },
 
   onRootButtonCommand: function(event) {
     log.debug('Root button command', event);
     let doc = event.target.ownerDocument;
-    PassFF.Menu.createItemsMenuList(doc, PassFF.Pass.rootItems);
+    PassFF.bg_exec("Pass.rootItems").then((rootItems) => {
+      PassFF.Menu.createItemsMenuList(doc, rootItems);
+    });
   },
 
   onRefresh: function(event) {
     log.debug('Refresh', event);
     (function() { PassFF.Preferences.init(); }).apply(PassFF.Preferences);
-    (function() { PassFF.Pass.init(); }).apply(PassFF.Pass);
-
-    PassFF.Menu.createContextualMenu(event.target.ownerDocument,
-                                     event.target.ownerGlobal.content.location.href);
+    PassFF.bg_exec("refresh").then(() => {
+      PassFF.Menu.createContextualMenu(event.target.ownerDocument);
+    });
   },
 
   onPreferences: function(event) {
-    event.target.ownerGlobal.openDialog('chrome://passff/content/preferencesWindow.xul',
-                                        'passff-preferences-window',
-                                        'chrome,titlebar,toolbar,modal');
+    PassFF.bg_exec("openOptionsPage");
+    window.close()
   },
 
   onNewPassword: function(event) {
-    let refreshFn = function() {
-      PassFF.Menu.onRefresh(event);
-    };
-    event.target.ownerGlobal.openDialog('chrome://passff/content/newPasswordWindow.xul',
-                                        'passff-new-password-window',
-                                        'chrome,titlebar,toolbar,modal',
-                                        PassFF.Pass,
-                                        refreshFn);
+    browser.windows.create({
+      "url": browser.extension.getURL("content/newPasswordWindow.html"),
+      "width": 450,
+      "height": 330,
+      "type": "popup"
+    });
+    window.close();
   },
 
   onAutoFillMenuClick: function(event) {
     event.stopPropagation();
-
-    CustomizableUI.hidePanelForNode(event.target);
-    PassFF.Page.fillInputs(event.target.ownerGlobal.content.document,
-                           PassFF.Menu.getItem(event.target));
+    PassFF.bg_exec("Page.fillInputs", PassFF.Menu.getItem(event.target), false);
+    window.close();
   },
 
   onAutoFillAndSubmitMenuClick: function(event) {
     event.stopPropagation();
 
-    CustomizableUI.hidePanelForNode(event.target);
-    let doc = event.target.ownerGlobal.content.document;
-    PassFF.Page.fillInputs(doc, PassFF.Menu.getItem(event.target));
-    PassFF.Page.submit(doc, event.target.ownerGlobal.content.location.href);
+    PassFF.bg_exec("Page.fillInputs", PassFF.Menu.getItem(event.target), true);
+    window.close();
   },
 
   onGoto: function(event) {
@@ -236,8 +223,8 @@ PassFF.Menu = {
 
     let item = PassFF.Menu.getItem(event.target);
     log.debug('Goto item url', item);
-    CustomizableUI.hidePanelForNode(event.target);
-    PassFF.Menu.goToItemUrl(item, event.button !== 0, false, false);
+    PassFF.bg_exec("Page.goToItemUrl", item, event.button !== 0, false, false);
+    window.close();
   },
 
   onGotoAutoFillAndSubmitMenuClick: function(event) {
@@ -245,46 +232,36 @@ PassFF.Menu = {
 
     let item = PassFF.Menu.getItem(event.target);
     log.debug('Goto item url fill and submit', item);
-    CustomizableUI.hidePanelForNode(event.target);
-    PassFF.Menu.goToItemUrl(item, event.button !== 0, true, true);
+    PassFF.bg_exec("Page.goToItemUrl", item, event.button !== 0, true, true);
+    window.close();
   },
 
   onDisplayItemData: function(event) {
-    CustomizableUI.hidePanelForNode(event.target);
-    let item = PassFF.Menu.getItem(event.target);
-    let passwordData = PassFF.Pass.getPasswordData(item);
-    let login = passwordData.login;
-    let password = passwordData.password;
-    let url = (passwordData.url) ? passwordData.url : '';
-    let title = PassFF.gsfm('passff.display.title');
-    let desc = PassFF.gsfm('passff.display.description', [login, password, url], 2);
-    PassFF.Menu._promptService.alert(null, title, desc);
+    PassFF.bg_exec("Pass.getPasswordData", PassFF.Menu.getItem(event.target))
+    .then((passwordData) => {
+      let login = passwordData.login;
+      let password = passwordData.password;
+      let title = PassFF.gsfm('passff.display.title');
+      let desc = PassFF.gsfm('passff.display.description', [login, password]);
+      window.alert(title + "\n" + desc);
+    });
   },
 
   onCopyToClipboard: function(event) {
     event.stopPropagation();
 
     log.debug('copy to clipboard', event);
-    CustomizableUI.hidePanelForNode(event.target);
-
-    let str = Cc['@mozilla.org/supports-string;1']
-              .createInstance(Ci.nsISupportsString);
-
-    let trans = Cc['@mozilla.org/widget/transferable;1']
-                .createInstance(Ci.nsITransferable);
-
-    let clip = Cc['@mozilla.org/widget/clipboard;1']
-               .getService(Ci.nsIClipboard);
-
-    let item = PassFF.Menu.getItem(event.target);
-    let passwordData = PassFF.Pass.getPasswordData(item);
-
-    str.data = passwordData[PassFF.Menu.getDataKey(event.target)];
-
-    trans.addDataFlavor('text/unicode');
-    trans.setTransferData('text/unicode', str, str.data.length * 2);
-
-    clip.setData(trans, null, Ci.nsIClipboard.kGlobalClipboard);
+    var doc = event.target.ownerDocument;
+    var item = PassFF.Menu.getItem(event.target);
+    var dataKey = PassFF.Menu.getDataKey(event.target);
+    PassFF.bg_exec("Pass.getPasswordData", item)
+    .then((passwordData) => {
+      let field = doc.getElementById("clipboardField");
+      field.value = passwordData[dataKey];
+      field.select();
+      doc.execCommand("copy", false, null);
+      window.close();
+    });
   },
 
   clearMenuList: function(doc) {
@@ -295,14 +272,15 @@ PassFF.Menu = {
     PassFF.Menu._currentMenuIndex = 0;
   },
 
-  createItemMenuList: function(doc, item) {
+  createItemMenuList: function(doc, item_id) {
+    PassFF.bg_exec("Pass.getItemById", item_id).then((item) => {
     log.debug('Create item menu', item);
 
     PassFF.Menu.clearMenuList(doc);
-    if (item.hasFields() || item.isLeaf()) {
+    if (item.hasFields || item.isLeaf) {
       PassFF.Menu.createLeafMenuList(doc, item);
     }
-    if (!item.isLeaf()) {
+    if (!item.isLeaf) {
       PassFF.Menu.createItemsMenuList(doc, item.children, false);
     }
 
@@ -310,15 +288,20 @@ PassFF.Menu = {
     let newItem = PassFF.Menu.createMenuItem(doc, item.parent, '..',
                                              PassFF.Menu.onListItemSelected);
     listElm.insertBefore(newItem, listElm.firstChild);
+    });
   },
 
-  createContextualMenu: function(doc, url) {
-    log.debug('createContextualMenu', url);
-    let items = PassFF.Pass.getUrlMatchingItems(url);
-    if (items.length === 0) {
-      items = PassFF.Pass.rootItems;
+  createContextualMenu: function(doc) {
+    if (doc === null) {
+        doc = document;
     }
-    PassFF.Menu.createItemsMenuList(doc, items);
+    log.debug('createContextualMenu');
+    return PassFF.bg_exec("Pass.getUrlMatchingItems").then((items) => {
+      PassFF.Menu.createItemsMenuList(doc, items);
+
+      let searchInput = doc.querySelector("input[type='text']");
+      searchInput.focus();
+    });
   },
 
   createItemsMenuList: function(doc, items, cleanMenu) {
@@ -331,39 +314,20 @@ PassFF.Menu = {
     let listElm = doc.getElementById(PassFF.Ids.entrieslist);
 
     items.forEach(function(item) {
-      if (item.isField()) {
+      if (item.isField) {
         return;
       }
 
       let onEnter = null;
-      if (item.isLeaf() || item.hasFields()) {
+      if (item.isLeaf || item.hasFields) {
         onEnter = function(event) {
-          CustomizableUI.hidePanelForNode(event.target);
-          let doc = event.target.ownerGlobal.content.document;
-          switch (PassFF.Preferences.enterBehavior){
-            case 0:
-              //goto url, fill, submit
-              PassFF.Menu.goToItemUrl(PassFF.Menu.getItem(this), event.shiftKey, true, true);
-              break;
-            case 1:
-              //goto url, fill
-              PassFF.Menu.goToItemUrl(PassFF.Menu.getItem(this), event.shiftKey, true, false);
-              break;
-            case 2:
-              //fill, submit
-              PassFF.Page.fillInputs(doc, PassFF.Menu.getItem(this));
-              PassFF.Page.submit(doc, event.target.ownerGlobal.content.location.href);
-              break;
-            case 3:
-              //fill
-              PassFF.Page.fillInputs(doc, PassFF.Menu.getItem(this));
-              break;
-          }
+          PassFF.bg_exec("Menu.onEnter", PassFF.Menu.getItem(this), event.shiftKey);
+          window.close();
         };
       }
 
-      let label = item.fullKey();
-      if (label != '..' && !item.isLeaf()) {
+      let label = item.fullKey;
+      if (label != '..' && !item.isLeaf) {
         label += '/';
       }
 
@@ -394,74 +358,18 @@ PassFF.Menu = {
   },
 
   createMenuItem: function(doc, item, label, onClick, attribute, onEnterPress) {
-    let descElm = doc.createElement('label');
-    descElm.setAttribute('id', PassFF.Ids.menu + 'label' +
-                               PassFF.Menu._currentMenuIndex);
-    descElm.setAttribute('value', label);
-
-    let xulName = doc.createElement('hbox');
-    xulName.setAttribute('id', PassFF.Ids.menu + 'hbox' + PassFF.Menu._currentMenuIndex);
-    xulName.appendChild(descElm);
-
-    let listItemElm = doc.createElement('richlistitem');
+    let listItemElm = doc.createElement('option');
     listItemElm.setAttribute('id', PassFF.Ids.menu + 'richlistitem' +
                                    PassFF.Menu._currentMenuIndex);
-    listItemElm.item = item;
+    listItemElm.item = (item === null) ? null : item.id;
     listItemElm.dataKey = attribute;
     listItemElm.addEventListener('click', onClick);
 
     listItemElm.onEnterPress = onEnterPress;
-    listItemElm.appendChild(xulName);
+    listItemElm.textContent = label;
 
     PassFF.Menu._currentMenuIndex++;
     return listItemElm;
-  },
-
-  goToItemUrl: function(item, newTab, autoFill, submit) {
-    if (!item) {
-      return;
-    }
-
-    log.debug('go to item url', item, newTab, autoFill, submit);
-    let passwordData = PassFF.Pass.getPasswordData(item);
-    let url = passwordData.url;
-
-    if (!url) {
-      url = item.key;
-    }
-
-    if (!url.startsWith('http')) {
-      url = 'http://' + url;
-    }
-
-    let window = Services.wm.getMostRecentWindow('navigator:browser');
-    if (newTab) {
-      window.gBrowser.selectedTab = window.gBrowser.addTab(url);
-    } else {
-      window.content.location.href = url;
-    }
-
-    if (!autoFill) {
-      return;
-    }
-
-    PassFF.Page.autoFillAndSubmitPending = true;
-    let currentTab = window.gBrowser.getBrowserForTab(window.gBrowser.selectedTab);
-
-    currentTab.addEventListener('load', function load(event) {
-      log.info('Start auto-fill');
-
-      currentTab.removeEventListener('load', load, true);
-      PassFF.Page.autoFillAndSubmitPending = false;
-
-      let doc = event.originalTarget;
-      PassFF.Page.fillInputs(doc, item);
-
-      if (submit) {
-        log.info('Start submit');
-        PassFF.Page.submit(doc, url);
-      }
-    }, true);
   },
 
   getDataKey: function(node) {

@@ -1,0 +1,7 @@
+{
+  "name": "passff",
+  "description": "Host for communicating with zx2c4 pass",
+  "path": "PLACEHOLDER",
+  "type": "stdio",
+  "allowed_extensions": [ "passff@invicem.pro" ]
+}

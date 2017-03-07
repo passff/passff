@@ -1,0 +1,198 @@
+{
+  "passff.passphrase.title": {
+    "message": "Репозитарий паролей заблокирован"
+  },
+  "passff.passphrase.description": {
+    "message": "Нет доступа к паролю.\n Сначала добавьте пароль в gpg-agent."
+  },
+  "passff.menu.copy_password": {
+    "message": "Копировать пароль"
+  },
+  "passff.menu.copy_login": {
+    "message": "Копировать логин"
+  },
+  "passff.menu.fill": {
+    "message": "Заполнить"
+  },
+  "passff.menu.fill_and_submit": {
+    "message": "Заполнить и отправить"
+  },
+  "passff.menu.goto_fill_and_submit": {
+    "message": "Перейти, заполнить и отправить"
+  },
+  "passff.menu.goto": {
+    "message": "Перейти"
+  },
+  "passff.menu.display": {
+    "message": "Отобразить"
+  },
+  "passff.display.title": {
+    "message": "Логин/Пароль"
+  },
+  "passff.display.description": {
+    "message": "Логин: $LOGIN$\n Пароль: $PASSWORD$",
+    "placeholders": {
+        "login": { "content": "$1" },
+        "password": { "content": "$2" }
+    }
+  },
+  "passff.toolbar.button.label": {
+    "message": "PassFF"
+  },
+  "passff.toolbar.search.placeholder": {
+    "message": "Поиск"
+  },
+  "passff.toolbar.refresh.label": {
+    "message": "Обновить"
+  },
+  "passff.toolbar.preferences.label": {
+    "message": "Настройки"
+  },
+  "passff.button.root.label": {
+    "message": "Показать все"
+  },
+  "passff.button.context.label": {
+    "message": "Показать совпадения"
+  },
+  "passff.prefs.tab.general": {
+    "message": "Общие"
+  },
+  "passff.prefs.tab.autofilling": {
+    "message": "Автозаполнение"
+  },
+  "passff.prefs.tab.fields": {
+    "message": "Поля"
+  },
+  "passff.prefs.tab.script": {
+    "message": "Скрипт pass"
+  },
+  "passff.prefs.case-insensitive-search": {
+    "message": "Поиск без учета регистра"
+  },
+  "passff.prefs.case-insensitive-search-tooltip": {
+    "message": "Строчные и прописные буквы будут считатся одинаковыми при поиске файлов с паролями"
+  },
+  "passff.prefs.fields_description": {
+    "message": "Поля которые используются для поиска данных в вашем репозитарии паролей. PassFF пытается найти логин, пароль и адреса сайтов в файлах с паролями (испольуя стандартный синтаксис)."
+  },
+  "passff.prefs.password_input_names_label": {
+    "message": "Имена полей для паролей"
+  },
+  "passff.prefs.password_input_names_tooltip": {
+    "message": "Список имен разделенных запятой. Поля с html-атрибутом 'name' равным одному из значений из этого списка будут заполнены паролями"
+  },
+  "passff.prefs.login_input_names_label": {
+    "message": "Имена полей для логинов"
+  },
+  "passff.prefs.login_input_names_tooltip": {
+    "message": "Список имен разделенных запятой. Поля с html-атрибутом 'name' равным одному из значений из этого списка будут заполнены логинами"
+  },
+  "passff.prefs.login_field_names_label": {
+    "message": "Имена полей для логинов"
+  },
+  "passff.prefs.login_field_names_tooltip": {
+    "message": "Список имен разделенных запятой. Содержимое первого найденого поля будет использоватся в качесте логина"
+  },
+  "passff.prefs.password_field_names_label": {
+    "message": "Имена полей для паролей"
+  },
+  "passff.prefs.password_field_names_tooltip": {
+    "message": "Список имен разделенных запятой. Содержимое первого найденого поля будет использоватся в качесте пароля"
+  },
+  "passff.prefs.url_field_names_label": {
+    "message": "Имена полей для адресов сайтов"
+  },
+  "passff.prefs.url_field_names_tooltip": {
+    "message": "Список имен разделенных запятой. Содержимое первого найденого поля будет использоватся в качесте адреса сайта"
+  },
+  "passff.prefs.command_label": {
+    "message": "Команда для запуска pass"
+  },
+  "passff.prefs.command_tooltip": {
+    "message": "Команда для запуска pass"
+  },
+  "passff.prefs.commandArgs_label": {
+    "message": "Аргументы"
+  },
+  "passff.prefs.commandArgs_tooltip": {
+    "message": "Аргументы для скрипта"
+  },
+  "passff.prefs.shell_label": {
+    "message": "Командная оболочка"
+  },
+  "passff.prefs.shell_tooltip": {
+    "message": "Используемая командная оболочка"
+  },
+  "passff.prefs.shellArgs_label": {
+    "message": "Аргументы для командной оболочки"
+  },
+  "passff.prefs.shellArgs_tooltip": {
+    "message": "Аргументы используемые при запуске командной оболочки"
+  },
+  "passff.prefs.home_label": {
+    "message": "Домашняя директория"
+  },
+  "passff.prefs.home_tooltip": {
+    "message": "Домашняя директория. Если поле пустое, используется системная переменная HOME"
+  },
+  "passff.prefs.gpg_agent_info_label": {
+    "message": "Файл info для gpg-агента"
+  },
+  "passff.prefs.gpg_agent_info_tooltip": {
+    "message": "Путь к info-файлу для gpg-agent с переменными окружения (относительный или полный), если он не будет нйден, будут использоватся переменные из окружения Firefox"
+  },
+  "passff.prefs.pass_dir_label": {
+    "message": "Директория с паролями для pass"
+  },
+  "passff.prefs.pass_dir_tooltip": {
+    "message": "Директория с паролями для pass (PASSWORD_STORE_DIR). Если поле пустое, используется системная переменная PASSWORD_STORE_DIR"
+  },
+  "passff.prefs.pass_git_label": {
+    "message": "Директория git с паролями для pass"
+  },
+  "passff.prefs.pass_git_tooltip": {
+    "message": "Директория git с паролями для pass (PASSWORD_STORE_GIT). Если поле пустое, используется системная переменная PASSWORD_STORE_GIT"
+  },
+  "passff.prefs.auto_fill_label": {
+    "message": "Автоматически заполнять поля для входа"
+  },
+  "passff.prefs.auto_fill_tooltip": {
+    "message": "Если включено тогда автоматически заполнять поля для входа"
+  },
+  "passff.prefs.auto_submit_label": {
+    "message": "Автоматически отправлять поля для входа"
+  },
+  "passff.prefs.auto_submit_tooltip": {
+    "message": "Если включено тогда автоматически заполнять и отправлять данные для входа из файла с паролями"
+  },
+  "passff.prefs.shortcut_key_label": {
+    "message": "Быстрая клавиша"
+  },
+  "passff.prefs.shortcut_key_tooltip": {
+    "message": "Быстрая клавиша используемая для открытия окна PassFF"
+  },
+  "passff.prefs.shortcut_mod_label": {
+    "message": "Модификаторы для быстрой клавиши"
+  },
+  "passff.prefs.shortcut_mod_tooltip": {
+    "message": "Модификаторы для быстрой клавиши используемые для открытия окна PassFF. Комбинация из (Control, Alt, Shift) и других символов разделенных запятой (,)"
+  },
+  "passff.prefs.log_enabled_label": {
+    "message": "Включить ведение логов"
+  },
+  "passff.prefs.log_enabled_tooltip": {
+    "message": "Включить логи в веб-консоли (F12)"
+  },
+  "passff.prefs.callmethod-tooltip": {
+    "message": "Выберите метод который будет использоватся для запуска скрипта"
+  },
+  "passff.prefs.callmethod": {
+    "message": "Метод запуска скрипта"
+  },
+  "passff.prefs.direct_radio_label": {
+    "message": "Прямой запуск"
+  },
+  "passff.prefs.shell_radio_label": {
+    "message": "Используя командную оболочку"
+  }
+}
