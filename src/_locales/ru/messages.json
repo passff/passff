@@ -66,11 +66,20 @@
   "passff.prefs.tab.script": {
     "message": "Скрипт pass"
   },
+  "passff.prefs.tab.adding": {
+    "message": "Добавление паролей"
+  },
   "passff.prefs.case-insensitive-search": {
     "message": "Поиск без учета регистра"
   },
   "passff.prefs.case-insensitive-search-tooltip": {
     "message": "Строчные и прописные буквы будут считатся одинаковыми при поиске файлов с паролями"
+  },
+  "passff.prefs.enter-behavior": {
+    "message": "Поведение клавиши ввода"
+  },
+  "passff.prefs.enter-behavior-tooltip": {
+    "message": "Определяет поведение по умолчанию при нажатии клавиши ввода на элементе меню"
   },
   "passff.prefs.fields_description": {
     "message": "Поля которые используются для поиска данных в вашем репозитарии паролей. PassFF пытается найти логин, пароль и адреса сайтов в файлах с паролями (испольуя стандартный синтаксис)."
@@ -194,5 +203,29 @@
   },
   "passff.prefs.shell_radio_label": {
     "message": "Используя командную оболочку"
+  },
+  "passff.prefs.default_length_tooltip": {
+    "message": "Длина пароля по умолчанию"
+  },
+  "passff.prefs.default_length_label": {
+    "message": "Длина пароля по умолчанию"
+  },
+  "passff.prefs.default_include_symbols_tooltip": {
+    "message": "Должны ли сгенерированные пароли использовать и отличные от букв и цифр символы"
+  },
+  "passff.prefs.default_include_symbols_label": {
+    "message": "Включать все символы по умолчанию"
+  },
+  "passff.prefs.preferred_new_method_tooltip": {
+    "message": "Генерировать ли или вставлять новые пароли"
+  },
+  "passff.prefs.preferred_new_method_label": {
+    "message": "Предпочтительный новый метод"
+  },
+  "passff.prefs.prefer_generate": {
+    "message": "Сгенерировать"
+  },
+  "passff.prefs.prefer_insert": {
+    "message": "Вставить"
   }
 }
