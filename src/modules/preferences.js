@@ -1,8 +1,6 @@
 /* jshint node: true */
 'use strict';
 
-const {TextDecoder, OS} = Cu.import('resource://gre/modules/osfile.jsm', {});
-
 PassFF.Preferences = (function() {
 
   let getDefaultParams = function() {
@@ -30,125 +28,59 @@ PassFF.Preferences = (function() {
       callType              : 'direct',
       caseInsensitiveSearch : false,
       enterBehavior         : 0,
-    defaultPasswordLength : 16,
-    defaultIncludeSymbols : true,
-    preferInsert          : false,
-};
-    let osString = Components.classes["@mozilla.org/xre/app-info;1"]
-                             .getService(Components.interfaces.nsIXULRuntime)
-                               .OS;
-    switch (osString) {
-      case 'Darwin':
-        Object.assign(defaultParams, {
-          command   : '/usr/local/bin/pass',
-          shellArgs : '--login',
-          callType  : 'shell',
-        });
-        break;
-    }
+      defaultPasswordLength : 16,
+      defaultIncludeSymbols : true,
+      preferInsert          : false,
+    };
+
     return defaultParams;
   };
 
   return {
-    _environment: Cc['@mozilla.org/process/environment;1']
-                  .getService(Components.interfaces.nsIEnvironment),
     _gpgAgentEnv: null,
     _params: getDefaultParams(),
-    init: function() {
-
-      let defaultBranch = Services.prefs.getDefaultBranch('extensions.passff.');
-      let branch = Services.prefs.getBranch('extensions.passff.');
+    init: function(bgmode) {
       for (let [key, val] in Iterator(PassFF.Preferences._params)) {
       log.error("aaaaa ", key, val)
-        switch (typeof val) {
-          case 'boolean':
-            defaultBranch.setBoolPref(key, val);
-            this._params[key] = branch.getBoolPref(key);
-            break;
-          case 'number':
-            defaultBranch.setIntPref(key, val);
-            this._params[key] = branch.getIntPref(key);
-            break;
-          case 'string':
-            defaultBranch.setCharPref(key, val);
-            this._params[key] = branch.getCharPref(key);
-            break;
-        }
-      }
-
-      log.info('Preferences initialised', {
-        passwordInputNames    : this.passwordInputNames,
-        loginInputNames       : this.loginInputNames,
-        loginFieldNames       : this.loginFieldNames,
-        passwordFieldNames    : this.passwordFieldNames,
-        urlFieldNames         : this.urlFieldNames,
-        command               : this.command,
-        commandArgs           : this.commandArgs,
-        shell                 : this.shell,
-        shellArgs             : this.shellArgs,
-        home                  : this.home,
-        storeDir              : this.storeDir,
-        storeGit              : this.storeGit,
-        autoFill              : this.autoFill,
-        autoSubmit            : this.autoSubmit,
-        shortcutKey           : this.shortcutKey,
-        shortcutMod           : this.shortcutMod,
-        logEnabled            : this.logEnabled,
-        iframeSearchDepth     : this.iframeSearchDepth,
-        callType              : this.callType,
-        caseInsensitiveSearch : this.caseInsensitiveSearch,
-        enterBehavior         : this.enterBehavior
-      });
-    },
-
-    setGpgAgentEnv: function() {
-      let gpgAgentInfo = this._params.gpgAgentInfo;
-      let filename;
-
-      if (OS.Path.split(gpgAgentInfo).absolute) {
-        filename = gpgAgentInfo;
-      } else {
-        filename = OS.Path.join(this.home, gpgAgentInfo);
-      }
-      log.info('Try to retrieve Gpg agent variable from file ' + filename);
-
-      let promise = OS.File.read(filename); // Read the complete file as an array
-      let decoder = new TextDecoder();
-
-      let success = function(array) {
-        let re = /^([^=]+=[^;]+)/;
-        log.info('Retrieve Gpg agent variable from file');
-
-        PassFF.Preferences._gpgAgentEnv = [];
-        decoder.decode(array).split('\n').forEach(function(line) {
-          if(re.test(line)) {
-            PassFF.Preferences._gpgAgentEnv.push(re.exec(line)[0]);
+        browser.storage.local.get(key).then(((res) => {
+          if (typeof res[key] === "undefined") {
+            let obj = {}; obj[key] = val;
+            browser.storage.local.set(obj);
+          } else {
+            this._params[key] = res[key];
           }
+        }).bind(this));
+      }
+
+      if (bgmode === true) {
+        log.info('Preferences initialised', {
+          passwordInputNames    : this.passwordInputNames,
+          loginInputNames       : this.loginInputNames,
+          loginFieldNames       : this.loginFieldNames,
+          passwordFieldNames    : this.passwordFieldNames,
+          urlFieldNames         : this.urlFieldNames,
+          command               : this.command,
+          commandArgs           : this.commandArgs,
+          shell                 : this.shell,
+          shellArgs             : this.shellArgs,
+          home                  : this.home,
+          storeDir              : this.storeDir,
+          storeGit              : this.storeGit,
+          autoFill              : this.autoFill,
+          autoSubmit            : this.autoSubmit,
+          shortcutKey           : this.shortcutKey,
+          shortcutMod           : this.shortcutMod,
+          logEnabled            : this.logEnabled,
+          iframeSearchDepth     : this.iframeSearchDepth,
+          callType              : this.callType,
+          caseInsensitiveSearch : this.caseInsensitiveSearch,
+          enterBehavior         : this.enterBehavior
         });
-
-        let keyringControl = this._environment.get('GNOME_KEYRING_CONTROL');
-        PassFF.Preferences._gpgAgentEnv.push('GNOME_KEYRING_CONTROL=' + keyringControl);
-
-        log.debug('Set Gpg agent variable:', PassFF.Preferences._gpgAgentEnv);
-
-        return Promise.resolve('OK');
-      }.bind(this);
-
-      let error = function(reason) {
-        log.info('Can\'t read file. Getting gpg-agent variable from environment');
-        PassFF.Preferences._gpgAgentEnv = [
-          'GPG_AGENT_INFO=' + this._environment.get('GPG_AGENT_INFO'),
-          'GNOME_KEYRING_CONTROL=' + this._environment.get('GNOME_KEYRING_CONTROL')
-        ];
-        log.debug('Set gpg-agent variable :', PassFF.Preferences._gpgAgentEnv);
-        return Promise.resolve('OK');
-      }.bind(this);
-
-      promise = promise.then(success, error);
-
-      promise.catch(function onError(reason) {
-        log.error('Failed to set gpg-agent variable', reason);
-      });
+        let params = { command: "gpgAgentEnv" };
+        params['arguments'] = [this._params.gpgAgentInfo];
+        return browser.runtime.sendNativeMessage("passff", params)
+          .then(((result) => { this._gpgAgentEnv = result; }).bind(this));
+      }
     },
 
     get passwordInputNames() {
@@ -192,38 +124,35 @@ PassFF.Preferences = (function() {
       if (this._params.home.trim().length > 0) {
         return this._params.home;
       }
-      return OS.Constants.Path.homeDir;
+      return PassFF.Pass.env.get('HOME');
     },
 
     get gnupgHome() {
       if (this._params.gnupgHome.trim().length > 0) {
         return this._params.gnupgHome;
       }
-      return this._environment.get('GNUPGHOME');
+      return PassFF.Pass.env.get('GNUPGHOME');
     },
 
     get storeDir() {
       if (this._params.storeDir.trim().length > 0) {
         return this._params.storeDir;
       }
-      return this._environment.get('PASSWORD_STORE_DIR');
+      return PassFF.Pass.env.get('PASSWORD_STORE_DIR');
     },
 
     get storeGit() {
       if (this._params.storeGit.trim().length > 0) {
         return this._params.storeGit;
       }
-      return this._environment.get('PASSWORD_STORE_GIT');
+      return PassFF.Pass.env.get('PASSWORD_STORE_GIT');
     },
 
     get path() {
-      return this._environment.get('PATH');
+      return PassFF.Pass.env.get('PATH');
     },
 
     get gpgAgentEnv() {
-      if (this._gpgAgentEnv === null) {
-        this.setGpgAgentEnv();
-      }
       return this._gpgAgentEnv;
     },
 
@@ -260,6 +189,15 @@ PassFF.Preferences = (function() {
     },
     get enterBehavior() {
       return this._params.enterBehavior;
+    },
+    get defaultPasswordLength() {
+      return this._params.defaultPasswordLength;
+    },
+    get defaultIncludeSymbols() {
+      return this._params.defaultIncludeSymbols;
+    },
+    get preferInsert() {
+      return this._params.preferInsert;
     }
   };
 })();

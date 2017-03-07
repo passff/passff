@@ -1,0 +1,46 @@
+
+html, body, div {
+    margin: 0; padding: 0; width: 100%;
+}
+
+body {
+    width: 28rem;
+}
+
+body > div {
+    border-bottom: 1px #aaa solid;
+    padding: 0.4rem 0.3rem;
+    box-sizing: border-box;
+}
+
+body > div.searchbar input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+body > div.results button {
+    margin-right: 0.3rem;
+}
+
+body > div.results button {
+    margin-bottom: 0.3rem;
+}
+
+body > div.results select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+body > div:last-of-type {
+    height: 0; width: 0;
+    margin: 0; padding: 0;
+    border: 0; line-height: 0;
+    font-size: 0;
+}
+
+#clipboardField {
+    height: 0; width: 0;
+    margin: 0; padding: 0;
+    border: 0; line-height: 0;
+    font-size: 0;
+}
