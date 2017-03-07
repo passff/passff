@@ -11,11 +11,6 @@ PassFF.Menu = {
   init: function () {
     let doc = document;
     PassFF.Menu.createStaticMenu(doc);
-
-    let searchInput = doc.querySelector("input[type='text']");
-    setTimeout(function () {
-      searchInput.focus();
-    }, 0);
   },
 
   createStaticMenu: function(doc) {
@@ -301,8 +296,11 @@ PassFF.Menu = {
         doc = document;
     }
     log.debug('createContextualMenu');
-    PassFF.bg_exec("Pass.getUrlMatchingItems").then((items) => {
+    return PassFF.bg_exec("Pass.getUrlMatchingItems").then((items) => {
       PassFF.Menu.createItemsMenuList(doc, items);
+
+      let searchInput = doc.querySelector("input[type='text']");
+      searchInput.focus();
     });
   },
 
