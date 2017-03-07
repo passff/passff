@@ -106,8 +106,6 @@ Development and improvements
  * [Johan Venant](https://github.com/jvenant)
  * [Tobias Umbach](https://github.com/sometoby)
  * [Lenz Weber](https://github.com/phryneas)
- * [tuxor1337](https://github.com/tuxor1337)
+ * [Thomas Vogt](https://github.com/tuxor1337)
 
 Russian translation : [Grigorii Horos](https://github.com/horosgrisa)
-
-This extension uses [subprocess](https://github.com/bit/subprocess) to launch the pass script.
