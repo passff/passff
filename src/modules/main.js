@@ -182,11 +182,9 @@ var PassFF = {
     } else if (request.action == "openOptionsPage") {
       browser.runtime.openOptionsPage();
     } else if (request.action == "refresh") {
-      PassFF.Preferences.init(true).then(() => {
-        return PassFF.Pass.init();
-      }).then(() => {
-        sendResponse();
-      });
+      PassFF.Preferences.init(true)
+        .then(() => PassFF.Pass.init())
+        .then(() => sendResponse());
       return true;
     }
   }

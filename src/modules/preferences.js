@@ -41,18 +41,18 @@ PassFF.Preferences = (function() {
     _params: getDefaultParams(),
     init: function(bgmode) {
       for (let [key, val] in Iterator(PassFF.Preferences._params)) {
-        browser.storage.local.get(key).then(((res) => {
-          if (typeof res[key] === "undefined") {
+        browser.storage.local.get(key).then((res) => {
+          if (typeof res[key] === 'undefined') {
             let obj = {}; obj[key] = val;
             browser.storage.local.set(obj);
           } else {
             this._params[key] = res[key];
           }
-        }).bind(this));
+        });
       }
 
       if (bgmode === true) {
-        log.info('Preferences initialised', {
+        log.info("Preferences initialised", {
           passwordInputNames    : this.passwordInputNames,
           loginInputNames       : this.loginInputNames,
           loginFieldNames       : this.loginFieldNames,
@@ -75,10 +75,10 @@ PassFF.Preferences = (function() {
           caseInsensitiveSearch : this.caseInsensitiveSearch,
           enterBehavior         : this.enterBehavior
         });
-        let params = { command: "gpgAgentEnv" };
+        let params = { command: 'gpgAgentEnv' };
         params['arguments'] = [this._params.gpgAgentInfo];
-        return browser.runtime.sendNativeMessage("passff", params)
-          .then(((result) => { this._gpgAgentEnv = result; }).bind(this));
+        return browser.runtime.sendNativeMessage('passff', params)
+          .then((result) => { this._gpgAgentEnv = result; });
       }
     },
 
@@ -199,5 +199,3 @@ PassFF.Preferences = (function() {
     }
   };
 })();
-
-

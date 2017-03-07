@@ -3,5 +3,5 @@
 
 PassFF.Preferences.init();
 window.onload = function () {
-    PassFF.Menu.init();
+  PassFF.Menu.init();
 };

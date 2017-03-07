@@ -1,46 +1,42 @@
-
 html, body, div {
-    margin: 0; padding: 0; width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    width: 28rem;
+  width: 28rem;
+  font-family: sans-serif;
 }
 
-body > div {
-    border-bottom: 1px #aaa solid;
-    padding: 0.4rem 0.3rem;
-    box-sizing: border-box;
+.searchbar,
+.results,
+.actions {
+  border-bottom: 1px #aaa solid;
+  padding: 0.4rem 0.3rem;
+  box-sizing: border-box;
 }
 
-body > div.searchbar input {
-    width: 100%;
-    box-sizing: border-box;
+.searchbar input {
+  width: 100%;
+  box-sizing: border-box;
 }
 
-body > div.results button {
-    margin-right: 0.3rem;
+.results button {
+  margin-right: 0.3rem;
+  margin-bottom: 0.3rem;
 }
 
-body > div.results button {
-    margin-bottom: 0.3rem;
+.results select {
+  width: 100%;
+  box-sizing: border-box;
 }
 
-body > div.results select {
-    width: 100%;
-    box-sizing: border-box;
+#clipboard-field-container,
+#clipboard-field {
+  height: 0; width: 0;
+  margin: 0; padding: 0;
+  border: 0; line-height: 0;
+  font-size: 0;
 }
 
-body > div:last-of-type {
-    height: 0; width: 0;
-    margin: 0; padding: 0;
-    border: 0; line-height: 0;
-    font-size: 0;
-}
-
-#clipboardField {
-    height: 0; width: 0;
-    margin: 0; padding: 0;
-    border: 0; line-height: 0;
-    font-size: 0;
 }
