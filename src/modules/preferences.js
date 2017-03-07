@@ -26,7 +26,7 @@ PassFF.Preferences = (function() {
       logEnabled            : false,
       iframeSearchDepth     : 5,
       callType              : 'direct',
-      caseInsensitiveSearch : false,
+      caseInsensitiveSearch : true,
       enterBehavior         : 0,
       defaultPasswordLength : 16,
       defaultIncludeSymbols : true,
