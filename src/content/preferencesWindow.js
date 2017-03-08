@@ -34,46 +34,43 @@ function pref_bool_change_cb(key) {
     };
 }
 
-PassFF.Preferences.init();
-let promised_init = PassFF.init();
-window.onload = function () {
-  promised_init.then(() => {
-    document.querySelectorAll("label,p.text,option").forEach(function (el) {
-        el.textContent = PassFF.gsfm(el.textContent);
-    });
+let promised_init = PassFF.init(false);
+window.onload = () => promised_init.then(() => {
+  document.querySelectorAll("label,p.text,option").forEach(function (el) {
+      el.textContent = PassFF.gsfm(el.textContent);
+  });
 
-    for (let [key, cT] in Iterator(["shell", "direct"])) {
-        document.getElementById("pref_callType_" + cT)
-        .addEventListener("change", update_callTypeUI);
-    }
+  for (let [key, cT] in Iterator(["shell", "direct"])) {
+    document.getElementById("pref_callType_" + cT)
+      .addEventListener("change", update_callTypeUI);
+  }
 
-    for (let [key, val] in Iterator(PassFF.Preferences._params)) {
-      let el = document.getElementById("pref_" + key);
-      if (el !== null) {
-        if (el.tagName == "INPUT" && el.type == "text") {
-          el.value = val;
-          el.addEventListener("change", pref_str_change_cb(key));
-        } else if (el.tagName == "INPUT" && el.type == "checkbox") {
-          el.checked = val;
-          el.addEventListener("change", pref_bool_change_cb(key));
-        } else if (el.tagName == "SELECT") {
-          el.value = val;
-          el.addEventListener("change", pref_str_change_cb(key, true));
-        }
-      } else {
-        el = document.querySelectorAll("input[name=pref_"+key+"]");
-        if (el.length > 0 && el[0].tagName == "INPUT" && el[0].type == "radio") {
-          el.forEach(function (radioEl) {
-            if (radioEl.value == val) {
-              radioEl.checked = true;
-            } else {
-              radioEl.checked = false;
-            }
-            radioEl.addEventListener("change", pref_str_change_cb(key));
-            update_callTypeUI();
-          });
-        }
+  for (let [key, val] in Iterator(PassFF.Preferences._params)) {
+    let el = document.getElementById("pref_" + key);
+    if (el !== null) {
+      if (el.tagName == "INPUT" && el.type == "text") {
+        el.value = val;
+        el.addEventListener("change", pref_str_change_cb(key));
+      } else if (el.tagName == "INPUT" && el.type == "checkbox") {
+        el.checked = val;
+        el.addEventListener("change", pref_bool_change_cb(key));
+      } else if (el.tagName == "SELECT") {
+        el.value = val;
+        el.addEventListener("change", pref_str_change_cb(key, true));
+      }
+    } else {
+      el = document.querySelectorAll("input[name=pref_"+key+"]");
+      if (el.length > 0 && el[0].tagName == "INPUT" && el[0].type == "radio") {
+        el.forEach(function (radioEl) {
+          if (radioEl.value == val) {
+            radioEl.checked = true;
+          } else {
+            radioEl.checked = false;
+          }
+           radioEl.addEventListener("change", pref_str_change_cb(key));
+          update_callTypeUI();
+        });
       }
     }
-  });
-};
+  }
+});

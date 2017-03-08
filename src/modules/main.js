@@ -62,8 +62,20 @@ var PassFF = {
     browser.tabs.executeScript({code : 'alert(' + JSON.stringify(msg) + ');' });
   },
 
-  init: function() {
-    return Promise.resolve();
+  init: function(bgmode) {
+    return PassFF.Preferences.init(bgmode)
+      .then(() => {
+        if (!bgmode) {
+          return;
+        }
+        return PassFF.Pass.init()
+          .then(() => {
+            browser.tabs.onUpdated.addListener(PassFF.onTabUpdate);
+            browser.tabs.onActivated.addListener(PassFF.onTabUpdate);
+            PassFF.onTabUpdate();
+            browser.runtime.onMessage.addListener(PassFF.bg_handle);
+          });
+      });
   },
 
   init_tab: function (tab) {

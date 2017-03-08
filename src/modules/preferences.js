@@ -40,46 +40,52 @@ PassFF.Preferences = (function() {
     _gpgAgentEnv: null,
     _params: getDefaultParams(),
     init: function(bgmode) {
+      let promised_changes = [];
       for (let [key, val] in Iterator(PassFF.Preferences._params)) {
-        browser.storage.local.get(key).then((res) => {
-          if (typeof res[key] === 'undefined') {
-            let obj = {}; obj[key] = val;
-            browser.storage.local.set(obj);
-          } else {
-            this._params[key] = res[key];
-          }
-        });
+        promised_changes.push(
+          browser.storage.local.get(key)
+            .then((res) => {
+              if (typeof res[key] === 'undefined') {
+                let obj = {}; obj[key] = val;
+                browser.storage.local.set(obj);
+              } else {
+                this._params[key] = res[key];
+              }
+            })
+        );
       }
 
-      if (bgmode === true) {
-        log.info("Preferences initialised", {
-          passwordInputNames    : this.passwordInputNames,
-          loginInputNames       : this.loginInputNames,
-          loginFieldNames       : this.loginFieldNames,
-          passwordFieldNames    : this.passwordFieldNames,
-          urlFieldNames         : this.urlFieldNames,
-          command               : this.command,
-          commandArgs           : this.commandArgs,
-          shell                 : this.shell,
-          shellArgs             : this.shellArgs,
-          home                  : this.home,
-          storeDir              : this.storeDir,
-          storeGit              : this.storeGit,
-          autoFill              : this.autoFill,
-          autoSubmit            : this.autoSubmit,
-          shortcutKey           : this.shortcutKey,
-          shortcutMod           : this.shortcutMod,
-          logEnabled            : this.logEnabled,
-          iframeSearchDepth     : this.iframeSearchDepth,
-          callType              : this.callType,
-          caseInsensitiveSearch : this.caseInsensitiveSearch,
-          enterBehavior         : this.enterBehavior
-        });
-        let params = { command: 'gpgAgentEnv' };
-        params['arguments'] = [this._params.gpgAgentInfo];
-        return browser.runtime.sendNativeMessage('passff', params)
-          .then((result) => { this._gpgAgentEnv = result; });
-      }
+      return Promise.all(promised_changes).then(() => {
+        if (bgmode === true) {
+          log.info("Preferences initialised", {
+            passwordInputNames    : this.passwordInputNames,
+            loginInputNames       : this.loginInputNames,
+            loginFieldNames       : this.loginFieldNames,
+            passwordFieldNames    : this.passwordFieldNames,
+            urlFieldNames         : this.urlFieldNames,
+            command               : this.command,
+            commandArgs           : this.commandArgs,
+            shell                 : this.shell,
+            shellArgs             : this.shellArgs,
+            home                  : this.home,
+            storeDir              : this.storeDir,
+            storeGit              : this.storeGit,
+            autoFill              : this.autoFill,
+            autoSubmit            : this.autoSubmit,
+            shortcutKey           : this.shortcutKey,
+            shortcutMod           : this.shortcutMod,
+            logEnabled            : this.logEnabled,
+            iframeSearchDepth     : this.iframeSearchDepth,
+            callType              : this.callType,
+            caseInsensitiveSearch : this.caseInsensitiveSearch,
+            enterBehavior         : this.enterBehavior
+          });
+          let params = { command: 'gpgAgentEnv' };
+          params['arguments'] = [this._params.gpgAgentInfo];
+          return browser.runtime.sendNativeMessage('passff', params)
+            .then((result) => { this._gpgAgentEnv = result; });
+        }
+      });
     },
 
     get passwordInputNames() {

@@ -1,7 +1,5 @@
 /* jshint node: true */
 'use strict';
 
-PassFF.Preferences.init();
-window.onload = function () {
-  PassFF.Menu.init();
-};
+let promised_init = PassFF.init(false);
+window.onload = () => promised_init.then(() => PassFF.Menu.init());
