@@ -138,12 +138,13 @@ PassFF.Pass = {
       while (executionResult.exitCode !== 0 && gpgDecryptFailed) {
         let title = PassFF.gsfm('passff.passphrase.title');
         let desc = PassFF.gsfm('passff.passphrase.description');
-
+        /* We skip this for now since we don't have 'window.confirm' ...
         if (!window.confirm(title + "\n" + desc)) {
           return;
         }
 
         executionResult = PassFF.Pass.executePass(args);
+        */
       }
 
       if (executionResult.exitCode !== 0) {
@@ -482,6 +483,7 @@ PassFF.Pass = {
     log.debug('Execute pass', params);
     return browser.runtime.sendNativeMessage("passff", params).then((result) => {
       if (result.exitCode !== 0) {
+        PassFF.alert('pass execution failed!' + "\n" + result.stderr + "\n" + result.stdout);
         log.warn('pass execution failed', result.exitCode, result.stderr, result.stdout);
       } else {
         log.info('pass script execution ok');
