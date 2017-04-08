@@ -15,12 +15,44 @@ if (!String.prototype.format) {
 
 PassFF.Page = {
   _autoSubmittedUrls: [],
+  _autoFillAndSubmitPending: false,
+
+  tabAutoFill: function(tb) {
+    if (PassFF.Page._autoFillAndSubmitPending || !PassFF.Preferences.autoFill) {
+      return;
+    }
+
+    if (tb.status != "complete") {
+      browser.tabs.onUpdated.addListener(function f(tabId, changeInfo, tab) {
+        if (tabId == tb.id && tab.status == "complete") {
+          browser.tabs.onUpdated.removeListener(f);
+          PassFF.Page.tabAutoFill(tab);
+        }
+      });
+    } else {
+      let url = tb.url;
+      let matchItems = PassFF.Pass.getUrlMatchingItems(url);
+
+      log.info('Start pref-auto-fill');
+      let bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
+
+      if (bestFitItem) {
+        PassFF.Page.fillInputs(tb.id, bestFitItem).then(() => {
+          if (PassFF.Preferences.autoSubmit &&
+              PassFF.Pass.getItemsLeafs(matchItems).length == 1) {
+            PassFF.Page.submit(tb);
+          }
+        });
+      }
+    }
+  },
 
   goToItemUrl: function(item, newTab, autoFill, submit) {
     if (!item) {
       return new Promise();
     }
 
+    PassFF.Page._autoFillAndSubmitPending = true;
     let promised_tab = null;
     if (newTab) {
       promised_tab = browser.tabs.create({});
@@ -50,10 +82,11 @@ PassFF.Page = {
           if (tabId == tb.id && tab.status == "complete") {
             browser.tabs.onUpdated.removeListener(f);
             log.info('Start auto-fill');
+            PassFF.Page._autoFillAndSubmitPending = false;
             PassFF.Page.fillInputs(tabId, item).then(() => {
               if (submit) {
                 log.info('Start submit');
-                PassFF.Page.submit(tabId);
+                PassFF.Page.submit(tb);
               }
             });
           }
@@ -71,8 +104,21 @@ PassFF.Page = {
     });
   },
 
-  submit: function(tabId, passwordData) {
-    this._exec(tabId, "submit();");
+  submit: function(tab, passwordData) {
+    if (PassFF.Page.removeFromArray(PassFF.Page._autoSubmittedUrls, tab.url)) {
+      log.info('Url already submit. skip it');
+      return;
+    }
+    this._exec(tab.id, "submit();");
+    PassFF.Page._autoSubmittedUrls.push(tab.url);
+  },
+
+  removeFromArray: function(array, value) {
+    let index = array.indexOf(value);
+    if (index >= 0) {
+      array.splice(index, 1);
+    }
+    return index >= 0;
   },
 
   _exec: function (tabId, cmd) {

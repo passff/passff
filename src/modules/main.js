@@ -92,6 +92,7 @@ var PassFF = {
 
     log.debug('Location changed', tab.url);
     PassFF.tab_url = tab.url;
+    PassFF.Page.tabAutoFill(tab);
   },
 
   onTabUpdate: function () {
