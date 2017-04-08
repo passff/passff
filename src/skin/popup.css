@@ -11,24 +11,104 @@ body {
 .searchbar,
 .results,
 .actions {
-  border-bottom: 1px #aaa solid;
-  padding: 0.4rem 0.3rem;
   box-sizing: border-box;
+}
+
+.searchbar input:focus,
+.searchbar input:hover {
+  background-color: #fafafa;
 }
 
 .searchbar input {
   width: 100%;
+  padding: 0.4rem;
   box-sizing: border-box;
+  border: 0;
 }
 
-.results button {
-  margin-right: 0.3rem;
-  margin-bottom: 0.3rem;
+div.buttonbox {
+  display: table;
+  width: 100%;
+}
+
+div.buttonbox > div {
+  display: table-row;
+}
+
+div.buttonbox > div div {
+  display: table-cell;
+}
+
+div.buttonbox button {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 2.5rem;
+  margin: 0;
+  padding: 0 0.5rem;
+  border: 0;
+  background-color: #f0f0f0;
+}
+
+div.buttonbox button:hover {
+  background-color: #e6e6e6;
+}
+
+div.buttonbox button:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0.3rem;
+  right: 0;
+  width: 1px;
+  height: 1.9rem;
+  background-color: #b6b6b3;
+}
+
+div.buttonbox:hover button:after {
+  height: 2.5rem;
+  top: 0;
+}
+
+div.buttonbox div:last-child > button:after {
+  width: 0;
+}
+
+div.buttonbox button.icon {
+  font-size: 0;
+  min-width: 2.6rem;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+div.buttonbox button.config {
+  background-image: url('button-config.png');
+}
+
+div.buttonbox button.add {
+  background-image: url('button-add.png');
+}
+
+div.buttonbox button.reload {
+  background-image: url('button-reload.png');
 }
 
 .results select {
   width: 100%;
+  height: 11rem;
   box-sizing: border-box;
+  -moz-appearance: none;
+  border-color: #b6b6b3;
+  border-width: 1px 0;
+  border-style: solid;
+}
+
+.results select option {
+  padding: 0.2rem;
+}
+
+.results select option:hover {
+  background-color: #f0f0f0;
 }
 
 #clipboard-field-container,

@@ -26,12 +26,12 @@ PassFF.Menu = {
     searchBox.addEventListener('keypress', PassFF.Menu.onSearchKeypress);
     searchBox.addEventListener('keyup', PassFF.Menu.onSearchKeyup);
 
-    let showAllButton = doc.querySelector('.results button:first-child');
+    let showAllButton = doc.querySelector('.actions div:nth-child(1) > button');
     showAllButton.setAttribute('id', PassFF.Ids.rootbutton);
     showAllButton.textContent = PassFF.gsfm('passff.button.root.label');
     showAllButton.addEventListener('click', PassFF.Menu.onRootButtonCommand);
 
-    let showMatchingButton = doc.querySelector('.results button:first-child + button');
+    let showMatchingButton = doc.querySelector('.actions div:nth-child(2) > button');
     showMatchingButton.setAttribute('id', PassFF.Ids.contextbutton);
     showMatchingButton.textContent = PassFF.gsfm('passff.button.context.label');
     showMatchingButton.addEventListener('click', PassFF.Menu.onContextButtonCommand);
@@ -41,19 +41,19 @@ PassFF.Menu = {
     entryList.addEventListener('keydown', PassFF.Menu.onListItemkeydown);
     entryList.addEventListener('keyup', PassFF.Menu.onListItemkeyup);
 
-    let refreshButton = doc.querySelector('.actions button:first-child');
+    let refreshButton = doc.querySelector('.actions button.reload');
     refreshButton.setAttribute('id', PassFF.Ids.refreshmenuitem);
-    refreshButton.textContent = PassFF.gsfm('passff.toolbar.refresh.label');
+    refreshButton.setAttribute('title', PassFF.gsfm('passff.toolbar.refresh.label'));
     refreshButton.addEventListener('click', PassFF.Menu.onRefresh);
 
-    let prefsButton = doc.querySelector('.actions button:first-child + button');
+    let prefsButton = doc.querySelector('.actions button.config');
     prefsButton.setAttribute('id', PassFF.Ids.prefsmenuitem);
-    prefsButton.textContent = PassFF.gsfm('passff.toolbar.preferences.label');
+    prefsButton.setAttribute('title', PassFF.gsfm('passff.toolbar.preferences.label'));
     prefsButton.addEventListener('click', PassFF.Menu.onPreferences);
 
-    let newPasswordButton = doc.querySelector('.actions button:last-child');
+    let newPasswordButton = doc.querySelector('.actions button.add');
     newPasswordButton.setAttribute('id', PassFF.Ids.newpasswordmenuitem);
-    newPasswordButton.textContent = PassFF.gsfm('passff.toolbar.new_password.label');
+    newPasswordButton.setAttribute('title', PassFF.gsfm('passff.toolbar.new_password.label'));
     newPasswordButton.addEventListener('click', PassFF.Menu.onNewPassword);
 
     PassFF.Menu.createContextualMenu(doc);
