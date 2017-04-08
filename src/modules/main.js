@@ -51,6 +51,12 @@ var PassFF = {
 
   tab_url: null,
 
+  menu_state: {
+    'context_url': null,
+    'search_val': "",
+    'items': null
+  },
+
   gsfm: function (key, params) {
     if (params) {
       return browser.i18n.getMessage(key, params);
@@ -115,18 +121,29 @@ var PassFF = {
         }
       }
       items = items.map((i) => { return i.toObject(true); });
+      PassFF.menu_state['context_url'] = PassFF.tab_url;
+      PassFF.menu_state['search_val'] = "";
+      PassFF.menu_state['items'] = items;
       sendResponse({ response: items });
     } else if (request.action == "Pass.getMatchingItems") {
       let val = request.params[0];
       let lim = request.params[1];
       let matchingItems = PassFF.Pass.getMatchingItems(val, lim);
       matchingItems = matchingItems.map((i) => { return i.toObject(true); });
+      PassFF.menu_state['context_url'] = PassFF.tab_url;
+      PassFF.menu_state['search_val'] = val;
+      PassFF.menu_state['items'] = matchingItems;
       sendResponse({ response: matchingItems });
     } else if (request.action == "Pass.rootItems") {
       let items = PassFF.Pass.rootItems;
       items = items.map((i) => { return i.toObject(true); });
+      PassFF.menu_state['context_url'] = PassFF.tab_url;
+      PassFF.menu_state['search_val'] = "";
+      PassFF.menu_state['items'] = items;
       sendResponse({ response: items });
     } else if (request.action == "Pass.getItemById") {
+      PassFF.menu_state['context_url'] = PassFF.tab_url;
+      PassFF.menu_state['items'] = request.params[0];
       let item = PassFF.Pass.getItemById(request.params[0]);
       sendResponse({ response: item.toObject(true) });
     } else if (request.action == "Pass.getPasswordData") {
@@ -151,6 +168,15 @@ var PassFF = {
     } else if (request.action == "Pass.isPasswordNameTaken") {
       sendResponse({
         response: PassFF.Pass.isPasswordNameTaken(request.params[0])
+      });
+    } else if (request.action == "Menu.restore") {
+      if(PassFF.menu_state['context_url'] != PassFF.tab_url) {
+        PassFF.menu_state['context_url'] = null;
+        PassFF.menu_state['search_val'] = "";
+        PassFF.menu_state['items'] = null;
+      }
+      sendResponse({
+        response: PassFF.menu_state
       });
     } else if (request.action == "Menu.onEnter") {
       let item = PassFF.Pass.getItemById(request.params[0]);

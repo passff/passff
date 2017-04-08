@@ -12,6 +12,21 @@ PassFF.Menu = {
     log.debug("Initializing Menu");
     let doc = document;
     PassFF.Menu.createStaticMenu(doc);
+    PassFF.bg_exec('Menu.restore')
+      .then((menu_state) => {
+        if(menu_state['items'] == null) {
+          PassFF.Menu.createContextualMenu(doc);
+        } else {
+          let searchInput = doc.getElementById(PassFF.Ids.searchbox);
+          searchInput.value = menu_state['search_val'];
+          if(menu_state['items'] instanceof Array) {
+            PassFF.Menu.createItemsMenuList(doc, menu_state['items']);
+            searchInput.focus();
+          } else {
+            PassFF.Menu.createItemMenuList(doc, menu_state['items']);
+          }
+        }
+      });
   },
 
   createStaticMenu: function(doc) {
@@ -56,8 +71,6 @@ PassFF.Menu = {
     newPasswordButton.setAttribute('title', PassFF.gsfm('passff.toolbar.new_password.label'));
     newPasswordButton.addEventListener('click', PassFF.Menu.onNewPassword);
 
-    PassFF.Menu.createContextualMenu(doc);
-
     return panel;
   },
 
@@ -98,11 +111,16 @@ PassFF.Menu = {
   onSearchKeyup: function(event) {
     log.debug('Search keyup', event);
 
-    if (event.keyCode <= 46) {
+    if (event.keyCode <= 46 && event.keyCode != 8) {
+      /* non-alphanumeric and not BACKSPACE */
       return false;
     }
 
     let doc = event.target.ownerDocument;
+    if("" == event.target.value) {
+      PassFF.Menu.createContextualMenu(doc);
+      return false;
+    }
     PassFF.bg_exec('Pass.getMatchingItems', event.target.value, 6)
       .then((matchingItems) => {
         PassFF.Menu.createItemsMenuList(doc, matchingItems);
@@ -132,6 +150,7 @@ PassFF.Menu = {
     let listElm = doc.getElementById(PassFF.Ids.entrieslist);
 
     if (event.keyCode == 13) {
+      /* RETURN */
       if (listElm.selectedIndex < 0) {
         return;
       } else if (listElm[listElm.selectedIndex].onEnterPress) {
@@ -140,9 +159,11 @@ PassFF.Menu = {
         listElm[listElm.selectedIndex].click();
       }
     } else if (event.keyCode == 39) {
+      /* RIGHT ARROW */
       let item = PassFF.Menu.getItem(listElm[listElm.selectedIndex]);
       PassFF.Menu.createItemMenuList(doc, item);
     } else if (event.keyCode == 37) {
+      /* LEFT ARROW */
       let item = PassFF.Menu.getItem(listElm.firstChild);
       if (item) {
         PassFF.Menu.createItemMenuList(doc, item);
@@ -152,6 +173,7 @@ PassFF.Menu = {
         });
       }
     } else if (!event.shiftKey && event.keyCode != 40 && event.keyCode != 38) {
+      /* NOT: SHIFT, UP ARROW, DOWN ARROW */
       doc.getElementById(PassFF.Ids.searchbox).focus();
     }
   },
@@ -300,7 +322,8 @@ PassFF.Menu = {
     PassFF.bg_exec('Pass.getUrlMatchingItems')
       .then((items) => {
         PassFF.Menu.createItemsMenuList(doc, items);
-        let searchInput = doc.querySelector("input[type='text']");
+        let searchInput = doc.getElementById(PassFF.Ids.searchbox);
+        searchInput.value = "";
         searchInput.focus();
       });
   },
