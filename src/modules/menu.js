@@ -180,6 +180,9 @@ PassFF.Menu = {
     let doc = event.target.ownerDocument;
     PassFF.bg_exec('Pass.rootItems').then((rootItems) => {
       PassFF.Menu.createItemsMenuList(doc, rootItems);
+      let searchInput = doc.querySelector("input[type='text']");
+      searchInput.value = "";
+      searchInput.focus();
     });
   },
 
