@@ -94,6 +94,27 @@ PassFF.Preferences = (function() {
         browser.storage.local.set(obj);
     },
 
+    addInputName: function(type, name) {
+      let names = PassFF.Preferences.loginInputNames;
+      if (type == "password") {
+        names = PassFF.Preferences.passwordInputNames;
+      }
+      for (let i = 0; i < names.length; i++) {
+        if (name.toLowerCase().indexOf(names[i].toLowerCase()) >= 0) {
+          return false;
+        }
+      }
+      log.debug("New input name", name, "of type", type);
+      names.push(name);
+      names = names.join(",");
+      if (type == "password") {
+        PassFF.Preferences.pref_set("passwordInputNames", names);
+      } else {
+        PassFF.Preferences.pref_set("loginInputNames", names);
+      }
+      return true;
+    },
+
     get passwordInputNames() {
       return this._params.passwordInputNames.split(',');
     },

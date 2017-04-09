@@ -54,7 +54,47 @@ var PassFF = {
   menu_state: {
     'context_url': null,
     'search_val': "",
-    'items': null
+    '_items': null,
+    get items() {
+      return this._items;
+    },
+    set items(new_items) {
+      this._items = new_items;
+      chrome.contextMenus.removeAll();
+      chrome.contextMenus.create({
+        id: "login-add",
+        title: "Add login input name",
+        contexts: ["editable"]
+      });
+      chrome.contextMenus.create({
+        id: "sep",
+        type: "separator",
+        contexts: ["editable"]
+      });
+      if (this._items == null) {
+        return;
+      } else if (this._items instanceof Array) {
+        this._items.slice(0,3).forEach(this.addItemContext);
+      } else {
+        this.addItemContext(PassFF.Pass.getItemById(this._items).toObject());
+      }
+    },
+    'addItemContext': function (i) {
+      if (i.isLeaf) {
+        chrome.contextMenus.create({
+          id: "login-"+i.id,
+          title: i.fullKey,
+          contexts: ["editable"]
+        });
+      }
+    },
+    'toObject': function () {
+      return {
+        'context_url': this.context_url,
+        'search_val': this.search_val,
+        'items': this.items
+      };
+    }
   },
 
   gsfm: function (key, params) {
@@ -80,6 +120,7 @@ var PassFF = {
             browser.tabs.onActivated.addListener(PassFF.onTabUpdate);
             PassFF.onTabUpdate();
             browser.runtime.onMessage.addListener(PassFF.bg_handle);
+            browser.contextMenus.onClicked.addListener(PassFF.Page.onContextMenu);
           });
       });
   },
@@ -92,6 +133,8 @@ var PassFF = {
 
     log.debug('Location changed', tab.url);
     PassFF.tab_url = tab.url;
+    let items = PassFF.Pass.getUrlMatchingItems(PassFF.tab_url);
+    PassFF.menu_state.items = items.map((i) => { return i.toObject(true); });
     PassFF.Page.tabAutoFill(tab);
   },
 
@@ -122,29 +165,29 @@ var PassFF = {
         }
       }
       items = items.map((i) => { return i.toObject(true); });
-      PassFF.menu_state['context_url'] = PassFF.tab_url;
-      PassFF.menu_state['search_val'] = "";
-      PassFF.menu_state['items'] = items;
+      PassFF.menu_state.context_url = PassFF.tab_url;
+      PassFF.menu_state.search_val = "";
+      PassFF.menu_state.items = items;
       sendResponse({ response: items });
     } else if (request.action == "Pass.getMatchingItems") {
       let val = request.params[0];
       let lim = request.params[1];
       let matchingItems = PassFF.Pass.getMatchingItems(val, lim);
       matchingItems = matchingItems.map((i) => { return i.toObject(true); });
-      PassFF.menu_state['context_url'] = PassFF.tab_url;
-      PassFF.menu_state['search_val'] = val;
-      PassFF.menu_state['items'] = matchingItems;
+      PassFF.menu_state.context_url = PassFF.tab_url;
+      PassFF.menu_state.search_val = val;
+      PassFF.menu_state.items = matchingItems;
       sendResponse({ response: matchingItems });
     } else if (request.action == "Pass.rootItems") {
       let items = PassFF.Pass.rootItems;
       items = items.map((i) => { return i.toObject(true); });
-      PassFF.menu_state['context_url'] = PassFF.tab_url;
-      PassFF.menu_state['search_val'] = "";
-      PassFF.menu_state['items'] = items;
+      PassFF.menu_state.context_url = PassFF.tab_url;
+      PassFF.menu_state.search_val = "";
+      PassFF.menu_state.items = items;
       sendResponse({ response: items });
     } else if (request.action == "Pass.getItemById") {
-      PassFF.menu_state['context_url'] = PassFF.tab_url;
-      PassFF.menu_state['items'] = request.params[0];
+      PassFF.menu_state.context_url = PassFF.tab_url;
+      PassFF.menu_state.items = request.params[0];
       let item = PassFF.Pass.getItemById(request.params[0]);
       sendResponse({ response: item.toObject(true) });
     } else if (request.action == "Pass.getPasswordData") {
@@ -171,13 +214,13 @@ var PassFF = {
         response: PassFF.Pass.isPasswordNameTaken(request.params[0])
       });
     } else if (request.action == "Menu.restore") {
-      if(PassFF.menu_state['context_url'] != PassFF.tab_url) {
-        PassFF.menu_state['context_url'] = null;
-        PassFF.menu_state['search_val'] = "";
-        PassFF.menu_state['items'] = null;
+      if(PassFF.menu_state.context_url != PassFF.tab_url) {
+        PassFF.menu_state.context_url = null;
+        PassFF.menu_state.search_val = "";
+        PassFF.menu_state.items = null;
       }
       sendResponse({
-        response: PassFF.menu_state
+        response: PassFF.menu_state.toObject()
       });
     } else if (request.action == "Menu.onEnter") {
       let item = PassFF.Pass.getItemById(request.params[0]);
@@ -218,6 +261,11 @@ var PassFF = {
       }).then((tabId) => {
         if (andSubmit) PassFF.Page.submit(tabId);
       });
+    } else if (request.action == "Preferences.addInputName") {
+      if (PassFF.Preferences.addInputName(request.params[0], request.params[1])) {
+        PassFF.Preferences.init(true)
+          .then(() => PassFF.Pass.init());
+      }
     } else if (request.action == "openOptionsPage") {
       browser.runtime.openOptionsPage();
     } else if (request.action == "refresh") {

@@ -47,6 +47,20 @@ PassFF.Page = {
     }
   },
 
+  onContextMenu: function(info, tab) {
+    if (info.menuItemId == "login-add") {
+      PassFF.Page._exec(tab.id, "addInputName();");
+    } else {
+      let itemId = parseInt(info.menuItemId.split("-")[1]);
+      let item = PassFF.Pass.getItemById(itemId);
+      PassFF.Pass.getPasswordData(item).then((passwordData) => {
+        PassFF.Page._exec(tab.id,
+          "contextMenuFill({0});".format(JSON.stringify(passwordData))
+        );
+      });
+    }
+  },
+
   goToItemUrl: function(item, newTab, autoFill, submit) {
     if (!item) {
       return new Promise();
@@ -98,7 +112,9 @@ PassFF.Page = {
   fillInputs: function(tabId, item) {
     return PassFF.Pass.getPasswordData(item).then((passwordData) => {
       if (passwordData) {
-        this._exec(tabId, `processDoc(doc, {0}, 0);`.format(JSON.stringify(passwordData)));
+        this._exec(tabId,
+          "processDoc(doc, {0}, 0);".format(JSON.stringify(passwordData))
+        );
       }
       return tabId;
     });
@@ -141,6 +157,7 @@ PassFF.Page = {
 /******************************************************************************/
     _contentScriptTemplate: `
 var doc = document;
+var loginInputTypes = ['text', 'email', 'tel'];
 var loginInputNames = [];
 var passwordInputNames = [];
 var iframeSearchDepth = 0;
@@ -204,13 +221,13 @@ function isPasswordInput(input) {
 }
 
 function isLoginInput(input) {
-  return ((input.type == 'text' || input.type == 'email' || input.type == 'tel') &&
+  return (loginInputTypes.indexOf(input.type) >= 0 &&
           hasGoodName(input.name ? input.name : input.id, loginInputNames));
 }
 
 function isOtherInputCheck(other) {
   return function(input) {
-    return ((input.type == 'text' || input.type == 'email' || input.type == 'tel') &&
+    return (loginInputTypes.indexOf(input.type) >= 0 &&
            hasGoodName(input.name ? input.name : input.id, Object.keys(other)));
   }
 }
@@ -270,6 +287,23 @@ function processDoc(d, passwordData, depth) {
       processDoc(iframe.contentDocument, passwordData, depth++);
     });
   }
+}
+
+function contextMenuFill(passwordData) {
+  document.activeElement.value = passwordData.login;
+  setPasswordInputs(passwordData.password);
+}
+
+function addInputName() {
+  let input = document.activeElement;
+  if (input.tagName != "INPUT" || loginInputTypes.indexOf(input.type) < 0) {
+    return;
+  }
+  let input_type = (input.type == "password") ? "password" : "login";
+  browser.runtime.sendMessage({
+    action: "Preferences.addInputName",
+    params: [input_type, input.name ? input.name : input.id]
+  });
 }
 {0}`
 /******************************************************************************/
