@@ -88,6 +88,12 @@ PassFF.Preferences = (function() {
       });
     },
 
+    pref_set: function(key, val) {
+        let obj = {};
+        obj[key] = val;
+        browser.storage.local.set(obj);
+    },
+
     get passwordInputNames() {
       return this._params.passwordInputNames.split(',');
     },
