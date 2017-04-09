@@ -7,6 +7,7 @@ passff
 
 **Official signed version can be found on the [Mozilla add-on page](https://addons.mozilla.org/firefox/addon/passff)**
 
+![passff](https://cloud.githubusercontent.com/assets/1518387/24840201/299d3620-1d69-11e7-8e8a-ea0c5761dc95.png)
 
 ### Overview
 This extension will allow you to access your **[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** repository directly from your web browser.
@@ -18,8 +19,8 @@ You can choose to automatically fill and submit login forms if a matching passwo
 - You will also need to **[install the host application](docs/INSTALLATION.md#installing-the-host-application)** so the extension can communicate with `pass` to retrieve your passwords
 - Install the current release for your browser:
   - [Firefox](https://addons.mozilla.org/firefox/addon/passff)
-  - Chrome (coming soon)
-  - Opera (coming soon)
+  - Chrome, Chromium (coming soon)
+  - Vivaldi, Opera (coming soon)
 
 Alternatively, you can install an older version or the latest build from GitHub by refering to [instructions here](docs/INSTALLATION.md).
 
