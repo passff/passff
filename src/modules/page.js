@@ -141,11 +141,11 @@ PassFF.Page = {
     let code = this._contentScriptTemplate.format(`
         loginInputNames = {0};
         passwordInputNames = {1};
-        iframeSearchDepth = {2};
+        subpageSearchDepth = {2};
         {3}`.format(
             JSON.stringify(PassFF.Preferences.loginInputNames),
             JSON.stringify(PassFF.Preferences.passwordInputNames),
-            JSON.stringify(PassFF.Preferences.iframeSearchDepth),
+            JSON.stringify(PassFF.Preferences.subpageSearchDepth),
             cmd
         )
     );
@@ -160,7 +160,7 @@ var doc = document;
 var loginInputTypes = ['text', 'email', 'tel'];
 var loginInputNames = [];
 var passwordInputNames = [];
-var iframeSearchDepth = 0;
+var subpageSearchDepth = 0;
 
 function getSubmitButton(form) {
   let buttons = form.querySelectorAll('button[type=submit]');
@@ -281,10 +281,13 @@ function setInputs(passwordData) {
 
 function processDoc(d, passwordData, depth) {
   setInputs(passwordData);
-  if (depth <= iframeSearchDepth) {
-    let iframes = d.getElementsByTagName('iframe');
-    Array.prototype.slice.call(iframes).forEach(function(iframe) {
-      processDoc(iframe.contentDocument, passwordData, depth++);
+  if (depth <= subpageSearchDepth) {
+    let subpages = [
+      ...d.getElementsByTagName('iframe'),
+      ...d.getElementsByTagName('frame')
+    ];
+    Array.prototype.slice.call(subpages).forEach(function(subpage) {
+      processDoc(subpage.contentDocument, passwordData, depth++);
     });
   }
 }

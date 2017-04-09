@@ -24,7 +24,7 @@ PassFF.Preferences = (function() {
       shortcutKey           : 'y',
       shortcutMod           : 'control',
       logEnabled            : false,
-      iframeSearchDepth     : 5,
+      subpageSearchDepth     : 5,
       callType              : 'direct',
       caseInsensitiveSearch : true,
       enterBehavior         : 0,
@@ -75,7 +75,7 @@ PassFF.Preferences = (function() {
             shortcutKey           : this.shortcutKey,
             shortcutMod           : this.shortcutMod,
             logEnabled            : this.logEnabled,
-            iframeSearchDepth     : this.iframeSearchDepth,
+            subpageSearchDepth    : this.subpageSearchDepth,
             callType              : this.callType,
             caseInsensitiveSearch : this.caseInsensitiveSearch,
             enterBehavior         : this.enterBehavior
@@ -207,8 +207,8 @@ PassFF.Preferences = (function() {
       return this._params.logEnabled;
     },
 
-    get iframeSearchDepth() {
-      return this._params.iframeSearchDepth;
+    get subpageSearchDepth() {
+      return this._params.subpageSearchDepth;
     },
 
     get callType() {
