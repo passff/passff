@@ -17,6 +17,7 @@ body {
 .searchbar input:focus,
 .searchbar input:hover {
   background-color: #fafafa;
+  color: #000;
 }
 
 .searchbar input {
@@ -48,6 +49,7 @@ div.buttonbox button {
   padding: 0 0.5rem;
   border: 0;
   background-color: #f0f0f0;
+  color: #000;
 }
 
 div.buttonbox button:hover {
@@ -109,6 +111,7 @@ div.buttonbox button.reload {
 
 .results select option:hover {
   background-color: #f0f0f0;
+  color: #000;
 }
 
 #clipboard-field-container,
