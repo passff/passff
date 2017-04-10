@@ -40,7 +40,12 @@ PassFF.Page = {
         PassFF.Page.fillInputs(tb.id, bestFitItem).then(() => {
           if (PassFF.Preferences.autoSubmit &&
               PassFF.Pass.getItemsLeafs(matchItems).length == 1) {
+            if (PassFF.Page.removeFromArray(PassFF.Page._autoSubmittedUrls, tab.url)) {
+              log.info('Url already submit. skip it');
+              return;
+            }
             PassFF.Page.submit(tb);
+            PassFF.Page._autoSubmittedUrls.push([tab.url, Date.now()]);
           }
         });
       }
@@ -121,33 +126,30 @@ PassFF.Page = {
   },
 
   submit: function(tab, passwordData) {
-    if (PassFF.Page.removeFromArray(PassFF.Page._autoSubmittedUrls, tab.url)) {
-      log.info('Url already submit. skip it');
-      return;
-    }
     this._exec(tab.id, "submit();");
-    PassFF.Page._autoSubmittedUrls.push(tab.url);
   },
 
   removeFromArray: function(array, value) {
-    let index = array.indexOf(value);
+    let index = array.find((val) => { return val[0] == value; });
+    let result = 60000; // one minute
     if (index >= 0) {
-      array.splice(index, 1);
+      // How old is the deleted URL?
+      result = Date.now() - array.splice(index, 1)[0][1];
     }
-    return index >= 0;
+    return result < 20000; // Is the deleted URL younger than 20 seconds?
   },
 
   _exec: function (tabId, cmd) {
     let code = this._contentScriptTemplate.format(`
-        loginInputNames = {0};
-        passwordInputNames = {1};
-        subpageSearchDepth = {2};
-        {3}`.format(
-            JSON.stringify(PassFF.Preferences.loginInputNames),
-            JSON.stringify(PassFF.Preferences.passwordInputNames),
-            JSON.stringify(PassFF.Preferences.subpageSearchDepth),
-            cmd
-        )
+      loginInputNames = {0};
+      passwordInputNames = {1};
+      subpageSearchDepth = {2};
+      {3}`.format(
+        JSON.stringify(PassFF.Preferences.loginInputNames),
+        JSON.stringify(PassFF.Preferences.passwordInputNames),
+        JSON.stringify(PassFF.Preferences.subpageSearchDepth),
+        cmd
+      )
     );
     browser.tabs.executeScript(tabId, { code: code, runAt: "document_idle" });
   },
