@@ -24,6 +24,7 @@ PassFF.Menu = {
             searchInput.focus();
           } else {
             PassFF.Menu.createItemMenuList(doc, menu_state['items']);
+            searchInput.focus();
           }
         }
       });
@@ -54,7 +55,6 @@ PassFF.Menu = {
     let entryList = doc.querySelector('.results select');
     entryList.setAttribute('id', PassFF.Ids.entrieslist);
     entryList.addEventListener('keydown', PassFF.Menu.onListItemkeydown);
-    entryList.addEventListener('keyup', PassFF.Menu.onListItemkeyup);
 
     let refreshButton = doc.querySelector('.actions button.reload');
     refreshButton.setAttribute('id', PassFF.Ids.refreshmenuitem);
@@ -82,25 +82,18 @@ PassFF.Menu = {
     }
 
     if (event.keyCode == 40 || event.keyCode == 13 || event.keyCode == 39) {
-      log.debug('Select first child');
-
+      /* DOWN ARROW, RETURN, RIGHT ARROW */
       let doc = event.target.ownerDocument;
       let listElm = doc.getElementById(PassFF.Ids.entrieslist);
 
       if (listElm.firstChild) {
-        listElm.firstChild.selected = false;
-        let item = listElm.firstChild;
-
-        if (event.keyCode == 40) {
-          item = item.nextSibling;
+        log.debug('Select first child');
+        listElm.firstChild.selected = true;
+        if (event.keyCode != 39) {
+          listElm.focus();
         }
-
-        item.selected = true;
       }
 
-      if (event.keyCode != 39) {
-        listElm.focus();
-      }
       event.stopPropagation();
     }
     PassFF.Menu.keyPressManagement(event);
@@ -132,19 +125,6 @@ PassFF.Menu = {
     PassFF.Menu.keyPressManagement(event);
   },
 
-  onListItemkeyup: function(event) {
-    log.debug('List item keyup', event);
-    if (event.keyCode <= 46) {
-      return false;
-    }
-    if (event.keyCode == 39) {
-      let doc = event.target.ownerDocument;
-      let searchInputElm = doc.getElementById(PassFF.Ids.searchbox);
-      searchInputElm.focus();
-      event.stopPropagation();
-    }
-  },
-
   keyPressManagement: function(event) {
     let doc = event.target.ownerDocument;
     let listElm = doc.getElementById(PassFF.Ids.entrieslist);
@@ -161,7 +141,9 @@ PassFF.Menu = {
     } else if (event.keyCode == 39) {
       /* RIGHT ARROW */
       let item = PassFF.Menu.getItem(listElm[listElm.selectedIndex]);
-      PassFF.Menu.createItemMenuList(doc, item);
+      if (item) {
+        PassFF.Menu.createItemMenuList(doc, item);
+      }
     } else if (event.keyCode == 37) {
       /* LEFT ARROW */
       let item = PassFF.Menu.getItem(listElm.firstChild);
@@ -173,7 +155,7 @@ PassFF.Menu = {
         });
       }
     } else if (!event.shiftKey && event.keyCode != 40 && event.keyCode != 38) {
-      /* NOT: SHIFT, UP ARROW, DOWN ARROW */
+      /* NOT: SHIFT, DOWN ARROW, UP ARROW */
       doc.getElementById(PassFF.Ids.searchbox).focus();
     }
   },
