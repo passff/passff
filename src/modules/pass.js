@@ -154,6 +154,7 @@ PassFF.Pass = {
       let lines = executionResult.stdout.split('\n');
       result.password = lines[0];
 
+      let noFields = true;
       for (let i = 1; i < lines.length; i++) {
         let line = lines[i];
         let splitPos = line.indexOf(':');
@@ -162,7 +163,12 @@ PassFF.Pass = {
           let attributeName = line.substring(0, splitPos).toLowerCase();
           let attributeValue = line.substring(splitPos + 1);
           result[attributeName] = attributeValue.trim();
+          noFields = false;
         }
+      }
+
+      if (noFields && lines.length > 1) {
+          result.login = lines[1];
       }
 
       PassFF.Pass.setLogin(result, item);
@@ -172,23 +178,27 @@ PassFF.Pass = {
       return result;
       });
     } else { // hierarchical-style item
-      item.children.forEach(function(child) {
-        if (child.isField()) {
-          result[child.key] = PassFF.Pass.getPasswordData(child).password;
-        }
-      });
-      return Promise.all(result).then(function (results) {
-      let result = {};
+      let promised_results = new Array(item.children.length);
       for (let i = 0; i < item.children.length; i++) {
         let child = item.children[i];
         if (child.isField()) {
-          result[child.key] = results[i].password;
+          promised_results[i] = PassFF.Pass.getPasswordData(child);
+        } else {
+          promised_results[i] = Promise.resolve();
         }
       }
-      PassFF.Pass.setLogin(result, item);
-      PassFF.Pass.setPassword(result);
-      PassFF.Pass.setOther(result);
-      return result;
+      return Promise.all(promised_results).then(function (results) {
+        let result = {};
+        for (let i = 0; i < item.children.length; i++) {
+          let child = item.children[i];
+          if (child.isField()) {
+            result[child.key] = results[i].password;
+          }
+        }
+        PassFF.Pass.setLogin(result, item);
+        PassFF.Pass.setPassword(result);
+        PassFF.Pass.setOther(result);
+        return result;
       });
     }
   },
