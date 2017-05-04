@@ -5,9 +5,9 @@
 
 set -e
 
-DIR="$( cd "$( dirname "$0" )" && pwd )"
 APP_NAME="passff"
-HOST_FILE="$DIR/passff.py"
+HOST_URL="https://raw.githubusercontent.com/nwallace/passff/master/src/host/passff.py"
+MANIFEST_URL="https://raw.githubusercontent.com/nwallace/passff/master/src/host/passff.json"
 
 # Find target dirs for various browsers & OS'es
 # https://developer.chrome.com/extensions/nativeMessaging#native-messaging-host-location
@@ -38,8 +38,6 @@ else
   fi
 fi
 
-ESCAPED_HOST_FILE=${HOST_FILE////\\/}
-
 case $1 in
 --chrome)
   BROWSER_NAME="Chrome"
@@ -67,19 +65,24 @@ case $1 in
     ;;
 esac
 
+HOST_FILE_PATH="$TARGET_DIR/$APP_NAME.py"
+MANIFEST_FILE_PATH="$TARGET_DIR/$APP_NAME.json"
+ESCAPED_HOST_FILE_PATH="${HOST_FILE_PATH////\\/}"
+
 echo "Installing $BROWSER_NAME host config"
 
 # Create config dir if not existing
 mkdir -p "$TARGET_DIR"
 
-# Copy manifest host config file
-cp "$DIR/passff.json" "$TARGET_DIR/$APP_NAME.json"
+# Download native host script and manifest
+curl -s "$HOST_URL"     > "$HOST_FILE_PATH"
+curl -s "$MANIFEST_URL" > "$MANIFEST_FILE_PATH"
 
 # Replace path to host
-sed -i -e "s/PLACEHOLDER/$ESCAPED_HOST_FILE/" "$TARGET_DIR/$APP_NAME.json"
+sed -i -e "s/PLACEHOLDER/$ESCAPED_HOST_FILE_PATH/" "$MANIFEST_FILE_PATH"
 
 # Set permissions for the manifest so that all users can read it.
-chmod o+r "$TARGET_DIR/$APP_NAME.json"
-	
-echo "Native messaging host for $BROWSER_NAME has been installed to $TARGET_DIR."
+chmod a+x "$HOST_FILE_PATH"
+chmod o+r "$MANIFEST_FILE_PATH"
 
+echo "Native messaging host for $BROWSER_NAME has been installed to $TARGET_DIR."
