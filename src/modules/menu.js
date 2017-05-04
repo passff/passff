@@ -27,6 +27,9 @@ PassFF.Menu = {
             searchInput.focus();
           }
         }
+      }).catch((error) => {
+        log.error("Error restoring menu:", error);
+        PassFF.Menu.addMessage(PassFF.gsfm("passff.errors.unexpected_error"));
       });
   },
 
@@ -390,5 +393,12 @@ PassFF.Menu = {
       node = node.parentNode;
     }
     return node ? node.item : null;
-  }
+  },
+
+  addMessage: function(message) {
+    let body = document.body;
+    let panel = document.createElement('div');
+    panel.textContent = message;
+    body.insertAdjacentElement('beforeend', panel);
+  },
 };

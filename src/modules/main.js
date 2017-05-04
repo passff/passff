@@ -111,17 +111,18 @@ var PassFF = {
   init: function(bgmode) {
     return PassFF.Preferences.init(bgmode)
       .then(() => {
-        if (!bgmode) {
-          return;
+        if (bgmode) {
+          return PassFF.Pass.init()
+            .then(() => {
+              browser.tabs.onUpdated.addListener(PassFF.onTabUpdate);
+              browser.tabs.onActivated.addListener(PassFF.onTabUpdate);
+              PassFF.onTabUpdate();
+              browser.runtime.onMessage.addListener(PassFF.bg_handle);
+              browser.contextMenus.onClicked.addListener(PassFF.Page.onContextMenu);
+            });
         }
-        return PassFF.Pass.init()
-          .then(() => {
-            browser.tabs.onUpdated.addListener(PassFF.onTabUpdate);
-            browser.tabs.onActivated.addListener(PassFF.onTabUpdate);
-            PassFF.onTabUpdate();
-            browser.runtime.onMessage.addListener(PassFF.bg_handle);
-            browser.contextMenus.onClicked.addListener(PassFF.Page.onContextMenu);
-          });
+      }).catch((error) => {
+        log.error("Error initializing preferences:", error);
       });
   },
 
@@ -152,6 +153,8 @@ var PassFF = {
       } else {
         return null;
       }
+    }).catch((error) => {
+      log.error("Runtime port has crashed:", error);
     });
   },
 

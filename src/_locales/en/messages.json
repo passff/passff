@@ -287,5 +287,8 @@
   },
   "passff.newpassword.errors.unexpected_error": {
     "message": "Sorry, an unexpected error occured"
+  },
+  "passff.errors.unexpected_error": {
+    "message": "Sorry, an unexpected error occured. Make sure your preferences are correctly set and that the native host app is installed."
   }
 }

@@ -83,7 +83,10 @@ PassFF.Preferences = (function() {
           let params = { command: 'gpgAgentEnv' };
           params['arguments'] = [this._params.gpgAgentInfo];
           return browser.runtime.sendNativeMessage('passff', params)
-            .then((result) => { this._gpgAgentEnv = result; });
+            .then((result) => { this._gpgAgentEnv = result; })
+            .catch((error) => {
+              log.error("Error detecting GPG Agent:", error);
+            });
         }
       });
     },
