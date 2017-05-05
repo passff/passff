@@ -199,6 +199,14 @@ PassFF.Menu = {
 
   onRefresh: function(event) {
     log.debug('Refresh', event);
+
+    // remove any lingering messages
+    let messages = document.getElementsByClassName('message');
+    Array.prototype.forEach.call(messages, (el) => {
+      el.parentNode().removeChild(el);
+    });
+
+    // update preferences and passwords
     PassFF.Preferences.init();
     PassFF.bg_exec('refresh')
       .then(() => {
