@@ -30,18 +30,25 @@ Clone the repository. Then, from the project's `src/` directory, execute `make`.
 For the extension to communicate with your system's `pass` script, you need to install what's called the host application.
 
 #### Official release
-Download the `install_host_app.sh` script from [our releases page](https://github.com/nwallace/passff/releases) and execute it.
+Download the `install_host_app.sh` script from [our releases page](https://github.com/nwallace/passff/releases) and execute it. You can do this in one line like so:
+
+```
+$ curl -sSL https://github.com/nwallace/passff/<VERSION>/install_host_app.sh | bash -s -- [firefox|chrome|opera|chromium|vivaldi]
+```
+
+This script will download the host application (a small python script) and the add-on's manifest file (a JSON config file) and put them in the right place.
+If you're concerned about executing a script that downloads files from the web, you can download the files yourself and run the script with the `--local` option instead or link the files yourself. Details below.
 
 #### Latest from GitHub
-Clone the repository. Then, from the project's `host/` directory, execute the installation script for your desired browser (`--firefox`, `--chrome`, `--opera`). Omit the browser flag to install it for any browser you have on your system.
+Clone the repository. Then, from the project's `host/` directory, execute the installation script for your desired browser (`firefox`, `chrome`, `opera`, `chromium`, or `vivaldi`).
 
-  ```
-  $ ./install_host_app.sh --firefox
-  ```
+```
+$ ./install_host_app.sh --local [firefox|chrome|opera|chromium|vivaldi]
+```
 
-This will link the host application JSON file appropriately for your browser.
+This will copy the host application and manifest files to the right place for your browser. The `--local` option makes the script use the files on disk rather than downloading them from GitHub.
 
-If this doesn't work, you can link the file yourself. First, change the "path" value in the `passff.json` file to be the absolute path to the project's `host/passff.py` file. Then symlink (or copy) the file `host/passff.json` to the appropriate location for your browser and OS:
+If this doesn't work, you can link the files yourself. First, change the "path" value in the `passff.json` file to be the absolute path to the project's `host/passff.py` file. Then symlink (or copy) the file `host/passff.json` to the appropriate location for your browser and OS:
 
 - Firefox
   - Linux
@@ -71,3 +78,10 @@ If this doesn't work, you can link the file yourself. First, change the "path" v
     - System-wide: `/Library/Application Support/Chromium/NativeMessagingHosts/passff.json`
 - Opera
   - Same as Chrome
+- Vivaldi
+  - Linux
+    - Per-user: `~/.config/vivaldi/NativeMessagingHosts/passff.json`
+    - System-wide: `/etc/vivaldi/native-messaging-hosts/passff.json`
+  - OS X
+    - Per-user: `~/Library/Application Support/Vivaldi/NativeMessagingHosts/passff.json`
+    - System-wide: `/Library/Application Support/Vivaldi/NativeMessagingHosts/passff.json`
