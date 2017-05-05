@@ -17,6 +17,9 @@
   "passff.menu.fill_and_submit": {
     "message": "Ausfüllen und absenden"
   },
+  "passff.menu.goto_fill": {
+    "message": "Ansurfen, ausfüllen"
+  },
   "passff.menu.goto_fill_and_submit": {
     "message": "Ansurfen, ausfüllen und absenden"
   },
@@ -30,7 +33,7 @@
     "message": "Login/Passwort"
   },
   "passff.display.description": {
-    "message": "Login: $LOGIN$\nPasswort: $PASSWORD$",
+    "message": "Login: $LOGIN$\n Passwort: $PASSWORD$",
     "placeholders": {
         "login": { "content": "$1" },
         "password": { "content": "$2" }
@@ -47,6 +50,9 @@
   },
   "passff.toolbar.preferences.label": {
     "message": "Optionen"
+  },
+  "passff.toolbar.new_password.label": {
+    "message": "Neu"
   },
   "passff.button.root.label": {
     "message": "Wurzel anzeigen"
@@ -65,6 +71,9 @@
   },
   "passff.prefs.tab.script": {
     "message": "Pass Skript"
+  },
+  "passff.prefs.tab.adding": {
+    "message": "Passwörter hinzufügen"
   },
   "passff.prefs.case-insensitive-search": {
     "message": "Groß-Kleinschreibung ignorieren"
@@ -194,5 +203,86 @@
   },
   "passff.prefs.shell_radio_label": {
     "message": "über eine Shell"
+  },
+  "passff.prefs.default_length_tooltip": {
+    "message": "Standardlänge für die Passwortgenerierung"
+  },
+  "passff.prefs.default_length_label": {
+    "message": "Standard Passwortlänge"
+  },
+  "passff.prefs.default_include_symbols_tooltip": {
+    "message": "Sollen generierte Passwörter standardmäßig Symbole enthalten?"
+  },
+  "passff.prefs.default_include_symbols_label": {
+    "message": "Symbole standardmäßig verwenden"
+  },
+  "passff.prefs.preferred_new_method_tooltip": {
+    "message": "Sollen neue Passwörter standardmäßig generiert oder eingetragen werden?"
+  },
+  "passff.prefs.preferred_new_method_label": {
+    "message": "Bevorzugte Methode"
+  },
+  "passff.prefs.prefer_generate": {
+    "message": "Generieren"
+  },
+  "passff.prefs.prefer_insert": {
+    "message": "Eintragen"
+  },
+  "passff.newpassword.window.title": {
+    "message": "Neues Passwort"
+  },
+  "passff.newpassword.window.header": {
+    "message": "Neues Passwort hinzufügen"
+  },
+  "passff.newpassword.tabs.generate": {
+    "message": "Generieren"
+  },
+  "passff.newpassword.tabs.insert": {
+    "message": "Eintragen"
+  },
+  "passff.newpassword.inputs.password_name_label": {
+    "message": "Bezeichnung"
+  },
+  "passff.newpassword.inputs.password_label": {
+    "message": "Passwort"
+  },
+  "passff.newpassword.inputs.password_confirmation_label": {
+    "message": "Passwort bestätigen"
+  },
+  "passff.newpassword.inputs.additional_info_label": {
+    "message": "Zusatzangaben"
+  },
+  "passff.newpassword.inputs.password_length_label": {
+    "message": "Länge"
+  },
+  "passff.newpassword.inputs.include_symbols_label": {
+    "message": "Symbole verwenden?"
+  },
+  "passff.newpassword.inputs.add_password_button_label": {
+    "message": "Passwort hinzufügen"
+  },
+  "passff.newpassword.inputs.generate_password_button_label": {
+    "message": "Passwort generieren"
+  },
+  "passff.newpassword.inputs.overwrite_password_prompt": {
+    "message": "Dieses Passwort existiert bereits. Soll es wirklich überschrieben werden?"
+  },
+  "passff.newpassword.errors.name_is_required": {
+    "message": "Bezeichnung muss angegeben werden"
+  },
+  "passff.newpassword.errors.password_is_required": {
+    "message": "Passwort muss angegeben werden"
+  },
+  "passff.newpassword.errors.password_confirmation_mismatch": {
+    "message": "Passwortbestätigung stimmt nicht überein"
+  },
+  "passff.newpassword.errors.pass_execution_failed": {
+    "message": "Ups, etwas ist schiefgegangen."
+  },
+  "passff.newpassword.errors.unexpected_error": {
+    "message": "Ein unerwarteter Fehler ist aufgetreten."
+  },
+  "passff.errors.unexpected_error": {
+    "message": "Ein unerwarteter Fehler ist aufgetreten. Stellen Sie sicher, dass die Einstellungen korrekt sind und dass die Host-App installiert ist."
   }
 }
