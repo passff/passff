@@ -23,8 +23,7 @@ PassFF.Preferences = (function() {
       autoSubmit            : false,
       shortcutKey           : 'y',
       shortcutMod           : 'control',
-      logEnabled            : false,
-      subpageSearchDepth     : 5,
+      subpageSearchDepth    : 5,
       callType              : 'direct',
       caseInsensitiveSearch : true,
       enterBehavior         : 0,
@@ -74,7 +73,6 @@ PassFF.Preferences = (function() {
             autoSubmit            : this.autoSubmit,
             shortcutKey           : this.shortcutKey,
             shortcutMod           : this.shortcutMod,
-            logEnabled            : this.logEnabled,
             subpageSearchDepth    : this.subpageSearchDepth,
             callType              : this.callType,
             caseInsensitiveSearch : this.caseInsensitiveSearch,
@@ -204,10 +202,6 @@ PassFF.Preferences = (function() {
 
     get shortcutMod() {
       return this._params.shortcutMod;
-    },
-
-    get logEnabled() {
-      return this._params.logEnabled;
     },
 
     get subpageSearchDepth() {

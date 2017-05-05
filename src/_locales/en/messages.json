@@ -192,12 +192,6 @@
   "passff.prefs.shortcut_mod_tooltip": {
     "message": "The shortcut modifiers used to open the PassFF panel. A combination of (control, alt, shift) words separated by a comma (,)"
   },
-  "passff.prefs.log_enabled_label": {
-    "message": "Enable logs"
-  },
-  "passff.prefs.log_enabled_tooltip": {
-    "message": "Enable debug logs in web console"
-  },
   "passff.prefs.callmethod-tooltip": {
     "message": "Choose the method passff will use to run the pass script"
   },

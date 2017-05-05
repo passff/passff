@@ -11,14 +11,14 @@ var log = {
 
 (function() {
   function logPrototype() {
-    if (PassFF.Preferences && PassFF.Preferences.logEnabled) {
+    if (PassFF.Preferences) {
       // jshint validthis: true
       this.apply(console, log.generateArguments(arguments));
     }
   }
   log.debug = logPrototype.bind(console.debug);
-  log.info = logPrototype.bind(console.info);
-  log.warn = logPrototype.bind(console.warn);
+  log.info  = logPrototype.bind(console.info);
+  log.warn  = logPrototype.bind(console.warn);
   log.error = logPrototype.bind(console.error);
 })();
 

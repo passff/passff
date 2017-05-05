@@ -186,12 +186,6 @@
   "passff.prefs.shortcut_mod_tooltip": {
     "message": "Модификаторы для быстрой клавиши используемые для открытия окна PassFF. Комбинация из (Control, Alt, Shift) и других символов разделенных запятой (,)"
   },
-  "passff.prefs.log_enabled_label": {
-    "message": "Включить ведение логов"
-  },
-  "passff.prefs.log_enabled_tooltip": {
-    "message": "Включить логи в веб-консоли (F12)"
-  },
   "passff.prefs.callmethod-tooltip": {
     "message": "Выберите метод который будет использоватся для запуска скрипта"
   },
