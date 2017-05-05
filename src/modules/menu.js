@@ -395,10 +395,18 @@ PassFF.Menu = {
     return node ? node.item : null;
   },
 
-  addMessage: function(message) {
-    let body = document.body;
-    let panel = document.createElement('div');
-    panel.textContent = message;
+  addMessage: function(message, severity) {
+    let body  = document.body,
+        panel = document.createElement('div'),
+        dismissControl = document.createElement('a'),
+        messageNode = document.createTextNode(message);
+    if (typeof severity === 'undefined') severity = 'error';
+    panel.classList.add('message', severity);
+    dismissControl.classList.add('dismiss');
+    dismissControl.innerHTML = '&times;';
+    dismissControl.addEventListener('click', () => body.removeChild(panel));
+    panel.appendChild(dismissControl);
+    panel.appendChild(messageNode);
     body.insertAdjacentElement('beforeend', panel);
   },
 };
