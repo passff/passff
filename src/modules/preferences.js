@@ -32,6 +32,16 @@ PassFF.Preferences = (function() {
       preferInsert          : false,
     };
 
+    let osString = browser.runtime.PlatformOs;
+    switch (osString) {
+      case 'mac':
+        Object.assign(defaultParams, {
+          command   : '/usr/local/bin/pass',
+          shellArgs : '--login',
+          callType  : 'shell',
+        });
+        break;
+    }
     return defaultParams;
   };
 
