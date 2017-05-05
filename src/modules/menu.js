@@ -4,6 +4,13 @@
 /* jshint node: true */
 'use strict';
 
+let logAndDisplayError = (errorMessage) => {
+  return (error) => {
+    log.error(errorMessage, ":", error);
+    PassFF.Menu.addMessage(PassFF.gsfm("passff.errors.unexpected_error"));
+  };
+};
+
 PassFF.Menu = {
   _currentMenuIndex: null,
   _stringBundle: null,
@@ -27,10 +34,7 @@ PassFF.Menu = {
             searchInput.focus();
           }
         }
-      }).catch((error) => {
-        log.error("Error restoring menu:", error);
-        PassFF.Menu.addMessage(PassFF.gsfm("passff.errors.unexpected_error"));
-      });
+      }).catch(logAndDisplayError("Error restoring menu"));
   },
 
   createStaticMenu: function(doc) {
@@ -120,7 +124,7 @@ PassFF.Menu = {
     PassFF.bg_exec('Pass.getMatchingItems', event.target.value, 6)
       .then((matchingItems) => {
         PassFF.Menu.createItemsMenuList(doc, matchingItems);
-      });
+      }).catch(logAndDisplayError("Error getting metching items"));
   },
 
   onListItemkeydown: function(event) {
@@ -155,7 +159,7 @@ PassFF.Menu = {
       } else {
         PassFF.bg_exec('Pass.rootItems').then((rootItems) => {
           PassFF.Menu.createItemsMenuList(doc, rootItems);
-        });
+        }).catch(logAndDisplayError("Error getting root items"));
       }
     } else if (!event.shiftKey && event.keyCode != 40 && event.keyCode != 38) {
       /* NOT: SHIFT, DOWN ARROW, UP ARROW */
@@ -173,7 +177,7 @@ PassFF.Menu = {
     } else {
       PassFF.bg_exec('Pass.rootItems').then((rootItems) => {
         PassFF.Menu.createItemsMenuList(doc, rootItems);
-      });
+      }).catch(logAndDisplayError("Error getting root items on list item selected"));
     }
   },
 
@@ -190,7 +194,7 @@ PassFF.Menu = {
       let searchInput = doc.querySelector("input[type='text']");
       searchInput.value = "";
       searchInput.focus();
-    });
+    }).catch(logAndDisplayError("Error getting root items on button press"));
   },
 
   onRefresh: function(event) {
@@ -199,11 +203,11 @@ PassFF.Menu = {
     PassFF.bg_exec('refresh')
       .then(() => {
         PassFF.Menu.createContextualMenu(event.target.ownerDocument);
-      });
+      }).catch(logAndDisplayError("Error refreshing menu"));
   },
 
   onPreferences: function(event) {
-    PassFF.bg_exec('openOptionsPage');
+    PassFF.bg_exec('openOptionsPage').catch(logAndDisplayError("Error opening preferences"));
     window.close()
   },
 
@@ -219,14 +223,16 @@ PassFF.Menu = {
 
   onAutoFillMenuClick: function(event) {
     event.stopPropagation();
-    PassFF.bg_exec('Page.fillInputs', PassFF.Menu.getItem(event.target), false);
+    PassFF.bg_exec('Page.fillInputs', PassFF.Menu.getItem(event.target), false)
+      .catch(logAndDisplayError("Error on auto-fill button press"));
     window.close();
   },
 
   onAutoFillAndSubmitMenuClick: function(event) {
     event.stopPropagation();
 
-    PassFF.bg_exec('Page.fillInputs', PassFF.Menu.getItem(event.target), true);
+    PassFF.bg_exec('Page.fillInputs', PassFF.Menu.getItem(event.target), true)
+      .catch(logAndDisplayError("Error on auto-fill-and-submit button press"));
     window.close();
   },
 
@@ -235,7 +241,8 @@ PassFF.Menu = {
 
     let item = PassFF.Menu.getItem(event.target);
     log.debug("Goto item url", item);
-    PassFF.bg_exec('Page.goToItemUrl', item, event.button !== 0, false, false);
+    PassFF.bg_exec('Page.goToItemUrl', item, event.button !== 0, false, false)
+      .catch(logAndDisplayError("Error on goto button press"));
     window.close();
   },
 
@@ -244,14 +251,16 @@ PassFF.Menu = {
 
     let item = PassFF.Menu.getItem(event.target);
     log.debug("Goto item url fill and submit", item);
-    PassFF.bg_exec('Page.goToItemUrl', item, event.button !== 0, true, true);
+    PassFF.bg_exec('Page.goToItemUrl', item, event.button !== 0, true, true)
+      .catch(logAndDisplayError("Error on goto-auto-fill-and-submit button press"));
     window.close();
   },
 
   onDisplayItemData: function(event) {
     PassFF
       .bg_exec('Pass.getPasswordData', PassFF.Menu.getItem(event.target))
-      .then((passwordData) => window.alert(passwordData.fullText));
+      .then((passwordData) => window.alert(passwordData.fullText))
+      .catch(logAndDisplayError("Error getting password data on display item"));
   },
 
   onCopyToClipboard: function(event) {
@@ -268,7 +277,7 @@ PassFF.Menu = {
         field.select();
         doc.execCommand('copy', false, null);
         window.close();
-      });
+      }).catch(logAndDisplayError("Error getting password data on copy to clipboard"));
   },
 
   clearMenuList: function(doc) {
@@ -296,7 +305,7 @@ PassFF.Menu = {
         let newItem = PassFF.Menu.createMenuItem(doc, item.parent, '..',
           PassFF.Menu.onListItemSelected);
         listElm.insertBefore(newItem, listElm.firstChild);
-      });
+      }).catch(logAndDisplayError("Error getting item by id while creating item menu list"));
   },
 
   createContextualMenu: function(doc) {
@@ -310,7 +319,7 @@ PassFF.Menu = {
         let searchInput = doc.getElementById(PassFF.Ids.searchbox);
         searchInput.value = "";
         searchInput.focus();
-      });
+      }).catch(logAndDisplayError("Error getting matching items on create contextual menu"));
   },
 
   createItemsMenuList: function(doc, items, cleanMenu) {
@@ -330,7 +339,8 @@ PassFF.Menu = {
       let onEnter = null;
       if (item.isLeaf || item.hasFields) {
         onEnter = function(event) {
-          PassFF.bg_exec('Menu.onEnter', PassFF.Menu.getItem(this), event.shiftKey);
+          PassFF.bg_exec('Menu.onEnter', PassFF.Menu.getItem(this), event.shiftKey)
+            .catch(logAndDisplayError("Error entering menu"));
           window.close();
         };
       }
