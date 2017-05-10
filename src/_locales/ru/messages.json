@@ -17,6 +17,9 @@
   "passff.menu.fill_and_submit": {
     "message": "Заполнить и отправить"
   },
+  "passff.menu.goto_fill": {
+    "message": "Перейти и заполнить"
+  },
   "passff.menu.goto_fill_and_submit": {
     "message": "Перейти, заполнить и отправить"
   },
