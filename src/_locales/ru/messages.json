@@ -205,13 +205,13 @@
     "message": "Длина пароля по умолчанию"
   },
   "passff.prefs.default_include_symbols_tooltip": {
-    "message": "Должны ли сгенерированные пароли использовать и отличные от букв и цифр символы"
+    "message": "Должны ли сгенерированные пароли использовать отличные от букв и цифр символы"
   },
   "passff.prefs.default_include_symbols_label": {
     "message": "Включать все символы по умолчанию"
   },
   "passff.prefs.preferred_new_method_tooltip": {
-    "message": "Генерировать ли или вставлять новые пароли"
+    "message": "Генерировать или вставлять новые пароли"
   },
   "passff.prefs.preferred_new_method_label": {
     "message": "Предпочтительный новый метод"
