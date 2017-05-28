@@ -6,8 +6,8 @@
 set -e
 
 APP_NAME="passff"
-HOST_URL="https://raw.githubusercontent.com/nwallace/passff/master/src/host/passff.py"
-MANIFEST_URL="https://raw.githubusercontent.com/nwallace/passff/master/src/host/passff.json"
+HOST_URL="https://raw.githubusercontent.com/passff/passff/master/src/host/passff.py"
+MANIFEST_URL="https://raw.githubusercontent.com/passff/passff/master/src/host/passff.json"
 
 # Find target dirs for various browsers & OS'es
 # https://developer.chrome.com/extensions/nativeMessaging#native-messaging-host-location

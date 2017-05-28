@@ -15,7 +15,7 @@ Install the current release for your browser:
 - Opera (coming soon)
 
 #### Previous release
-Download the XPI file from [our releases page](https://github.com/nwallace/passff/releases).
+Download the XPI file from [our releases page](https://github.com/passff/passff/releases).
 ###### Firefox
 Unsigned extensions are only available with Firefox Developer Edition. Visit "about:debugging#addons", then click "Load Temporary Add-on".
 ###### Chrome
@@ -30,10 +30,10 @@ Clone the repository. Then, from the project's `src/` directory, execute `make`.
 For the extension to communicate with your system's `pass` script, you need to install what's called the host application.
 
 #### Official release
-Download the `install_host_app.sh` script from [our releases page](https://github.com/nwallace/passff/releases) and execute it. You can do this in one line like so:
+Download the `install_host_app.sh` script from [our releases page](https://github.com/passff/passff/releases) and execute it. You can do this in one line like so:
 
 ```
-$ curl -sSL https://github.com/nwallace/passff/<VERSION>/install_host_app.sh | bash -s -- [firefox|chrome|opera|chromium|vivaldi]
+$ curl -sSL https://github.com/passff/passff/releases/download/1.0.0/install_host_app.sh | bash -s -- [firefox|chrome|opera|chromium|vivaldi]
 ```
 
 This script will download the host application (a small python script) and the add-on's manifest file (a JSON config file) and put them in the right place.
