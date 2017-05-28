@@ -1,6 +1,6 @@
 {
   "passff.passphrase.title": {
-    "message": "Репозитарий паролей заблокирован"
+    "message": "Репозиторий паролей заблокирован"
   },
   "passff.passphrase.description": {
     "message": "Нет доступа к паролю.\n Сначала добавьте пароль в gpg-agent."
@@ -16,6 +16,9 @@
   },
   "passff.menu.fill_and_submit": {
     "message": "Заполнить и отправить"
+  },
+  "passff.menu.goto_fill": {
+    "message": "Перейти и заполнить"
   },
   "passff.menu.goto_fill_and_submit": {
     "message": "Перейти, заполнить и отправить"
@@ -47,6 +50,9 @@
   },
   "passff.toolbar.preferences.label": {
     "message": "Настройки"
+  },
+  "passff.toolbar.new_password.label": {
+    "message": "Новый"
   },
   "passff.button.root.label": {
     "message": "Показать все"
@@ -82,7 +88,7 @@
     "message": "Определяет поведение по умолчанию при нажатии клавиши ввода на элементе меню"
   },
   "passff.prefs.fields_description": {
-    "message": "Поля которые используются для поиска данных в вашем репозитарии паролей. PassFF пытается найти логин, пароль и адреса сайтов в файлах с паролями (испольуя стандартный синтаксис)."
+    "message": "Поля которые используются для поиска данных в вашем репозитории паролей. PassFF пытается найти логин, пароль и адреса сайтов в файлах с паролями (используя стандартный синтаксис)."
   },
   "passff.prefs.password_input_names_label": {
     "message": "Имена полей для паролей"
@@ -205,13 +211,13 @@
     "message": "Длина пароля по умолчанию"
   },
   "passff.prefs.default_include_symbols_tooltip": {
-    "message": "Должны ли сгенерированные пароли использовать и отличные от букв и цифр символы"
+    "message": "Должны ли сгенерированные пароли использовать отличные от букв и цифр символы"
   },
   "passff.prefs.default_include_symbols_label": {
     "message": "Включать все символы по умолчанию"
   },
   "passff.prefs.preferred_new_method_tooltip": {
-    "message": "Генерировать ли или вставлять новые пароли"
+    "message": "Генерировать или вставлять новые пароли"
   },
   "passff.prefs.preferred_new_method_label": {
     "message": "Предпочтительный новый метод"
@@ -221,5 +227,62 @@
   },
   "passff.prefs.prefer_insert": {
     "message": "Вставить"
+  },
+  "passff.newpassword.window.title": {
+    "message": "Новый пароль"
+  },
+  "passff.newpassword.window.header": {
+    "message": "Добавить новый пароль"
+  },
+  "passff.newpassword.tabs.generate": {
+    "message": "Генерировать"
+  },
+  "passff.newpassword.tabs.insert": {
+    "message": "Вставить"
+  },
+  "passff.newpassword.inputs.password_name_label": {
+    "message": "Имя"
+  },
+  "passff.newpassword.inputs.password_label": {
+    "message": "Пароль"
+  },
+  "passff.newpassword.inputs.password_confirmation_label": {
+    "message": "Подтвердить пароль"
+  },
+  "passff.newpassword.inputs.additional_info_label": {
+    "message": "Дополнительные данные"
+  },
+  "passff.newpassword.inputs.password_length_label": {
+    "message": "Длинна"
+  },
+  "passff.newpassword.inputs.include_symbols_label": {
+    "message": "Включая отличные от букв и цифр символы?"
+  },
+  "passff.newpassword.inputs.add_password_button_label": {
+    "message": "Вставить пароль"
+  },
+  "passff.newpassword.inputs.generate_password_button_label": {
+    "message": "Генерировать пароль"
+  },
+  "passff.newpassword.inputs.overwrite_password_prompt": {
+    "message": "Пароль уже есть. Хотите ли вы его надписать?"
+  },
+  "passff.newpassword.errors.name_is_required": {
+    "message": "Имя обязательно"
+  },
+  "passff.newpassword.errors.password_is_required": {
+    "message": "Пароль обязателен"
+  },
+  "passff.newpassword.errors.password_confirmation_mismatch": {
+    "message": "Пароли не сходятся"
+  },
+  "passff.newpassword.errors.pass_execution_failed": {
+    "message": "Ой, чтото пошло не так"
+  },
+  "passff.newpassword.errors.unexpected_error": {
+    "message": "Извините, произошла неожиданная ошибка"
+  },
+  "passff.errors.unexpected_error": {
+    "message": "Извините, произошла неожиданная ошибка. Убедитесь что ваши установки правильны и что нативная программа заинстлирована в операционной системе."
   }
 }
