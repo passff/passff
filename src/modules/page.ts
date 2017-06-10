@@ -1,78 +1,92 @@
-/* jshint node: true */
-'use strict';
+declare let browser: any;
+import {Preferences} from './preferences';
+import {Pass, Item} from './pass';
+import {log, getActiveTab} from './main';
 
-if (!String.prototype.format) {
-  String.prototype.format = function() {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) {
+export interface Tab {
+  url?: string
+  id?: number
+  status?: string
+}
+
+interface String {
+  format(): string;
+}
+
+function format(string: string, ...args: string[]) {
+    return string.replace(/{(\d+)}/g, function(match:string, number:number) {
       return typeof args[number] != 'undefined'
         ? args[number]
         : match
       ;
     });
-  };
 }
 
-PassFF.Page = {
-  _autoSubmittedUrls: [],
-  _autoFillAndSubmitPending: false,
+type SubmittedUrl = [string, number];
 
-  tabAutoFill: function(tb) {
-    if (PassFF.Page._autoFillAndSubmitPending || !PassFF.Preferences.autoFill) {
+export class Page {
+  private static _autoSubmittedUrls : SubmittedUrl[] = [];
+  private static _autoFillAndSubmitPending = false;
+
+  static tabAutoFill(tb: Tab) {
+    if (Page._autoFillAndSubmitPending || !Preferences.autoFill) {
       return;
     }
 
     if (tb.status != "complete") {
-      browser.tabs.onUpdated.addListener(function f(tabId, changeInfo, tab) {
+      browser.tabs.onUpdated.addListener(function f(tabId: number, changeInfo: any, tab:Tab) {
         if (tabId == tb.id && tab.status == "complete") {
           browser.tabs.onUpdated.removeListener(f);
-          PassFF.Page.tabAutoFill(tab);
+          Page.tabAutoFill(tab);
         }
       });
     } else {
       let url = tb.url;
-      let matchItems = PassFF.Pass.getUrlMatchingItems(url);
+      let matchItems = Pass.getUrlMatchingItems(url);
 
       log.info('Start pref-auto-fill');
-      let bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
+      let bestFitItem = Pass.findBestFitItem(matchItems, url);
 
       if (bestFitItem) {
-        PassFF.Page.fillInputs(tb.id, bestFitItem).then(() => {
-          if (PassFF.Preferences.autoSubmit &&
-              PassFF.Pass.getItemsLeafs(matchItems).length == 1) {
-            if (PassFF.Page.removeFromArray(PassFF.Page._autoSubmittedUrls, tab.url)) {
+        Page.fillInputs(tb.id, bestFitItem).then(() => {
+          if (Preferences.autoSubmit &&
+              Pass.getItemsLeafs(matchItems).length == 1) {
+            // TODO: variable "tab" is never set?
+            let tab = {url: "dummy"};
+            if (Page.removeFromArray(Page._autoSubmittedUrls, tab.url)) {
               log.info('Url already submit. skip it');
               return;
             }
-            PassFF.Page.submit(tb);
-            PassFF.Page._autoSubmittedUrls.push([tab.url, Date.now()]);
+            Page.submit(tb);
+            // TODO: variable "tab" is never set?
+            Page._autoSubmittedUrls.push([tab.url, Date.now()]);
           }
         });
       }
     }
-  },
+  }
 
-  onContextMenu: function(info, tab) {
+  static onContextMenu(info: any, tab: Tab) {
     if (info.menuItemId == "login-add") {
-      PassFF.Page._exec(tab.id, "addInputName();");
+      Page._exec(tab.id, "addInputName();");
     } else {
       let itemId = parseInt(info.menuItemId.split("-")[1]);
-      let item = PassFF.Pass.getItemById(itemId);
-      PassFF.Pass.getPasswordData(item).then((passwordData) => {
-        PassFF.Page._exec(tab.id,
-          "contextMenuFill({0});".format(JSON.stringify(passwordData))
+      let item = Pass.getItemById(itemId);
+      Pass.getPasswordData(item).then((passwordData) => {
+        Page._exec(tab.id,
+          format("contextMenuFill({0});", JSON.stringify(passwordData))
         );
       });
     }
-  },
+  }
 
-  goToItemUrl: function(item, newTab, autoFill, submit) {
+  static goToItemUrl(item: Item, newTab: boolean, autoFill: boolean, submit: boolean) {
     if (!item) {
-      return new Promise();
+      return new Promise(() => void 0);
     }
 
-    PassFF.Page._autoFillAndSubmitPending = true;
-    let promised_tab = null;
+    Page._autoFillAndSubmitPending = true;
+    let promised_tab : Promise<Tab> = null;
     if (newTab) {
       promised_tab = browser.tabs.create({});
     } else {
@@ -80,7 +94,7 @@ PassFF.Page = {
     }
 
     log.debug('go to item url', item, newTab, autoFill, submit);
-    return PassFF.Pass.getPasswordData(item).then((passwordData) => {
+    return Pass.getPasswordData(item).then((passwordData) => {
       let url = passwordData.url;
 
       if (!url) {
@@ -97,67 +111,68 @@ PassFF.Page = {
         if (!autoFill) {
           return;
         }
-        browser.tabs.onUpdated.addListener(function f(tabId, changeInfo, tab) {
+        browser.tabs.onUpdated.addListener(function f(tabId: number, changeInfo: any, tab: Tab) {
           if (tabId == tb.id && tab.status == "complete") {
             browser.tabs.onUpdated.removeListener(f);
             log.info('Start auto-fill');
-            PassFF.Page._autoFillAndSubmitPending = false;
-            PassFF.Page.fillInputs(tabId, item).then(() => {
+            Page._autoFillAndSubmitPending = false;
+            Page.fillInputs(tabId, item).then(() => {
               if (submit) {
                 log.info('Start submit');
-                PassFF.Page.submit(tb);
+                Page.submit(tb);
               }
             });
           }
         });
       });
     });
-  },
+  }
 
-  fillInputs: function(tabId, item) {
-    return PassFF.Pass.getPasswordData(item).then((passwordData) => {
+  static fillInputs(tabId: number, item: Item) {
+    return Pass.getPasswordData(item).then((passwordData) => {
       if (passwordData) {
         this._exec(tabId,
-          "processDoc(doc, {0}, 0);".format(JSON.stringify(passwordData))
+          format("processDoc(doc, {0}, 0);", JSON.stringify(passwordData))
         );
       }
       return tabId;
     });
-  },
+  }
 
-  submit: function(tab, passwordData) {
+  static submit(tab: Tab, passwordData : any = null) {
     this._exec(tab.id, "submit();");
-  },
+  }
 
-  removeFromArray: function(array, value) {
-    let index = array.find((val) => { return val[0] == value; });
+  private static removeFromArray(array: SubmittedUrl[] , value: string) {
+    // TODO this method makes no sense using find - should it be findIndex?
+    let index = array.findIndex((val) => { return val[0] == value; });
     let result = 60000; // one minute
     if (index >= 0) {
       // How old is the deleted URL?
       result = Date.now() - array.splice(index, 1)[0][1];
     }
     return result < 20000; // Is the deleted URL younger than 20 seconds?
-  },
+  }
 
-  _exec: function (tabId, cmd) {
-    let code = this._contentScriptTemplate.format(`
+  private static  _exec(tabId: number, cmd: string) {
+    let code = format(this._contentScriptTemplate, format(`
       loginInputNames = {0};
       passwordInputNames = {1};
       subpageSearchDepth = {2};
-      {3}`.format(
-        JSON.stringify(PassFF.Preferences.loginInputNames),
-        JSON.stringify(PassFF.Preferences.passwordInputNames),
-        JSON.stringify(PassFF.Preferences.subpageSearchDepth),
+      {3}`,
+        JSON.stringify(Preferences.loginInputNames),
+        JSON.stringify(Preferences.passwordInputNames),
+        JSON.stringify(Preferences.subpageSearchDepth),
         cmd
       )
     );
     browser.tabs.executeScript(tabId, { code: code, runAt: "document_idle" });
-  },
+  }
 
 /******************************************************************************/
 /*                 Template for injected content script                       */
 /******************************************************************************/
-    _contentScriptTemplate: `
+    private static _contentScriptTemplate = `
 var doc = document;
 var loginInputTypes = ['text', 'email', 'tel'];
 var loginInputNames = [];
@@ -313,4 +328,4 @@ function addInputName() {
 {0}`
 /******************************************************************************/
 /******************************************************************************/
-};
+}

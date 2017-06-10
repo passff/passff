@@ -1,6 +1,9 @@
 /* jshint node: true */
 'use strict';
 
+const PassFF = require('../modules/main').PassFF;
+const Preferences = require('../modules/preferences').Preferences;
+
 function update_callTypeUI() {
  document.querySelectorAll(".shell_radio,.direct_radio").forEach(function (el) {
    el.style.display = "none";
@@ -18,13 +21,13 @@ function pref_str_change_cb(key, isInt) {
   return function (evt) {
     let val = evt.target.value;
     if (isInt) val = parseInt(val);
-    PassFF.Preferences.pref_set(key, val);
+    Preferences.pref_set(key, val);
   };
 }
 
 function pref_bool_change_cb(key) {
   return function (evt) {
-    PassFF.Preferences.pref_set(key, evt.target.checked);
+    Preferences.pref_set(key, evt.target.checked);
   };
 }
 
@@ -34,12 +37,12 @@ window.onload = () => promised_init.then(() => {
     el.textContent = PassFF.gsfm(el.textContent);
   });
 
-  for (let [key, cT] in Iterator(["shell", "direct"])) {
+  for (let cT of ["shell", "direct"]) {
     document.getElementById("pref_callType_" + cT)
       .addEventListener("change", update_callTypeUI);
   }
 
-  for (let [key, val] in Iterator(PassFF.Preferences._params)) {
+  for (let [key, val] of Object.entries(Preferences._params)) {
     let el = document.getElementById("pref_" + key);
     if (el !== null) {
       if (el.tagName == "INPUT" && el.type == "text") {

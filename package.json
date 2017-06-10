@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "build": "grunt build",
+    "watch": "grunt watch"
+  },
+  "devDependencies": {
+    "@types/chrome": "0.0.46",
+    "@types/firefox": "0.0.28",
+    "factor-bundle": "^2.5.0",
+    "grunt": "^1.0.1",
+    "grunt-browserify": "^5.0.0",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-compress": "^1.4.3",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-mkdir": "^1.0.0",
+    "grunt-ts": "^6.0.0-beta.16",
+    "grunt-zip": "^0.17.1",
+    "typescript": "^2.3.4"
+  }
+}

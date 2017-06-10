@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "target": "es2017",
+    "allowJs": false,
+    "lib": [
+      "dom",
+      "es6",
+      "es2017"
+    ]
+  },
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.js",
+    "./content/*.js"
+  ]
+}

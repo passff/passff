@@ -34,10 +34,7 @@
 
     "background": {
         "scripts": [
-            "modules/main.js",
-            "modules/preferences.js",
-            "modules/pass.js",
-            "modules/page.js",
+            "common.js",
             "background.js"
         ]
     },

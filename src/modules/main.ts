@@ -1,34 +1,42 @@
-/* jshint node: true */
-'use strict';
+import {ItemObject, Pass} from './pass';
+import {Preferences} from './preferences';
+import {Page, Tab} from './page';
+import {Menu} from "./menu";
 
-var log = {
-  generateArguments: function(args) {
-    var argsArray = Array.slice(args);
-    argsArray.unshift('[PassFF]');
-    return argsArray;
-  }
-};
+declare let browser: any;
 
-(function() {
-  function logPrototype() {
-    if (PassFF.Preferences) {
+export class log {
+  private static  logPrototype() {
+    if (Preferences) {
       // jshint validthis: true
       this.apply(console, log.generateArguments(arguments));
     }
   }
-  log.debug = logPrototype.bind(console.debug);
-  log.info  = logPrototype.bind(console.info);
-  log.warn  = logPrototype.bind(console.warn);
-  log.error = logPrototype.bind(console.error);
-})();
 
-function getActiveTab() {
-  return browser.tabs.query({active: true, currentWindow: true})
-         .then((tabs) => { return tabs[0]; });
+  static generateArguments(args: IArguments) {
+    var argsArray = Array.from(args);
+    argsArray.unshift('[PassFF]');
+    return argsArray;
+  }
+   static debug = log.logPrototype.bind(console.debug);
+   static info  = log.logPrototype.bind(console.info);
+   static warn  = log.logPrototype.bind(console.warn);
+   static error = log.logPrototype.bind(console.error);
 }
 
-var PassFF = {
-  Ids: {
+export function getActiveTab() {
+  return browser.tabs.query({active: true, currentWindow: true})
+         .then((tabs: any) => { return tabs[0]; });
+}
+
+export interface MenuStateObject {
+  context_url: string;
+  search_val: string;
+  items: ItemObject[];
+}
+
+export class PassFF {
+  static Ids = {
     panel: 'passff-panel',
     button: 'passff-button',
     key: 'passff-key',
@@ -47,18 +55,20 @@ var PassFF = {
     newpasswordmenuitem: 'passff-new-password-menuitem',
     menubar: 'passff-menubar',
     menu: 'passff-menu-',
-  },
+  };
 
-  tab_url: null,
+  private static tab_url: string = null;
 
-  menu_state: {
-    'context_url': null,
-    'search_val': "",
-    '_items': null,
-    get items() {
+  private static menu_state = new class {
+    context_url: string = null;
+    search_val: string = "";
+    private _items: ItemObject[] = null;
+
+    get items(): ItemObject[] {
       return this._items;
-    },
-    set items(new_items) {
+    };
+
+    set items(new_items: ItemObject[]) {
       this._items = new_items;
       chrome.contextMenus.removeAll();
       chrome.contextMenus.create({
@@ -74,59 +84,63 @@ var PassFF = {
       if (this._items == null) {
         return;
       } else if (this._items instanceof Array) {
-        this._items.slice(0,3).forEach(this.addItemContext);
+        this._items.slice(0, 3).forEach(this.addItemContext);
       } else {
-        this.addItemContext(PassFF.Pass.getItemById(this._items).toObject());
+        // TODO:
+        // this seems to have been a bug - the call to Pass.getItemById(this._items) would always result in undefined
+        // this.addItemContext(Pass.getItemById(this._items).toObject());
       }
-    },
-    'addItemContext': function (i) {
+    }
+
+    addItemContext(i: ItemObject) {
       if (i.isLeaf) {
         chrome.contextMenus.create({
-          id: "login-"+i.id,
+          id: "login-" + i.id,
           title: i.fullKey,
           contexts: ["editable"]
         });
       }
-    },
-    'toObject': function () {
+    }
+
+    toObject(): MenuStateObject {
       return {
         'context_url': this.context_url,
         'search_val': this.search_val,
         'items': this.items
       };
     }
-  },
+  };
 
-  gsfm: function (key, params) {
+  static gsfm(key: string, params: any = {}) {
     if (params) {
       return browser.i18n.getMessage(key, params);
     }
     return browser.i18n.getMessage(key);
-  },
+  }
 
-  alert: function(msg) {
+  static alert(msg: any) {
     browser.tabs.executeScript({code : 'alert(' + JSON.stringify(msg) + ');' });
-  },
+  }
 
-  init: function(bgmode) {
-    return PassFF.Preferences.init(bgmode)
+  static init(bgmode: boolean) {
+    return Preferences.init(bgmode)
       .then(() => {
         if (bgmode) {
-          return PassFF.Pass.init()
+          return Pass.init()
             .then(() => {
               browser.tabs.onUpdated.addListener(PassFF.onTabUpdate);
               browser.tabs.onActivated.addListener(PassFF.onTabUpdate);
               PassFF.onTabUpdate();
               browser.runtime.onMessage.addListener(PassFF.bg_handle);
-              browser.contextMenus.onClicked.addListener(PassFF.Page.onContextMenu);
+              browser.contextMenus.onClicked.addListener(Page.onContextMenu);
             });
         }
       }).catch((error) => {
         log.error("Error initializing preferences:", error);
       });
-  },
+  };
 
-  init_tab: function (tab) {
+  private static init_tab(tab: Tab) {
     // do nothing if called from a non-tab context
     if( ! tab || ! tab.url ) {
         return;
@@ -134,87 +148,88 @@ var PassFF = {
 
     log.debug('Location changed', tab.url);
     PassFF.tab_url = tab.url;
-    let items = PassFF.Pass.getUrlMatchingItems(PassFF.tab_url);
+    let items = Pass.getUrlMatchingItems(PassFF.tab_url);
     PassFF.menu_state.items = items.map((i) => { return i.toObject(true); });
-    PassFF.Page.tabAutoFill(tab);
-  },
+    Page.tabAutoFill(tab);
+  }
 
-  onTabUpdate: function () {
+  private static onTabUpdate () {
     getActiveTab().then(PassFF.init_tab);
-  },
+  }
 
-  bg_exec: function (action) {
+  static bg_exec (action: string, ...params: any[]) {
     return browser.runtime.sendMessage({
       action: action,
-      params: [].slice.call(arguments).slice(1)
-    }).then((msg) => {
+      params: params
+    }).then((msg: any) => {
+      console.log("got response for request", action, ...params, msg);
       if (msg) {
         return msg.response;
       } else {
         return null;
       }
-    }).catch((error) => {
+    }).catch((error: any) => {
       log.error("Runtime port has crashed:", error);
     });
-  },
+  }
 
-  bg_handle: function (request, sender, sendResponse) {
+  private static bg_handle(request: {action:string, params?: any[]}, sender: any, sendResponse: Function) : boolean|void {
     if (request.action == "Pass.getUrlMatchingItems") {
-      let items = PassFF.Pass.rootItems;
+      let items = Pass.rootItems;
       if (PassFF.tab_url !== null) {
-        items = PassFF.Pass.getUrlMatchingItems(PassFF.tab_url);
+        items = Pass.getUrlMatchingItems(PassFF.tab_url);
         if (items.length === 0) {
-          items = PassFF.Pass.rootItems;
+          items = Pass.rootItems;
         }
       }
-      items = items.map((i) => { return i.toObject(true); });
+      let itemObjects = items.map((i) => { return i.toObject(true); });
       PassFF.menu_state.context_url = PassFF.tab_url;
       PassFF.menu_state.search_val = "";
-      PassFF.menu_state.items = items;
-      sendResponse({ response: items });
+      PassFF.menu_state.items = itemObjects;
+      sendResponse({ response: itemObjects });
     } else if (request.action == "Pass.getMatchingItems") {
       let val = request.params[0];
       let lim = request.params[1];
-      let matchingItems = PassFF.Pass.getMatchingItems(val, lim);
-      matchingItems = matchingItems.map((i) => { return i.toObject(true); });
+      let matchingItems = Pass.getMatchingItems(val, lim);
+      let matchingItemObjects = matchingItems.map((i) => { return i.toObject(true); });
       PassFF.menu_state.context_url = PassFF.tab_url;
       PassFF.menu_state.search_val = val;
-      PassFF.menu_state.items = matchingItems;
-      sendResponse({ response: matchingItems });
+      PassFF.menu_state.items = matchingItemObjects;
+      sendResponse({ response: matchingItemObjects });
     } else if (request.action == "Pass.rootItems") {
-      let items = PassFF.Pass.rootItems;
-      items = items.map((i) => { return i.toObject(true); });
+      let items = Pass.rootItems;
+      let itemObjects = items.map((i) => { return i.toObject(true); });
       PassFF.menu_state.context_url = PassFF.tab_url;
       PassFF.menu_state.search_val = "";
-      PassFF.menu_state.items = items;
-      sendResponse({ response: items });
+      PassFF.menu_state.items = itemObjects;
+      sendResponse({ response: itemObjects });
     } else if (request.action == "Pass.getItemById") {
       PassFF.menu_state.context_url = PassFF.tab_url;
       PassFF.menu_state.items = request.params[0];
-      let item = PassFF.Pass.getItemById(request.params[0]);
+      let item = Pass.getItemById(request.params[0]);
       sendResponse({ response: item.toObject(true) });
     } else if (request.action == "Pass.getPasswordData") {
-      let item = PassFF.Pass.getItemById(request.params[0]);
-      PassFF.Pass.getPasswordData(item).then((passwordData) => {
+      let item = Pass.getItemById(request.params[0]);
+      Pass.getPasswordData(item).then((passwordData) => {
         log.debug("sending response");
         sendResponse({ response: passwordData });
       });
       return true;
     } else if (request.action == "Pass.addNewPassword") {
-      PassFF.Pass.addNewPassword.apply(PassFF.Pass, request.params)
-      .then((result) => {
+      Pass.addNewPassword.apply(Pass, request.params)
+      .then((result: any) => {
         sendResponse({ response: result });
       });
       return true;
     } else if (request.action == "Pass.generateNewPassword") {
-      PassFF.Pass.generateNewPassword.apply(PassFF.Pass, request.params)
-      .then((result) => {
+      Pass.generateNewPassword.apply(Pass, request.params)
+      .then((result : any) => {
         sendResponse({ response: result });
       });
       return true;
     } else if (request.action == "Pass.isPasswordNameTaken") {
       sendResponse({
-        response: PassFF.Pass.isPasswordNameTaken(request.params[0])
+        response: Pass.isPasswordNameTaken(request.params[0])
       });
     } else if (request.action == "Menu.restore") {
       if(PassFF.menu_state.context_url != PassFF.tab_url) {
@@ -226,56 +241,56 @@ var PassFF = {
         response: PassFF.menu_state.toObject()
       });
     } else if (request.action == "Menu.onEnter") {
-      let item = PassFF.Pass.getItemById(request.params[0]);
+      let item = Pass.getItemById(request.params[0]);
       let shiftKey = request.params[1];
       log.debug("onEnter", item, shiftKey);
-      switch (PassFF.Preferences.enterBehavior) {
+      switch (Preferences.enterBehavior) {
         case 0:
           //goto url, fill, submit
-          PassFF.Page.goToItemUrl(item, shiftKey, true, true);
+          Page.goToItemUrl(item, shiftKey, true, true);
           break;
         case 1:
           //goto url, fill
-          PassFF.Page.goToItemUrl(item, shiftKey, true, false);
+          Page.goToItemUrl(item, shiftKey, true, false);
           break;
         case 2:
           //fill, submit
-          getActiveTab().then((tb) => {
-            return PassFF.Page.fillInputs(tb.id, item);
-          }).then((tabId) => {
-            PassFF.Page.submit(tabId);
+          getActiveTab().then((tb: Tab) => {
+            return Page.fillInputs(tb.id, item);
+          }).then((tabId: number) => {
+            Page.submit(tabId);
           });
           break;
         case 3:
           //fill
-          getActiveTab().then((tb) => {
-            PassFF.Page.fillInputs(tb.id, item);
+          getActiveTab().then((tb: Tab) => {
+            Page.fillInputs(tb.id, item);
           });
           break;
       }
     } else if (request.action == "Page.goToItemUrl") {
-      let item = PassFF.Pass.getItemById(request.params[0]);
-      PassFF.Page.goToItemUrl(item, request.params[1], request.params[2], request.params[3]);
+      let item = Pass.getItemById(request.params[0]);
+      Page.goToItemUrl(item, request.params[1], request.params[2], request.params[3]);
     } else if (request.action == "Page.fillInputs") {
-      let item = PassFF.Pass.getItemById(request.params[0]);
+      let item = Pass.getItemById(request.params[0]);
       let andSubmit = request.params[1];
-      getActiveTab().then((tb) => {
-        return PassFF.Page.fillInputs(tb.id, item);
-      }).then((tabId) => {
-        if (andSubmit) PassFF.Page.submit(tabId);
+      getActiveTab().then((tb: Tab) => {
+        return Page.fillInputs(tb.id, item);
+      }).then((tabId: number) => {
+        if (andSubmit) Page.submit(tabId);
       });
     } else if (request.action == "Preferences.addInputName") {
-      if (PassFF.Preferences.addInputName(request.params[0], request.params[1])) {
-        PassFF.Preferences.init(true)
-          .then(() => PassFF.Pass.init());
+      if (Preferences.addInputName(request.params[0], request.params[1])) {
+        Preferences.init(true)
+          .then(() => Pass.init());
       }
     } else if (request.action == "openOptionsPage") {
       browser.runtime.openOptionsPage();
     } else if (request.action == "refresh") {
-      PassFF.Preferences.init(true)
-        .then(() => PassFF.Pass.init())
+      Preferences.init(true)
+        .then(() => Pass.init())
         .then(() => sendResponse());
       return true;
     }
   }
-};
+}
