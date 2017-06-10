@@ -162,6 +162,7 @@ export class PassFF {
       action: action,
       params: params
     }).then((msg: any) => {
+      console.log("got response for request", action, ...params, msg);
       if (msg) {
         return msg.response;
       } else {
@@ -172,7 +173,7 @@ export class PassFF {
     });
   }
 
-  private static bg_handle(request: {action:string, params?: any[]}, sender: any, sendResponse: Function) : void {
+  private static bg_handle(request: {action:string, params?: any[]}, sender: any, sendResponse: Function) : boolean|void {
     if (request.action == "Pass.getUrlMatchingItems") {
       let items = Pass.rootItems;
       if (PassFF.tab_url !== null) {
@@ -213,16 +214,19 @@ export class PassFF {
         log.debug("sending response");
         sendResponse({ response: passwordData });
       });
+      return true;
     } else if (request.action == "Pass.addNewPassword") {
       Pass.addNewPassword.apply(Pass, request.params)
       .then((result: any) => {
         sendResponse({ response: result });
       });
+      return true;
     } else if (request.action == "Pass.generateNewPassword") {
       Pass.generateNewPassword.apply(Pass, request.params)
       .then((result : any) => {
         sendResponse({ response: result });
       });
+      return true;
     } else if (request.action == "Pass.isPasswordNameTaken") {
       sendResponse({
         response: Pass.isPasswordNameTaken(request.params[0])
@@ -286,6 +290,7 @@ export class PassFF {
       Preferences.init(true)
         .then(() => Pass.init())
         .then(() => sendResponse());
+      return true;
     }
   }
 }
