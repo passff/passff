@@ -1,9 +1,38 @@
-/* jshint node: true */
-'use strict';
+declare let browser: any;
+import {Pass, Dict} from './pass';
+import {log} from './main';
 
-PassFF.Preferences = (function() {
+  export interface PreferenceType {
+    passwordInputNames?: string
+    loginInputNames?: string
+    loginFieldNames?: string
+    passwordFieldNames?: string
+    urlFieldNames?: string
+    command?: string
+    commandArgs?: string
+    shell?: string
+    shellArgs?: string
+    home?: string
+    gnupgHome?: string
+    storeDir?: string
+    storeGit?: string
+    gpgAgentInfo?: string
+    autoFill?: boolean
+    autoSubmit?: boolean
+    shortcutKey?: string
+    shortcutMod?: string
+    subpageSearchDepth?: number
+    callType?: string
+    caseInsensitiveSearch?: boolean
+    enterBehavior?: number
+    defaultPasswordLength?: number
+    defaultIncludeSymbols?: boolean
+    preferInsert?: boolean
+  }
 
-  let getDefaultParams = function() {
+ export class Preferences {
+
+   private static getDefaultParams() : PreferenceType {
     let defaultParams = {
       passwordInputNames    : 'passwd,password,pass',
       loginInputNames       : 'login,user,mail,email,username,opt_login,log,usr_name',
@@ -32,7 +61,7 @@ PassFF.Preferences = (function() {
       preferInsert          : false,
     };
 
-    let osString = browser.runtime.PlatformOs;
+    let osString = "windows"; //browser.runtime.PlatformOs;
     switch (osString) {
       case 'mac':
         Object.assign(defaultParams, {
@@ -45,20 +74,22 @@ PassFF.Preferences = (function() {
     return defaultParams;
   };
 
-  return {
-    _gpgAgentEnv: null,
-    _params: getDefaultParams(),
-    init: function(bgmode) {
+   private static _gpgAgentEnv: Dict<string> = null;
+
+   private static _params =  Preferences.getDefaultParams();
+
+   static init(bgmode:boolean = false) {
       let promised_changes = [];
-      for (let [key, val] in Iterator(PassFF.Preferences._params)) {
+      for (let [key, val] of Object.entries(Preferences._params)) {
         promised_changes.push(
           browser.storage.local.get(key)
-            .then((res) => {
+            .then((res: Dict<string|number|boolean>) => {
               if (typeof res[key] === 'undefined') {
-                let obj = {}; obj[key] = val;
+                let obj : Dict<string|number|boolean> = {};
+                obj[key] = val;
                 browser.storage.local.set(obj);
               } else {
-                this._params[key] = res[key];
+                (<any>this._params)[key] = res[key];
               }
             })
         );
@@ -88,27 +119,27 @@ PassFF.Preferences = (function() {
             caseInsensitiveSearch : this.caseInsensitiveSearch,
             enterBehavior         : this.enterBehavior
           });
-          let params = { command: 'gpgAgentEnv' };
+          let params : any = { command: 'gpgAgentEnv' };
           params['arguments'] = [this._params.gpgAgentInfo];
           return browser.runtime.sendNativeMessage('passff', params)
-            .then((result) => { this._gpgAgentEnv = result; })
-            .catch((error) => {
+            .then((result: Dict<string>) => { this._gpgAgentEnv = result; })
+            .catch((error: any) => {
               log.error("Error detecting GPG Agent:", error);
             });
         }
       });
-    },
+    }
 
-    pref_set: function(key, val) {
-        let obj = {};
+    static pref_set(key: string, val: string) {
+        let obj : {[key:string]:string} = {};
         obj[key] = val;
         browser.storage.local.set(obj);
-    },
+    }
 
-    addInputName: function(type, name) {
-      let names = PassFF.Preferences.loginInputNames;
+    static addInputName(type:string, name:string) {
+      let names = Preferences.loginInputNames;
       if (type == "password") {
-        names = PassFF.Preferences.passwordInputNames;
+        names = Preferences.passwordInputNames;
       }
       for (let i = 0; i < names.length; i++) {
         if (name.toLowerCase().indexOf(names[i].toLowerCase()) >= 0) {
@@ -117,125 +148,129 @@ PassFF.Preferences = (function() {
       }
       log.debug("New input name", name, "of type", type);
       names.push(name);
-      names = names.join(",");
+      let _names = names.join(",");
       if (type == "password") {
-        PassFF.Preferences.pref_set("passwordInputNames", names);
+        Preferences.pref_set("passwordInputNames", _names);
       } else {
-        PassFF.Preferences.pref_set("loginInputNames", names);
+        Preferences.pref_set("loginInputNames", _names);
       }
       return true;
-    },
+    }
 
-    get passwordInputNames() {
+    static get passwordInputNames() {
       return this._params.passwordInputNames.split(',');
-    },
+    }
 
-    get loginInputNames() {
+    static get loginInputNames() {
       return this._params.loginInputNames.split(',');
-    },
+    }
 
-    get loginFieldNames() {
+    static get loginFieldNames() {
       return this._params.loginFieldNames.split(',');
-    },
+    }
 
-    get passwordFieldNames() {
+    static get passwordFieldNames() {
       return this._params.passwordFieldNames.split(',');
-    },
+    }
 
-    get urlFieldNames() {
+    static get urlFieldNames() {
       return this._params.urlFieldNames.split(',');
-    },
+    }
 
-    get command() {
+    static get command() {
       return this._params.command;
-    },
+    }
 
-    get commandArgs() {
+    static get commandArgs() {
       return this._params.commandArgs.split(' ');
-    },
+    }
 
-    get shell() {
+    static get shell() {
       return this._params.shell;
-    },
+    }
 
-    get shellArgs() {
+    static get shellArgs() {
       return this._params.shellArgs.split(' ');
-    },
+    }
 
-    get home() {
+    static get home() {
       if (this._params.home.trim().length > 0) {
         return this._params.home;
       }
-      return PassFF.Pass.env.get('HOME');
-    },
+      return Pass.env.get('HOME');
+    }
 
-    get gnupgHome() {
+    static get gnupgHome() {
       if (this._params.gnupgHome.trim().length > 0) {
         return this._params.gnupgHome;
       }
-      return PassFF.Pass.env.get('GNUPGHOME');
-    },
+      return Pass.env.get('GNUPGHOME');
+    }
 
-    get storeDir() {
+    static get storeDir() {
       if (this._params.storeDir.trim().length > 0) {
         return this._params.storeDir;
       }
-      return PassFF.Pass.env.get('PASSWORD_STORE_DIR');
-    },
+      return Pass.env.get('PASSWORD_STORE_DIR');
+    }
 
-    get storeGit() {
+    static get storeGit() {
       if (this._params.storeGit.trim().length > 0) {
         return this._params.storeGit;
       }
-      return PassFF.Pass.env.get('PASSWORD_STORE_GIT');
-    },
+      return Pass.env.get('PASSWORD_STORE_GIT');
+    }
 
-    get path() {
-      return PassFF.Pass.env.get('PATH');
-    },
+    static get path() {
+      return Pass.env.get('PATH');
+    }
 
-    get gpgAgentEnv() {
+   static get gpgAgentEnv() {
       return this._gpgAgentEnv;
-    },
+    }
 
-    get autoFill() {
+   static get autoFill() {
       return this._params.autoFill;
-    },
+    }
 
-    get autoSubmit() {
+   static get autoSubmit() {
       return this._params.autoSubmit;
-    },
+    }
 
-    get shortcutKey() {
+   static get shortcutKey() {
       return this._params.shortcutKey;
-    },
+    }
 
-    get shortcutMod() {
+   static get shortcutMod() {
       return this._params.shortcutMod;
-    },
+    }
 
-    get subpageSearchDepth() {
+   static get subpageSearchDepth() {
       return this._params.subpageSearchDepth;
-    },
+    }
 
-    get callType() {
+   static get callType() {
       return this._params.callType;
-    },
+    }
 
-    get caseInsensitiveSearch() {
+   static get caseInsensitiveSearch() {
       return this._params.caseInsensitiveSearch;
-    },
-    get enterBehavior() {
+    }
+
+   static get enterBehavior() {
       return this._params.enterBehavior;
-    },
-    get defaultPasswordLength() {
+    }
+
+   static get defaultPasswordLength() {
       return this._params.defaultPasswordLength;
-    },
-    get defaultIncludeSymbols() {
+    }
+
+   static get defaultIncludeSymbols() {
       return this._params.defaultIncludeSymbols;
-    },
-    get preferInsert() {
+    }
+
+   static get preferInsert() {
       return this._params.preferInsert;
     }
-  };
-})();
+  }
+

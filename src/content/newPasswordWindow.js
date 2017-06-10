@@ -1,6 +1,9 @@
 /* jshint node: true */
 'use strict';
 
+const PassFF = require('../modules/main').PassFF;
+const Preferences = require('../modules/preferences').Preferences;
+
 function _(msg_id) {
     return PassFF.gsfm("passff.newpassword." + msg_id);
 }
@@ -91,9 +94,9 @@ window.onload = () => promised_init.then(() => {
       el.textContent = PassFF.gsfm(el.textContent);
   });
 
-  document.getElementById("gen-password-length").value = PassFF.Preferences.defaultPasswordLength;
-  document.getElementById("gen-include-symbols").checked = PassFF.Preferences.defaultIncludeSymbols;
-  if (!PassFF.Preferences.preferInsert) {
+  document.getElementById("gen-password-length").value = Preferences.defaultPasswordLength;
+  document.getElementById("gen-include-symbols").checked = Preferences.defaultIncludeSymbols;
+  if (!Preferences.preferInsert) {
       document.getElementById("tab0").setAttribute("checked", true);
   }
 
