@@ -317,13 +317,13 @@ PassFF.Pass = {
   getItemQuality: function(item, urlStr) {
     let url = new URL(urlStr);
     let hostGroupToMatch = url.host.replace(/^\.+/, '').replace(/\.+$/, '');
-    let hostGroupToMatchSplit = hostGroupToMatch.split('\.+');
+    let hostGroupToMatchSplit = hostGroupToMatch.split(/\.+/);
     let tldName = '';
     if (hostGroupToMatchSplit.length >= 2) {
       tldName = hostGroupToMatchSplit[hostGroupToMatchSplit.length - 1];
     }
     do {
-      let itemQuality = hostGroupToMatch.split('\.+').length * 100 + hostGroupToMatch.split('\.+').length;
+      let itemQuality = hostGroupToMatch.split(/\.+/).length * 100 + hostGroupToMatch.split(/\.+/).length;
       let hostToMatch = hostGroupToMatch;
       /*
        * Return if item has children since it is a directory!
