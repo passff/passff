@@ -136,8 +136,8 @@ PassFF.Pass = {
                              .indexOf('gpg: decryption failed: No secret key') >= 0;
 
       while (executionResult.exitCode !== 0 && gpgDecryptFailed) {
-        let title = PassFF.gsfm('passff.passphrase.title');
-        let desc = PassFF.gsfm('passff.passphrase.description');
+        let title = PassFF.gsfm('passff_passphrase_title');
+        let desc = PassFF.gsfm('passff_passphrase_description');
         /* We skip this for now since we don't have 'window.confirm' ...
         if (!window.confirm(title + "\n" + desc)) {
           return;

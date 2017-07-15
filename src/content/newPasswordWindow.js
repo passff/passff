@@ -2,7 +2,7 @@
 'use strict';
 
 function _(msg_id) {
-    return PassFF.gsfm("passff.newpassword." + msg_id);
+    return PassFF.gsfm("passff_newpassword_" + msg_id);
 }
 
 function isPresent(field, errorMsg) {

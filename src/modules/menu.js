@@ -7,7 +7,7 @@
 let logAndDisplayError = (errorMessage) => {
   return (error) => {
     log.error(errorMessage, ":", error);
-    PassFF.Menu.addMessage(PassFF.gsfm("passff.errors.unexpected_error"));
+    PassFF.Menu.addMessage(PassFF.gsfm("passff_errors_unexpected_error"));
   };
 };
 
@@ -44,19 +44,19 @@ PassFF.Menu = {
     let searchBox = doc.querySelector('.searchbar input[type=text]');
     searchBox.setAttribute('id', PassFF.Ids.searchbox);
     searchBox.setAttribute('placeholder',
-                               PassFF.gsfm('passff.toolbar.search.placeholder'));
+                               PassFF.gsfm('passff_toolbar_search_placeholder'));
     searchBox.addEventListener('click', function (e) { e.target.select(); });
     searchBox.addEventListener('keypress', PassFF.Menu.onSearchKeypress);
     searchBox.addEventListener('keyup', PassFF.Menu.onSearchKeyup);
 
     let showAllButton = doc.querySelector('.actions div:nth-child(1) > button');
     showAllButton.setAttribute('id', PassFF.Ids.rootbutton);
-    showAllButton.textContent = PassFF.gsfm('passff.button.root.label');
+    showAllButton.textContent = PassFF.gsfm('passff_button_root_label');
     showAllButton.addEventListener('click', PassFF.Menu.onRootButtonCommand);
 
     let showMatchingButton = doc.querySelector('.actions div:nth-child(2) > button');
     showMatchingButton.setAttribute('id', PassFF.Ids.contextbutton);
-    showMatchingButton.textContent = PassFF.gsfm('passff.button.context.label');
+    showMatchingButton.textContent = PassFF.gsfm('passff_button_context_label');
     showMatchingButton.addEventListener('click', PassFF.Menu.onContextButtonCommand);
 
     let entryList = doc.querySelector('.results select');
@@ -65,17 +65,17 @@ PassFF.Menu = {
 
     let refreshButton = doc.querySelector('.actions button.reload');
     refreshButton.setAttribute('id', PassFF.Ids.refreshmenuitem);
-    refreshButton.setAttribute('title', PassFF.gsfm('passff.toolbar.refresh.label'));
+    refreshButton.setAttribute('title', PassFF.gsfm('passff_toolbar_refresh_label'));
     refreshButton.addEventListener('click', PassFF.Menu.onRefresh);
 
     let prefsButton = doc.querySelector('.actions button.config');
     prefsButton.setAttribute('id', PassFF.Ids.prefsmenuitem);
-    prefsButton.setAttribute('title', PassFF.gsfm('passff.toolbar.preferences.label'));
+    prefsButton.setAttribute('title', PassFF.gsfm('passff_toolbar_preferences_label'));
     prefsButton.addEventListener('click', PassFF.Menu.onPreferences);
 
     let newPasswordButton = doc.querySelector('.actions button.add');
     newPasswordButton.setAttribute('id', PassFF.Ids.newpasswordmenuitem);
-    newPasswordButton.setAttribute('title', PassFF.gsfm('passff.toolbar.new_password.label'));
+    newPasswordButton.setAttribute('title', PassFF.gsfm('passff_toolbar_new_password_label'));
     newPasswordButton.addEventListener('click', PassFF.Menu.onNewPassword);
 
     return panel;
@@ -370,13 +370,13 @@ PassFF.Menu = {
     log.debug('Create leaf menu list', item);
     let listElm = doc.getElementById(PassFF.Ids.entrieslist);
 
-    [ ['passff.menu.fill', PassFF.Menu.onAutoFillMenuClick],
-      ['passff.menu.fill_and_submit', PassFF.Menu.onAutoFillAndSubmitMenuClick],
-      ['passff.menu.goto_fill_and_submit', PassFF.Menu.onGotoAutoFillAndSubmitMenuClick],
-      ['passff.menu.goto', PassFF.Menu.onGoto],
-      ['passff.menu.copy_login', PassFF.Menu.onCopyToClipboard, 'login'],
-      ['passff.menu.copy_password', PassFF.Menu.onCopyToClipboard, 'password'],
-      ['passff.menu.display', PassFF.Menu.onDisplayItemData]
+    [ ['passff_menu_fill', PassFF.Menu.onAutoFillMenuClick],
+      ['passff_menu_fill_and_submit', PassFF.Menu.onAutoFillAndSubmitMenuClick],
+      ['passff_menu_goto_fill_and_submit', PassFF.Menu.onGotoAutoFillAndSubmitMenuClick],
+      ['passff_menu_goto', PassFF.Menu.onGoto],
+      ['passff_menu_copy_login', PassFF.Menu.onCopyToClipboard, 'login'],
+      ['passff_menu_copy_password', PassFF.Menu.onCopyToClipboard, 'password'],
+      ['passff_menu_display', PassFF.Menu.onDisplayItemData]
     ].forEach(function(data) {
       let newItem = PassFF.Menu.createMenuItem(doc, item, PassFF.gsfm(data[0]), data[1],
                                                data.length == 3 ? data[2] : undefined);
