@@ -229,8 +229,7 @@ function isLoginInput(input) {
 
 function isOtherInputCheck(other) {
   return function(input) {
-    return (loginInputTypes.indexOf(input.type) >= 0 &&
-           hasGoodName(input.name ? input.name : input.id, Object.keys(other)));
+    return (hasGoodName(input.name ? input.name : input.id, Object.keys(other)));
   }
 }
 
