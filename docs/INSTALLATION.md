@@ -39,6 +39,16 @@ $ curl -sSL https://github.com/passff/passff/releases/download/1.0.0/install_hos
 This script will download the host application (a small python script) and the add-on's manifest file (a JSON config file) and put them in the right place.
 If you're concerned about executing a script that downloads files from the web, you can download the files yourself and run the script with the `--local` option instead or link the files yourself. Details below.
 
+#### Windows
+Download the `install_host_app.bat` script from [our releases page](https://github.com/passff/passff/releases) and execute it from within a shell with a correct PATH.
+*The rule of thumb is: if you can execute pass and python from your shell, then your host application will be installed correctly.*
+
+```
+> install_host_app.bat [firefox|chrome|opera|chromium|vivaldi]
+```
+
+Note: Older Windows versions might require powershell to be installed manually as the install script uses powershell internally. Windows 10 users should be fine out of the box.
+
 #### Latest from GitHub
 Clone the repository. Then, from the project's `host/` directory, execute the installation script for your desired browser (`firefox`, `chrome`, `opera`, `chromium`, or `vivaldi`).
 
