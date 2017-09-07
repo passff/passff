@@ -50,7 +50,7 @@ PassFF.Preferences = (function() {
     _params: getDefaultParams(),
     init: function(bgmode) {
       let promised_changes = [];
-      for (let [key, val] in Iterator(PassFF.Preferences._params)) {
+      for (let [key, val] of Object.entries(PassFF.Preferences._params)) {
         promised_changes.push(
           browser.storage.local.get(key)
             .then((res) => {
