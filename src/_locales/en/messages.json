@@ -1,288 +1,288 @@
 {
-  "passff.passphrase.title": {
+  "passff_passphrase_title": {
     "message": "Password repository locked"
   },
-  "passff.passphrase.description": {
+  "passff_passphrase_description": {
     "message": "Can't access to your password.\nPlease add your passphrase to gpg-agent first."
   },
-  "passff.menu.copy_password": {
+  "passff_menu_copy_password": {
     "message": "Copy password"
   },
-  "passff.menu.copy_login": {
+  "passff_menu_copy_login": {
     "message": "Copy login"
   },
-  "passff.menu.fill": {
+  "passff_menu_fill": {
     "message": "Fill"
   },
-  "passff.menu.fill_and_submit": {
+  "passff_menu_fill_and_submit": {
     "message": "Fill and submit"
   },
-  "passff.menu.goto_fill": {
+  "passff_menu_goto_fill": {
     "message": "Goto, fill"
   },
-  "passff.menu.goto_fill_and_submit": {
+  "passff_menu_goto_fill_and_submit": {
     "message": "Goto, fill and submit"
   },
-  "passff.menu.goto": {
+  "passff_menu_goto": {
     "message": "Goto"
   },
-  "passff.menu.display": {
+  "passff_menu_display": {
     "message": "Display"
   },
-  "passff.display.title": {
+  "passff_display_title": {
     "message": "Login/Password"
   },
-  "passff.display.description": {
+  "passff_display_description": {
     "message": "Login: $LOGIN$\n Password: $PASSWORD$",
     "placeholders": {
         "login": { "content": "$1" },
         "password": { "content": "$2" }
     }
   },
-  "passff.toolbar.button.label": {
+  "passff_toolbar_button_label": {
     "message": "PassFF"
   },
-  "passff.toolbar.search.placeholder": {
+  "passff_toolbar_search_placeholder": {
     "message": "Search"
   },
-  "passff.toolbar.refresh.label": {
+  "passff_toolbar_refresh_label": {
     "message": "Refresh"
   },
-  "passff.toolbar.preferences.label": {
+  "passff_toolbar_preferences_label": {
     "message": "Preferences"
   },
-  "passff.toolbar.new_password.label": {
+  "passff_toolbar_new_password_label": {
     "message": "New"
   },
-  "passff.button.root.label": {
+  "passff_button_root_label": {
     "message": "Display root"
   },
-  "passff.button.context.label": {
+  "passff_button_context_label": {
     "message": "Display contextual"
   },
-  "passff.prefs.tab.general": {
+  "passff_prefs_tab_general": {
     "message": "General"
   },
-  "passff.prefs.tab.autofilling": {
+  "passff_prefs_tab_autofilling": {
     "message": "Autofilling"
   },
-  "passff.prefs.tab.fields": {
+  "passff_prefs_tab_fields": {
     "message": "Fields"
   },
-  "passff.prefs.tab.script": {
+  "passff_prefs_tab_script": {
     "message": "Pass Script"
   },
-  "passff.prefs.tab.adding": {
+  "passff_prefs_tab_adding": {
     "message": "Adding Passwords"
   },
-  "passff.prefs.case-insensitive-search": {
+  "passff_prefs_case_insensitive_search": {
     "message": "Case-insensitive searching"
   },
-  "passff.prefs.case-insensitive-search-tooltip": {
+  "passff_prefs_case_insensitive_search_tooltip": {
     "message": "This will treat upper- and lowercase characters the same when searching for pass files"
   },
-  "passff.prefs.enter-behavior": {
+  "passff_prefs_enter_behavior": {
     "message": "Behavior of enter key"
   },
-  "passff.prefs.enter-behavior-tooltip": {
+  "passff_prefs_enter_behavior_tooltip": {
     "message": "This determines the default behavior when pressing the enter key on an item in the menu"
   },
-  "passff.prefs.fields_description": {
+  "passff_prefs_fields_description": {
     "message": "Fields are used to find data inside your passwords repository. PassFF will try to find the login, password or url value inside the password data (using the standard syntax) or trying to find a matching child node name"
   },
-  "passff.prefs.password_input_names_label": {
+  "passff_prefs_password_input_names_label": {
     "message": "Password input names"
   },
-  "passff.prefs.password_input_names_tooltip": {
+  "passff_prefs_password_input_names_tooltip": {
     "message": "Comma separated list of input names. Input field names in a html page containing one of those values will be filled with the password"
   },
-  "passff.prefs.login_input_names_label": {
+  "passff_prefs_login_input_names_label": {
     "message": "Login input names"
   },
-  "passff.prefs.login_input_names_tooltip": {
+  "passff_prefs_login_input_names_tooltip": {
     "message": "Comma separated list of input names. Input field names in a html page containing one of those values will be filled with the login"
   },
-  "passff.prefs.login_field_names_label": {
+  "passff_prefs_login_field_names_label": {
     "message": "Login field names"
   },
-  "passff.prefs.login_field_names_tooltip": {
+  "passff_prefs_login_field_names_tooltip": {
     "message": "Comma separated list of field names. The first matching field in the password data will be used as login"
   },
-  "passff.prefs.password_field_names_label": {
+  "passff_prefs_password_field_names_label": {
     "message": "Password field names"
   },
-  "passff.prefs.password_field_names_tooltip": {
+  "passff_prefs_password_field_names_tooltip": {
     "message": "Comma separated list of field names. The first matching field in the password data will be used as password"
   },
-  "passff.prefs.url_field_names_label": {
+  "passff_prefs_url_field_names_label": {
     "message": "Url field names"
   },
-  "passff.prefs.url_field_names_tooltip": {
+  "passff_prefs_url_field_names_tooltip": {
     "message": "Comma separated list of field names. The first matching field in the password data will be used as url"
   },
-  "passff.prefs.command_label": {
+  "passff_prefs_command_label": {
     "message": "Pass command"
   },
-  "passff.prefs.command_tooltip": {
+  "passff_prefs_command_tooltip": {
     "message": "The pass script path"
   },
-  "passff.prefs.commandArgs_label": {
+  "passff_prefs_commandArgs_label": {
     "message": "Arguments"
   },
-  "passff.prefs.commandArgs_tooltip": {
+  "passff_prefs_commandArgs_tooltip": {
     "message": "Arguments to pass to the pass script when run"
   },
-  "passff.prefs.shell_label": {
+  "passff_prefs_shell_label": {
     "message": "Pass shell"
   },
-  "passff.prefs.shell_tooltip": {
+  "passff_prefs_shell_tooltip": {
     "message": "The shell to use"
   },
-  "passff.prefs.shellArgs_label": {
+  "passff_prefs_shellArgs_label": {
     "message": "Shell arguments"
   },
-  "passff.prefs.shellArgs_tooltip": {
+  "passff_prefs_shellArgs_tooltip": {
     "message": "Arguments to start the shell with"
   },
-  "passff.prefs.home_label": {
+  "passff_prefs_home_label": {
     "message": "User home"
   },
-  "passff.prefs.home_tooltip": {
+  "passff_prefs_home_tooltip": {
     "message": "User home. If empty, use environment user home"
   },
-  "passff.prefs.gpg_agent_info_label": {
+  "passff_prefs_gpg_agent_info_label": {
     "message": "Gpg agent info file"
   },
-  "passff.prefs.gpg_agent_info_tooltip": {
+  "passff_prefs_gpg_agent_info_tooltip": {
     "message": "Location of the gpg agent info file containing environment variables (relative to the user home or absolute). if not found, try to load variables from firefox environment"
   },
-  "passff.prefs.pass_dir_label": {
+  "passff_prefs_pass_dir_label": {
     "message": "Pass store dir"
   },
-  "passff.prefs.pass_dir_tooltip": {
+  "passff_prefs_pass_dir_tooltip": {
     "message": "Pass store dir (PASSWORD_STORE_DIR). If empty, use the current environment PASSWORD_STORE_DIR"
   },
-  "passff.prefs.pass_git_label": {
+  "passff_prefs_pass_git_label": {
     "message": "Pass store git dir"
   },
-  "passff.prefs.pass_git_tooltip": {
+  "passff_prefs_pass_git_tooltip": {
     "message": "Pass store git dir (PASSWORD_STORE_GIT). If empty, use the current environment PASSWORD_STORE_GIT"
   },
-  "passff.prefs.auto_fill_label": {
+  "passff_prefs_auto_fill_label": {
     "message": "Try to auto fill page login forms"
   },
-  "passff.prefs.auto_fill_tooltip": {
+  "passff_prefs_auto_fill_tooltip": {
     "message": "If set, will try to fill automatically the login forms searching a password key contained in the page url"
   },
-  "passff.prefs.auto_submit_label": {
+  "passff_prefs_auto_submit_label": {
     "message": "Try to auto submit page login forms"
   },
-  "passff.prefs.auto_submit_tooltip": {
+  "passff_prefs_auto_submit_tooltip": {
     "message": "If set, will try to submit automatically the login forms searching a password key contained in the page url"
   },
-  "passff.prefs.shortcut_key_label": {
+  "passff_prefs_shortcut_key_label": {
     "message": "Shortcut key"
   },
-  "passff.prefs.shortcut_key_tooltip": {
+  "passff_prefs_shortcut_key_tooltip": {
     "message": "The shortcut key used to open the PassFF panel"
   },
-  "passff.prefs.shortcut_mod_label": {
+  "passff_prefs_shortcut_mod_label": {
     "message": "Shortcut modifier"
   },
-  "passff.prefs.shortcut_mod_tooltip": {
+  "passff_prefs_shortcut_mod_tooltip": {
     "message": "The shortcut modifiers used to open the PassFF panel. A combination of (control, alt, shift) words separated by a comma (,)"
   },
-  "passff.prefs.callmethod-tooltip": {
+  "passff_prefs_callmethod_tooltip": {
     "message": "Choose the method passff will use to run the pass script"
   },
-  "passff.prefs.callmethod": {
+  "passff_prefs_callmethod": {
     "message": "Script call method"
   },
-  "passff.prefs.direct_radio_label": {
+  "passff_prefs_direct_radio_label": {
     "message": "Direct call"
   },
-  "passff.prefs.shell_radio_label": {
+  "passff_prefs_shell_radio_label": {
     "message": "Through shell"
   },
-  "passff.prefs.default_length_tooltip": {
+  "passff_prefs_default_length_tooltip": {
     "message": "The default value for the length of a generated password"
   },
-  "passff.prefs.default_length_label": {
+  "passff_prefs_default_length_label": {
     "message": "Default password length"
   },
-  "passff.prefs.default_include_symbols_tooltip": {
+  "passff_prefs_default_include_symbols_tooltip": {
     "message": "Whether generated passwords should include symbols by default"
   },
-  "passff.prefs.default_include_symbols_label": {
+  "passff_prefs_default_include_symbols_label": {
     "message": "Include symbols by default"
   },
-  "passff.prefs.preferred_new_method_tooltip": {
+  "passff_prefs_preferred_new_method_tooltip": {
     "message": "Whether new passwords default to being generated or being inserted"
   },
-  "passff.prefs.preferred_new_method_label": {
+  "passff_prefs_preferred_new_method_label": {
     "message": "Preferred new method"
   },
-  "passff.prefs.prefer_generate": {
+  "passff_prefs_prefer_generate": {
     "message": "Generate"
   },
-  "passff.prefs.prefer_insert": {
+  "passff_prefs_prefer_insert": {
     "message": "Insert"
   },
-  "passff.newpassword.window.title": {
+  "passff_newpassword_window_title": {
     "message": "New Password"
   },
-  "passff.newpassword.window.header": {
+  "passff_newpassword_window_header": {
     "message": "Add a new password"
   },
-  "passff.newpassword.tabs.generate": {
+  "passff_newpassword_tabs_generate": {
     "message": "Generate"
   },
-  "passff.newpassword.tabs.insert": {
+  "passff_newpassword_tabs_insert": {
     "message": "Insert"
   },
-  "passff.newpassword.inputs.password_name_label": {
+  "passff_newpassword_inputs_password_name_label": {
     "message": "Name"
   },
-  "passff.newpassword.inputs.password_label": {
+  "passff_newpassword_inputs_password_label": {
     "message": "Password"
   },
-  "passff.newpassword.inputs.password_confirmation_label": {
+  "passff_newpassword_inputs_password_confirmation_label": {
     "message": "Confirm password"
   },
-  "passff.newpassword.inputs.additional_info_label": {
+  "passff_newpassword_inputs_additional_info_label": {
     "message": "Additional info"
   },
-  "passff.newpassword.inputs.password_length_label": {
+  "passff_newpassword_inputs_password_length_label": {
     "message": "Length"
   },
-  "passff.newpassword.inputs.include_symbols_label": {
+  "passff_newpassword_inputs_include_symbols_label": {
     "message": "Include symbols?"
   },
-  "passff.newpassword.inputs.add_password_button_label": {
+  "passff_newpassword_inputs_add_password_button_label": {
     "message": "Insert password"
   },
-  "passff.newpassword.inputs.generate_password_button_label": {
+  "passff_newpassword_inputs_generate_password_button_label": {
     "message": "Generate password"
   },
-  "passff.newpassword.inputs.overwrite_password_prompt": {
+  "passff_newpassword_inputs_overwrite_password_prompt": {
     "message": "That password already exists. Are you sure you want to overwrite it?"
   },
-  "passff.newpassword.errors.name_is_required": {
+  "passff_newpassword_errors_name_is_required": {
     "message": "Name must be present"
   },
-  "passff.newpassword.errors.password_is_required": {
+  "passff_newpassword_errors_password_is_required": {
     "message": "Password must be present"
   },
-  "passff.newpassword.errors.password_confirmation_mismatch": {
+  "passff_newpassword_errors_password_confirmation_mismatch": {
     "message": "Password confirmation doesn't match"
   },
-  "passff.newpassword.errors.pass_execution_failed": {
+  "passff_newpassword_errors_pass_execution_failed": {
     "message": "Oops, something went wrong"
   },
-  "passff.newpassword.errors.unexpected_error": {
+  "passff_newpassword_errors_unexpected_error": {
     "message": "Sorry, an unexpected error occurred"
   },
-  "passff.errors.unexpected_error": {
+  "passff_errors_unexpected_error": {
     "message": "Sorry, an unexpected error occured. Make sure your preferences are correctly set and that the native host app is installed."
   }
 }
