@@ -57,7 +57,7 @@ function makePasswordAdder(validations, errorsContainerId, getInput, addPassword
         .then((result) => {
           if (result) {
             let confirmation = window.confirm(
-              _("inputs.overwrite_password_prompt")
+              _("inputs_overwrite_password_prompt")
             );
             if (!confirmation) {
               return;
@@ -72,14 +72,14 @@ function makePasswordAdder(validations, errorsContainerId, getInput, addPassword
             });
           } else if (result === false) {
             window.alert(
-              _("errors.pass_execution_failed") + ":\n" + JSON.stringify(result)
+              _("errors_pass_execution_failed") + ":\n" + JSON.stringify(result)
             );
           };
         });
       }
     } catch (e) {
       window.alert(
-        _("errors.unexpected_error") + ":\n" + e.name + ' ' + e.message
+        _("errors_unexpected_error") + ":\n" + e.name + ' ' + e.message
       );
     }
   };
@@ -98,13 +98,13 @@ window.onload = () => promised_init.then(() => {
   }
 
   let addValidations = [
-    isPresent('name', _("errors.name_is_required")),
-    isPresent('password', _("errors.password_is_required")),
-    matches('password', 'passwordConfirmation', _("errors.password_confirmation_mismatch")),
+    isPresent('name', _("errors_name_is_required")),
+    isPresent('password', _("errors_password_is_required")),
+    matches('password', 'passwordConfirmation', _("errors_password_confirmation_mismatch")),
   ];
 
   let genValidations = [
-    isPresent('name', _("errors.name_is_required")),
+    isPresent('name', _("errors_name_is_required")),
   ];
 
   var onAddPassword = makePasswordAdder(
