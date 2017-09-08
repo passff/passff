@@ -34,12 +34,12 @@ window.onload = () => promised_init.then(() => {
     el.textContent = PassFF.gsfm(el.textContent);
   });
 
-  for (let [key, cT] in Iterator(["shell", "direct"])) {
+  for (let cT of ["shell", "direct"]) {
     document.getElementById("pref_callType_" + cT)
       .addEventListener("change", update_callTypeUI);
   }
 
-  for (let [key, val] in Iterator(PassFF.Preferences._params)) {
+  for (let [key, val] of Object.entries(PassFF.Preferences._params)) {
     let el = document.getElementById("pref_" + key);
     if (el !== null) {
       if (el.tagName == "INPUT" && el.type == "text") {
