@@ -15,6 +15,7 @@
     },
 
     "browser_action": {
+        "browser_stye": false,
         "default_icon": "icon.png",
         "default_popup": "content/popup.html"
     },
