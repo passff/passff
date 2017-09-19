@@ -251,12 +251,14 @@ function getOtherInputs(other) {
 function setLoginInputs(login) {
   getLoginInputs().forEach(function(loginInput) {
     loginInput.value = login;
+    loginInput.dispatchEvent(new InputEvent('input'));
   });
 }
 
 function setPasswordInputs(password) {
   getPasswordInputs().forEach(function(passwordInput) {
     passwordInput.value = password;
+    passwordInput.dispatchEvent(new InputEvent('input'));
   });
 }
 
@@ -270,6 +272,7 @@ function setOtherInputs(other) {
     }
     if (value) {
       otherInput.value = value;
+      otherInput.dispatchEvent(new InputEvent('input'));
     }
   });
 }
