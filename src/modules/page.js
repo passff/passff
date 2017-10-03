@@ -187,7 +187,7 @@ function getSubmitButton(form) {
   ];
 
   for (let predicate of submitButtonPredicates) {
-    button = Array.prototype.find.call(buttons, predicate);
+    let button = Array.prototype.find.call(buttons, predicate);
     if (button) {
       return button;
     }
