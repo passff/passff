@@ -248,16 +248,42 @@ function getOtherInputs(other) {
                               .filter(isOtherInputCheck(other));
 }
 
-function setLoginInputs(login) {
-  getLoginInputs().forEach(function(loginInput) {
-    loginInput.value = login;
+function createFakeKeystroke(typeArg, key) {
+  return new KeyboardEvent(typeArg, {
+    'key': ' ',
+    'code': ' ',
+    'charCode': ' '.charCodeAt(0),
+    'keyCode': ' '.charCodeAt(0),
+    'which': ' '.charCodeAt(0),
+    'bubbles': true,
+    'composed': true,
+    'cancelable': true
   });
 }
 
+function createFakeInputEvent(typeArg) {
+  return new InputEvent(typeArg, {
+    'bubbles': true,
+    'composed': true,
+    'cancelable': true
+  })
+}
+
+function writeValueWithEvents(input, value) {
+  input.dispatchEvent(createFakeKeystroke('keydown'));
+  input.value = value;
+  input.dispatchEvent(createFakeKeystroke('keyup'));
+  input.dispatchEvent(createFakeKeystroke('keypress'));
+  input.dispatchEvent(createFakeInputEvent('input'));
+  input.dispatchEvent(createFakeInputEvent('change'));
+}
+
+function setLoginInputs(login) {
+  getLoginInputs().forEach((it) => writeValueWithEvents(it, login));
+}
+
 function setPasswordInputs(password) {
-  getPasswordInputs().forEach(function(passwordInput) {
-    passwordInput.value = password;
-  });
+  getPasswordInputs().forEach((it) => writeValueWithEvents(it, password));
 }
 
 function setOtherInputs(other) {
@@ -269,7 +295,7 @@ function setOtherInputs(other) {
       value = other[otherInput.id];
     }
     if (value) {
-      otherInput.value = value;
+      writeValueWithEvents(otherInput, value);
     }
   });
 }
