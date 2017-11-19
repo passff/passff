@@ -55,6 +55,7 @@ PassFF.Pass = {
   _items: [],
   _rootItems: [],
   _stringBundle: null,
+  _pending: {},
 
   env: {
     _environment: {},
@@ -126,12 +127,21 @@ PassFF.Pass = {
     }).bind(this));
   },
 
+  getPassExecPromise: function(key) {
+    if (!this._pending.hasOwnProperty(key))
+      this._pending[key] = this.executePass([key], {}, true).then((result) => {
+        delete this._pending[key];
+        return result;
+      });
+    return this._pending[key];
+  },
+
   getPasswordData: function(item) {
     let result = {};
 
     if (item.isLeaf()) { // multiline-style item
-      let args = [item.fullKey()];
-      return this.executePass(args, {}, true).then((executionResult) => {
+      let key = item.fullKey();
+      return this.getPassExecPromise(key).then((executionResult) => {
       if (executionResult.exitCode !== 0) {
         return;
       }
