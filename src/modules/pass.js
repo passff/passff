@@ -131,7 +131,7 @@ PassFF.Pass = {
 
     if (item.isLeaf()) { // multiline-style item
       let args = [item.fullKey()];
-      return this.executePass(args).then((executionResult) => {
+      return this.executePass(args, {}, true).then((executionResult) => {
       if (executionResult.exitCode !== 0) {
         return;
       }
@@ -427,7 +427,7 @@ PassFF.Pass = {
     });
   },
 
-  executePass: function(args, subprocessOverrides) {
+  executePass: function(args, subprocessOverrides, blockFailAlert) {
     let result = null;
     let scriptArgs = [];
     let command = null;
@@ -478,7 +478,9 @@ PassFF.Pass = {
     log.debug('Execute pass', params);
     return browser.runtime.sendNativeMessage("passff", params).then((result) => {
       if (result.exitCode !== 0) {
-        PassFF.alert('pass execution failed!' + "\n" + result.stderr + "\n" + result.stdout);
+        if (!blockFailAlert) {
+          PassFF.alert('pass execution failed!' + "\n" + result.stderr + "\n" + result.stdout);
+        }
         log.warn('pass execution failed', result.exitCode, result.stderr, result.stdout);
       } else {
         log.info('pass script execution ok');
