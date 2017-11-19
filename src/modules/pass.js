@@ -132,21 +132,6 @@ PassFF.Pass = {
     if (item.isLeaf()) { // multiline-style item
       let args = [item.fullKey()];
       return this.executePass(args).then((executionResult) => {
-      let gpgDecryptFailed = executionResult.stderr
-                             .indexOf('gpg: decryption failed: No secret key') >= 0;
-
-      while (executionResult.exitCode !== 0 && gpgDecryptFailed) {
-        let title = PassFF.gsfm('passff_passphrase_title');
-        let desc = PassFF.gsfm('passff_passphrase_description');
-        /* We skip this for now since we don't have 'window.confirm' ...
-        if (!window.confirm(title + "\n" + desc)) {
-          return;
-        }
-
-        executionResult = PassFF.Pass.executePass(args);
-        */
-      }
-
       if (executionResult.exitCode !== 0) {
         return;
       }
