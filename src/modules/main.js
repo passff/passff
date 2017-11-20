@@ -144,7 +144,7 @@ var PassFF = {
       // Mapping between modifier names in manifest.json and DOM KeyboardEvent.
       let commandModifiers = {
         'Ctrl': browser.runtime.PlatformOs == 'mac' ? 'Meta' : 'Control',
-        'MacCtrl': 'Cotrol',
+        'MacCtrl': 'Control',
         'Command': 'Meta',
         'Alt': 'Alt',
         'Shift': 'Shift'
@@ -158,7 +158,7 @@ var PassFF = {
       let expectedModifierState = {
         'Alt': false,
         'Meta': false,
-        'Cotrol': false,
+        'Control': false,
         'Shift': false
       };
 
