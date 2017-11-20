@@ -85,15 +85,15 @@ div.buttonbox button.icon {
 }
 
 div.buttonbox button.config {
-  background-image: url('button-config.png');
+  background-image: url('button-config.svg');
 }
 
 div.buttonbox button.add {
-  background-image: url('button-add.png');
+  background-image: url('button-add.svg');
 }
 
 div.buttonbox button.reload {
-  background-image: url('button-reload.png');
+  background-image: url('button-reload.svg');
 }
 
 .results select {
