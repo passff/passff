@@ -55,6 +55,7 @@ PassFF.Pass = {
   _items: [],
   _rootItems: [],
   _stringBundle: null,
+  _pending: {},
 
   env: {
     _environment: {},
@@ -126,27 +127,21 @@ PassFF.Pass = {
     }).bind(this));
   },
 
+  getPassExecPromise: function(key) {
+    if (!this._pending.hasOwnProperty(key))
+      this._pending[key] = this.executePass([key], {}, true).then((result) => {
+        delete this._pending[key];
+        return result;
+      });
+    return this._pending[key];
+  },
+
   getPasswordData: function(item) {
     let result = {};
 
     if (item.isLeaf()) { // multiline-style item
-      let args = [item.fullKey()];
-      return this.executePass(args).then((executionResult) => {
-      let gpgDecryptFailed = executionResult.stderr
-                             .indexOf('gpg: decryption failed: No secret key') >= 0;
-
-      while (executionResult.exitCode !== 0 && gpgDecryptFailed) {
-        let title = PassFF.gsfm('passff_passphrase_title');
-        let desc = PassFF.gsfm('passff_passphrase_description');
-        /* We skip this for now since we don't have 'window.confirm' ...
-        if (!window.confirm(title + "\n" + desc)) {
-          return;
-        }
-
-        executionResult = PassFF.Pass.executePass(args);
-        */
-      }
-
+      let key = item.fullKey();
+      return this.getPassExecPromise(key).then((executionResult) => {
       if (executionResult.exitCode !== 0) {
         return;
       }
@@ -442,7 +437,7 @@ PassFF.Pass = {
     });
   },
 
-  executePass: function(args, subprocessOverrides) {
+  executePass: function(args, subprocessOverrides, blockFailAlert) {
     let result = null;
     let scriptArgs = [];
     let command = null;
@@ -493,7 +488,9 @@ PassFF.Pass = {
     log.debug('Execute pass', params);
     return browser.runtime.sendNativeMessage("passff", params).then((result) => {
       if (result.exitCode !== 0) {
-        PassFF.alert('pass execution failed!' + "\n" + result.stderr + "\n" + result.stdout);
+        if (!blockFailAlert) {
+          PassFF.alert('pass execution failed!' + "\n" + result.stderr + "\n" + result.stdout);
+        }
         log.warn('pass execution failed', result.exitCode, result.stderr, result.stdout);
       } else {
         log.info('pass script execution ok');
