@@ -165,7 +165,7 @@ var passwordInputNames = [];
 var subpageSearchDepth = 0;
 
 function getSubmitButton(form) {
-  let buttons = form.querySelectorAll('button[type=submit]');
+  let buttons = form.querySelectorAll('button:not([type=reset])');
 
   if (buttons.length === 0) {
     buttons = Array.prototype.slice
@@ -176,13 +176,29 @@ function getSubmitButton(form) {
     return null;
   }
 
-  return Array.prototype.slice.call(buttons, buttons.length - 1, buttons.length)[0];
+  let submitButtonPredicates = [
+    // explicit submit type
+    (button) => button.getAttribute("type") === "submit",
+    // the browser interprets an unset or invalid type as submit
+    (button) => !Array.prototype.includes
+                                .call(["submit", "button"], button.getAttribute("type")),
+    // assume that last button in form performs submission via javascript
+    (button, index, arr) => index + 1 === arr.length
+  ];
+
+  for (let predicate of submitButtonPredicates) {
+    let button = Array.prototype.find.call(buttons, predicate);
+    if (button) {
+      return button;
+    }
+  }
 }
 
 function searchParentForm(input) {
   while (input !== null && input.tagName.toLowerCase() != 'form') {
     input = input.parentNode;
   }
+
   return input;
 }
 
@@ -251,12 +267,14 @@ function getOtherInputs(other) {
 function setLoginInputs(login) {
   getLoginInputs().forEach(function(loginInput) {
     loginInput.value = login;
+    loginInput.dispatchEvent(new InputEvent('input'));
   });
 }
 
 function setPasswordInputs(password) {
   getPasswordInputs().forEach(function(passwordInput) {
     passwordInput.value = password;
+    passwordInput.dispatchEvent(new InputEvent('input'));
   });
 }
 
@@ -270,6 +288,7 @@ function setOtherInputs(other) {
     }
     if (value) {
       otherInput.value = value;
+      otherInput.dispatchEvent(new InputEvent('input'));
     }
   });
 }
