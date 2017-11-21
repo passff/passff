@@ -176,7 +176,7 @@ var PassFF = {
 
       // Attach a DOM-level event handler for our command key, so it works
       // even if an input box is focused.
-      browser.tabs.executeScript({
+      browser.tabs.executeScript(tab, {
         code: `
           document.addEventListener('keydown', function(evt) {
             let expectedModifierState = {0};
