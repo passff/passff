@@ -278,14 +278,8 @@ PassFF.Menu = {
     var doc = event.target.ownerDocument;
     var item = PassFF.Menu.getItem(event.target);
     var dataKey = PassFF.Menu.getDataKey(event.target);
-    PassFF.bg_exec('Pass.getPasswordData', item)
-      .then((passwordData) => {
-        let field = doc.getElementById('clipboard-field');
-        field.value = passwordData[dataKey];
-        field.select();
-        doc.execCommand('copy', false, null);
-        window.close();
-      }).catch(logAndDisplayError("Error getting password data on copy to clipboard"));
+    PassFF.bg_exec('Menu.onCopyToClipboard', item, dataKey);
+    window.close();
   },
 
   clearMenuList: function(doc) {
