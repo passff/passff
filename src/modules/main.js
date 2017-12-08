@@ -27,6 +27,31 @@ function getActiveTab() {
          .then((tabs) => { return tabs[0]; });
 }
 
+function copyToClipboard(text) {
+  var tab = getActiveTab();
+  var code = "copyToClipboard(" + JSON.stringify(text) +  ");";
+  browser.tabs.executeScript({
+    code: "typeof copyToClipboard === 'function';",
+  }).then((results) => {
+    // The content script's last expression will be true if the function
+    // has been defined. If this is not the case, then we need to run
+    // clipboard-helper.js to define function copyToClipboard.
+    if (!results || results[0] !== true) {
+      tab = getActiveTab();
+      return browser.tabs.executeScript(tab.id, {
+        file: "modules/clipboard-helper.js",
+      });
+    }
+  }).then(() => {
+    tab = getActiveTab();
+    return browser.tabs.executeScript(tab.id, { code, });
+  }).catch((error) => {
+    // This could happen if the extension is not allowed to run code in
+    // the page, for example if the tab is a privileged page.
+    log.error("Failed to copy text: " + error);
+  });
+}
+
 var PassFF = {
   Ids: {
     panel: 'passff-panel',
@@ -253,6 +278,12 @@ var PassFF = {
           });
           break;
       }
+    } else if (request.action == "Menu.onCopyToClipboard") {
+      let item = PassFF.Pass.getItemById(request.params[0]);
+      let dataKey = request.params[1];
+      PassFF.Pass.getPasswordData(item).then((passwordData) => {
+        copyToClipboard(passwordData[dataKey]);
+      });
     } else if (request.action == "Page.goToItemUrl") {
       let item = PassFF.Pass.getItemById(request.params[0]);
       PassFF.Page.goToItemUrl(item, request.params[1], request.params[2], request.params[3]);
