@@ -23,7 +23,7 @@ PassFF.Menu = {
       PassFF.bg_exec('getHttpAuthInfo')
         .then((info) => {
           let url_box = document.querySelector(".httpAuthUrl");
-          url_box.innerHTML = info.url;
+          url_box.textContent = info.url;
           url_box.title = info.url; // for tooltip
 
           // Rescale select box to fit window's height
@@ -448,7 +448,7 @@ PassFF.Menu = {
     if (typeof severity === 'undefined') severity = 'error';
     panel.classList.add('message', severity);
     dismissControl.classList.add('dismiss');
-    dismissControl.innerHTML = '&times;';
+    dismissControl.textContent = '&times;';
     dismissControl.addEventListener('click', () => body.removeChild(panel));
     panel.appendChild(dismissControl);
     panel.appendChild(messageNode);
