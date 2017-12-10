@@ -14,7 +14,7 @@ if (!String.prototype.format) {
 }
 
 PassFF.Page = {
-  _autoSubmittedUrls: [],
+  _submittedTabs: [],
   _autoFillAndSubmitPending: false,
 
   swallowShortcut: function(tab, shortcut) {
@@ -36,37 +36,21 @@ PassFF.Page = {
   },
 
   tabAutoFill: function(tab) {
-    if (PassFF.Page._autoFillAndSubmitPending || !PassFF.Preferences.autoFill) {
+    if (PassFF.Page._autoFillAndSubmitPending
+        || !PassFF.Preferences.autoFill
+        || tab.status != "complete") {
       return;
     }
-
-    if (tab.status != "complete") {
-      browser.tabs.onUpdated.addListener(function f(_, changeInfo, evtTab) {
-        if (evtTab.id == tab.id && evtTab.status == "complete") {
-          browser.tabs.onUpdated.removeListener(f);
-          PassFF.Page.tabAutoFill(evtTab);
+    log.info('Start pref-auto-fill');
+    let matchItems = PassFF.Pass.getUrlMatchingItems(tab.url);
+    let bestFitItem = PassFF.Pass.findBestFitItem(matchItems, tab.url);
+    if (bestFitItem) {
+      PassFF.Page.fillInputs(tab, bestFitItem).then(() => {
+        if (PassFF.Preferences.autoSubmit &&
+            PassFF.Pass.getItemsLeafs(matchItems).length == 1) {
+          PassFF.Page.submit(tab, true);
         }
       });
-    } else {
-      let url = tab.url;
-      let matchItems = PassFF.Pass.getUrlMatchingItems(url);
-
-      log.info('Start pref-auto-fill');
-      let bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
-
-      if (bestFitItem) {
-        PassFF.Page.fillInputs(tab, bestFitItem).then(() => {
-          if (PassFF.Preferences.autoSubmit &&
-              PassFF.Pass.getItemsLeafs(matchItems).length == 1) {
-            if (PassFF.Page.removeFromArray(PassFF.Page._autoSubmittedUrls, tab.url)) {
-              log.info('Url already submit. skip it');
-              return;
-            }
-            PassFF.Page.submit(tab);
-            PassFF.Page._autoSubmittedUrls.push([tab.url, Date.now()]);
-          }
-        });
-      }
     }
   },
 
@@ -142,18 +126,48 @@ PassFF.Page = {
     });
   },
 
-  submit: function(tab) {
-    PassFF.Page._execWithPrefs(tab, "submit();");
+  submit: function(tab, safeguard) {
+    if (safeguard && PassFF.Page.getSubmitted(tab)) {
+      log.info('Tab already auto-submitted. skip it');
+      return;
+    }
+    let date = Date.now();
+    PassFF.Page.setSubmitted(tab, date);
+    PassFF.Page._execWithPrefs(tab, "submit();").then((results) => {
+      if(!results || results[0] !== true) {
+        PassFF.Page.unsetSubmitted(tab, date);
+      }
+    });
   },
 
-  removeFromArray: function(array, value) {
-    let index = array.find((val) => { return val[0] == value; });
-    let result = 60000; // one minute
-    if (index >= 0) {
-      // How old is the deleted URL?
-      result = Date.now() - array.splice(index, 1)[0][1];
+  getSubmitted: function(tab) {
+    let val = PassFF.Page._submittedTabs.find((val) => {
+      // Only check tab id (not url for now since it might change)
+      return val[0] == tab.id;
+    });
+    if (typeof val !== 'undefined') {
+      // Is the deleted entry younger than 20 seconds?
+      return Date.now() - val[1] < 20000;
     }
-    return result < 20000; // Is the deleted URL younger than 20 seconds?
+    return false;
+  },
+
+  setSubmitted: function(tab, date) {
+    PassFF.Page._submittedTabs.push([tab.id, date]);
+    // Remember only last 10 entries
+    let submittedCount = PassFF.Page._submittedTabs.length;
+    if (submittedCount > 10) {
+      PassFF.Page._submittedTabs.splice(0, submittedCount-10);
+    }
+  },
+
+  unsetSubmitted: function(tab, date) {
+    let index = PassFF.Page._submittedTabs.findIndex((t) => {
+      return t[0] == tab.id && t[1] == date;
+    });
+    if (index >= 0) {
+      PassFF.Page._submittedTabs.splice(index, 1);
+    }
   },
 
   _execWithPrefs: function (tab, code) {
@@ -168,7 +182,7 @@ PassFF.Page = {
       JSON.stringify(PassFF.Preferences.subpageSearchDepth),
       code
     );
-    PassFF.Page._execWithDeps(tab, codeWithPrefs, [{
+    return PassFF.Page._execWithDeps(tab, codeWithPrefs, [{
       'source': 'modules/form-helper.js',
       'functions': [ code.split("(")[0] ],
     }]);
@@ -200,7 +214,7 @@ PassFF.Page = {
   },
 
   _execWithDeps: function (tab, code, deps) {
-    PassFF.Page._injectIfNecessary(tab, deps).then(() => {
+    return PassFF.Page._injectIfNecessary(tab, deps).then(() => {
       return browser.tabs.executeScript(tab.id, {
         code: code,
         runAt: "document_idle"

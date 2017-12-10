@@ -128,15 +128,17 @@ var PassFF = {
 
   init_tab: function (tab) {
     // do nothing if called from a non-tab context
-    if( ! tab || ! tab.url ) {
-        return;
+    if (!tab || !tab.url) {
+      return;
     }
 
-    log.debug('Location changed', tab.url);
-    PassFF.tab_url = tab.url;
-    let items = PassFF.Pass.getUrlMatchingItems(PassFF.tab_url);
-    PassFF.menu_state.items = items.map((i) => { return i.toObject(true); });
-    PassFF.Page.tabAutoFill(tab);
+    log.debug('Location changed', tab.url, tab.status);
+
+    if (tab.url != PassFF.tab_url) {
+      PassFF.tab_url = tab.url;
+      let items = PassFF.Pass.getUrlMatchingItems(PassFF.tab_url);
+      PassFF.menu_state.items = items.map((i) => { return i.toObject(true); });
+    }
 
     // Allow our browser command to bypass the usual dom event mapping, so that
     // the keyboard shortcut still works, even  when a password field is focused.
@@ -150,6 +152,11 @@ var PassFF = {
       // even if an input box is focused.
       PassFF.Page.swallowShortcut(tab, shortcut);
     });
+
+    if (/^https?/.exec(tab.url) && tab.status == "complete") {
+        // Start auto fill only for readily loaded web pages
+        PassFF.Page.tabAutoFill(tab);
+    }
   },
 
   onTabUpdate: function () {

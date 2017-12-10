@@ -54,7 +54,7 @@ function submit() {
   let form = searchParentForm(passwords[0]);
   if (!form) {
     // No form found to submit
-    return;
+    return false;
   }
 
   let submitBtn = getSubmitButton(form);
@@ -63,6 +63,7 @@ function submit() {
   } else {
     form.submit();
   }
+  return true;
 }
 
 function hasGoodName(fieldName, goodFieldNames) {
