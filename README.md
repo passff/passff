@@ -7,7 +7,7 @@ passff
 
 **Official signed version can be found on the [Mozilla add-on page](https://addons.mozilla.org/firefox/addon/passff)**
 
-![passff](https://cloud.githubusercontent.com/assets/1518387/24840201/299d3620-1d69-11e7-8e8a-ea0c5761dc95.png)
+![passff](https://user-images.githubusercontent.com/1518387/33810636-8c95df16-de07-11e7-8857-283e7300ecff.png)
 
 ### Overview
 This extension will allow you to access your **[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** repository directly from your web browser.
