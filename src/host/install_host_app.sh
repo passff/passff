@@ -6,7 +6,7 @@
 set -e
 
 APP_NAME="passff"
-VERSION="1.0.3linux"
+VERSION="1.0.4linux"
 HOST_URL="https://github.com/passff/passff/releases/download/$VERSION/passff.py"
 MANIFEST_URL="https://github.com/passff/passff/releases/download/$VERSION/passff.json"
 

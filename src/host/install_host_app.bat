@@ -2,7 +2,7 @@
 SETLOCAL
 
 SET "APP_NAME=passff"
-SET "VERSION=1.0.3linux"
+SET "VERSION=1.0.4linux"
 SET "HOST_URL=https://github.com/passff/passff/releases/download/%VERSION%/passff.py"
 SET "MANIFEST_URL=https://github.com/passff/passff/releases/download/%VERSION%/passff.json"
 
