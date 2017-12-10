@@ -111,7 +111,6 @@ var PassFF = {
   },
 
   init: function(bgmode) {
-    PassFF.resetHttpAuth();
     return PassFF.Preferences.init(bgmode)
       .then(() => {
         if (bgmode) {
@@ -122,14 +121,23 @@ var PassFF = {
               PassFF.onTabUpdate();
               browser.runtime.onMessage.addListener(PassFF.bg_handle);
               browser.contextMenus.onClicked.addListener(PassFF.Page.onContextMenu);
-              browser.webRequest.onAuthRequired.addListener(
-                PassFF.onHttpAuth, { urls: ["<all_urls>"] }, ["blocking"]
-              );
+              PassFF.init_http_auth();
             });
         }
       }).catch((error) => {
         log.error("Error initializing preferences:", error);
       });
+  },
+
+  init_http_auth: function () {
+    log.debug("Initialize HTTP authentication", PassFF.Preferences.handleHttpAuth);
+    PassFF.resetHttpAuth();
+    browser.webRequest.onAuthRequired.removeListener(PassFF.onHttpAuth);
+    if(PassFF.Preferences.handleHttpAuth) {
+      browser.webRequest.onAuthRequired.addListener(
+        PassFF.onHttpAuth, { urls: ["<all_urls>"] }, ["blocking"]
+      );
+    }
   },
 
   init_tab: function (tab) {
@@ -199,7 +207,7 @@ var PassFF = {
 
   cancelHttpAuth: function () {
     if (typeof PassFF.currentHttpAuth.resolve === 'function') {
-      PassFF.currentHttpAuth.resolve({ cancel: true });
+      PassFF.currentHttpAuth.resolve({ cancel: false });
     }
     PassFF.resetHttpAuth();
   },

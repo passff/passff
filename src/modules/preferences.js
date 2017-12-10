@@ -26,6 +26,7 @@ PassFF.Preferences = (function() {
       subpageSearchDepth    : 5,
       callType              : 'direct',
       caseInsensitiveSearch : true,
+      handleHttpAuth        : true,
       enterBehavior         : 0,
       defaultPasswordLength : 16,
       defaultIncludeSymbols : true,
@@ -67,6 +68,9 @@ PassFF.Preferences = (function() {
             var changedItems = Object.keys(changes);
             for (var item of changedItems) {
               this._params[item] = changes[item].newValue;
+              if (item == "handleHttpAuth" && bgmode === true) {
+                PassFF.init_http_auth();
+              }
             }
           }
         });
@@ -92,6 +96,7 @@ PassFF.Preferences = (function() {
             subpageSearchDepth    : this.subpageSearchDepth,
             callType              : this.callType,
             caseInsensitiveSearch : this.caseInsensitiveSearch,
+            handleHttpAuth        : this.handleHttpAuth,
             enterBehavior         : this.enterBehavior
           });
           let params = { command: 'gpgAgentEnv' };
@@ -226,6 +231,10 @@ PassFF.Preferences = (function() {
 
     get callType() {
       return this._params.callType;
+    },
+
+    get handleHttpAuth() {
+      return this._params.handleHttpAuth;
     },
 
     get caseInsensitiveSearch() {

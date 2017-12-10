@@ -75,6 +75,9 @@
   "passff_prefs_tab_adding": {
     "message": "Passwörter hinzufügen"
   },
+  "passff_prefs_handle_http_auth": {
+    "message": "Unterstzützung für HTTP-Anmeldung"
+  },
   "passff_prefs_case_insensitive_search": {
     "message": "Groß-Kleinschreibung ignorieren"
   },

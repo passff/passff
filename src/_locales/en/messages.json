@@ -75,6 +75,9 @@
   "passff_prefs_tab_adding": {
     "message": "Adding Passwords"
   },
+  "passff_prefs_handle_http_auth": {
+    "message": "Handle HTTP authentication"
+  },
   "passff_prefs_case_insensitive_search": {
     "message": "Case-insensitive searching"
   },
