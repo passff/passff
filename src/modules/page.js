@@ -17,6 +17,24 @@ PassFF.Page = {
   _autoSubmittedUrls: [],
   _autoFillAndSubmitPending: false,
 
+  swallowShortcut: function(tab, shortcut) {
+    let code = `
+      document.addEventListener('keydown', function(evt) {
+        if (checkKeyboardEventShortcut(evt, {0})) {
+          // This is a bit of a hack: if we focus the body on keydown,
+          // the DOM won't let the input box handle the keypress, and
+          // it'll get routed to _execute_browser_action instead.
+          document.firstElementChild.focus();
+        }
+      }, true);
+    `.format(JSON.stringify(shortcut));
+
+    PassFF.Page._execWithDeps(tab, code, [{
+      'source': 'modules/shortcut-helper.js',
+      'functions': ['checkKeyboardEventShortcut'],
+    }]);
+  },
+
   tabAutoFill: function(tb) {
     if (PassFF.Page._autoFillAndSubmitPending || !PassFF.Preferences.autoFill) {
       return;
@@ -152,6 +170,45 @@ PassFF.Page = {
       )
     );
     browser.tabs.executeScript(tabId, { code: code, runAt: "document_idle" });
+  },
+
+  _injectIfNecessary: function (tab, deps) {
+    if (deps.length === 0) {
+      return;
+    }
+    let depCheckingCode = [];
+    deps[0]['functions'].forEach((fctName) => {
+      depCheckingCode.push("typeof {0} === 'function'".format(fctName));
+    });
+    depCheckingCode = depCheckingCode.join(" && ") + ";";
+    return browser.tabs.executeScript(tab.id, {
+      code: depCheckingCode,
+    }).then((results) => {
+      // The content script's last expression will be true if the functions
+      // have been defined. If this is not the case, then we need to run
+      // the source file to define the required functions.
+      if (!results || results[0] !== true) {
+        return browser.tabs.executeScript(tab.id, {
+          file: deps[0]['source'],
+        }).then(() => {
+          PassFF.Page._injectIfNecessary(tab, deps.slice(1));
+        });
+      }
+    })
+
+  },
+
+  _execWithDeps: function (tab, code, deps) {
+    PassFF.Page._injectIfNecessary(tab, deps).then(() => {
+      return browser.tabs.executeScript(tab.id, {
+        code: code,
+        runAt: "document_idle"
+      });
+    }).catch((error) => {
+      // This could happen if the extension is not allowed to run code in
+      // the page, for example if the tab is a privileged page.
+      log.error("Failed to exec page script: " + error);
+    });
   },
 
 /******************************************************************************/

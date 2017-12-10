@@ -139,64 +139,16 @@ var PassFF = {
     PassFF.Page.tabAutoFill(tab);
 
     // Allow our browser command to bypass the usual dom event mapping, so that
-    // Ctrl+Y still works, even  when a password field is focused.
-    browser.commands.getAll().then((commands) => {
-      // Mapping between modifier names in manifest.json and DOM KeyboardEvent.
-      let commandModifiers = {
-        'Ctrl': browser.runtime.PlatformOs == 'mac' ? 'Meta' : 'Control',
-        'MacCtrl': 'Control',
-        'Command': 'Meta',
-        'Alt': 'Alt',
-        'Shift': 'Shift'
-      };
-
-      // Read the _execute_browser_action command to get its shortcut. We're
-      // ignoring the shortcut specified in preferences because there is
-      // currently no way to apply that preference. See open mozilla bug at
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=1215061
-      var commandLetter = 'Y';
-      let expectedModifierState = {
-        'Alt': false,
-        'Meta': false,
-        'Control': false,
-        'Shift': false
-      };
-
-      commands.forEach((command) => {
-        if ('_execute_browser_action' == command.name && command.shortcut) {
-          command.shortcut.split(/\s*\+\s*/).forEach((part) => {
-            if (commandModifiers.hasOwnProperty(part)) {
-              expectedModifierState[commandModifiers[part]] = true;
-            } else {
-              commandLetter = part.toLowerCase();
-            }
-          });
-        }
-      });
-
+    // the keyboard shortcut still works, even  when a password field is focused.
+    //
+    // Read the _execute_browser_action command to get its shortcut. We're
+    // ignoring the shortcut specified in preferences because there is
+    // currently no way to apply that preference. See open mozilla bug at
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=1215061
+    getCommandByName('_execute_browser_action').then((shortcut) => {
       // Attach a DOM-level event handler for our command key, so it works
       // even if an input box is focused.
-      browser.tabs.executeScript(tab, {
-        code: `
-          document.addEventListener('keydown', function(evt) {
-            let expectedModifierState = {0};
-            if ({1} == evt.key) {
-              for (var modifier in expectedModifierState)
-                if (expectedModifierState[modifier] !== \
-                    evt.getModifierState(modifier))
-                  return;
-
-              // This is a bit of a hack: if we focus the body on keydown,
-              // the DOM won't let the input box handle the keypress, and
-              // it'll get routed to _execute_browser_action instead.
-              document.firstElementChild.focus();
-            }
-          }, true);
-        `.format(
-          JSON.stringify(expectedModifierState),
-          JSON.stringify(commandLetter)
-        )
-      });
+      PassFF.Page.swallowShortcut(tab, shortcut);
     });
   },
 
