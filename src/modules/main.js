@@ -272,10 +272,10 @@ var PassFF = {
     } else if (request.action == "Page.fillInputs") {
       let item = PassFF.Pass.getItemById(request.params[0]);
       let andSubmit = request.params[1];
-      getActiveTab().then((tb) => {
-        return PassFF.Page.fillInputs(tb.id, item);
-      }).then((tabId) => {
-        if (andSubmit) PassFF.Page.submit(tabId);
+      getActiveTab().then((tab) => {
+        return PassFF.Page.fillInputs(tab, item).then(() => {
+          if (andSubmit) PassFF.Page.submit(tab);
+        });
       });
     } else if (request.action == "Preferences.addInputName") {
       if (PassFF.Preferences.addInputName(request.params[0], request.params[1])) {
