@@ -97,6 +97,8 @@ var PassFF = {
     }
   },
 
+  currentHttpAuth: null,
+
   gsfm: function (key, params) {
     if (params) {
       return browser.i18n.getMessage(key, params);
@@ -109,6 +111,7 @@ var PassFF = {
   },
 
   init: function(bgmode) {
+    PassFF.resetHttpAuth();
     return PassFF.Preferences.init(bgmode)
       .then(() => {
         if (bgmode) {
@@ -119,6 +122,9 @@ var PassFF = {
               PassFF.onTabUpdate();
               browser.runtime.onMessage.addListener(PassFF.bg_handle);
               browser.contextMenus.onClicked.addListener(PassFF.Page.onContextMenu);
+              browser.webRequest.onAuthRequired.addListener(
+                PassFF.onHttpAuth, { urls: ["<all_urls>"] }, ["blocking"]
+              );
             });
         }
       }).catch((error) => {
@@ -134,8 +140,14 @@ var PassFF = {
 
     log.debug('Location changed', tab.url, tab.status);
 
-    if (tab.url != PassFF.tab_url) {
+    if (tab.url != PassFF.tab_url && PassFF.currentHttpAuth.details == null) {
       PassFF.tab_url = tab.url;
+      let items = PassFF.Pass.getUrlMatchingItems(PassFF.tab_url);
+      PassFF.menu_state.items = items.map((i) => { return i.toObject(true); });
+    }
+
+    if (PassFF.currentHttpAuth.details !== null) {
+      PassFF.tab_url = PassFF.currentHttpAuth.details.url;
       let items = PassFF.Pass.getUrlMatchingItems(PassFF.tab_url);
       PassFF.menu_state.items = items.map((i) => { return i.toObject(true); });
     }
@@ -161,6 +173,49 @@ var PassFF = {
 
   onTabUpdate: function () {
     getActiveTab().then(PassFF.init_tab);
+  },
+
+  onHttpAuth: function (requestDetails) {
+    PassFF.cancelHttpAuth();
+    PassFF.currentHttpAuth.details = requestDetails;
+    return new Promise((resolve, reject) => {
+      browser.windows.create({
+        'url': browser.extension.getURL('content/authPicker.html'),
+        'width': 450,
+        'height': 280,
+        'type': 'popup',
+      }).then((win) => {
+        PassFF.currentHttpAuth.popup = win;
+        PassFF.currentHttpAuth.onClose = function (windowId) {
+          if (win.id === windowId) {
+            PassFF.cancelHttpAuth();
+          }
+        };
+        browser.windows.onRemoved.addListener(PassFF.currentHttpAuth.onClose);
+      });
+      PassFF.currentHttpAuth.resolve = resolve;
+    });
+  },
+
+  cancelHttpAuth: function () {
+    if (typeof PassFF.currentHttpAuth.resolve === 'function') {
+      PassFF.currentHttpAuth.resolve({ cancel: true });
+    }
+    PassFF.resetHttpAuth();
+  },
+
+  resetHttpAuth: function () {
+    if (PassFF.currentHttpAuth !== null
+        && PassFF.currentHttpAuth.popup !== null) {
+      browser.windows.onRemoved.removeListener(PassFF.currentHttpAuth.onClose);
+      browser.windows.remove(PassFF.currentHttpAuth.popup.id);
+    }
+    PassFF.currentHttpAuth = {
+      details: null,
+      promise: null,
+      popup: null,
+      resolve: null,
+    };
   },
 
   bg_exec: function (action) {
@@ -295,6 +350,22 @@ var PassFF = {
         PassFF.Preferences.init(true)
           .then(() => PassFF.Pass.init());
       }
+    } else if (request.action == "getHttpAuthInfo") {
+      sendResponse({ response: {
+        url: PassFF.currentHttpAuth.details.url
+      }});
+    } else if (request.action == "resolveHttpAuth") {
+      let item = PassFF.Pass.getItemById(request.params[0]);
+      log.debug("Resolve HTTP auth", item);
+      PassFF.Pass.getPasswordData(item).then((passwordData) => {
+        PassFF.currentHttpAuth.resolve({
+          authCredentials: {
+            username: passwordData.login,
+            password: passwordData.password
+          }
+        });
+        PassFF.resetHttpAuth();
+      });
     } else if (request.action == "openOptionsPage") {
       browser.runtime.openOptionsPage();
     } else if (request.action == "refresh") {

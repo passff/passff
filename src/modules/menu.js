@@ -14,9 +14,27 @@ let logAndDisplayError = (errorMessage) => {
 PassFF.Menu = {
   _currentMenuIndex: null,
   _stringBundle: null,
+  _http_auth: false,
 
-  init: function () {
+  init: function (http_auth) {
     log.debug("Initializing Menu");
+    if (http_auth === true) {
+      PassFF.Menu._http_auth = true;
+      PassFF.bg_exec('getHttpAuthInfo')
+        .then((info) => {
+          let url_box = document.querySelector(".httpAuthUrl");
+          url_box.innerHTML = info.url;
+          url_box.title = info.url; // for tooltip
+
+          // Rescale select box to fit window's height
+          let url_height = url_box.offsetHeight;
+          let bar_height = document.querySelector("div.searchbar").offsetHeight;
+          let buttonbox_height = document.querySelector("div.buttonbox").offsetHeight;
+          document.querySelector(".results select").style.height =
+            (window.innerHeight - url_height - bar_height - buttonbox_height)
+            + "px";
+        });
+    }
     let doc = document;
     PassFF.Menu.createStaticMenu(doc);
     PassFF.bg_exec('Menu.restore')
@@ -68,15 +86,17 @@ PassFF.Menu = {
     refreshButton.setAttribute('title', PassFF.gsfm('passff_toolbar_refresh_label'));
     refreshButton.addEventListener('click', PassFF.Menu.onRefresh);
 
-    let prefsButton = doc.querySelector('.actions button.config');
-    prefsButton.setAttribute('id', PassFF.Ids.prefsmenuitem);
-    prefsButton.setAttribute('title', PassFF.gsfm('passff_toolbar_preferences_label'));
-    prefsButton.addEventListener('click', PassFF.Menu.onPreferences);
+    if (!PassFF.Menu._http_auth) {
+      let prefsButton = doc.querySelector('.actions button.config');
+      prefsButton.setAttribute('id', PassFF.Ids.prefsmenuitem);
+      prefsButton.setAttribute('title', PassFF.gsfm('passff_toolbar_preferences_label'));
+      prefsButton.addEventListener('click', PassFF.Menu.onPreferences);
 
-    let newPasswordButton = doc.querySelector('.actions button.add');
-    newPasswordButton.setAttribute('id', PassFF.Ids.newpasswordmenuitem);
-    newPasswordButton.setAttribute('title', PassFF.gsfm('passff_toolbar_new_password_label'));
-    newPasswordButton.addEventListener('click', PassFF.Menu.onNewPassword);
+      let newPasswordButton = doc.querySelector('.actions button.add');
+      newPasswordButton.setAttribute('id', PassFF.Ids.newpasswordmenuitem);
+      newPasswordButton.setAttribute('title', PassFF.gsfm('passff_toolbar_new_password_label'));
+      newPasswordButton.addEventListener('click', PassFF.Menu.onNewPassword);
+    }
 
     return panel;
   },
@@ -282,6 +302,10 @@ PassFF.Menu = {
     window.close();
   },
 
+  onHttpAuth: function (item) {
+    PassFF.bg_exec('resolveHttpAuth', item);
+  },
+
   clearMenuList: function(doc) {
     let listElm = doc.getElementById(PassFF.Ids.entrieslist);
     while (listElm.hasChildNodes()) {
@@ -294,6 +318,11 @@ PassFF.Menu = {
     PassFF.bg_exec('Pass.getItemById', item_id)
       .then((item) => {
         log.debug("Create item menu", item);
+
+        if (PassFF.Menu._http_auth && (item.hasFields || item.isLeaf)) {
+          PassFF.Menu.onHttpAuth(item.id);
+          return;
+        }
 
         PassFF.Menu.clearMenuList(doc);
         if (item.hasFields || item.isLeaf) {
@@ -341,9 +370,13 @@ PassFF.Menu = {
       let onEnter = null;
       if (item.isLeaf || item.hasFields) {
         onEnter = function(event) {
-          PassFF.bg_exec('Menu.onEnter', PassFF.Menu.getItem(this), event.shiftKey)
-            .catch(logAndDisplayError("Error entering menu"));
-          window.close();
+          if (PassFF.Menu._http_auth) {
+            PassFF.Menu.onHttpAuth(PassFF.Menu.getItem(this));
+          } else {
+            PassFF.bg_exec('Menu.onEnter', PassFF.Menu.getItem(this), event.shiftKey)
+              .catch(logAndDisplayError("Error entering menu"));
+            window.close();
+          }
         };
       }
 

@@ -31,7 +31,9 @@
         "storage",
         "nativeMessaging",
         "clipboardWrite",
-        "contextMenus"
+        "contextMenus",
+        "webRequest",
+        "webRequestBlocking"
     ],
 
     "options_ui": {

@@ -8,11 +8,27 @@ body {
   font-family: sans-serif;
 }
 
+body.http_auth {
+  width: 100%;
+}
+
 .searchbar,
 .results,
 .actions,
 .message {
   box-sizing: border-box;
+}
+
+.httpAuthUrl {
+  font-size: 0.9rem;
+  padding: 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  border-color: #b6b6b3;
+  border-width: 0 0 1px 0;
+  border-style: solid;
+  background-color: #ffa;
+  font-family: monospace;
 }
 
 .searchbar input:focus,
