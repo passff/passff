@@ -49,22 +49,28 @@ PassFF.Preferences = (function() {
     _gpgAgentEnv: null,
     _params: getDefaultParams(),
     init: function(bgmode) {
-      let promised_changes = [];
-      for (let [key, val] of Object.entries(PassFF.Preferences._params)) {
-        promised_changes.push(
-          browser.storage.local.get(key)
-            .then((res) => {
-              if (typeof res[key] === 'undefined') {
-                let obj = {}; obj[key] = val;
-                browser.storage.local.set(obj);
-              } else {
-                this._params[key] = res[key];
-              }
-            })
-        );
-      }
+      return browser.storage.local.get(Object.keys(this._params))
+      .then((res) => {
+        let obj = {};
+        for (let [key, val] of Object.entries(this._params)) {
+          if (typeof res[key] === 'undefined') {
+            obj[key] = val;
+          } else {
+            this._params[key] = res[key];
+          }
+        }
+        return browser.storage.local.set(obj);
+      })
+      .then(() => {
+        browser.storage.onChanged.addListener((changes, areaName) => {
+          if (areaName == "local") {
+            var changedItems = Object.keys(changes);
+            for (var item of changedItems) {
+              this._params[item] = changes[item].newValue;
+            }
+          }
+        });
 
-      return Promise.all(promised_changes).then(() => {
         if (bgmode === true) {
           log.info("Preferences initialised", {
             passwordInputNames    : this.passwordInputNames,
@@ -225,15 +231,19 @@ PassFF.Preferences = (function() {
     get caseInsensitiveSearch() {
       return this._params.caseInsensitiveSearch;
     },
+
     get enterBehavior() {
       return this._params.enterBehavior;
     },
+
     get defaultPasswordLength() {
       return this._params.defaultPasswordLength;
     },
+
     get defaultIncludeSymbols() {
       return this._params.defaultIncludeSymbols;
     },
+
     get preferInsert() {
       return this._params.preferInsert;
     }
