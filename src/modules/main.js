@@ -266,6 +266,12 @@ var PassFF = {
           });
           break;
       }
+    } else if (request.action == "Menu.onCopyToClipboard") {
+      let item = PassFF.Pass.getItemById(request.params[0]);
+      let dataKey = request.params[1];
+      PassFF.Pass.getPasswordData(item).then((passwordData) => {
+        copyToClipboard(passwordData[dataKey]);
+      });
     } else if (request.action == "Page.goToItemUrl") {
       let item = PassFF.Pass.getItemById(request.params[0]);
       PassFF.Page.goToItemUrl(item, request.params[1], request.params[2], request.params[3]);

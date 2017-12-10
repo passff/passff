@@ -40,6 +40,7 @@
 
     "background": {
         "scripts": [
+            "modules/clipboard-helper.js",
             "modules/shortcut-helper.js",
             "modules/main.js",
             "modules/preferences.js",

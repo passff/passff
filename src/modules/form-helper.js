@@ -1,3 +1,5 @@
+/* jshint node: true */
+'use strict';
 
 var doc = document;
 var loginInputTypes = ['text', 'email', 'tel'];
