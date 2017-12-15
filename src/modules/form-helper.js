@@ -5,57 +5,49 @@ var doc = document;
 var loginInputTypes = ['text', 'email', 'tel'];
 var loginInputNames = [];
 var passwordInputNames = [];
-var subpageSearchDepth = 0;
+var subpageSearchDepth = 5;
+
+function isVisible(element) {
+  return (element.offsetHeight !== 0 && element.offsetParent !== null);
+}
+
+function getActiveElement(document, depth) {
+  depth = depth || 0;
+  document = document || window.document;
+  if (typeof document.activeElement.contentDocument !== "undefined") {
+    if (depth > subpageSearchDepth) {
+      return false;
+    }
+    return getActiveElement(document.activeElement.contentDocument, depth++);
+  } else {
+    return document.activeElement;
+  }
+  return false;
+}
 
 function getSubmitButton(form) {
-  let buttons = form.querySelectorAll('button:not([type=reset])');
-
-  if (buttons.length === 0) {
-    buttons = Array.prototype.slice
-                             .call(form.querySelectorAll('input[type=submit]'));
-  }
-
-  if (buttons.length === 0) {
-    return null;
-  }
-
+  let buttons = form.querySelectorAll('button:not([type=reset]),input[type=submit]');
   let submitButtonPredicates = [
     // explicit submit type
     (button) => button.getAttribute("type") === "submit",
     // the browser interprets an unset or invalid type as submit
-    (button) => !Array.prototype.includes
-                                .call(["submit", "button"], button.getAttribute("type")),
+    (button) => !["submit", "button"].includes(button.getAttribute("type")),
     // assume that last button in form performs submission via javascript
     (button, index, arr) => index + 1 === arr.length
   ];
-
   for (let predicate of submitButtonPredicates) {
-    let button = Array.prototype.find.call(buttons, predicate);
-    if (button) {
-      return button;
-    }
+    let button = [].find.call(buttons, predicate);
+    if (button) return button;
   }
-}
-
-function searchParentForm(input) {
-  while (input !== null && input.tagName.toLowerCase() != 'form') {
-    input = input.parentNode;
-  }
-
-  return input;
+  return null;
 }
 
 function submit() {
   let passwords = getPasswordInputs();
-  if (passwords.length === 0) {
-    return;
-  }
+  if (passwords.length === 0) return false;
 
-  let form = searchParentForm(passwords[0]);
-  if (!form) {
-    // No form found to submit
-    return false;
-  }
+  let form = passwords[0].form;
+  if (!form) return false;
 
   let submitBtn = getSubmitButton(form);
   if (submitBtn) {
@@ -94,18 +86,15 @@ function isOtherInputCheck(other) {
 }
 
 function getLoginInputs() {
-  return Array.prototype.slice.call(doc.getElementsByTagName('input'))
-                              .filter(isLoginInput);
+  return [].filter.call(doc.getElementsByTagName('input'), isLoginInput);
 }
 
 function getPasswordInputs() {
-  return Array.prototype.slice.call(doc.getElementsByTagName('input'))
-                              .filter(isPasswordInput);
+  return [].filter.call(doc.getElementsByTagName('input'), isPasswordInput);
 }
 
 function getOtherInputs(other) {
-  return Array.prototype.slice.call(doc.getElementsByTagName('input'))
-                              .filter(isOtherInputCheck(other));
+  return [].filter.call(doc.getElementsByTagName('input'), isOtherInputCheck(other));
 }
 
 function createFakeKeystroke(typeArg, key) {
@@ -130,6 +119,7 @@ function createFakeInputEvent(typeArg) {
 }
 
 function writeValueWithEvents(input, value) {
+  if (!isVisible(input)) return;
   input.dispatchEvent(createFakeKeystroke('keydown'));
   input.value = value;
   input.dispatchEvent(createFakeKeystroke('keyup'));
@@ -166,26 +156,33 @@ function setInputs(passwordData) {
   setOtherInputs(passwordData._other);
 }
 
-function processDoc(d, passwordData, depth) {
+function processDoc(passwordData, depth) {
+  depth = depth || 0;
+  // clean up before going into subpages
+  doc = (depth === 0) ? document : doc;
   setInputs(passwordData);
   if (depth <= subpageSearchDepth) {
-    let subpages = [
-      ...d.getElementsByTagName('iframe'),
-      ...d.getElementsByTagName('frame')
-    ];
-    Array.prototype.slice.call(subpages).forEach(function(subpage) {
-      processDoc(subpage.contentDocument, passwordData, depth++);
+    let subpages = doc.querySelectorAll('iframe,frame');
+    depth += 1;
+    [].forEach.call(subpages, (subpage) => {
+      doc = subpage.contentDocument;
+      processDoc(passwordData, depth);
     });
   }
+  // clean up after scanning subpages
+  doc = (depth === 0) ? document : doc;
 }
 
 function contextMenuFill(passwordData) {
-  document.activeElement.value = passwordData.login;
+  let input = getActiveElement();
+  input.value = passwordData.login;
+  doc = input.form;
   setPasswordInputs(passwordData.password);
+  doc = document;
 }
 
 function addInputName() {
-  let input = document.activeElement;
+  let input = getActiveElement();
   if (input.tagName != "INPUT" || loginInputTypes.indexOf(input.type) < 0) {
     return;
   }

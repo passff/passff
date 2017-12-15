@@ -120,7 +120,7 @@ PassFF.Page = {
     return PassFF.Pass.getPasswordData(item).then((passwordData) => {
       if (passwordData) {
         PassFF.Page._execWithPrefs(tab,
-          "processDoc(doc, {0}, 0);".format(JSON.stringify(passwordData))
+          "processDoc({0}, 0);".format(JSON.stringify(passwordData))
         );
       }
     });
