@@ -12,9 +12,9 @@ PassFF.Preferences = (function() {
       urlFieldNames         : 'url,http',
       command               : '/usr/bin/pass',
       commandArgs           : '',
+      commandEnv            : '',
       shell                 : '/bin/bash',
       shellArgs             : '',
-      home                  : '',
       gnupgHome             : '',
       storeDir              : '',
       storeGit              : '',
@@ -149,19 +149,19 @@ PassFF.Preferences = (function() {
       return this._params.commandArgs.split(' ');
     },
 
+    get commandEnv() {
+      return this._params.commandEnv.split('\n').map((line) => {
+        let sep = line.indexOf("=");
+        return [line.substring(0,sep), line.substr(sep+1)];
+      });
+    },
+
     get shell() {
       return this._params.shell;
     },
 
     get shellArgs() {
       return this._params.shellArgs.split(' ');
-    },
-
-    get home() {
-      if (this._params.home.trim().length > 0) {
-        return this._params.home;
-      }
-      return PassFF.Pass.env.get('HOME');
     },
 
     get gnupgHome() {

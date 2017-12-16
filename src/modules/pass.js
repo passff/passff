@@ -504,12 +504,15 @@ PassFF.Pass = {
   },
 
   getEnvParams: function() {
-    return {
-      'HOME': PassFF.Preferences.home,
+    let params = {
       'DISPLAY': (PassFF.Pass.env.exists('DISPLAY') ? PassFF.Pass.env.get('DISPLAY') : ':0.0'),
       'TREE_CHARSET': 'ISO-8859-1',
       'GNUPGHOME': PassFF.Preferences.gnupgHome
     };
+    PassFF.Preferences.commandEnv.forEach((keyval) => {
+        params[keyval[0]] = keyval[1];
+    });
+    return params;
   },
 
   getDirectEnvParams: function() {
@@ -526,6 +529,10 @@ PassFF.Pass = {
     if (PassFF.Preferences.gpgAgentEnv !== null) {
       Object.assign(params, PassFF.Preferences.gpgAgentEnv);
     }
+
+    PassFF.Preferences.commandEnv.forEach((keyval) => {
+        params[keyval[0]] = keyval[1];
+    });
 
     return params;
   },

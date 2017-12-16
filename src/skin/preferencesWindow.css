@@ -114,10 +114,15 @@ fieldset p > input[type=radio] ~ label ~ label {
     margin-left: 1em;
 }
 
-fieldset p > input[type=text] {
+fieldset p > input[type=text],
+fieldset p > textarea {
     width: 90%;
     border: 1px #ccc solid;
     padding: 0.3rem 0.2rem;
     border-radius: 2px;
+}
+
+fieldset p > textarea {
+    height: 7rem;
 }
 

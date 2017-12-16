@@ -138,6 +138,9 @@
   "passff_prefs_commandArgs_tooltip": {
     "message": "Argumente, die dem 'pass' Skript bei der Ausführung übergeben werden."
   },
+  "passff_prefs_commandEnv_label": {
+    "message": "Umgebungsvariablen (einmal 'VARIABLE=Wert' pro Zeile)"
+  },
   "passff_prefs_shell_label": {
     "message": "Pass Shell"
   },

@@ -138,6 +138,9 @@
   "passff_prefs_commandArgs_tooltip": {
     "message": "Arguments to pass to the pass script when run"
   },
+  "passff_prefs_commandEnv_label": {
+    "message": "Environment variables (one 'VARIABLE=value' per line)"
+  },
   "passff_prefs_shell_label": {
     "message": "Pass shell"
   },
@@ -149,12 +152,6 @@
   },
   "passff_prefs_shellArgs_tooltip": {
     "message": "Arguments to start the shell with"
-  },
-  "passff_prefs_home_label": {
-    "message": "User home"
-  },
-  "passff_prefs_home_tooltip": {
-    "message": "User home. If empty, use environment user home"
   },
   "passff_prefs_gpg_agent_info_label": {
     "message": "Gpg agent info file"

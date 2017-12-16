@@ -42,7 +42,7 @@ window.onload = () => promised_init.then(() => {
   for (let [key, val] of Object.entries(PassFF.Preferences._params)) {
     let el = document.getElementById("pref_" + key);
     if (el !== null) {
-      if (el.tagName == "INPUT" && el.type == "text") {
+      if (el.tagName == "TEXTAREA" || el.tagName == "INPUT" && el.type == "text") {
         el.value = val;
         el.addEventListener("change", pref_str_change_cb(key));
       } else if (el.tagName == "INPUT" && el.type == "checkbox") {
