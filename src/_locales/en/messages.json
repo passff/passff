@@ -60,6 +60,9 @@
   "passff_button_context_label": {
     "message": "Display contextual"
   },
+  "passff_prefs_headline": {
+    "message": "PassFF Preferences"
+  },
   "passff_prefs_tab_general": {
     "message": "General"
   },

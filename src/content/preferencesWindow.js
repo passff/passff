@@ -30,7 +30,7 @@ function pref_bool_change_cb(key) {
 
 let promised_init = PassFF.init(false);
 window.onload = () => promised_init.then(() => {
-  document.querySelectorAll("label,p.text,option").forEach(function (el) {
+  document.querySelectorAll("h1,label,p.text,option").forEach(function (el) {
     el.textContent = PassFF.gsfm(el.textContent);
   });
 

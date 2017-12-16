@@ -3,77 +3,121 @@ html, body, div {
     margin: 0; padding: 0; width: 100%;
 }
 
+h1 {
+    font-size: 1.7rem;
+    font-weight: normal;
+}
+
 div.tabbox {
-    position: relative;
-    min-height: 380px;
-    padding: 0 0.2rem;
-    box-sizing: border-box;
-    min-width: 650px;
+    min-width: 400px;
 }
 
 div.tab {
-    display: inline;
+    margin: 0 0 1.5rem;
 }
 
-div.tab:last-of-type > label {
-    border-right: 1px #ccc solid;
+div.tab:first-of-type > label {
+    border-top: 0;
 }
 
 div.tab > label {
     display: block;
-    padding: 0.1rem 0.2rem;
-    border-right: 1px #ccc solid;
-    border-left: 1px #ccc solid;
+    padding: 0.2rem 0 0;
+    margin: 0 0 -0.7rem;
     border-top: 1px #ccc solid;
-    margin-right: -1px;
-    float: left;
-    box-sizing: border-box;
-    height: 1.6rem;
+    line-height: 200%;
+    font-weight: bold;
+    font-size: 1.2rem;
 }
 
 div.tab > input[type=radio] {
-    opacity: 0;
-    margin: 0;
-}
-
-div.tab > input[type=radio]:checked ~ label {
-    background-color: #eee;
-    border-color: #000;
-    margin-right: 0;
-}
-
-div.tab > input[type=radio]:checked ~ fieldset {
-    display: block;
-    clear: both;
+    display: none;
 }
 
 fieldset {
-    line-height: 2.4rem;
-    text-align: left;
-    display: none;
-    position: absolute;
-    top: 1.6rem;
     width: 99.3%;
-    box-sizing: border-box;
-    padding: 0.3rem; margin: 0;
-    border: 1px #000 solid;
-}
-
-fieldset p.text {
-    line-height: 1.2rem;
-    padding: 0.2rem;
+    padding: 0; margin: 0;
+    border: 0;
 }
 
 fieldset p {
     clear: both;
-    padding: 0; margin: 0;
+    padding: 0; margin: 1.5rem 0;
+}
+
+fieldset p.text {
+    padding: 0;
 }
 
 fieldset p > label:first-child {
     display: block;
-    float: left;
-    width: 23rem;
-    margin-right: 0.5rem;
-    text-align: right;
+    margin: 0.8rem 0 0.3rem;
+}
+
+fieldset p > input[type=checkbox] {
+    display: none;
+}
+
+fieldset p > input[type=checkbox] ~ label:before {
+    content: "✓";
+    display: inline-block;
+    padding: 0;
+    text-align: center;
+    margin: 0 0.5em 0 0;
+    width: 1.15em;
+    height: 1.15em;
+    line-height: 1.15em;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    background-color: #fafafa;
+    font-size: 1.3rem;
+    color: #fafafa;
+}
+
+fieldset p > input[type=checkbox] ~ label:hover:before {
+    border-color: #2292d0;
+}
+
+fieldset p > input[type=checkbox]:checked ~ label:before {
+    color: #2292d0;
+}
+
+fieldset p > input[type=radio] {
+    display: none;
+}
+
+fieldset p > input[type=radio] ~ label:before {
+    content: "●";
+    display: inline-block;
+    padding: 0;
+    text-align: center;
+    margin: 0 0.5em 0 0;
+    width: 0.8em;
+    height: 0.8em;
+    line-height: 0.8em;
+    border: 1px solid #ccc;
+    border-radius: 0.5em;
+    background-color: #fafafa;
+    font-size: 1.3rem;
+    color: #fafafa;
+}
+
+fieldset p > input[type=radio] ~ label:hover:before {
+    border-color: #2292d0;
+}
+
+fieldset p > input[type=radio]:checked + label:before {
+    color: #2292d0;
+}
+
+fieldset p > input[type=radio] ~ label ~ label {
+    margin-left: 1em;
+}
+
+fieldset p > input[type=text] {
+    width: 90%;
+    border: 1px #ccc solid;
+    padding: 0.3rem 0.2rem;
+    border-radius: 2px;
 }
 

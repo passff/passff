@@ -60,17 +60,20 @@
   "passff_button_context_label": {
     "message": "Kontext anzeigen"
   },
+  "passff_prefs_headline": {
+    "message": "PassFF-Einstellungen"
+  },
   "passff_prefs_tab_general": {
     "message": "Allgemein"
   },
   "passff_prefs_tab_autofilling": {
-    "message": "autom. Ausfüllen"
+    "message": "Automatisches Ausfüllen von Formularen"
   },
   "passff_prefs_tab_fields": {
-    "message": "Felder"
+    "message": "Felder in Pass-Datensätzen"
   },
   "passff_prefs_tab_script": {
-    "message": "Pass Skript"
+    "message": "Pass-Skript"
   },
   "passff_prefs_tab_adding": {
     "message": "Passwörter hinzufügen"
