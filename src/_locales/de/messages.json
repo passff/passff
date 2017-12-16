@@ -84,14 +84,8 @@
   "passff_prefs_case_insensitive_search": {
     "message": "Groß-Kleinschreibung ignorieren"
   },
-  "passff_prefs_case_insensitive_search_tooltip": {
-    "message": "Mit dieser Einstellung wird bei der Suche nach einer zur Website passenden Datei keine Unterscheidung zwischen Groß- und Kleinschreibung gemacht"
-  },
   "passff_prefs_enter_behavior": {
     "message": "Verhalten der Enter-Taste"
-  },
-  "passff_prefs_enter_behavior_tooltip": {
-    "message": "Diese Einstellung bestimmt das Standardverhalten, wenn bei einem markierten Eintrag die Enter-Taste gedrückt wird"
   },
   "passff_prefs_fields_description": {
     "message": "Felder werden genutzt, um Daten in deinem Passwort-Repository zu finden. PassFF versucht, den 'login', 'passwort' oder 'url' Wert (entsprechend der Standard-Syntax) oder einen passenden Datensatznamen in den Passwortdaten zu finden."
@@ -99,32 +93,17 @@
   "passff_prefs_password_input_names_label": {
     "message": "Namen für 'Passwort'-Eingabefelder"
   },
-  "passff_prefs_password_input_names_tooltip": {
-    "message": "Kommagetrennte Liste von Eingabefeld-Namen. Eingabefelder in der HTML-Seite, die einem dieser Namen entsprechen, werden mit dem Passwort gefüllt."
-  },
   "passff_prefs_login_input_names_label": {
     "message": "Namen für 'Login'-Eingabefelder"
-  },
-  "passff_prefs_login_input_names_tooltip": {
-    "message": "Kommagetrennte Liste von Eingabefeld-Namen. Eingabefelder in der HTML-Seite, die einem dieser Namen entsprechen, werden mit dem Login gefüllt."
   },
   "passff_prefs_login_field_names_label": {
     "message": "Login Datensatznamen"
   },
-  "passff_prefs_login_field_names_tooltip": {
-    "message": "Kommaseparierte Liste von Datensatznamen. Der erste übereinstimmende Wert in den Passwortdaten wird als 'login' verwendet."
-  },
   "passff_prefs_password_field_names_label": {
     "message": "Passwort Datensatznamen"
   },
-  "passff_prefs_password_field_names_tooltip": {
-    "message": "Kommaseparierte Liste von Datensatznamen. Der erste übereinstimmende Wert in den Passwortdaten wird als 'Passwort' verwendet"
-  },
   "passff_prefs_url_field_names_label": {
     "message": "URL  Datensatznamen"
-  },
-  "passff_prefs_url_field_names_tooltip": {
-    "message": "Kommaseparierte Liste von Datensatznamen. Der erste übereinstimmende Wert in den Passwortdaten wird als 'URL' verwendet"
   },
   "passff_prefs_command_label": {
     "message": "Pass Kommando"
@@ -141,80 +120,14 @@
   "passff_prefs_commandEnv_label": {
     "message": "Umgebungsvariablen (einmal 'VARIABLE=Wert' pro Zeile)"
   },
-  "passff_prefs_shell_label": {
-    "message": "Pass Shell"
-  },
-  "passff_prefs_shell_tooltip": {
-    "message": "Die Shell, innerhalb der 'pass' ausgeführt werden soll."
-  },
-  "passff_prefs_shellArgs_label": {
-    "message": "Shell Argumente"
-  },
-  "passff_prefs_shellArgs_tooltip": {
-    "message": "Argumente, mit denen die Shell aufgerufen werden soll."
-  },
-  "passff_prefs_home_label": {
-    "message": "Benutzerverzeichnis"
-  },
-  "passff_prefs_home_tooltip": {
-    "message": "Heimverzeichnis des Benutzers. Leer lassen für Nutzung der Umgebungsvariablen."
-  },
-  "passff_prefs_gpg_agent_info_label": {
-    "message": "GPG-Agent-Info-Datei"
-  },
-  "passff_prefs_gpg_agent_info_tooltip": {
-    "message": "Speicherort der GPG_AGENT_INFO-Datei (Relativ zum Benutzerverzeichnis oder absolut). Wenn nicht gefunden wird versucht die Firefox-Umgebungsvariablen auszulesen."
-  },
-  "passff_prefs_pass_dir_label": {
-    "message": "Passwordstore-Ordner"
-  },
-  "passff_prefs_pass_dir_tooltip": {
-    "message": "Passwordstore-Ordner (PASSWORD_STORE_DIR). Wenn leer wird die Umgebungsvariable PASSWORD_STORE_DIR genutzt."
-  },
-  "passff_prefs_pass_git_label": {
-    "message": "Passwordstore Git-Ordner"
-  },
-  "passff_prefs_pass_git_tooltip": {
-    "message": "Passwordstore Git-Ordner (PASSWORD_STORE_GIT). Wenn leer wird die Umgebungsvariable PASSWORD_STORE_GIT genutzt."
-  },
   "passff_prefs_auto_fill_label": {
     "message": "Versuche, Loginseiten automatisch auszufüllen."
-  },
-  "passff_prefs_auto_fill_tooltip": {
-    "message": "Wenn gesetzt wird automatisch versucht, Loginformulare auszufüllen indem ein Passwort entsprechend der Seiten-URL ausgewählt wird."
   },
   "passff_prefs_auto_submit_label": {
     "message": "Versuche, Loginseiten automatisch abzusenden."
   },
-  "passff_prefs_auto_submit_tooltip": {
-    "message": "Wenn gesetzt wird automatisch versucht, Loginformulare abzusenden indem ein Passwort entsprechend der Seiten-URL ausgewählt wird."
-  },
   "passff_prefs_autofill_blacklist_label": {
     "message": "Nicht auto-ausfüllen, falls URL diese enthält"
-  },
-  "passff_prefs_shortcut_key_label": {
-    "message": "Schnelltaste"
-  },
-  "passff_prefs_shortcut_key_tooltip": {
-    "message": "Die Schnelltaste, um das PassFF-Fenster zu öffnen."
-  },
-  "passff_prefs_shortcut_mod_label": {
-    "message": "Schnelltasten-Modifikatoren"
-  },
-  "passff_prefs_shortcut_mod_tooltip": {
-    "message": "Die Modifikatoren-Tasten um das PassFF-Fenster zu öffnen. Eine Kombination aus den Worten 'control', 'alt' und 'shift', getrennt durch ein Komma."
-  },
-  "passff_prefs_callmethod_tooltip": {
-    "message": "Wähle aus, auf welche Art PassFF pass ausführen soll."
-  },
-  "passff_prefs_callmethod": {
-    "message": "Aufrufmethode"
-  },
-  "passff_prefs_direct_radio_label": {
-    "message": "Direktaufruf"
-  },
-  "passff_prefs_shell_radio_label": {
-    "message": "über eine Shell"
   },
   "passff_prefs_default_length_tooltip": {
     "message": "Standardlänge für die Passwortgenerierung"

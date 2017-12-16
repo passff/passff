@@ -78,14 +78,8 @@
   "passff_prefs_case_insensitive_search": {
     "message": "Поиск без учета регистра"
   },
-  "passff_prefs_case_insensitive_search_tooltip": {
-    "message": "Строчные и прописные буквы будут считатся одинаковыми при поиске файлов с паролями"
-  },
   "passff_prefs_enter_behavior": {
     "message": "Поведение клавиши ввода"
-  },
-  "passff_prefs_enter_behavior_tooltip": {
-    "message": "Определяет поведение по умолчанию при нажатии клавиши ввода на элементе меню"
   },
   "passff_prefs_fields_description": {
     "message": "Поля которые используются для поиска данных в вашем репозитории паролей. PassFF пытается найти логин, пароль и адреса сайтов в файлах с паролями (используя стандартный синтаксис)."
@@ -93,32 +87,17 @@
   "passff_prefs_password_input_names_label": {
     "message": "Имена полей для паролей"
   },
-  "passff_prefs_password_input_names_tooltip": {
-    "message": "Список имен разделенных запятой. Поля с html-атрибутом 'name' равным одному из значений из этого списка будут заполнены паролями"
-  },
   "passff_prefs_login_input_names_label": {
     "message": "Имена полей для логинов"
-  },
-  "passff_prefs_login_input_names_tooltip": {
-    "message": "Список имен разделенных запятой. Поля с html-атрибутом 'name' равным одному из значений из этого списка будут заполнены логинами"
   },
   "passff_prefs_login_field_names_label": {
     "message": "Имена полей для логинов"
   },
-  "passff_prefs_login_field_names_tooltip": {
-    "message": "Список имен разделенных запятой. Содержимое первого найденого поля будет использоватся в качесте логина"
-  },
   "passff_prefs_password_field_names_label": {
     "message": "Имена полей для паролей"
   },
-  "passff_prefs_password_field_names_tooltip": {
-    "message": "Список имен разделенных запятой. Содержимое первого найденого поля будет использоватся в качесте пароля"
-  },
   "passff_prefs_url_field_names_label": {
     "message": "Имена полей для адресов сайтов"
-  },
-  "passff_prefs_url_field_names_tooltip": {
-    "message": "Список имен разделенных запятой. Содержимое первого найденого поля будет использоватся в качесте адреса сайта"
   },
   "passff_prefs_command_label": {
     "message": "Команда для запуска pass"
@@ -132,77 +111,11 @@
   "passff_prefs_commandArgs_tooltip": {
     "message": "Аргументы для скрипта"
   },
-  "passff_prefs_shell_label": {
-    "message": "Командная оболочка"
-  },
-  "passff_prefs_shell_tooltip": {
-    "message": "Используемая командная оболочка"
-  },
-  "passff_prefs_shellArgs_label": {
-    "message": "Аргументы для командной оболочки"
-  },
-  "passff_prefs_shellArgs_tooltip": {
-    "message": "Аргументы используемые при запуске командной оболочки"
-  },
-  "passff_prefs_home_label": {
-    "message": "Домашняя директория"
-  },
-  "passff_prefs_home_tooltip": {
-    "message": "Домашняя директория. Если поле пустое, используется системная переменная HOME"
-  },
-  "passff_prefs_gpg_agent_info_label": {
-    "message": "Файл info для gpg-агента"
-  },
-  "passff_prefs_gpg_agent_info_tooltip": {
-    "message": "Путь к info-файлу для gpg-agent с переменными окружения (относительный или полный), если он не будет нйден, будут использоватся переменные из окружения Firefox"
-  },
-  "passff_prefs_pass_dir_label": {
-    "message": "Директория с паролями для pass"
-  },
-  "passff_prefs_pass_dir_tooltip": {
-    "message": "Директория с паролями для pass (PASSWORD_STORE_DIR). Если поле пустое, используется системная переменная PASSWORD_STORE_DIR"
-  },
-  "passff_prefs_pass_git_label": {
-    "message": "Директория git с паролями для pass"
-  },
-  "passff_prefs_pass_git_tooltip": {
-    "message": "Директория git с паролями для pass (PASSWORD_STORE_GIT). Если поле пустое, используется системная переменная PASSWORD_STORE_GIT"
-  },
   "passff_prefs_auto_fill_label": {
     "message": "Автоматически заполнять поля для входа"
   },
-  "passff_prefs_auto_fill_tooltip": {
-    "message": "Если включено тогда автоматически заполнять поля для входа"
-  },
   "passff_prefs_auto_submit_label": {
     "message": "Автоматически отправлять поля для входа"
-  },
-  "passff_prefs_auto_submit_tooltip": {
-    "message": "Если включено тогда автоматически заполнять и отправлять данные для входа из файла с паролями"
-  },
-  "passff_prefs_shortcut_key_label": {
-    "message": "Быстрая клавиша"
-  },
-  "passff_prefs_shortcut_key_tooltip": {
-    "message": "Быстрая клавиша используемая для открытия окна PassFF"
-  },
-  "passff_prefs_shortcut_mod_label": {
-    "message": "Модификаторы для быстрой клавиши"
-  },
-  "passff_prefs_shortcut_mod_tooltip": {
-    "message": "Модификаторы для быстрой клавиши используемые для открытия окна PassFF. Комбинация из (Control, Alt, Shift) и других символов разделенных запятой (,)"
-  },
-  "passff_prefs_callmethod_tooltip": {
-    "message": "Выберите метод который будет использоватся для запуска скрипта"
-  },
-  "passff_prefs_callmethod": {
-    "message": "Метод запуска скрипта"
-  },
-  "passff_prefs_direct_radio_label": {
-    "message": "Прямой запуск"
-  },
-  "passff_prefs_shell_radio_label": {
-    "message": "Используя командную оболочку"
   },
   "passff_prefs_default_length_tooltip": {
     "message": "Длина пароля по умолчанию"

@@ -84,14 +84,8 @@
   "passff_prefs_case_insensitive_search": {
     "message": "Case-insensitive searching"
   },
-  "passff_prefs_case_insensitive_search_tooltip": {
-    "message": "This will treat upper- and lowercase characters the same when searching for pass files"
-  },
   "passff_prefs_enter_behavior": {
     "message": "Behavior of enter key"
-  },
-  "passff_prefs_enter_behavior_tooltip": {
-    "message": "This determines the default behavior when pressing the enter key on an item in the menu"
   },
   "passff_prefs_fields_description": {
     "message": "Fields are used to find data inside your passwords repository. PassFF will try to find the login, password or url value inside the password data (using the standard syntax) or trying to find a matching child node name"
@@ -99,32 +93,17 @@
   "passff_prefs_password_input_names_label": {
     "message": "Password input names"
   },
-  "passff_prefs_password_input_names_tooltip": {
-    "message": "Comma separated list of input names. Input field names in a html page containing one of those values will be filled with the password"
-  },
   "passff_prefs_login_input_names_label": {
     "message": "Login input names"
-  },
-  "passff_prefs_login_input_names_tooltip": {
-    "message": "Comma separated list of input names. Input field names in a html page containing one of those values will be filled with the login"
   },
   "passff_prefs_login_field_names_label": {
     "message": "Login field names"
   },
-  "passff_prefs_login_field_names_tooltip": {
-    "message": "Comma separated list of field names. The first matching field in the password data will be used as login"
-  },
   "passff_prefs_password_field_names_label": {
     "message": "Password field names"
   },
-  "passff_prefs_password_field_names_tooltip": {
-    "message": "Comma separated list of field names. The first matching field in the password data will be used as password"
-  },
   "passff_prefs_url_field_names_label": {
     "message": "Url field names"
-  },
-  "passff_prefs_url_field_names_tooltip": {
-    "message": "Comma separated list of field names. The first matching field in the password data will be used as url"
   },
   "passff_prefs_command_label": {
     "message": "Pass command"
@@ -141,74 +120,14 @@
   "passff_prefs_commandEnv_label": {
     "message": "Environment variables (one 'VARIABLE=value' per line)"
   },
-  "passff_prefs_shell_label": {
-    "message": "Pass shell"
-  },
-  "passff_prefs_shell_tooltip": {
-    "message": "The shell to use"
-  },
-  "passff_prefs_shellArgs_label": {
-    "message": "Shell arguments"
-  },
-  "passff_prefs_shellArgs_tooltip": {
-    "message": "Arguments to start the shell with"
-  },
-  "passff_prefs_gpg_agent_info_label": {
-    "message": "Gpg agent info file"
-  },
-  "passff_prefs_gpg_agent_info_tooltip": {
-    "message": "Location of the gpg agent info file containing environment variables (relative to the user home or absolute). if not found, try to load variables from firefox environment"
-  },
-  "passff_prefs_pass_dir_label": {
-    "message": "Pass store dir"
-  },
-  "passff_prefs_pass_dir_tooltip": {
-    "message": "Pass store dir (PASSWORD_STORE_DIR). If empty, use the current environment PASSWORD_STORE_DIR"
-  },
-  "passff_prefs_pass_git_label": {
-    "message": "Pass store git dir"
-  },
-  "passff_prefs_pass_git_tooltip": {
-    "message": "Pass store git dir (PASSWORD_STORE_GIT). If empty, use the current environment PASSWORD_STORE_GIT"
-  },
   "passff_prefs_auto_fill_label": {
     "message": "Try to auto fill page login forms"
-  },
-  "passff_prefs_auto_fill_tooltip": {
-    "message": "If set, will try to fill automatically the login forms searching a password key contained in the page url"
   },
   "passff_prefs_auto_submit_label": {
     "message": "Try to auto submit page login forms"
   },
   "passff_prefs_autofill_blacklist_label": {
     "message": "Don't auto fill if URL contains these"
-  },
-  "passff_prefs_auto_submit_tooltip": {
-    "message": "If set, will try to submit automatically the login forms searching a password key contained in the page url"
-  },
-  "passff_prefs_shortcut_key_label": {
-    "message": "Shortcut key"
-  },
-  "passff_prefs_shortcut_key_tooltip": {
-    "message": "The shortcut key used to open the PassFF panel"
-  },
-  "passff_prefs_shortcut_mod_label": {
-    "message": "Shortcut modifier"
-  },
-  "passff_prefs_shortcut_mod_tooltip": {
-    "message": "The shortcut modifiers used to open the PassFF panel. A combination of (control, alt, shift) words separated by a comma (,)"
-  },
-  "passff_prefs_callmethod_tooltip": {
-    "message": "Choose the method passff will use to run the pass script"
-  },
-  "passff_prefs_callmethod": {
-    "message": "Script call method"
-  },
-  "passff_prefs_direct_radio_label": {
-    "message": "Direct call"
-  },
-  "passff_prefs_shell_radio_label": {
-    "message": "Through shell"
   },
   "passff_prefs_default_length_tooltip": {
     "message": "The default value for the length of a generated password"

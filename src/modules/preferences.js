@@ -13,19 +13,10 @@ PassFF.Preferences = (function() {
       command               : '/usr/bin/pass',
       commandArgs           : '',
       commandEnv            : '',
-      shell                 : '/bin/bash',
-      shellArgs             : '',
-      gnupgHome             : '',
-      storeDir              : '',
-      storeGit              : '',
-      gpgAgentInfo          : '.gpg-agent-info',
       autoFill              : false,
       autoSubmit            : false,
       autoFillBlacklist     : '',
-      shortcutKey           : 'y',
-      shortcutMod           : 'control',
       subpageSearchDepth    : 5,
-      callType              : 'direct',
       caseInsensitiveSearch : true,
       handleHttpAuth        : true,
       enterBehavior         : 0,
@@ -40,8 +31,6 @@ PassFF.Preferences = (function() {
       case 'mac':
         Object.assign(defaultParams, {
           command   : '/usr/local/bin/pass',
-          shellArgs : '--login',
-          callType  : 'shell',
         });
         break;
     }
@@ -49,7 +38,6 @@ PassFF.Preferences = (function() {
   };
 
   return {
-    _gpgAgentEnv: null,
     _params: getDefaultParams(),
     init: function(bgmode) {
       return browser.storage.local.get(Object.keys(this._params))
@@ -76,17 +64,6 @@ PassFF.Preferences = (function() {
             }
           }
         });
-
-        if (bgmode === true) {
-          log.info("Preferences initialised", this._params);
-          let params = { command: 'gpgAgentEnv' };
-          params['arguments'] = [this._params.gpgAgentInfo];
-          return browser.runtime.sendNativeMessage('passff', params)
-            .then((result) => { this._gpgAgentEnv = result; })
-            .catch((error) => {
-              log.error("Error detecting GPG Agent:", error);
-            });
-        }
       });
     },
 
@@ -156,41 +133,8 @@ PassFF.Preferences = (function() {
       });
     },
 
-    get shell() {
-      return this._params.shell;
-    },
-
-    get shellArgs() {
-      return this._params.shellArgs.split(' ');
-    },
-
-    get gnupgHome() {
-      if (this._params.gnupgHome.trim().length > 0) {
-        return this._params.gnupgHome;
-      }
-      return PassFF.Pass.env.get('GNUPGHOME');
-    },
-
-    get storeDir() {
-      if (this._params.storeDir.trim().length > 0) {
-        return this._params.storeDir;
-      }
-      return PassFF.Pass.env.get('PASSWORD_STORE_DIR');
-    },
-
-    get storeGit() {
-      if (this._params.storeGit.trim().length > 0) {
-        return this._params.storeGit;
-      }
-      return PassFF.Pass.env.get('PASSWORD_STORE_GIT');
-    },
-
     get path() {
       return PassFF.Pass.env.get('PATH');
-    },
-
-    get gpgAgentEnv() {
-      return this._gpgAgentEnv;
     },
 
     get autoFill() {
@@ -201,20 +145,8 @@ PassFF.Preferences = (function() {
       return this._params.autoSubmit;
     },
 
-    get shortcutKey() {
-      return this._params.shortcutKey;
-    },
-
-    get shortcutMod() {
-      return this._params.shortcutMod;
-    },
-
     get subpageSearchDepth() {
       return this._params.subpageSearchDepth;
-    },
-
-    get callType() {
-      return this._params.callType;
     },
 
     get handleHttpAuth() {

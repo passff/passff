@@ -11,13 +11,7 @@
         <input type="radio" name="tab_radio" id="tab0" checked="checked">
         <label for="tab0">passff_prefs_tab_general</label>
         <fieldset>
-          <!--<p>
-            <label>passff_prefs_shortcut_mod_label</label>
-            <input type="text" id="pref_shortcutMod" value="" />
-          </p><p>
-            <label>passff_prefs_shortcut_key_label</label>
-            <input type="text" id="pref_shortcutKey" value="" />
-          </p>--><p>
+          <p>
             <input type="checkbox" id="pref_caseInsensitiveSearch" />
             <label for="pref_caseInsensitiveSearch">passff_prefs_case_insensitive_search</label>
           </p><p>
@@ -89,29 +83,6 @@
           </p><p>
             <label>passff_prefs_commandEnv_label</label>
             <textarea id="pref_commandEnv"></textarea>
-          </p><p>
-            <label>passff_prefs_callmethod</label>
-            <input type="radio" id="pref_callType_shell"
-                   name="pref_callType" value="shell" />
-            <label for="pref_callType_shell">passff_prefs_shell_radio_label</label>
-            <input type="radio" id="pref_callType_direct"
-                   name="pref_callType" value="direct" />
-            <label for="pref_callType_direct">passff_prefs_direct_radio_label</label>
-          </p><p class="shell_radio">
-            <label>passff_prefs_shell_label</label>
-            <input type="text" id="pref_shell" value="" />
-          </p><p class="shell_radio">
-            <label>passff_prefs_shellArgs_label</label>
-            <input type="text" id="pref_shellArgs" value="" />
-          </p><p class="direct_radio">
-            <label>passff_prefs_gpg_agent_info_label</label>
-            <input type="text" id="pref_gpgAgentInfo" value="" />
-          </p><p class="direct_radio">
-            <label>passff_prefs_pass_dir_label</label>
-            <input type="text" id="pref_storeDir" value="" />
-          </p><p class="direct_radio">
-            <label>passff_prefs_pass_git_label</label>
-            <input type="text" id="pref_storeGit" value="" />
           </p>
         </fieldset>
       </div>
@@ -132,8 +103,8 @@
           </p><p>
             <label>passff_prefs_preferred_new_method_label</label>
             <select id="pref_preferInsert">
-              <option value="0">passff_newpassword_inputs_generate_password_button_label</option>
-              <option value="1">passff_newpassword_inputs_add_password_button_label</option>
+              <option value="0">passff_prefs_prefer_generate</option>
+              <option value="1">passff_prefs_prefer_insert</option>
             </select>
           </p>
         </fieldset>

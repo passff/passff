@@ -443,37 +443,16 @@ PassFF.Pass = {
     let command = null;
     let environment = this.getEnvParams();
 
-    if (PassFF.Preferences.callType == 'direct') {
-      command = PassFF.Preferences.command;
-      Object.assign(environment, this.getDirectEnvParams());
-      PassFF.Preferences.commandArgs.forEach(function(val) {
-        if (val && val.trim().length > 0) {
-          scriptArgs.push(val);
-        }
-      });
-
-      args.forEach(function(val) {
+    command = PassFF.Preferences.command;
+    PassFF.Preferences.commandArgs.forEach(function(val) {
+      if (val && val.trim().length > 0) {
         scriptArgs.push(val);
-      });
-    } else { // through shell
-      command = PassFF.Preferences.shell;
-      let passCmd = PassFF.Preferences.command;
-      PassFF.Preferences.commandArgs.forEach(function(val) {
-        if (val && val.trim().length > 0) {
-          passCmd += ' ' + val;
-        }
-      });
-      args.forEach(function(val) {
-        passCmd += ' ' + val;
-      });
-      PassFF.Preferences.shellArgs.forEach(function(val) {
-        if (val && val.trim().length > 0) {
-          scriptArgs.push(val);
-        }
-      });
-      scriptArgs.push('-c');
-      scriptArgs.push(passCmd.trim());
-    }
+      }
+    });
+
+    args.forEach(function(val) {
+      scriptArgs.push(val);
+    });
 
     let params = {
       command: command,
@@ -506,34 +485,11 @@ PassFF.Pass = {
   getEnvParams: function() {
     let params = {
       'DISPLAY': (PassFF.Pass.env.exists('DISPLAY') ? PassFF.Pass.env.get('DISPLAY') : ':0.0'),
-      'TREE_CHARSET': 'ISO-8859-1',
-      'GNUPGHOME': PassFF.Preferences.gnupgHome
+      'TREE_CHARSET': 'ISO-8859-1'
     };
     PassFF.Preferences.commandEnv.forEach((keyval) => {
         params[keyval[0]] = keyval[1];
     });
-    return params;
-  },
-
-  getDirectEnvParams: function() {
-    var params = { 'PATH': PassFF.Preferences.path };
-
-    if (PassFF.Preferences.storeDir.trim().length > 0) {
-      params['PASSWORD_STORE_DIR'] = PassFF.Preferences.storeDir;
-    }
-
-    if (PassFF.Preferences.storeGit.trim().length > 0) {
-      params['PASSWORD_STORE_GIT'] = PassFF.Preferences.storeGit;
-    }
-
-    if (PassFF.Preferences.gpgAgentEnv !== null) {
-      Object.assign(params, PassFF.Preferences.gpgAgentEnv);
-    }
-
-    PassFF.Preferences.commandEnv.forEach((keyval) => {
-        params[keyval[0]] = keyval[1];
-    });
-
     return params;
   },
 
