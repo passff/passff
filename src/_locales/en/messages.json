@@ -29,15 +29,8 @@
   "passff_menu_display": {
     "message": "Display"
   },
-  "passff_display_title": {
-    "message": "Login/Password"
-  },
-  "passff_display_description": {
-    "message": "Login: $LOGIN$\n Password: $PASSWORD$",
-    "placeholders": {
-        "login": { "content": "$1" },
-        "password": { "content": "$2" }
-    }
+  "passff_display_hover": {
+    "message": "Hover mouse pointer to show password"
   },
   "passff_toolbar_button_label": {
     "message": "PassFF"

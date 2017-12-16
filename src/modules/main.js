@@ -342,6 +342,17 @@ var PassFF = {
       PassFF.Pass.getPasswordData(item).then((passwordData) => {
         copyToClipboard(passwordData[dataKey]);
       });
+    } else if (request.action == "Menu.onDisplayItemData") {
+      let item = PassFF.Pass.getItemById(request.params[0]);
+      PassFF.Pass.getPasswordData(item).then((passwordData) => {
+        PassFF._displayItemData = passwordData;
+        return browser.windows.create({
+          'url': browser.extension.getURL('content/displayItemPopup.html'),
+          'width': 640,
+          'height': 250,
+          'type': 'popup',
+        });
+      });
     } else if (request.action == "Page.goToItemUrl") {
       let item = PassFF.Pass.getItemById(request.params[0]);
       PassFF.Page.goToItemUrl(item, request.params[1], request.params[2], request.params[3]);
@@ -358,6 +369,9 @@ var PassFF = {
         PassFF.Preferences.init(true)
           .then(() => PassFF.Pass.init());
       }
+    } else if (request.action == "getDisplayItemData") {
+      sendResponse({ response: PassFF._displayItemData });
+      PassFF._displayItemData = null;
     } else if (request.action == "getHttpAuthInfo") {
       sendResponse({ response: {
         url: PassFF.currentHttpAuth.details.url

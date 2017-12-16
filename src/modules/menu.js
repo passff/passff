@@ -293,10 +293,9 @@ PassFF.Menu = {
   },
 
   onDisplayItemData: function(event) {
-    PassFF
-      .bg_exec('Pass.getPasswordData', PassFF.Menu.getItem(event.target))
-      .then((passwordData) => window.alert(passwordData.fullText))
-      .catch(logAndDisplayError("Error getting password data on display item"));
+    PassFF.bg_exec('Menu.onDisplayItemData',
+      PassFF.Menu.getItem(event.target));
+    window.close();
   },
 
   onCopyToClipboard: function(event) {

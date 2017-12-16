@@ -29,16 +29,6 @@
   "passff_menu_display": {
     "message": "Отобразить"
   },
-  "passff_display_title": {
-    "message": "Логин/Пароль"
-  },
-  "passff_display_description": {
-    "message": "Логин: $LOGIN$\n Пароль: $PASSWORD$",
-    "placeholders": {
-        "login": { "content": "$1" },
-        "password": { "content": "$2" }
-    }
-  },
   "passff_toolbar_button_label": {
     "message": "PassFF"
   },

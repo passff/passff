@@ -1,0 +1,28 @@
+
+div:first-child {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+div:first-child > pre {
+    display: inline;
+    padding: 0.2em;
+    background-color: #000;
+}
+
+div:first-child > pre:hover {
+    background-color: #fff;
+}
+
+div:first-child > span {
+    font-family: sans-serif;
+    font-size: 0.9em;
+}
+
+div:first-child > span::before {
+    content: '(';
+}
+
+div:first-child > span::after {
+    content: ')';
+}
