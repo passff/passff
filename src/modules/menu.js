@@ -83,19 +83,27 @@ PassFF.Menu = {
 
     let refreshButton = doc.querySelector('.actions button.reload');
     refreshButton.setAttribute('id', PassFF.Ids.refreshmenuitem);
-    refreshButton.setAttribute('title', PassFF.gsfm('passff_toolbar_refresh_label'));
+    refreshButton.setAttribute('title',
+                                  PassFF.gsfm('passff_toolbar_refresh_label'));
     refreshButton.addEventListener('click', PassFF.Menu.onRefresh);
 
     if (!PassFF.Menu._http_auth) {
       let prefsButton = doc.querySelector('.actions button.config');
       prefsButton.setAttribute('id', PassFF.Ids.prefsmenuitem);
-      prefsButton.setAttribute('title', PassFF.gsfm('passff_toolbar_preferences_label'));
+      prefsButton.setAttribute('title',
+                              PassFF.gsfm('passff_toolbar_preferences_label'));
       prefsButton.addEventListener('click', PassFF.Menu.onPreferences);
 
       let newPasswordButton = doc.querySelector('.actions button.add');
-      newPasswordButton.setAttribute('id', PassFF.Ids.newpasswordmenuitem);
-      newPasswordButton.setAttribute('title', PassFF.gsfm('passff_toolbar_new_password_label'));
-      newPasswordButton.addEventListener('click', PassFF.Menu.onNewPassword);
+      if (!PassFF.Preferences.showNewPassButton) {
+        let newPasswordDiv = newPasswordButton.parentNode;
+        newPasswordDiv.parentNode.removeChild(newPasswordDiv);
+      } else {
+        newPasswordButton.setAttribute('id', PassFF.Ids.newpasswordmenuitem);
+        newPasswordButton.setAttribute('title',
+                              PassFF.gsfm('passff_toolbar_new_password_label'));
+        newPasswordButton.addEventListener('click', PassFF.Menu.onNewPassword);
+      }
     }
 
     return panel;

@@ -231,6 +231,9 @@
   "passff_prefs_prefer_insert": {
     "message": "Eintragen"
   },
+  "passff_prefs_show_new_password_button": {
+    "message": "Zeige 'Password hinzufügen' Schaltfläche im Menü"
+  },
   "passff_newpassword_window_title": {
     "message": "Neues Passwort"
   },

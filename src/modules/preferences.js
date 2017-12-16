@@ -31,6 +31,7 @@ PassFF.Preferences = (function() {
       defaultPasswordLength : 16,
       defaultIncludeSymbols : true,
       preferInsert          : 0,
+      showNewPassButton     : false,
     };
 
     let osString = browser.runtime.PlatformOs;
@@ -76,29 +77,7 @@ PassFF.Preferences = (function() {
         });
 
         if (bgmode === true) {
-          log.info("Preferences initialised", {
-            passwordInputNames    : this.passwordInputNames,
-            loginInputNames       : this.loginInputNames,
-            loginFieldNames       : this.loginFieldNames,
-            passwordFieldNames    : this.passwordFieldNames,
-            urlFieldNames         : this.urlFieldNames,
-            command               : this.command,
-            commandArgs           : this.commandArgs,
-            shell                 : this.shell,
-            shellArgs             : this.shellArgs,
-            home                  : this.home,
-            storeDir              : this.storeDir,
-            storeGit              : this.storeGit,
-            autoFill              : this.autoFill,
-            autoSubmit            : this.autoSubmit,
-            shortcutKey           : this.shortcutKey,
-            shortcutMod           : this.shortcutMod,
-            subpageSearchDepth    : this.subpageSearchDepth,
-            callType              : this.callType,
-            caseInsensitiveSearch : this.caseInsensitiveSearch,
-            handleHttpAuth        : this.handleHttpAuth,
-            enterBehavior         : this.enterBehavior
-          });
+          log.info("Preferences initialised", this._params);
           let params = { command: 'gpgAgentEnv' };
           params['arguments'] = [this._params.gpgAgentInfo];
           return browser.runtime.sendNativeMessage('passff', params)
@@ -255,6 +234,10 @@ PassFF.Preferences = (function() {
 
     get preferInsert() {
       return this._params.preferInsert;
+    },
+
+    get showNewPassButton() {
+      return this._params.showNewPassButton;
     }
   };
 })();

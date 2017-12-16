@@ -231,6 +231,9 @@
   "passff_prefs_prefer_insert": {
     "message": "Insert"
   },
+  "passff_prefs_show_new_password_button": {
+    "message": "Show 'New Password' button in menu"
+  },
   "passff_newpassword_window_title": {
     "message": "New Password"
   },
