@@ -93,7 +93,7 @@ window.onload = () => promised_init.then(() => {
 
   document.getElementById("gen-password-length").value = PassFF.Preferences.defaultPasswordLength;
   document.getElementById("gen-include-symbols").checked = PassFF.Preferences.defaultIncludeSymbols;
-  if (!PassFF.Preferences.preferInsert) {
+  if (0 === PassFF.Preferences.preferInsert) {
       document.getElementById("tab0").setAttribute("checked", true);
   }
 

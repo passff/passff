@@ -30,7 +30,7 @@ PassFF.Preferences = (function() {
       enterBehavior         : 0,
       defaultPasswordLength : 16,
       defaultIncludeSymbols : true,
-      preferInsert          : false,
+      preferInsert          : 0,
     };
 
     let osString = browser.runtime.PlatformOs;
