@@ -45,9 +45,10 @@ PassFF.Page = {
     let matchItems = PassFF.Pass.getUrlMatchingItems(tab.url);
     let bestFitItem = PassFF.Pass.findBestFitItem(matchItems, tab.url);
     if (bestFitItem) {
-      PassFF.Page.fillInputs(tab, bestFitItem).then(() => {
-        if (PassFF.Preferences.autoSubmit &&
-            PassFF.Pass.getItemsLeafs(matchItems).length == 1) {
+      PassFF.Page.fillInputs(tab, bestFitItem).then((passwordData) => {
+        if (PassFF.Preferences.autoSubmit
+            && PassFF.Pass.getItemsLeafs(matchItems).length == 1
+            && passwordData._other['autosubmit'] !== "false") {
           PassFF.Page.submit(tab, true);
         }
       });
@@ -119,9 +120,9 @@ PassFF.Page = {
   fillInputs: function(tab, item) {
     return PassFF.Pass.getPasswordData(item).then((passwordData) => {
       if (passwordData) {
-        PassFF.Page._execWithPrefs(tab,
+        return PassFF.Page._execWithPrefs(tab,
           "processDoc({0}, 0);".format(JSON.stringify(passwordData))
-        );
+        ).then(() => { return passwordData; });
       }
     });
   },
