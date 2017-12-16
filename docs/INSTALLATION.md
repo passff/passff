@@ -33,7 +33,7 @@ For the extension to communicate with your system's `pass` script, you need to i
 Download the `install_host_app.sh` script from [our releases page](https://github.com/passff/passff/releases) and execute it. You can do this in one line like so:
 
 ```
-$ curl -sSL https://github.com/passff/passff/releases/download/1.0.4linux/install_host_app.sh | bash -s -- [firefox|chrome|opera|chromium|vivaldi]
+$ curl -sSL https://github.com/passff/passff/releases/download/1.0.5linux/install_host_app.sh | bash -s -- [firefox|chrome|opera|chromium|vivaldi]
 ```
 
 This script will download the host application (a small python script) and the add-on's manifest file (a JSON config file) and put them in the right place.
