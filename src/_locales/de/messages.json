@@ -183,6 +183,9 @@
   "passff_prefs_auto_submit_tooltip": {
     "message": "Wenn gesetzt wird automatisch versucht, Loginformulare abzusenden indem ein Passwort entsprechend der Seiten-URL ausgewählt wird."
   },
+  "passff_prefs_autofill_blacklist_label": {
+    "message": "Nicht auto-ausfüllen, falls URL diese enthält"
+  },
   "passff_prefs_shortcut_key_label": {
     "message": "Schnelltaste"
   },

@@ -21,6 +21,7 @@ PassFF.Preferences = (function() {
       gpgAgentInfo          : '.gpg-agent-info',
       autoFill              : false,
       autoSubmit            : false,
+      autoFillBlacklist     : '',
       shortcutKey           : 'y',
       shortcutMod           : 'control',
       subpageSearchDepth    : 5,
@@ -134,6 +135,10 @@ PassFF.Preferences = (function() {
 
     get urlFieldNames() {
       return this._params.urlFieldNames.split(',');
+    },
+
+    get autoFillBlacklist() {
+      return this._params.autoFillBlacklist.split(',');
     },
 
     get command() {

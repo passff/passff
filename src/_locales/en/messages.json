@@ -180,6 +180,9 @@
   "passff_prefs_auto_submit_label": {
     "message": "Try to auto submit page login forms"
   },
+  "passff_prefs_autofill_blacklist_label": {
+    "message": "Don't auto fill if URL contains these"
+  },
   "passff_prefs_auto_submit_tooltip": {
     "message": "If set, will try to submit automatically the login forms searching a password key contained in the page url"
   },

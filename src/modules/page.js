@@ -38,7 +38,9 @@ PassFF.Page = {
   tabAutoFill: function(tab) {
     if (PassFF.Page._autoFillAndSubmitPending
         || !PassFF.Preferences.autoFill
-        || tab.status != "complete") {
+        || tab.status != "complete"
+        || PassFF.Preferences.autoFillBlacklist.findIndex((str) => {
+                return tab.url.indexOf(str) >= 0; }) >= 0) {
       return;
     }
     log.info('Start pref-auto-fill');
