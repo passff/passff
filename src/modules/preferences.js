@@ -39,7 +39,7 @@ PassFF.Preferences = (function() {
 
   return {
     _params: getDefaultParams(),
-    init: function(bgmode) {
+    init: function() {
       return browser.storage.local.get(Object.keys(this._params))
       .then((res) => {
         let obj = {};
@@ -58,13 +58,48 @@ PassFF.Preferences = (function() {
             var changedItems = Object.keys(changes);
             for (var item of changedItems) {
               this._params[item] = changes[item].newValue;
-              if (item == "handleHttpAuth" && bgmode === true) {
+              if (item == "handleHttpAuth" && PassFF.mode === "background") {
                 PassFF.init_http_auth();
               }
             }
           }
         });
       });
+    },
+
+    init_ui: function () {
+      let pref_str_change_cb = function (key, isInt) {
+        return function (evt) {
+          let val = evt.target.value;
+          if (isInt) val = parseInt(val);
+          PassFF.Preferences.pref_set(key, val);
+        };
+      };
+
+      let pref_bool_change_cb = function (key) {
+        return function (evt) {
+          PassFF.Preferences.pref_set(key, evt.target.checked);
+        };
+      };
+
+      document.querySelectorAll("h1,label,p.text,option").forEach(function (el) {
+        el.textContent = PassFF.gsfm(el.textContent);
+      });
+
+      for (let [key, val] of Object.entries(this._params)) {
+        let el = document.getElementById("pref_" + key);
+        if (el === null) continue;
+        if (el.tagName == "TEXTAREA" || el.tagName == "INPUT" && el.type == "text") {
+          el.value = val;
+          el.addEventListener("change", pref_str_change_cb(key));
+        } else if (el.tagName == "INPUT" && el.type == "checkbox") {
+          el.checked = val;
+          el.addEventListener("change", pref_bool_change_cb(key));
+        } else if (el.tagName == "SELECT") {
+          el.value = val;
+          el.addEventListener("change", pref_str_change_cb(key, true));
+        }
+      }
     },
 
     pref_set: function(key, val) {

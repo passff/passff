@@ -85,8 +85,7 @@ function makePasswordAdder(validations, errorsContainerId, getInput, addPassword
   };
 }
 
-let promised_init = PassFF.init(false);
-window.onload = () => promised_init.then(() => {
+(function () {
   document.querySelectorAll("label,p.text,option,button").forEach(function (el) {
       el.textContent = PassFF.gsfm(el.textContent);
   });
@@ -144,4 +143,4 @@ window.onload = () => promised_init.then(() => {
   saveButton.addEventListener('click', onAddPassword);
   let genSaveButton = document.getElementById("gen-save-button");
   genSaveButton.addEventListener('click', onGeneratePassword);
-});
+})();

@@ -14,25 +14,26 @@ let logAndDisplayError = (errorMessage) => {
 PassFF.Menu = {
   _currentMenuIndex: null,
   _stringBundle: null,
-  _http_auth: false,
 
-  init: function (http_auth) {
+  init: function () {
     log.debug("Initializing Menu");
-    if (http_auth === true) {
-      PassFF.Menu._http_auth = true;
-      PassFF.bg_exec('getHttpAuthInfo')
-        .then((info) => {
-          let url_box = document.querySelector(".httpAuthUrl");
-          url_box.textContent = info.url;
-          url_box.title = info.url; // for tooltip
+    if (PassFF.mode === "itemPicker") {
+      PassFF.bg_exec('getItemPickerData')
+        .then((data) => {
+          let data_box = document.querySelector(".itemPickerTarget");
+          data_box.textContent = data;
+          data_box.title = data; // for tooltip
 
-          // Rescale select box to fit window's height
-          let url_height = url_box.offsetHeight;
-          let bar_height = document.querySelector("div.searchbar").offsetHeight;
-          let buttonbox_height = document.querySelector("div.buttonbox").offsetHeight;
-          document.querySelector(".results select").style.height =
-            (window.innerHeight - url_height - bar_height - buttonbox_height)
-            + "px";
+          window.onresize = function onresize() {
+            // Rescale select box to fit window's height
+            let data_height = data_box.offsetHeight;
+            let bar_height = document.querySelector("div.searchbar").offsetHeight;
+            let buttonbox_height = document.querySelector("div.buttonbox").offsetHeight;
+            document.querySelector(".results select").style.height =
+              (window.innerHeight - data_height - bar_height - buttonbox_height)
+              + "px";
+          }
+          onresize();
         });
     }
     let doc = document;
@@ -57,7 +58,6 @@ PassFF.Menu = {
 
   createStaticMenu: function(doc) {
     let panel = doc.querySelector('body')
-    panel.setAttribute('id', PassFF.Ids.panel);
 
     let searchBox = doc.querySelector('.searchbar input[type=text]');
     searchBox.setAttribute('id', PassFF.Ids.searchbox);
@@ -87,7 +87,7 @@ PassFF.Menu = {
                                   PassFF.gsfm('passff_toolbar_refresh_label'));
     refreshButton.addEventListener('click', PassFF.Menu.onRefresh);
 
-    if (!PassFF.Menu._http_auth) {
+    if (PassFF.mode === "menu") {
       let prefsButton = doc.querySelector('.actions button.config');
       prefsButton.setAttribute('id', PassFF.Ids.prefsmenuitem);
       prefsButton.setAttribute('title',
@@ -249,9 +249,9 @@ PassFF.Menu = {
 
   onNewPassword: function(event) {
     browser.windows.create({
-      'url': browser.extension.getURL('content/newPasswordWindow.html'),
-      'width': 450,
-      'height': 330,
+      'url': browser.extension.getURL('content/passwordGenerator.html'),
+      'width': 640,
+      'height': 480,
       'type': 'popup'
     });
     window.close();
@@ -309,8 +309,8 @@ PassFF.Menu = {
     window.close();
   },
 
-  onHttpAuth: function (item) {
-    PassFF.bg_exec('resolveHttpAuth', item);
+  onPickItem: function (item) {
+    PassFF.bg_exec('Menu.onPickItem', item);
   },
 
   clearMenuList: function(doc) {
@@ -326,8 +326,8 @@ PassFF.Menu = {
       .then((item) => {
         log.debug("Create item menu", item);
 
-        if (PassFF.Menu._http_auth && (item.hasFields || item.isLeaf)) {
-          PassFF.Menu.onHttpAuth(item.id);
+        if (PassFF.mode === "itemPicker" && (item.hasFields || item.isLeaf)) {
+          PassFF.Menu.onPickItem(item.id);
           return;
         }
 
@@ -377,8 +377,8 @@ PassFF.Menu = {
       let onEnter = null;
       if (item.isLeaf || item.hasFields) {
         onEnter = function(event) {
-          if (PassFF.Menu._http_auth) {
-            PassFF.Menu.onHttpAuth(PassFF.Menu.getItem(this));
+          if (PassFF.mode === "itemPicker") {
+            PassFF.Menu.onPickItem(PassFF.Menu.getItem(this));
           } else {
             PassFF.bg_exec('Menu.onEnter', PassFF.Menu.getItem(this), event.shiftKey)
               .catch(logAndDisplayError("Error entering menu"));

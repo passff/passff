@@ -22,7 +22,7 @@
                 "dark": "skin/icon.svg",
                 "size": 16
             }],
-        "default_popup": "content/popup.html"
+        "default_popup": "content/menu.html"
     },
 
     "permissions": [
@@ -37,18 +37,12 @@
     ],
 
     "options_ui": {
-        "page": "content/preferencesWindow.html"
+        "page": "content/preferences.html"
     },
 
     "background": {
         "scripts": [
-            "modules/clipboard-helper.js",
-            "modules/shortcut-helper.js",
-            "modules/main.js",
-            "modules/preferences.js",
-            "modules/pass.js",
-            "modules/page.js",
-            "background.js"
+            "modules/main.js"
         ]
     },
 

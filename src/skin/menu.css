@@ -8,7 +8,7 @@ body {
   font-family: sans-serif;
 }
 
-body.http_auth {
+body#itemPicker {
   width: 100%;
 }
 
@@ -19,7 +19,7 @@ body.http_auth {
   box-sizing: border-box;
 }
 
-.httpAuthUrl {
+.itemPickerTarget {
   font-size: 0.9rem;
   padding: 0.2rem;
   white-space: nowrap;

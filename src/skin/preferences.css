@@ -115,6 +115,7 @@ fieldset p > input[type=radio] ~ label ~ label {
 }
 
 fieldset p > input[type=text],
+fieldset p > input[type=password],
 fieldset p > textarea {
     width: 90%;
     border: 1px #ccc solid;

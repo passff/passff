@@ -29,7 +29,6 @@ function getActiveTab() {
 
 var PassFF = {
   Ids: {
-    panel: 'passff-panel',
     button: 'passff-button',
     key: 'passff-key',
     keyset: 'passff-keyset',
@@ -50,6 +49,22 @@ var PassFF = {
   },
 
   tab_url: null,
+
+  load_scripts: function (scripts) {
+    let path_prefix = "modules/";
+    if (PassFF.mode !== "background" && PassFF.mode !== "page") {
+      path_prefix = "../" + path_prefix;
+    }
+    let promises = scripts.map((script) => {
+      let scriptEl = document.createElement("script");
+      scriptEl.src = path_prefix + script;
+      document.getElementsByTagName('head')[0].appendChild(scriptEl);
+      return new Promise(function (resolve, reject) {
+        scriptEl.addEventListener("load", resolve);
+      });
+    });
+    return Promise.all(promises);
+  },
 
   menu_state: {
     'context_url': null,
@@ -110,22 +125,74 @@ var PassFF = {
     browser.tabs.executeScript({code : 'alert(' + JSON.stringify(msg) + ');' });
   },
 
-  init: function(bgmode) {
-    return PassFF.Preferences.init(bgmode)
+  init: function() {
+    if (window.location.href.indexOf("moz-extension") !== 0) {
+      PassFF.mode = "content";
+    } else {
+      PassFF.mode = document.querySelector("body").id;
+      if (typeof PassFF.mode === "undefined") {
+        PassFF.mode = "background";
+      }
+    }
+
+    return PassFF.load_scripts(["preferences.js"])
+      .then(() => { return PassFF.Preferences.init(); })
       .then(() => {
-        if (bgmode) {
-          return PassFF.Pass.init()
-            .then(() => {
-              browser.tabs.onUpdated.addListener(PassFF.onTabUpdate);
-              browser.tabs.onActivated.addListener(PassFF.onTabUpdate);
-              PassFF.onTabUpdate();
-              browser.runtime.onMessage.addListener(PassFF.bg_handle);
-              browser.contextMenus.onClicked.addListener(PassFF.Page.onContextMenu);
-              PassFF.init_http_auth();
-            });
+        switch (PassFF.mode) {
+          case "content":
+            log.debug("init content script");
+            break;
+          case "itemPicker":
+            log.debug("init popup for HTTP authentication");
+            return PassFF.load_scripts(["menu.js"])
+              .then(() => { return PassFF.Menu.init(); });
+            break;
+          case "itemMonitor":
+            log.debug("init popup for item display");
+            return PassFF.init_itemMonitor();
+            break;
+          case "passwordGenerator":
+            log.debug("init popup for password generation/insertion");
+            return PassFF.load_scripts(["passwordGenerator.js"]);
+            break;
+          case "menu":
+            log.debug("init browser action popup");
+            return PassFF.load_scripts(["menu.js"])
+              .then(() => { return PassFF.Menu.init(); });
+            break;
+          case "preferences":
+            log.debug("init preferences page");
+            return PassFF.Preferences.init_ui();
+            break;
+          default:
+            log.debug("init background script");
+            return PassFF.load_scripts(["pass.js","page.js","shortcut-helper.js"])
+              .then(() => { return PassFF.Pass.init(); })
+              .then(() => { return PassFF.init_bg(); });
         }
-      }).catch((error) => {
-        log.error("Error initializing preferences:", error);
+      });
+  },
+
+  init_bg: function () {
+    browser.tabs.onUpdated.addListener(PassFF.onTabUpdate);
+    browser.tabs.onActivated.addListener(PassFF.onTabUpdate);
+    PassFF.onTabUpdate();
+    browser.runtime.onMessage.addListener(PassFF.bg_handle);
+    browser.contextMenus.onClicked.addListener(PassFF.Page.onContextMenu);
+    PassFF.init_http_auth();
+  },
+
+  init_itemMonitor: function () {
+    let passOutputEl = document.getElementsByTagName("pre")[0];
+    let restOutputEl = document.getElementsByTagName("pre")[1];
+    document.querySelector("div:first-child > span").textContent
+      = PassFF.gsfm("passff_display_hover");
+    PassFF.bg_exec('getDisplayItemData')
+      .then((passwordData) => {
+        let otherData = passwordData['fullText'];
+        let sep = otherData.indexOf("\n");
+        passOutputEl.textContent = passwordData['password'];
+        restOutputEl.textContent = otherData.substring(sep+1);
       });
   },
 
@@ -188,7 +255,7 @@ var PassFF = {
     PassFF.currentHttpAuth.details = requestDetails;
     return new Promise((resolve, reject) => {
       browser.windows.create({
-        'url': browser.extension.getURL('content/authPicker.html'),
+        'url': browser.extension.getURL('content/itemPicker.html'),
         'width': 450,
         'height': 280,
         'type': 'popup',
@@ -347,11 +414,23 @@ var PassFF = {
       PassFF.Pass.getPasswordData(item).then((passwordData) => {
         PassFF._displayItemData = passwordData;
         return browser.windows.create({
-          'url': browser.extension.getURL('content/displayItemPopup.html'),
+          'url': browser.extension.getURL('content/itemMonitor.html'),
           'width': 640,
           'height': 250,
           'type': 'popup',
         });
+      });
+    } else if (request.action == "Menu.onPickItem") {
+      let item = PassFF.Pass.getItemById(request.params[0]);
+      log.debug("Resolve HTTP auth", item);
+      PassFF.Pass.getPasswordData(item).then((passwordData) => {
+        PassFF.currentHttpAuth.resolve({
+          authCredentials: {
+            username: passwordData.login,
+            password: passwordData.password
+          }
+        });
+        PassFF.resetHttpAuth();
       });
     } else if (request.action == "Page.goToItemUrl") {
       let item = PassFF.Pass.getItemById(request.params[0]);
@@ -372,22 +451,8 @@ var PassFF = {
     } else if (request.action == "getDisplayItemData") {
       sendResponse({ response: PassFF._displayItemData });
       PassFF._displayItemData = null;
-    } else if (request.action == "getHttpAuthInfo") {
-      sendResponse({ response: {
-        url: PassFF.currentHttpAuth.details.url
-      }});
-    } else if (request.action == "resolveHttpAuth") {
-      let item = PassFF.Pass.getItemById(request.params[0]);
-      log.debug("Resolve HTTP auth", item);
-      PassFF.Pass.getPasswordData(item).then((passwordData) => {
-        PassFF.currentHttpAuth.resolve({
-          authCredentials: {
-            username: passwordData.login,
-            password: passwordData.password
-          }
-        });
-        PassFF.resetHttpAuth();
-      });
+    } else if (request.action == "getItemPickerData") {
+      sendResponse({ response: PassFF.currentHttpAuth.details.url });
     } else if (request.action == "openOptionsPage") {
       browser.runtime.openOptionsPage();
     } else if (request.action == "refresh") {
@@ -398,3 +463,7 @@ var PassFF = {
     }
   }
 };
+
+window.onload = function () {
+  PassFF.init();
+}
