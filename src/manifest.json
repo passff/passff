@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "PassFF",
-    "version": "1.0.5linux",
+    "version": "1.0.6linux",
     "description": "Integrates your zx2c4 password store into Firefox",
     "default_locale": "en",
 
