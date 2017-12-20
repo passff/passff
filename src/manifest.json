@@ -42,9 +42,27 @@
 
     "background": {
         "scripts": [
-            "modules/main.js"
+            "modules/util.js",
+            "modules/main.js",
+            "modules/preferences.js",
+            "modules/pass.js",
+            "modules/menu.js",
+            "modules/auth.js",
+            "modules/page.js"
         ]
     },
+
+    "content_scripts": [{
+        "matches": ["<all_urls>"],
+        "run_at": "document_start",
+        "js": [
+            "modules/util.js",
+            "modules/main.js",
+            "modules/preferences.js",
+            "modules/pass.js",
+            "modules/page.js"
+        ]
+    }],
 
     "commands": {
         "_execute_browser_action": {
