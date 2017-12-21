@@ -74,6 +74,9 @@
   "passff_prefs_mark_fillable": {
     "message": "Automatisch ausfüllbare Felder mit Icon markieren"
   },
+  "passff_prefs_submit_fillable": {
+    "message": "Formular absenden, wenn ein Eintrag über das Icon-Menü gewählt wurde"
+  },
   "passff_prefs_handle_http_auth": {
     "message": "Unterstützung für HTTP-Anmeldung"
   },
@@ -208,5 +211,8 @@
   },
   "passff_errors_unexpected_error": {
     "message": "Ein unerwarteter Fehler ist aufgetreten. Stellen Sie sicher, dass die Einstellungen korrekt sind und dass die Host-App installiert ist."
+  },
+  "passff_no_entries_found": {
+    "message": "Keine passenden Einträge für diese URL."
   }
 }

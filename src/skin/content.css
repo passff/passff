@@ -1,0 +1,92 @@
+
+.passff_popup_menu {
+  all: initial;
+  position: absolute;
+  border: 1px solid #888;
+  background-color: #fff;
+  z-index: 1000;
+}
+
+.passff_popup_menu * {
+  all: initial;
+  font-size: 0.8rem;
+  font-family: sans-serif;
+}
+
+.passff_popup_menu div.alert {
+  padding: 1em;
+}
+
+.passff_popup_menu div.passff_entry {
+  display: table;
+  width: 100%;
+  border-bottom: 1px solid #b6b6b3;
+}
+
+.passff_popup_menu div.passff_entry:last-child {
+  border-bottom: 0;
+}
+
+.passff_popup_menu div.passff_entry > div {
+  display: table-row;
+}
+
+.passff_popup_menu div.passff_entry > div > div {
+  display: table-cell;
+}
+
+.passff_popup_menu button {
+  position:relative;
+  display: block;
+  width: 100%;
+  height: 2.5em;
+  margin: 0;
+  padding: 0 0.5em;
+  border: 0;
+  background-color: #f0f0f0;
+  color: #000;
+  outline: none;
+}
+
+.passff_popup_menu button:hover {
+  background-color: #e6e6e6;
+}
+
+.passff_popup_menu button:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0.3em;
+  right: 0;
+  width: 1px;
+  height: 1.9em;
+  background-color: #b6b6b3;
+}
+
+.passff_popup_menu div.passff_entry:hover button:after {
+  height: 2.5em;
+  top: 0;
+}
+
+.passff_popup_menu div:last-child > button:after {
+  width: 0;
+}
+
+.passff_popup_menu button.passff_key {
+  width: 17em;
+  overflow: hidden;
+}
+
+.passff_popup_menu button.passff_key span {
+  display: block;
+  float: right;
+  white-space: nowrap;
+}
+
+.passff_popup_menu button.passff_button {
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px 16px;
+  width: 2.5em;
+}

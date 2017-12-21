@@ -191,8 +191,30 @@ PassFF.Page = (function () {
     dFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC
   `.replace(/\s+/g,"");
 
+  /* The following two icons have been taken from
+   *  https://github.com/encharm/Font-Awesome-SVG-PNG (MIT-License)
+   * which provides PNG/SVG versions for Font Awesome icons:
+   *  http://fontawesome.io/ (License: SIL OFL 1.1)
+   */
+  let paper_plane_16 = `data:image/png;base64,
+    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAA5klE
+    QVQ4jcXRvUpDQRCG4ceABmwsRHsrGwuxEmKZ1tIf8CJyCSLYCEHwCrQ3rZWNwVosxLRJYSloEbFQ
+    PBaZA4fFkxy1yAfL7sx+7+zPMAXN4xD9v8DbAWbo/QbcwG2Aw5g7VcBFnOEzoGu8xPpoHDiLFl7D
+    /IU2HiLOsFsGN/FYML5jH5eFXIa1FFzFVWJ6xhaOk/wH6kX4NJJFUw8r2IknpHugFvOb0efkukED
+    CzjHTHLbH1tYxwFOMIclDJKT8zG2A7m6JXCGvSoFcvMd7k3oQFmBAZYj3sQFnoyeOFF9rFcx/kvf
+    c6ZQngg2HO0AAAAASUVORK5CYII=
+  `.replace(/\s+/g,"");
+  let pencil_square_16 = `data:image/png;base64,
+    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAAoklE
+    QVQ4jc3SuxHCMBCE4S8AhhoImIEO3AWBCSGmHuqgDygBO6MSkdgmUaABSQEJ3Mwmut1fpwf/VA16
+    jJgKGtFF70f1leC7uhygtHPAISrEtSEHKIVv2EXPIemBWf46wBNHPHCu+LITBOxxwgJLXJMjTDVA
+    QJuExSOk4SqgxRrzSrgK2OKCVSWcBQxJYxMnKYWzz9gVzDndc4AmQr7+yr+pFzLPbBOs02aiAAAA
+    AElFTkSuQmCC
+  `.replace(/\s+/g,"");
+
   let icon_data_urls = [passff_icon_16, null];
   let icon_load_promise = null;
+
   function loadIcons() {
     if (icon_load_promise === null) {
       icon_load_promise = new Promise(function (resolve, reject) {
@@ -214,45 +236,154 @@ PassFF.Page = (function () {
     return icon_load_promise;
   }
 
-  function onIconHover(e) {
-    if (!bestFitItem) return;
+  function isMouseOverIcon(e) {
+    if (typeof e.target.passff_injected === "undefined") return false;
     let bcrect = e.target.getBoundingClientRect();
     let leftLimit = bcrect.left + bcrect.width - 22;
-    if (e.clientX > leftLimit) {
+    return e.clientX > leftLimit;
+  }
+
+  function onIconHover(e) {
+    if (isMouseOverIcon(e)) {
       e.target.style.backgroundImage = "url('" + icon_data_urls[0] + "')";
-      e.target.style.cursor = "pointer";
+      e.target.style.cssText += "cursor: pointer !important;";
       return;
     }
-    e.target.style.backgroundImage = "url('" + icon_data_urls[1] + "')";
+    if (e.target !== popup_target) resetIcon(e.target);
     e.target.style.cursor = "auto";
   }
 
   function onIconClick(e) {
-      let bcrect = e.target.getBoundingClientRect();
-      let leftLimit = bcrect.left + bcrect.width - 22;
-      if (e.clientX > leftLimit) {
-        PassFF.Pass.getPasswordData(bestFitItem)
-          .then((passwordData) => {
-            if (typeof passwordData === "undefined") return;
-            PassFF.Page.fillActiveElement(passwordData);
-          });
-      }
+      if (isMouseOverIcon(e)) openPopup(e.target);
     }
 
   function injectIcon(input) {
     loadIcons().then(function () {
+      if (typeof input.passff_injected !== "undefined") return;
       log.debug("Inject icon", input.id || input.name);
+      input.passff_injected = true;
       input.style.backgroundRepeat = "no-repeat";
       input.style.backgroundAttachment = "scroll";
       input.style.backgroundSize = "16px 16px";
       input.style.backgroundPosition = "calc(100% - 4px) 50%";
       input.style.backgroundImage = "url('" + icon_data_urls[1] + "')";
       input.addEventListener("mouseout", (e) => {
-        e.target.style.backgroundImage = "url('" + icon_data_urls[1] + "')";
+        if (e.target !== popup_target) resetIcon(e.target);
       });
       input.addEventListener("mousemove", onIconHover);
       input.addEventListener("click", onIconClick);
     });
+  }
+
+  function resetIcon(input) {
+    input.style.backgroundImage = "url('" + icon_data_urls[1] + "')";
+  }
+
+// %%%%%%%%%%%%%%% Implementation of input field popup %%%%%%%%%%%%%%%%%%%%%%%%%
+
+  let popup_menu = null;
+  let popup_target = null;
+
+  function resetPopup(target) {
+    // return true if resetted popup_menu belonged to target
+    let result = (target === popup_target);
+    if (popup_target !== null) resetIcon(popup_target);
+    if (result) popup_target = null;
+    if (popup_menu === null) setupPopup();
+    popup_menu.style.display = "none";
+    return result;
+  }
+
+  function setupPopup() {
+    popup_menu = document.createElement("div");
+    popup_menu.classList.add("passff_popup_menu");
+    if (matchItems.length === 0) {
+      popup_menu.innerHTML = '<div class="alert">'
+        + _('passff_no_entries_found') + '</div>';
+    }
+    matchItems.filter(i => i.isLeaf).slice(0,3).forEach(item => {
+      let entry = document.createElement("div");
+      entry.classList.add("passff_entry");
+      entry.passff_item = item;
+      entry.innerHTML = `
+        <div><!-- display: table-row -->
+          <div><button class="passff_key"><span></span></button></div>
+          <div><button class="passff_fill passff_button"></button></div>
+          <div><button class="passff_submit passff_button"></button></div>
+        </div>
+      `;
+
+      let button = entry.querySelector(".passff_key span");
+      button.textContent = item.fullKey;
+      button.parentNode.title = item.fullKey;
+      button.parentNode.addEventListener("click", function (e) {
+        if (PassFF.Preferences.submitFillable) return onPopupSubmitClick(e);
+        return onPopupFillClick(e);
+      });
+      button = entry.querySelector(".passff_fill");
+      button.style.backgroundImage = "url('" + pencil_square_16 + "')";
+      button.addEventListener("click", onPopupFillClick);
+      button = entry.querySelector(".passff_submit");
+      button.style.backgroundImage = "url('" + paper_plane_16 + "')";
+      button.addEventListener("click", onPopupSubmitClick);
+
+      popup_menu.appendChild(entry);
+    });
+    document.body.appendChild(popup_menu);
+  }
+
+  function openPopup(target) {
+    if(resetPopup(target)) return;
+    popup_target = target;
+
+    // remove this popup when user clicks somewhere else on the page
+    document.addEventListener("click", function f(e) {
+      if (getPopupEntryItem(e.target) !== null || isMouseOverIcon(e)) return;
+      document.removeEventListener("click", f);
+      resetPopup(target);
+    });
+
+    // position popup relative to input field
+    let rect = target.getBoundingClientRect();
+    let scrollright = document.body.scrollWidth - (window.scrollX + rect.x);
+    let scrolltop = window.scrollY + rect.y;
+    popup_menu.style.top      = (scrolltop + rect.height + 1) + "px";
+    popup_menu.style.right    = (scrollright - rect.width) + "px";
+    popup_menu.style.display  = "block";
+  }
+
+  function getPopupEntryItem(target) {
+    let entry = target.parentElement;
+    while (entry && !entry.classList.contains("passff_entry")) {
+      entry = entry.parentElement;
+    }
+    if (!entry) return null;
+    return entry.passff_item;
+  }
+
+  function onPopupFillClick(e) {
+    let item = getPopupEntryItem(e.target);
+    popup_target.focus();
+    resetPopup(popup_target);
+    PassFF.Pass.getPasswordData(item)
+      .then((passwordData) => {
+        if (typeof passwordData === "undefined") return;
+        PassFF.Page.fillActiveElement(passwordData);
+      });
+  }
+
+  function onPopupSubmitClick(e) {
+    let item = getPopupEntryItem(e.target);
+    popup_target.focus();
+    let form_doc = popup_target.form;
+    resetPopup(popup_target);
+    PassFF.Pass.getPasswordData(item)
+      .then((passwordData) => {
+        if (typeof passwordData === "undefined") return;
+        PassFF.Page.fillActiveElement(passwordData);
+        doc = form_doc;
+        PassFF.Page.submit();
+      });
   }
 
 /* #############################################################################
@@ -434,10 +565,8 @@ PassFF.Page = (function () {
 
     fillActiveElement: content_function("Page.fillActiveElement",
       function (passwordData) {
-        let input = getActiveElement();
-        input.value = passwordData.login;
-        doc = input.form;
-        setPasswordInputs(passwordData.password);
+        doc = getActiveElement().form;
+        setInputs(passwordData);
         doc = document;
       }
     ),

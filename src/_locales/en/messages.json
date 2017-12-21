@@ -74,6 +74,9 @@
   "passff_prefs_mark_fillable": {
     "message": "Mark fillable input fields with icon"
   },
+  "passff_prefs_submit_fillable": {
+    "message": "Submit when selected via icon menu"
+  },
   "passff_prefs_handle_http_auth": {
     "message": "Handle HTTP authentication"
   },
@@ -208,5 +211,8 @@
   },
   "passff_errors_unexpected_error": {
     "message": "Sorry, an unexpected error occured. Make sure your preferences are correctly set and that the native host app is installed."
+  },
+  "passff_no_entries_found": {
+    "message": "No entries matching this URL."
   }
 }

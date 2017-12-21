@@ -61,7 +61,8 @@
             "modules/preferences.js",
             "modules/pass.js",
             "modules/page.js"
-        ]
+        ],
+        "css": [ "skin/content.css" ]
     }],
 
     "commands": {

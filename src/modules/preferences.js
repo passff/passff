@@ -82,6 +82,7 @@ PassFF.Preferences = (function () {
     preferInsert          : 0,
     showNewPassButton     : true,
     markFillable          : true,
+    submitFillable        : true,
   }
 
   var listParams = [
