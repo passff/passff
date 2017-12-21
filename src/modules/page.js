@@ -9,6 +9,8 @@ PassFF.Page = (function () {
   var doc = document;
   var loginInputTypes = ['text', 'email', 'tel'];
   var tab_init_pending = [];
+  var matchItems = [];
+  var bestFitItem = null;
 
 /* #############################################################################
  * #############################################################################
@@ -133,8 +135,8 @@ PassFF.Page = (function () {
 
   function onNodeAdded() {
     if (PassFF.Preferences.markFillable) {
-      getLoginInputs().forEach(drawIcon);
-      getPasswordInputs().forEach(drawIcon);
+      getLoginInputs().forEach(injectIcon);
+      getPasswordInputs().forEach(injectIcon);
     }
   }
 
@@ -172,26 +174,85 @@ PassFF.Page = (function () {
     setOtherInputs(passwordData._other);
   }
 
-  function drawIcon(input) {
-    let passff_icon_16 = `data:image/png;base64,
-      iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAALGPC/xhBQAA
-      ACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA
-      /4ePzL8AAAAJcEhZcwAAbroAAG66AdbesRcAAAAHdElNRQfhDBUAHiRbufMlAAABKUlE
-      QVQoz23RvUtbARjF4eder9FgHaqIAYkgUlJwcHAooiBEyCBkUNwUA0IHF12la8HQQRyd
-      LH6io+DgZHSIq5t/gRjuZBAEv6C3gw014G887wfnvG8ARdrklYzJIHZpR8XzCYIiZPww
-      77P/1O1bEwdacmRsKkl7T9o3X1x4aMml/FQCCYJ3TV+lVCKT5sC1DU8SbQYUjIgw7zS0
-      oAvUkkN1nZ4cKdoCXRYi442NQasVBYma79ZNyWI81KuZQJ9psRrIhD7iXqqRKhLL/pMT
-      jx49uPLbqEEQh6qNseTVqry8RYN+6QDVyK6CbhCaMKRDzrBP4M5epOLAMgSRGYUmL/vO
-      Qi/Kjj+0eqzsJUJsya2epmLdnrI4eLt9kXb9bmyb9Uesasf527v/AicaS1qXsKmAAAAA
-      JXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTEyLTIwVDIzOjMwOjM2KzAxOjAwSupXIQAAACV0
-      RVh0ZGF0ZTptb2RpZnkAMjAxNy0xMi0yMFQyMzozMDozNiswMTowMDu3750AAAAZdEVY
-      dFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC
-    `.replace(/\s+/g,"");
-    input.style.backgroundImage = "url('" + passff_icon_16 + "')";
-    input.style.backgroundRepeat = "no-repeat";
-    input.style.backgroundAttachment = "scroll";
-    input.style.backgroundSize = "16px 16px";
-    input.style.backgroundPosition = "calc(100% - 4px) 50%";
+// %%%%%%%%%%%%%%% Implementation of input field marker %%%%%%%%%%%%%%%%%%%%%%%%
+
+  let passff_icon_16 = `data:image/png;base64,
+    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAALGPC/xhBQAA
+    ACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA
+    /4ePzL8AAAAJcEhZcwAAbroAAG66AdbesRcAAAAHdElNRQfhDBUAHiRbufMlAAABKUlE
+    QVQoz23RvUtbARjF4eder9FgHaqIAYkgUlJwcHAooiBEyCBkUNwUA0IHF12la8HQQRyd
+    LH6io+DgZHSIq5t/gRjuZBAEv6C3gw014G887wfnvG8ARdrklYzJIHZpR8XzCYIiZPww
+    77P/1O1bEwdacmRsKkl7T9o3X1x4aMml/FQCCYJ3TV+lVCKT5sC1DU8SbQYUjIgw7zS0
+    oAvUkkN1nZ4cKdoCXRYi442NQasVBYma79ZNyWI81KuZQJ9psRrIhD7iXqqRKhLL/pMT
+    jx49uPLbqEEQh6qNseTVqry8RYN+6QDVyK6CbhCaMKRDzrBP4M5epOLAMgSRGYUmL/vO
+    Qi/Kjj+0eqzsJUJsya2epmLdnrI4eLt9kXb9bmyb9Uesasf527v/AicaS1qXsKmAAAAA
+    JXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTEyLTIwVDIzOjMwOjM2KzAxOjAwSupXIQAAACV0
+    RVh0ZGF0ZTptb2RpZnkAMjAxNy0xMi0yMFQyMzozMDozNiswMTowMDu3750AAAAZdEVY
+    dFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC
+  `.replace(/\s+/g,"");
+
+  let icon_data_urls = [passff_icon_16, null];
+  let icon_load_promise = null;
+  function loadIcons() {
+    if (icon_load_promise === null) {
+      icon_load_promise = new Promise(function (resolve, reject) {
+        if (PassFF.mode !== "content") return;
+        let canvas = document.createElement("canvas");
+        canvas.height = 16;
+        canvas.width = 16;
+        let img = document.createElement("img");
+        img.addEventListener("load", (e) => {
+            let context = canvas.getContext("2d");
+            context.globalAlpha = 0.5;
+            context.drawImage(img, 0, 0);
+            icon_data_urls[1] = canvas.toDataURL();
+            resolve();
+        });
+        img.src = passff_icon_16;
+      });
+    }
+    return icon_load_promise;
+  }
+
+  function onIconHover(e) {
+    if (!bestFitItem) return;
+    let bcrect = e.target.getBoundingClientRect();
+    let leftLimit = bcrect.left + bcrect.width - 22;
+    if (e.clientX > leftLimit) {
+      e.target.style.backgroundImage = "url('" + icon_data_urls[0] + "')";
+      e.target.style.cursor = "pointer";
+      return;
+    }
+    e.target.style.backgroundImage = "url('" + icon_data_urls[1] + "')";
+    e.target.style.cursor = "auto";
+  }
+
+  function onIconClick(e) {
+      let bcrect = e.target.getBoundingClientRect();
+      let leftLimit = bcrect.left + bcrect.width - 22;
+      if (e.clientX > leftLimit) {
+        PassFF.Pass.getPasswordData(bestFitItem)
+          .then((passwordData) => {
+            if (typeof passwordData === "undefined") return;
+            PassFF.Page.fillActiveElement(passwordData);
+          });
+      }
+    }
+
+  function injectIcon(input) {
+    loadIcons().then(function () {
+      log.debug("Inject icon", input.id || input.name);
+      input.style.backgroundRepeat = "no-repeat";
+      input.style.backgroundAttachment = "scroll";
+      input.style.backgroundSize = "16px 16px";
+      input.style.backgroundPosition = "calc(100% - 4px) 50%";
+      input.style.backgroundImage = "url('" + icon_data_urls[1] + "')";
+      input.addEventListener("mouseout", (e) => {
+        e.target.style.backgroundImage = "url('" + icon_data_urls[1] + "')";
+      });
+      input.addEventListener("mousemove", onIconHover);
+      input.addEventListener("click", onIconClick);
+    });
   }
 
 /* #############################################################################
@@ -261,6 +322,10 @@ PassFF.Page = (function () {
   return {
     init: function () {
       window.onload = function () {
+        let url = window.location.href;
+        matchItems = PassFF.Pass.getUrlMatchingItems(url);
+        bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
+
         var obs = new MutationObserver(onNodeAdded);
         obs.observe(document, { childList:true, subtree:true });
         onNodeAdded();
@@ -356,8 +421,6 @@ PassFF.Page = (function () {
       if (url_in_blacklist >= 0) return;
 
       log.info('Start pref-auto-fill');
-      let matchItems = PassFF.Pass.getUrlMatchingItems(url);
-      let bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
       if (bestFitItem) {
         PassFF.Page.fillInputs(bestFitItem).then((passwordData) => {
           if (PassFF.Preferences.autoSubmit
