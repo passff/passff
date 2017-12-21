@@ -62,6 +62,8 @@ PassFF.Pass = (function () {
       }
       return {
         id: this.id,
+        key: this.key,
+        depth: this.depth,
         parent: (this.parent === null) ? null : this.parent.toObject(false),
         isLeaf: this.isLeaf(),
         isField: this.isField(),
