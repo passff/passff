@@ -73,6 +73,13 @@
         }
     },
 
+    "web_accessible_resources": [
+        "skin/paper-plane.png",
+        "skin/pencil-square.png",
+        "skin/icon-light.png",
+        "icon.png"
+    ],
+
     "applications": {
         "gecko": {
             "id": "passff@invicem.pro",

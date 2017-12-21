@@ -176,65 +176,16 @@ PassFF.Page = (function () {
 
 // %%%%%%%%%%%%%%% Implementation of input field marker %%%%%%%%%%%%%%%%%%%%%%%%
 
-  let passff_icon_16 = `data:image/png;base64,
-    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAALGPC/xhBQAA
-    ACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA
-    /4ePzL8AAAAJcEhZcwAAbroAAG66AdbesRcAAAAHdElNRQfhDBUAHiRbufMlAAABKUlE
-    QVQoz23RvUtbARjF4eder9FgHaqIAYkgUlJwcHAooiBEyCBkUNwUA0IHF12la8HQQRyd
-    LH6io+DgZHSIq5t/gRjuZBAEv6C3gw014G887wfnvG8ARdrklYzJIHZpR8XzCYIiZPww
-    77P/1O1bEwdacmRsKkl7T9o3X1x4aMml/FQCCYJ3TV+lVCKT5sC1DU8SbQYUjIgw7zS0
-    oAvUkkN1nZ4cKdoCXRYi442NQasVBYma79ZNyWI81KuZQJ9psRrIhD7iXqqRKhLL/pMT
-    jx49uPLbqEEQh6qNseTVqry8RYN+6QDVyK6CbhCaMKRDzrBP4M5epOLAMgSRGYUmL/vO
-    Qi/Kjj+0eqzsJUJsya2epmLdnrI4eLt9kXb9bmyb9Uesasf527v/AicaS1qXsKmAAAAA
-    JXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTEyLTIwVDIzOjMwOjM2KzAxOjAwSupXIQAAACV0
-    RVh0ZGF0ZTptb2RpZnkAMjAxNy0xMi0yMFQyMzozMDozNiswMTowMDu3750AAAAZdEVY
-    dFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC
-  `.replace(/\s+/g,"");
+  let passff_icon = browser.extension.getURL('/icon.png');
+  let passff_icon_light = browser.extension.getURL('/skin/icon-light.png');
 
   /* The following two icons have been taken from
    *  https://github.com/encharm/Font-Awesome-SVG-PNG (MIT-License)
    * which provides PNG/SVG versions for Font Awesome icons:
    *  http://fontawesome.io/ (License: SIL OFL 1.1)
    */
-  let paper_plane_16 = `data:image/png;base64,
-    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAA5klE
-    QVQ4jcXRvUpDQRCG4ceABmwsRHsrGwuxEmKZ1tIf8CJyCSLYCEHwCrQ3rZWNwVosxLRJYSloEbFQ
-    PBaZA4fFkxy1yAfL7sx+7+zPMAXN4xD9v8DbAWbo/QbcwG2Aw5g7VcBFnOEzoGu8xPpoHDiLFl7D
-    /IU2HiLOsFsGN/FYML5jH5eFXIa1FFzFVWJ6xhaOk/wH6kX4NJJFUw8r2IknpHugFvOb0efkukED
-    CzjHTHLbH1tYxwFOMIclDJKT8zG2A7m6JXCGvSoFcvMd7k3oQFmBAZYj3sQFnoyeOFF9rFcx/kvf
-    c6ZQngg2HO0AAAAASUVORK5CYII=
-  `.replace(/\s+/g,"");
-  let pencil_square_16 = `data:image/png;base64,
-    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAAoklE
-    QVQ4jc3SuxHCMBCE4S8AhhoImIEO3AWBCSGmHuqgDygBO6MSkdgmUaABSQEJ3Mwmut1fpwf/VA16
-    jJgKGtFF70f1leC7uhygtHPAISrEtSEHKIVv2EXPIemBWf46wBNHPHCu+LITBOxxwgJLXJMjTDVA
-    QJuExSOk4SqgxRrzSrgK2OKCVSWcBQxJYxMnKYWzz9gVzDndc4AmQr7+yr+pFzLPbBOs02aiAAAA
-    AElFTkSuQmCC
-  `.replace(/\s+/g,"");
-
-  let icon_data_urls = [passff_icon_16, null];
-  let icon_load_promise = null;
-
-  function loadIcons() {
-    if (icon_load_promise === null) {
-      icon_load_promise = new Promise(function (resolve, reject) {
-        if (PassFF.mode !== "content") return;
-        let canvas = document.createElement("canvas");
-        canvas.height = 16;
-        canvas.width = 16;
-        let img = document.createElement("img");
-        img.addEventListener("load", (e) => {
-            let context = canvas.getContext("2d");
-            context.globalAlpha = 0.5;
-            context.drawImage(img, 0, 0);
-            icon_data_urls[1] = canvas.toDataURL();
-            resolve();
-        });
-        img.src = passff_icon_16;
-      });
-    }
-    return icon_load_promise;
-  }
+  let paper_plane_16 = browser.extension.getURL('/skin/paper-plane.png');
+  let pencil_square_16 = browser.extension.getURL('/skin/pencil-square.png');
 
   function isMouseOverIcon(e) {
     if (typeof e.target.passff_injected === "undefined") return false;
@@ -245,7 +196,7 @@ PassFF.Page = (function () {
 
   function onIconHover(e) {
     if (isMouseOverIcon(e)) {
-      e.target.style.backgroundImage = "url('" + icon_data_urls[0] + "')";
+      e.target.style.backgroundImage = "url('" + passff_icon + "')";
       e.target.style.cssText += "cursor: pointer !important;";
       return;
     }
@@ -258,25 +209,23 @@ PassFF.Page = (function () {
     }
 
   function injectIcon(input) {
-    loadIcons().then(function () {
-      if (typeof input.passff_injected !== "undefined") return;
-      log.debug("Inject icon", input.id || input.name);
-      input.passff_injected = true;
-      input.style.backgroundRepeat = "no-repeat";
-      input.style.backgroundAttachment = "scroll";
-      input.style.backgroundSize = "16px 16px";
-      input.style.backgroundPosition = "calc(100% - 4px) 50%";
-      input.style.backgroundImage = "url('" + icon_data_urls[1] + "')";
-      input.addEventListener("mouseout", (e) => {
-        if (e.target !== popup_target) resetIcon(e.target);
-      });
-      input.addEventListener("mousemove", onIconHover);
-      input.addEventListener("click", onIconClick);
+    if (typeof input.passff_injected !== "undefined") return;
+    log.debug("Inject icon", input.id || input.name);
+    input.passff_injected = true;
+    input.style.backgroundRepeat = "no-repeat";
+    input.style.backgroundAttachment = "scroll";
+    input.style.backgroundSize = "16px 16px";
+    input.style.backgroundPosition = "calc(100% - 4px) 50%";
+    input.style.backgroundImage = "url('" + passff_icon_light + "')";
+    input.addEventListener("mouseout", (e) => {
+      if (e.target !== popup_target) resetIcon(e.target);
     });
+    input.addEventListener("mousemove", onIconHover);
+    input.addEventListener("click", onIconClick);
   }
 
   function resetIcon(input) {
-    input.style.backgroundImage = "url('" + icon_data_urls[1] + "')";
+    input.style.backgroundImage = "url('" + passff_icon_light + "')";
   }
 
 // %%%%%%%%%%%%%%% Implementation of input field popup %%%%%%%%%%%%%%%%%%%%%%%%%
