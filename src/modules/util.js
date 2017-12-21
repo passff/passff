@@ -21,14 +21,14 @@ function _(key, params) {
  */
 
 var log = {
-  generateArguments: function(args) {
+  generateArguments: function (args) {
     var argsArray = Array.slice(args);
     argsArray.unshift('[PassFF]');
     return argsArray;
   }
 };
 
-(function() {
+(function () {
   function logPrototype() {
     if (PassFF.Preferences) {
       // jshint validthis: true

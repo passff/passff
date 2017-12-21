@@ -1,7 +1,7 @@
 /* jshint node: true */
 'use strict';
 
-PassFF.Preferences = (function() {
+PassFF.Preferences = (function () {
   /**
    * This object provides access to the preferences of PassFF and handles
    * the user interface of the preferences page.
@@ -104,7 +104,7 @@ PassFF.Preferences = (function() {
  */
 
   var prefObj = {
-    init: function() {
+    init: function () {
       return browser.storage.local.get(Object.keys(prefParams))
         .then((res) => {
           let obj = {};

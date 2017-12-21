@@ -115,7 +115,7 @@ var PassFF = (function () {
   return {
     mode: null,
 
-    init: function() {
+    init: function () {
       // don't run init twice, which might happen for content scripts
       if (init_promise !== null) return init_promise;
 

@@ -233,14 +233,14 @@ PassFF.Menu = (function () {
 
     let listElm = document.getElementById('passff-entries-list');
 
-    items.forEach(function(item) {
+    items.forEach(function (item) {
       if (item.isField) {
         return;
       }
 
       let onEnter = null;
       if (item.isLeaf || item.hasFields) {
-        onEnter = function(event) {
+        onEnter = function (event) {
           if (PassFF.mode === "itemPicker") {
             PassFF.Menu.onPickItem(getItem(this));
           } else {
@@ -298,7 +298,7 @@ PassFF.Menu = (function () {
       ['passff_menu_copy_login', PassFF.Menu.onCopyToClipboard, 'login'],
       ['passff_menu_copy_password', PassFF.Menu.onCopyToClipboard, 'password'],
       ['passff_menu_display', PassFF.Menu.onDisplayItemData]
-    ].forEach(function(data) {
+    ].forEach(function (data) {
       let onClick = function (event) {
         event.stopPropagation();
         let itemId = getItem(event.target);
@@ -504,7 +504,7 @@ PassFF.Menu = (function () {
     ),
 
     onGoto: background_function("Menu.onGoto",
-      function(itemId, dataKey, rightClick) {
+      function (itemId, dataKey, rightClick) {
         let item = PassFF.Pass.getItemById(itemId);
         PassFF.Page.goToItemUrl(item, rightClick, false, false);
       }
@@ -512,21 +512,21 @@ PassFF.Menu = (function () {
 
     onGotoAutoFillAndSubmitMenuClick: background_function(
       "Menu.onGotoAutoFillAndSubmitMenuClick",
-      function(itemId, dataKey, rightClick) {
+      function (itemId, dataKey, rightClick) {
         let item = PassFF.Pass.getItemById(itemId);
         PassFF.Page.goToItemUrl(item, rightClick, true, true);
       }
     ),
 
     onDisplayItemData: background_function("Menu.onDisplayItemData",
-      function(itemId, dataKey, rightClick) {
+      function (itemId, dataKey, rightClick) {
         let item = PassFF.Pass.getItemById(itemId);
         PassFF.Pass.displayItem(item);
       }
     ),
 
     onCopyToClipboard: background_function("Menu.onCopyToClipboard",
-      function(itemId, dataKey, rightClick) {
+      function (itemId, dataKey, rightClick) {
         let item = PassFF.Pass.getItemById(itemId);
         PassFF.Pass.getPasswordData(item)
           .then((passwordData) => {

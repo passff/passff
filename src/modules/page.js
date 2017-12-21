@@ -78,7 +78,7 @@ PassFF.Page = (function () {
   }
 
   function isOtherInputCheck(other) {
-    return function(input) {
+    return function (input) {
       return (hasGoodName(readInputNames(input), Object.keys(other)));
     }
   }
@@ -155,7 +155,7 @@ PassFF.Page = (function () {
   }
 
   function setOtherInputs(other) {
-    getOtherInputs(other).forEach(function(otherInput) {
+    getOtherInputs(other).forEach(function (otherInput) {
       let value;
       if (other.hasOwnProperty(otherInput.name)) {
         value = other[otherInput.name];
@@ -263,7 +263,7 @@ PassFF.Page = (function () {
 
   var submittedTabs = {
     _tabs: [],
-    get: function(tab) {
+    get: function (tab) {
       let val = this._tabs.find((val) => {
         // Only check tab id (not url since it might change)
         return val[0] == tab.id;
@@ -273,13 +273,13 @@ PassFF.Page = (function () {
       }
       return false;
     },
-    set: function(tab, date) {
+    set: function (tab, date) {
       this._tabs.unshift([tab.id, date]);
       // Remember only last 10 entries
       this._tabs.splice(10, this._tabs.length);
     },
 
-    unset: function(tab, date) {
+    unset: function (tab, date) {
       let index = this._tabs.findIndex((t) => {
         return (t[0] == tab.id && t[1] == date);
       });
@@ -343,7 +343,7 @@ PassFF.Page = (function () {
             Attach a DOM-level event handler for our command key, so it works
             even if an input box is focused.
           */
-          document.addEventListener('keydown', function(evt) {
+          document.addEventListener('keydown', function (evt) {
             if (shortcut.commandLetter !== evt.key) return;
 
             for (var modifier in shortcut.expectedModifierState) {
@@ -388,7 +388,7 @@ PassFF.Page = (function () {
 // %%%%%%%%%%%%%%%%%%%%%%%%%% URL changer %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     goToItemUrl: background_function("Page.goToItemUrl",
-      function(item, newTab, autoFill, submit) {
+      function (item, newTab, autoFill, submit) {
         if (!item) return Promise.resolve();
         let promised_tab = (newTab) ? browser.tabs.create({}) : getActiveTab();
         return PassFF.Pass.getPasswordData(item)
@@ -412,7 +412,7 @@ PassFF.Page = (function () {
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%% Form filler %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    autoFill: content_function("Page.autoFill", function() {
+    autoFill: content_function("Page.autoFill", function () {
       if (!PassFF.Preferences.autoFill) return;
 
       let url = window.location.href;
@@ -442,7 +442,7 @@ PassFF.Page = (function () {
       }
     ),
 
-    fillInputs: content_function("Page.fillInputs", function(item, andSubmit) {
+    fillInputs: content_function("Page.fillInputs", function (item, andSubmit) {
       return PassFF.Pass.getPasswordData(item)
         .then((passwordData) => {
           if (typeof passwordData === "undefined") return;
@@ -494,7 +494,7 @@ PassFF.Page = (function () {
       return true;
     }, true),
 
-    safeSubmit: background_function("Page.safeSubmit", function(sender) {
+    safeSubmit: background_function("Page.safeSubmit", function (sender) {
       let tab = sender.tab;
       if (submittedTabs.get(tab)) {
         log.info('Tab already auto-submitted. skip it');

@@ -21,7 +21,7 @@ PassFF.Pass = (function () {
  */
 
   var Item = (function () {
-    let cls = function(depth, key, parent, id) {
+    let cls = function (depth, key, parent, id) {
       this.children = [];
       this.depth = depth;
       this.key = key.replace(/\.gpg$/, '');
@@ -29,23 +29,23 @@ PassFF.Pass = (function () {
       this.id = id;
     };
 
-    cls.prototype.isLeaf = function() {
+    cls.prototype.isLeaf = function () {
       return this.children.length === 0;
     };
 
-    cls.prototype.hasFields = function() {
+    cls.prototype.hasFields = function () {
       return this.children.some(function (element) {
         return element.isField();
       });
     };
 
-    cls.prototype.isField = function() {
+    cls.prototype.isField = function () {
       return this.isLeaf() && (isLoginField(this.key) ||
                                isPasswordField(this.key) ||
                                isUrlField(this.key));
     };
 
-    cls.prototype.fullKey = function() {
+    cls.prototype.fullKey = function () {
       let fullKey = this.key;
       let loopParent = this.parent;
       while (loopParent !== null) {
@@ -55,7 +55,7 @@ PassFF.Pass = (function () {
       return fullKey;
     };
 
-    cls.prototype.toObject = function(export_children) {
+    cls.prototype.toObject = function (export_children) {
       let children = [];
       if (export_children) {
         children = this.children.map(function (c) { return c.toObject(false); });
@@ -100,7 +100,7 @@ PassFF.Pass = (function () {
 
   function setOther(passwordData) {
     let other = {};
-    Object.keys(passwordData).forEach(function(key) {
+    Object.keys(passwordData).forEach(function (key) {
       if (!isOtherField(key) || isLoginOrPasswordInputName(key)) {
         return;
       }
@@ -222,7 +222,7 @@ PassFF.Pass = (function () {
  */
 
   return {
-    init: function() {
+    init: function () {
       return Promise.resolve(env.init())
         .then(() => {
           if (PassFF.mode === "passwordGenerator") {
@@ -260,13 +260,13 @@ PassFF.Pass = (function () {
         let environment = getEnvParams();
 
         command = PassFF.Preferences.command;
-        PassFF.Preferences.commandArgs.forEach(function(val) {
+        PassFF.Preferences.commandArgs.forEach(function (val) {
           if (val && val.trim().length > 0) {
             scriptArgs.push(val);
           }
         });
 
-        args.forEach(function(val) {
+        args.forEach(function (val) {
           scriptArgs.push(val);
         });
 
@@ -367,7 +367,7 @@ PassFF.Pass = (function () {
       }
     },
 
-    getPasswordData: function(item) {
+    getPasswordData: function (item) {
       let result = {};
       if (item.isLeaf) { // multiline-style item
         let key = item.fullKey;
@@ -430,7 +430,7 @@ PassFF.Pass = (function () {
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%% Data filtering %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    getMatchingItems: function(search, limit) {
+    getMatchingItems: function (search, limit) {
       let searchRegex = '';
 
       for (let i = 0; i < search.length; i++) {
@@ -441,7 +441,7 @@ PassFF.Pass = (function () {
       let matches = [];
 
       try {
-        allItems.forEach(function(item) {
+        allItems.forEach(function (item) {
           let flags = PassFF.Preferences.caseInsensitiveSearch ? 'i' : '';
           let regex = new RegExp(searchRegex, flags);
 
@@ -461,17 +461,17 @@ PassFF.Pass = (function () {
       return matches;
     },
 
-    getUrlMatchingItems: function(urlStr) {
+    getUrlMatchingItems: function (urlStr) {
       let url = new URL(urlStr);
       log.debug('Search items for:', url);
 
-      let matchingItems = allItems.map(function(item) {
+      let matchingItems = allItems.map(function (item) {
         return getItemQuality(item, urlStr);
-      }).filter(function(item) {
+      }).filter(function (item) {
         return item.quality >= 0;
-      }).sort(function(item1, item2) {
+      }).sort(function (item1, item2) {
         return item2.quality - item1.quality;
-      }).map(function(item) {
+      }).map(function (item) {
         return item.item;
       });
 
@@ -480,7 +480,7 @@ PassFF.Pass = (function () {
       return matchingItems;
     },
 
-    findBestFitItem: function(items, urlStr) {
+    findBestFitItem: function (items, urlStr) {
       let url = new URL(urlStr);
 
       if (items.length === 0) {
@@ -490,7 +490,7 @@ PassFF.Pass = (function () {
       let bestItem = items[0];
       let bestQuality = -1;
 
-      items.forEach(function(curItem) {
+      items.forEach(function (curItem) {
         if (curItem.isLeaf) {
           return;
         }
@@ -508,7 +508,7 @@ PassFF.Pass = (function () {
       return bestItem;
     },
 
-    isPasswordNameTaken: function(name) {
+    isPasswordNameTaken: function (name) {
       name = name.replace(/^\//, '');
       for (let item of allItems) {
         if (item.fullKey === name) {
@@ -529,7 +529,7 @@ PassFF.Pass = (function () {
 
 // %%%%%%%%%%%%%%%%%%%%%%%% Data manipulation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    addNewPassword: function(name, password, additionalInfo) {
+    addNewPassword: function (name, password, additionalInfo) {
       let fileContents = [password, additionalInfo].join('\n');
       return this.executePass(['insert', '-m', name], {
         stdin: password + '\n' + additionalInfo + '\n'
@@ -538,7 +538,7 @@ PassFF.Pass = (function () {
       });
     },
 
-    generateNewPassword: function(name, length, includeSymbols) {
+    generateNewPassword: function (name, length, includeSymbols) {
       let args = ['generate', name, length.toString()];
       if (!includeSymbols) {
         args.push('-n');
@@ -550,15 +550,15 @@ PassFF.Pass = (function () {
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%% Data analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    getItemsLeafs: function(items) {
+    getItemsLeafs: function (items) {
       let leafs = [];
-      items.forEach(function(item) {
+      items.forEach(function (item) {
         leafs = leafs.concat(PassFF.Pass.getItemLeafs(item));
       });
       return leafs;
     },
 
-    getItemLeafs: function(item) {
+    getItemLeafs: function (item) {
       let leafs = [];
 
       if (item.isLeaf) {
@@ -566,7 +566,7 @@ PassFF.Pass = (function () {
           leafs.push(item);
         }
       } else {
-        item.children.forEach(function(child) {
+        item.children.forEach(function (child) {
           leafs = leafs.concat(PassFF.Pass.getItemLeafs(child));
         });
       }
@@ -623,7 +623,7 @@ function handlePasswordGeneration() {
   }
 
   function isPresent(field, errorMsg) {
-    return function(inputData) {
+    return function (inputData) {
       if (!inputData[field] || !/\S/.test(inputData[field])) {
         return errorMsg;
       }
@@ -631,7 +631,7 @@ function handlePasswordGeneration() {
   }
 
   function matches(field1, field2, errorMsg) {
-    return function(inputData) {
+    return function (inputData) {
       if (inputData[field1] !== inputData[field2]) {
         return errorMsg;
       }
@@ -639,7 +639,7 @@ function handlePasswordGeneration() {
   }
 
   function validateInput(validations, inputData) {
-    return validations.reduce(function(errors, validatorFn) {
+    return validations.reduce(function (errors, validatorFn) {
       let error = validatorFn(inputData);
       if (error) {
         errors.push(error);
@@ -655,7 +655,7 @@ function handlePasswordGeneration() {
   }
 
   function makePasswordAdder(validations, errorsContainerId, getInput, addPassword) {
-    return function() {
+    return function () {
       try {
         let inputData = getInput(),
             errorsContainer = document.getElementById(errorsContainerId),
@@ -664,7 +664,7 @@ function handlePasswordGeneration() {
         emptyElement(errorsContainer);
 
         if (errors.length > 0) {
-          errors.forEach(function(errorMsg) {
+          errors.forEach(function (errorMsg) {
             let errorLabel = document.createElement('p');
             errorLabel.textContent = errorMsg;
             errorsContainer.appendChild(errorLabel);
@@ -723,7 +723,7 @@ function handlePasswordGeneration() {
   var onAddPassword = makePasswordAdder(
     addValidations,
     'add-errors-container',
-    function() {
+    function () {
       return {
         name                 : document.getElementById('add-password-name').value,
         password             : document.getElementById('add-password').value,
@@ -731,7 +731,7 @@ function handlePasswordGeneration() {
         additionalInfo       : document.getElementById('add-additional-info').value,
       };
     },
-    function(inputData) {
+    function (inputData) {
       return PassFF.Pass.addNewPassword(
         inputData.name, inputData.password, inputData.additionalInfo);
     }
@@ -740,14 +740,14 @@ function handlePasswordGeneration() {
   var onGeneratePassword = makePasswordAdder(
     genValidations,
     'gen-errors-container',
-    function() {
+    function () {
       return {
         name           : document.getElementById('gen-password-name').value,
         length         : document.getElementById('gen-password-length').value,
         includeSymbols : document.getElementById('gen-include-symbols').checked,
       };
     },
-    function(inputData) {
+    function (inputData) {
       return PassFF.Pass.generateNewPassword(
         inputData.name, inputData.length, inputData.includeSymbols);
     }
