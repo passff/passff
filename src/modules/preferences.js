@@ -81,6 +81,7 @@ PassFF.Preferences = (function() {
     defaultIncludeSymbols : true,
     preferInsert          : 0,
     showNewPassButton     : true,
+    markFillable          : true,
   }
 
   var listParams = [

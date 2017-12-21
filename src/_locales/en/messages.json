@@ -71,6 +71,9 @@
   "passff_prefs_tab_adding": {
     "message": "Adding Passwords"
   },
+  "passff_prefs_mark_fillable": {
+    "message": "Mark fillable input fields with icon"
+  },
   "passff_prefs_handle_http_auth": {
     "message": "Handle HTTP authentication"
   },

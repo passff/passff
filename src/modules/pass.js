@@ -582,7 +582,7 @@ PassFF.Pass = (function () {
           if (typeof passwordData === "undefined") return;
           displayItem = passwordData;
           return browser.windows.create({
-              'url': browser.extension.getURL('content/itemMonitor.html'),
+              'url': browser.extension.getURL('/content/itemMonitor.html'),
               'width': 640,
               'height': 251,
               'type': 'popup',
@@ -605,7 +605,7 @@ PassFF.Pass = (function () {
 
     newPasswordUI: background_function("Pass.newPasswordUI", () => {
       return browser.windows.create({
-        'url': browser.extension.getURL('content/passwordGenerator.html'),
+        'url': browser.extension.getURL('/content/passwordGenerator.html'),
         'width': 640,
         'height': 481,
         'type': 'popup'

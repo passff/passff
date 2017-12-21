@@ -36,7 +36,7 @@ PassFF.Auth = (function () {
     PassFF.Menu.state['itemPickerTarget'] = requestDetails.url;
     return new Promise((resolve, reject) => {
       browser.windows.create({
-        'url': browser.extension.getURL('content/itemPicker.html'),
+        'url': browser.extension.getURL('/content/itemPicker.html'),
         'width': 450,
         'height': 281,
         'type': 'popup',

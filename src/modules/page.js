@@ -47,32 +47,37 @@ PassFF.Page = (function () {
     return null;
   }
 
-  function hasGoodName(fieldName, goodFieldNames) {
-    let lowerFN = fieldName.toLowerCase();
-    return goodFieldNames
-      .some((fn) => { return lowerFN.indexOf(fn.toLowerCase()) >= 0; });
+  function readInputNames(input) {
+    return [input.name,input.getAttribute('autocomplete'),input.id];
+  }
+
+  function isGoodName(name, goodNames) {
+    if (!name) return false;
+    let nm = name.toLowerCase();
+    return goodNames.some((n) => { return nm.indexOf(n.toLowerCase()) >= 0; });
+  }
+
+  function hasGoodName(fieldNames, goodFieldNames) {
+    return fieldNames.some((fn) => { return isGoodName(fn, goodFieldNames); });
   }
 
   function isPasswordInput(input) {
     if (input.type === 'password') {
       return true;
     } else if (input.type === 'text') {
-      let inputName = input.name ? input.name : input.id;
-      return hasGoodName(inputName, PassFF.Preferences.passwordInputNames)
+      return hasGoodName(readInputNames(input), PassFF.Preferences.passwordInputNames)
     }
     return false;
   }
 
   function isLoginInput(input) {
-    let identifier = input.name ? input.name : input.id;
     return (loginInputTypes.indexOf(input.type) >= 0 &&
-            hasGoodName(identifier, PassFF.Preferences.loginInputNames));
+            hasGoodName(readInputNames(input), PassFF.Preferences.loginInputNames));
   }
 
   function isOtherInputCheck(other) {
     return function(input) {
-      let identifier = input.name ? input.name : input.id;
-      return (hasGoodName(identifier, Object.keys(other)));
+      return (hasGoodName(readInputNames(input), Object.keys(other)));
     }
   }
 
@@ -81,9 +86,7 @@ PassFF.Page = (function () {
   }
 
   function getPasswordInputs() {
-    let result =[].filter.call(doc.getElementsByTagName('input'), isPasswordInput);
-    log.debug("getPasswordInput", result);
-    return result;
+    return [].filter.call(doc.getElementsByTagName('input'), isPasswordInput);
   }
 
   function getOtherInputs(other) {
@@ -128,6 +131,13 @@ PassFF.Page = (function () {
     input.dispatchEvent(createFakeInputEvent('change'));
   }
 
+  function onNodeAdded() {
+    if (PassFF.Preferences.markFillable) {
+      getLoginInputs().forEach(drawIcon);
+      getPasswordInputs().forEach(drawIcon);
+    }
+  }
+
 /* #############################################################################
  * #############################################################################
  *  Helpers for DOM manipulation
@@ -160,6 +170,28 @@ PassFF.Page = (function () {
     setLoginInputs(passwordData.login);
     setPasswordInputs(passwordData.password);
     setOtherInputs(passwordData._other);
+  }
+
+  function drawIcon(input) {
+    let passff_icon_16 = `data:image/png;base64,
+      iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAALGPC/xhBQAA
+      ACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA
+      /4ePzL8AAAAJcEhZcwAAbroAAG66AdbesRcAAAAHdElNRQfhDBUAHiRbufMlAAABKUlE
+      QVQoz23RvUtbARjF4eder9FgHaqIAYkgUlJwcHAooiBEyCBkUNwUA0IHF12la8HQQRyd
+      LH6io+DgZHSIq5t/gRjuZBAEv6C3gw014G887wfnvG8ARdrklYzJIHZpR8XzCYIiZPww
+      77P/1O1bEwdacmRsKkl7T9o3X1x4aMml/FQCCYJ3TV+lVCKT5sC1DU8SbQYUjIgw7zS0
+      oAvUkkN1nZ4cKdoCXRYi442NQasVBYma79ZNyWI81KuZQJ9psRrIhD7iXqqRKhLL/pMT
+      jx49uPLbqEEQh6qNseTVqry8RYN+6QDVyK6CbhCaMKRDzrBP4M5epOLAMgSRGYUmL/vO
+      Qi/Kjj+0eqzsJUJsya2epmLdnrI4eLt9kXb9bmyb9Uesasf527v/AicaS1qXsKmAAAAA
+      JXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTEyLTIwVDIzOjMwOjM2KzAxOjAwSupXIQAAACV0
+      RVh0ZGF0ZTptb2RpZnkAMjAxNy0xMi0yMFQyMzozMDozNiswMTowMDu3750AAAAZdEVY
+      dFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC
+    `.replace(/\s+/g,"");
+    input.style.backgroundImage = "url('" + passff_icon_16 + "')";
+    input.style.backgroundRepeat = "no-repeat";
+    input.style.backgroundAttachment = "scroll";
+    input.style.backgroundSize = "16px 16px";
+    input.style.backgroundPosition = "calc(100% - 4px) 50%";
   }
 
 /* #############################################################################
@@ -228,7 +260,13 @@ PassFF.Page = (function () {
 
   return {
     init: function () {
-      window.onload = PassFF.Page.autoFill;
+      window.onload = function () {
+        var obs = new MutationObserver(onNodeAdded);
+        obs.observe(document, { childList:true, subtree:true });
+        onNodeAdded();
+
+        PassFF.Page.autoFill();
+      };
 
       /*
         Allow our browser command to bypass the usual dom event mapping, so that
@@ -362,8 +400,10 @@ PassFF.Page = (function () {
         if (depth <= PassFF.Preferences.subpageSearchDepth) {
           let subpages = doc.querySelectorAll('iframe,frame');
           [].forEach.call(subpages, (subpage) => {
-            doc = subpage.contentDocument;
-            PassFF.Page.processDoc(passwordData, depth+1);
+            if (subpage.contentDocument) {
+              doc = subpage.contentDocument;
+              PassFF.Page.processDoc(passwordData, depth+1);
+            }
           });
         }
         // clean up after scanning subpages

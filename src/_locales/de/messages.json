@@ -71,6 +71,9 @@
   "passff_prefs_tab_adding": {
     "message": "Passwörter hinzufügen"
   },
+  "passff_prefs_mark_fillable": {
+    "message": "Automatisch ausfüllbare Felder mit Icon markieren"
+  },
   "passff_prefs_handle_http_auth": {
     "message": "Unterstützung für HTTP-Anmeldung"
   },
