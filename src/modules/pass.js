@@ -126,29 +126,8 @@ PassFF.Pass = (function () {
 
 // %%%%%%%%%%%%%%%%%%%% Helper for `pass` command environment %%%%%%%%%%%%%%%%%%
 
-  var env = {
-    _environment: {},
-    exists: function (key) { return this._environment.hasOwnProperty(key); },
-    get: function (key, def) {
-      if (this.exists(key)) {
-        return this._environment[key];
-      } else {
-        return def;
-      }
-    },
-    init: function () {
-      if (PassFF.mode === "background") {
-        return browser.runtime.sendNativeMessage("passff", { command: "env" })
-          .then((result) => { this._environment = result });
-      }
-    }
-  };
-
   function getEnvParams() {
-    let params = {
-      'DISPLAY': env.get('DISPLAY', ':0.0'),
-      'TREE_CHARSET': 'ISO-8859-1'
-    };
+    let params = { 'TREE_CHARSET': 'ISO-8859-1' };
     PassFF.Preferences.commandEnv.forEach((keyval) => {
         params[keyval[0]] = keyval[1];
     });
@@ -163,13 +142,10 @@ PassFF.Pass = (function () {
 
   return {
     init: function () {
-      return Promise.resolve(env.init())
-        .then(() => {
-          if (PassFF.mode === "passwordGenerator") {
-            handlePasswordGeneration();
-          }
-          return this.loadItems(PassFF.mode === "background");
-        })
+      if (PassFF.mode === "passwordGenerator") {
+        handlePasswordGeneration();
+      }
+      return this.loadItems(PassFF.mode === "background")
         .then((items) => {
           allItems = items[0];
           rootItems = items[1];
