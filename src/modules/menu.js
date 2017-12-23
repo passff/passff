@@ -276,11 +276,11 @@ PassFF.Menu = (function () {
     }
 
     if (!item.isLeaf) {
-      createItemsMenuList(item.children, false);
+      createItemsMenuList(item.children.map(PassFF.Pass.getItemById), false);
     }
 
     let listElm = document.getElementById('passff-entries-list');
-    let newItem = createMenuItem(item.parent, '..',
+    let newItem = createMenuItem(PassFF.Pass.getItemById(item.parent), '..',
       onListItemSelected);
     listElm.insertBefore(newItem, listElm.firstChild);
   }

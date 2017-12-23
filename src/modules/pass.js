@@ -16,68 +16,6 @@ PassFF.Pass = (function () {
 
 /* #############################################################################
  * #############################################################################
- *  Helpers for password store item tree setup
- * #############################################################################
- */
-
-  var Item = (function () {
-    let cls = function (depth, key, parent, id) {
-      this.children = [];
-      this.depth = depth;
-      this.key = key.replace(/\.gpg$/, '');
-      this.parent = parent;
-      this.id = id;
-    };
-
-    cls.prototype.isLeaf = function () {
-      return this.children.length === 0;
-    };
-
-    cls.prototype.hasFields = function () {
-      return this.children.some(function (element) {
-        return element.isField();
-      });
-    };
-
-    cls.prototype.isField = function () {
-      return this.isLeaf() && (isLoginField(this.key) ||
-                               isPasswordField(this.key) ||
-                               isUrlField(this.key));
-    };
-
-    cls.prototype.fullKey = function () {
-      let fullKey = this.key;
-      let loopParent = this.parent;
-      while (loopParent !== null) {
-        fullKey = loopParent.key + '/' + fullKey;
-        loopParent = loopParent.parent;
-      }
-      return fullKey;
-    };
-
-    cls.prototype.toObject = function (export_children) {
-      let children = [];
-      if (export_children) {
-        children = this.children.map(function (c) { return c.toObject(false); });
-      }
-      return {
-        id: this.id,
-        key: this.key,
-        depth: this.depth,
-        parent: (this.parent === null) ? null : this.parent.toObject(false),
-        isLeaf: this.isLeaf(),
-        isField: this.isField(),
-        hasFields: this.hasFields(),
-        fullKey: this.fullKey(),
-        children: children
-      };
-    };
-
-    return cls;
-  })();
-
-/* #############################################################################
- * #############################################################################
  *  Helpers for password data setup
  * #############################################################################
  */
@@ -241,7 +179,7 @@ PassFF.Pass = (function () {
             let restOutputEl = document.getElementsByTagName("pre")[1];
             document.querySelector("div:first-child > span").textContent
               = _("passff_display_hover");
-            PassFF.Pass.getDisplayItem()
+            this.getDisplayItem()
               .then((passwordData) => {
                 let otherData = passwordData['fullText'];
                 let sep = otherData.indexOf("\n");
@@ -311,12 +249,12 @@ PassFF.Pass = (function () {
 
     loadItems: background_function("Pass.loadItems", function (reload) {
       if (!reload) return [allItems, rootItems, contextItems];
-      return PassFF.Pass.executePass([])
+      return this.executePass([])
         .then((result) => {
           if (result.exitCode !== 0) return;
 
-          var _allItems = [];
-          var _rootItems = [];
+          allItems = [];
+          rootItems = [];
 
           let stdout = result.stdout;
           // replace utf8 box characters with traditional ascii tree
@@ -327,6 +265,7 @@ PassFF.Pass = (function () {
           let lines = stdout.split('\n');
           let re = /(.*[|`;])+-- (.*)/;
           let curParent = null;
+          let item = null;
 
           lines.forEach(function (line) {
             let match = re.exec(line);
@@ -334,36 +273,56 @@ PassFF.Pass = (function () {
 
             let curDepth = (match[1].replace('&middot;', '`').length - 1) / 4;
             let key = match[2].replace(/\\ /g, ' ').replace(/ -> .*/g, '');
+            key = key.replace(/\.gpg$/, '');
 
-            while (curParent !== null && curParent.depth >= curDepth) {
-              curParent = curParent.parent;
+            // if this line goes up in hierarchy, last item can be finished
+            if (item !== null && item.depth >= curDepth) {
+              item.isLeaf = (item.children.length === 0);
+              item.isField = item.isLeaf && (isLoginField(item.key)
+                                             || isPasswordField(item.key)
+                                             || isUrlField(item.key));
+              item.hasFields = item.children.some(c => allItems[c].isField);
             }
 
-            let item = new Item(curDepth, key, curParent, _allItems.length);
+            if (curDepth === 0) {
+              curParent = null;
+            } else {
+              while (curParent.depth >= curDepth) {
+                curParent = allItems[curParent.parent];
+              }
+            }
+
+            item = {
+              id: allItems.length,
+              key: key,
+              depth: curDepth,
+              parent: (curDepth === 0) ? null : curParent.id,
+              isLeaf: null,
+              isField: null,
+              hasFields: null,
+              fullKey: (curDepth === 0) ? key : curParent.fullKey + '/' + key,
+              children: []
+            };
 
             if (curParent !== null) {
-              curParent.children.push(item);
+              curParent.children.push(item.id);
             }
 
             curParent = item;
-            _allItems.push(item);
+            allItems.push(item);
 
             if (item.depth === 0) {
-              _rootItems.push(item);
+              rootItems.push(item);
             }
           });
 
-          log.debug('Found Items', _rootItems);
-
-          return [
-            _allItems.map((i) => { return i.toObject(true); }),
-            _rootItems.map((i) => { return i.toObject(true); })
-          ];
+          log.debug('Found Items', rootItems);
+          return [allItems, rootItems];
         });
     }),
 
     loadContextItems: function (url) {
-      contextItems = PassFF.Pass.getUrlMatchingItems(url);
+      contextItems = this.getUrlMatchingItems(url);
       if (contextItems.length === 0) {
         contextItems = rootItems;
       }
@@ -406,9 +365,9 @@ PassFF.Pass = (function () {
       } else { // hierarchical-style item
         let promised_results = new Array(item.children.length);
         for (let i = 0; i < item.children.length; i++) {
-          let child = item.children[i];
+          let child = this.getItemById(item.children[i]);
           if (child.isField) {
-            promised_results[i] = PassFF.Pass.getPasswordData(child);
+            promised_results[i] = this.getPasswordData(child);
           } else {
             promised_results[i] = Promise.resolve();
           }
@@ -417,7 +376,7 @@ PassFF.Pass = (function () {
           if (typeof results[0] === "undefined") return;
           let result = {};
           for (let i = 0; i < item.children.length; i++) {
-            let child = item.children[i];
+            let child = this.getItemById(item.children[i]);
             if (child.isField) {
               result[child.key] = results[i].password;
             }
@@ -522,7 +481,7 @@ PassFF.Pass = (function () {
     },
 
     getItemById: function (id) {
-      if (id >= allItems.length) {
+      if (id === null || id >= allItems.length) {
         return null;
       } else {
         return allItems[id];
@@ -554,9 +513,7 @@ PassFF.Pass = (function () {
 
     getItemsLeafs: function (items) {
       let leafs = [];
-      items.forEach(function (item) {
-        leafs = leafs.concat(PassFF.Pass.getItemLeafs(item));
-      });
+      leafs = leafs.concat(items.map(this.getItemLeafs));
       return leafs;
     },
 
@@ -568,9 +525,8 @@ PassFF.Pass = (function () {
           leafs.push(item);
         }
       } else {
-        item.children.forEach(function (child) {
-          leafs = leafs.concat(PassFF.Pass.getItemLeafs(child));
-        });
+        leafs = leafs.concat(
+          item.children.map(this.getItemById).map(this.getItemLeafs));
       }
 
       return leafs;
@@ -579,7 +535,7 @@ PassFF.Pass = (function () {
 // %%%%%%%%%%%%% Implementation of 'display item' feature %%%%%%%%%%%%%%%%%%%%%%
 
     displayItem: background_function("Pass.displayItem", function (item) {
-      PassFF.Pass.getPasswordData(item)
+      this.getPasswordData(item)
         .then((passwordData) => {
           if (typeof passwordData === "undefined") return;
           displayItem = passwordData;
