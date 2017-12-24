@@ -378,7 +378,7 @@ PassFF.Page = (function () {
   function init_tab(tab) {
     return new Promise((resolve, reject) => {
       let onFinally = function () {
-        log.debug("Tab init done", tab.id);
+        log.debug("Tab init done", tab.id, tab.url);
         resolve(tab);
       };
       /*
@@ -393,6 +393,18 @@ PassFF.Page = (function () {
     });
   }
 
+  function onWindowLoad() {
+    let url = window.location.href;
+    matchItems = PassFF.Pass.getUrlMatchingItems(url);
+    bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
+
+    var obs = new MutationObserver(onNodeAdded);
+    obs.observe(document, { childList: true, subtree: true });
+    onNodeAdded();
+
+    PassFF.Page.autoFill();
+  }
+
 /* #############################################################################
  * #############################################################################
  *  Main interface
@@ -401,17 +413,8 @@ PassFF.Page = (function () {
 
   return {
     init: function () {
-      window.onload = function () {
-        let url = window.location.href;
-        matchItems = PassFF.Pass.getUrlMatchingItems(url);
-        bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
-
-        var obs = new MutationObserver(onNodeAdded);
-        obs.observe(document, { childList:true, subtree:true });
-        onNodeAdded();
-
-        PassFF.Page.autoFill();
-      };
+      if (document.readyState === 'complete') onWindowLoad();
+      else window.onload = onWindowLoad();
 
       /*
         Allow our browser command to bypass the usual dom event mapping, so that
@@ -455,7 +458,7 @@ PassFF.Page = (function () {
         return tab_init_pending[pending_id].promise;
       } else {
         pending_id = tab_init_pending.length;
-        log.debug("Awaiting tab init...", tab.id);
+        log.debug("Awaiting tab init...", tab.id, tab.url);
         let pending_promise = init_tab(tab);
         tab_init_pending.push({ id: tab.id, promise: pending_promise });
         return pending_promise.then((ready_tab) => {
