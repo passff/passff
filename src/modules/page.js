@@ -244,6 +244,11 @@ PassFF.Page = (function () {
   }
 
   function setupPopup() {
+    // Remove old instances of the popup menu
+    let old = document.querySelector(".passff_popup_menu");
+    if (old) old.parentNode.removeChild(old);
+
+    // Setup new instance
     popup_menu = document.createElement("div");
     popup_menu.classList.add("passff_popup_menu");
     if (matchItems.length === 0) {

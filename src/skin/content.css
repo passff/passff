@@ -13,6 +13,12 @@
   font-family: sans-serif;
 }
 
+.passff_popup_menu *:hover {
+  all: initial;
+  font-size: 0.8rem;
+  font-family: sans-serif;
+}
+
 .passff_popup_menu div.alert {
   padding: 1em;
 }
@@ -35,11 +41,12 @@
   display: table-cell;
 }
 
-.passff_popup_menu button {
+.passff_popup_menu button,
+.passff_popup_menu button:hover {
   position:relative;
   display: block;
   width: 100%;
-  height: 2.5em;
+  height: 2.2em;
   margin: 0;
   padding: 0 0.5em;
   border: 0;
@@ -56,15 +63,15 @@
   content: '';
   display: block;
   position: absolute;
-  top: 0.3em;
+  top: 0.2em;
   right: 0;
   width: 1px;
-  height: 1.9em;
+  height: 1.8em;
   background-color: #b6b6b3;
 }
 
 .passff_popup_menu div.passff_entry:hover button:after {
-  height: 2.5em;
+  height: 2.2em;
   top: 0;
 }
 
@@ -73,7 +80,7 @@
 }
 
 .passff_popup_menu button.passff_key {
-  width: 17em;
+  width: 19em;
   overflow: hidden;
 }
 
@@ -88,5 +95,5 @@
   background-repeat: no-repeat;
   background-position: center;
   background-size: 16px 16px;
-  width: 2.5em;
+  width: 16px;
 }
