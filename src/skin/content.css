@@ -9,13 +9,13 @@
 
 .passff_popup_menu * {
   all: initial;
-  font-size: 0.8rem;
+  font-size: 13px;
   font-family: sans-serif;
 }
 
 .passff_popup_menu *:hover {
   all: initial;
-  font-size: 0.8rem;
+  font-size: 13px;
   font-family: sans-serif;
 }
 

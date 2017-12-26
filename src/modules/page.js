@@ -305,6 +305,14 @@ PassFF.Page = (function () {
     popup_menu.style.top      = (scrolltop + rect.height + 1) + "px";
     popup_menu.style.right    = (scrollright - rect.width) + "px";
     popup_menu.style.display  = "block";
+
+    let p = target;
+    let z = 1;
+    while (p = p.parentElement) {
+      let st = window.getComputedStyle(p);
+      if (st.zIndex !== "auto") z += parseInt(st.zIndex);
+    }
+    popup_menu.style.zIndex = "" + z;
   }
 
   function getPopupEntryItem(target) {
