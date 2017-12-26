@@ -65,10 +65,11 @@ var PassFF = (function () {
  */
 
   function onMessage(request, sender, sendResponse) {
-    log.debug("Message received", PassFF.mode, request);
     if (request === "refresh") {
+      log.debug("Refresh request received in", PassFF.mode);
       PassFF.Preferences.init().then(() => PassFF.Pass.init());
     } else if (["background","content"].indexOf(PassFF.mode) >= 0) {
+      log.debug("Message", request.action, "received in", PassFF.mode);
       let fname = fun_name(request.action);
       let args = request.params;
       if(request.useSender === true) {

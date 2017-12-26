@@ -191,19 +191,16 @@ PassFF.Pass = (function () {
           arguments: scriptArgs,
           environment: environment,
           charset: 'UTF-8',
-          mergeStderr: false
         };
 
         Object.assign(params, subprocessOverrides);
-
-        log.debug('Execute pass', params);
         return browser.runtime.sendNativeMessage("passff", params)
           .then((result) => {
             if (result.exitCode !== 0) {
-              log.warn('pass execution failed',
+              log.warn('Script execution failed',
                 result.exitCode, result.stderr, result.stdout);
             } else {
-              log.info('pass script execution ok');
+              log.debug('Script execution ok');
             }
             return result;
           }, (ex) => {
@@ -292,7 +289,6 @@ PassFF.Pass = (function () {
             }
           });
 
-          log.debug('Found Items', rootItems);
           return [allItems, rootItems];
         });
     }),
@@ -400,20 +396,12 @@ PassFF.Pass = (function () {
 
     getUrlMatchingItems: function (urlStr) {
       let url = new URL(urlStr);
-      log.debug('Search items for:', url);
-
-      let matchingItems = allItems.map(function (item) {
-        return getItemQuality(item, urlStr);
-      }).filter(function (item) {
-        return item.quality >= 0;
-      }).sort(function (item1, item2) {
-        return item2.quality - item1.quality;
-      }).map(function (item) {
-        return item.item;
-      });
-
-      log.debug('Matching items:', matchingItems);
-
+      let matchingItems = allItems
+        .map(i => getItemQuality(i, urlStr))
+        .filter(i => (i.quality >= 0))
+        .sort((i1,i2) => (i2.quality - i1.quality))
+        .map(i => i.item);
+      log.debug(matchingItems.length, 'matches for', urlStr);
       return matchingItems;
     },
 
@@ -440,8 +428,7 @@ PassFF.Pass = (function () {
         }
       });
 
-      log.debug('Best fit item', bestItem);
-
+      log.debug('Best fit item', bestItem.fullKey, "for", urlStr);
       return bestItem;
     },
 

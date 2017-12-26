@@ -11,6 +11,7 @@ PassFF.Page = (function () {
   var tab_init_pending = [];
   var matchItems = [];
   var bestFitItem = null;
+  var goToAutoFillPending = null;
 
 /* #############################################################################
  * #############################################################################
@@ -407,7 +408,14 @@ PassFF.Page = (function () {
     obs.observe(document, { childList: true, subtree: true });
     onNodeAdded();
 
-    PassFF.Page.autoFill();
+    return PassFF.Page.goToAutoFillPending()
+      .then(function (pending) {
+        if (pending !== null) {
+          PassFF.Page.resolveGoToAutoFillPending(true);
+        } else {
+          PassFF.Page.autoFill();
+        }
+      });
   }
 
 /* #############################################################################
@@ -482,7 +490,7 @@ PassFF.Page = (function () {
         return PassFF.Pass.getPasswordData(item)
           .then((passwordData) => {
             if (typeof passwordData === "undefined") return null;
-            log.debug('Go to item url', item, newTab, autoFill, submit);
+            log.debug('Go to item', item.fullKey, newTab, autoFill, submit);
             let url = passwordData.url || item.key;
             if (!url.startsWith('http')) url = 'http://' + url;
             return promised_tab
@@ -491,12 +499,29 @@ PassFF.Page = (function () {
               });
           })
           .then(function (tab) {
-            if (tab === null || !autoFill) return;
-            waitTabComplete().then(() => {
-              PassFF.Page.fillInputs(tab, item, submit); });
+            if (tab !== null && autoFill) {
+              goToAutoFillPending = {
+                tab: tab,
+                submit: submit,
+                item: item
+              };
+            }
           });
       }
     ),
+
+    goToAutoFillPending: background_function("Page.goToAutoFillPending",
+      () => goToAutoFillPending),
+
+    resolveGoToAutoFillPending: background_function(
+      "Page.resolveGoToAutoFillPending", function (fillInputs) {
+        log.debug("Resolving pending auto fill", fillInputs);
+        if (fillInputs === true) {
+          let pending = goToAutoFillPending;
+          PassFF.Page.fillInputs(pending.tab, pending.item, pending.submit);
+        }
+        goToAutoFillPending = null;
+      }),
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%% Form filler %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -532,7 +557,7 @@ PassFF.Page = (function () {
       return PassFF.Pass.getPasswordData(item)
         .then((passwordData) => {
           if (typeof passwordData === "undefined") return;
-          log.debug('Start auto-fill', item, andSubmit);
+          log.debug('Start auto-fill using', item.fullKey, andSubmit);
           PassFF.Page.processDoc(passwordData, 0);
           if (andSubmit) PassFF.Page.submit();
           return passwordData;

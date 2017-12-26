@@ -57,6 +57,7 @@ function waitTabComplete(tb) {
   if (typeof tb === "undefined") promised_tab = getActiveTab();
   return promised_tab.then((tab) => {
     return new Promise((resolve, reject) => {
+      if (tab.status === "complete") return resolve(tab);
       browser.tabs.onUpdated.addListener(function _f(_0, _1, evtTab) {
         if (evtTab.id = tab.id && evtTab.status === "complete") {
           browser.tabs.onUpdated.removeListener(_f);
@@ -84,7 +85,7 @@ function background_function(name, fun, useSender) {
       args.unshift(name);
       return background_exec.apply(null, args);
     } else {
-      return fun.apply(fun_name(name)[0], arguments);
+      return Promise.resolve(fun.apply(fun_name(name)[0], arguments));
     }
   };
 }
@@ -131,7 +132,7 @@ function content_exec(targetTab, action) {
       log.debug("Awaiting tab init for", action);
       return PassFF.Page.init_tab(tab)
         .then(function () {
-          log.debug("Executing content script action", action);
+          log.debug("Executing", action, "in content script");
           return browser.tabs.sendMessage(tab.id, {
             action: action,
             params: args,
