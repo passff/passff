@@ -5,12 +5,18 @@
   border: 1px solid #888;
   background-color: #fff;
   z-index: 1000;
+  max-height: 10em;
+  width: 19em;
+  overflow-y: auto;
+  overflow-x: hidden;
+  direction: rtl; /* force scrollbar to appear on the left */
 }
 
 .passff_popup_menu * {
   all: initial;
   font-size: 13px;
   font-family: sans-serif;
+  direction: ltr; /* force scrollbar to appear on the left */
 }
 
 .passff_popup_menu *:hover {

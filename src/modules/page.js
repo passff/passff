@@ -256,7 +256,7 @@ PassFF.Page = (function () {
       popup_menu.innerHTML = '<div class="alert">'
         + _('passff_no_entries_found') + '</div>';
     }
-    matchItems.filter(i => i.isLeaf).slice(0,3).forEach(item => {
+    matchItems.filter(i => i.isLeaf).forEach(item => {
       let entry = document.createElement("div");
       entry.classList.add("passff_entry");
       entry.passff_item = item;
