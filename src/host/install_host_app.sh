@@ -84,6 +84,14 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
+PYTHON3_PATH="$(which python3)"
+if [ -x "$PYTHON3_PATH" ]; then
+  echo "Python 3 executable located at $PYTHON3_PATH"
+else
+  echo "Python 3 executable not found, but Python 3 is required for PassFF to work!"
+  exit 1
+fi
+
 if [ -z "$TARGET_DIR" ]; then
   usage
   exit 1
@@ -110,6 +118,9 @@ fi
 
 # Replace path to host
 sed -i -e "s/PLACEHOLDER/$ESCAPED_HOST_FILE_PATH/" "$MANIFEST_FILE_PATH"
+
+# Replace path to python3 executable
+sed -i "1c#\!${PYTHON3_PATH}" "$HOST_FILE_PATH"
 
 # Set permissions for the manifest so that all users can read it.
 chmod a+x "$HOST_FILE_PATH"
