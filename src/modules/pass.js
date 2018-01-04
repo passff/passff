@@ -248,15 +248,6 @@ PassFF.Pass = (function () {
             let key = match[2].replace(/\\ /g, ' ').replace(/ -> .*/g, '');
             key = key.replace(/\.gpg$/, '');
 
-            // if this line goes up in hierarchy, last item can be finished
-            if (item !== null && item.depth >= curDepth) {
-              item.isLeaf = (item.children.length === 0);
-              item.isField = item.isLeaf && (isLoginField(item.key)
-                                             || isPasswordField(item.key)
-                                             || isUrlField(item.key));
-              item.hasFields = item.children.some(c => allItems[c].isField);
-            }
-
             if (curDepth === 0) {
               curParent = null;
             } else {
@@ -287,6 +278,14 @@ PassFF.Pass = (function () {
             if (item.depth === 0) {
               rootItems.push(item);
             }
+          });
+
+          allItems.slice().reverse().forEach(item => {
+            item.isLeaf = (item.children.length === 0);
+            item.isField = item.isLeaf && (isLoginField(item.key)
+                                           || isPasswordField(item.key)
+                                           || isUrlField(item.key));
+            item.hasFields = item.children.some(c => allItems[c].isField);
           });
 
           return [allItems, rootItems];
