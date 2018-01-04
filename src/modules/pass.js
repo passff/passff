@@ -38,6 +38,15 @@ PassFF.Pass = (function () {
     passwordData.login = (!login) ? item.key : login;
   }
 
+  function setUrl(passwordData) {
+    let url;
+    for (let i = 0; i < PassFF.Preferences.urlFieldNames.length; i++) {
+      url = passwordData[PassFF.Preferences.urlFieldNames[i].toLowerCase()];
+      if (url) break;
+    }
+    passwordData.url = url;
+  }
+
   function setOther(passwordData) {
     let other = {};
     Object.keys(passwordData).forEach(function (key) {
@@ -329,6 +338,7 @@ PassFF.Pass = (function () {
 
             setLogin(result, item);
             setPassword(result);
+            setUrl(result);
             setOther(result);
             setText(result, executionResult.stdout);
             return result;
@@ -340,7 +350,7 @@ PassFF.Pass = (function () {
           if (child.isField) {
             promised_results[i] = this.getPasswordData(child);
           } else {
-            promised_results[i] = Promise.resolve();
+            promised_results[i] = Promise.resolve(null);
           }
         }
         return Promise.all(promised_results).then(function (results) {
@@ -354,6 +364,7 @@ PassFF.Pass = (function () {
           }
           setLogin(result, item);
           setPassword(result);
+          setUrl(result);
           setOther(result);
           return result;
         });
