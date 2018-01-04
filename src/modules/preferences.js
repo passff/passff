@@ -96,6 +96,7 @@ PassFF.Preferences = (function () {
 
   if (browser.runtime.PlatformOs === "mac") {
     prefParams.command = '/usr/local/bin/pass';
+    prefParams.commandEnv = 'PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin';
   }
 
 /* #############################################################################
