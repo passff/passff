@@ -61,9 +61,8 @@ $(CONTENT_OUT): $(CONTENT_SRC)
 $(XPI_TARGET): $(XPI_CONTENTS)
 	mkdir -p `dirname $(XPI_TARGET)`
 	rm -f $@
-	cd $(BUILD_DIR)
-	zip __.zip -q -r ./*
-	mv __.zip $@
+	cd $(BUILD_DIR); zip __.zip -r ./*
+	mv $(BUILD_DIR)/__.zip $@
 
 clean:
 	rm -rf $(TARGET_DIR)
