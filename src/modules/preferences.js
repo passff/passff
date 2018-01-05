@@ -94,10 +94,12 @@ PassFF.Preferences = (function () {
     'autoFillBlacklist'
   ];
 
-  if (browser.runtime.PlatformOs === "mac") {
-    prefParams.command = '/usr/local/bin/pass';
-    prefParams.commandEnv = 'PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin';
-  }
+  browser.runtime.getPlatformInfo().then((info) => {
+    if (info.os === "mac") {
+      prefParams.command = '/usr/local/bin/pass';
+      prefParams.commandEnv = 'PATH=/usr/local/bin:/usr/bin:/bin';
+    }
+  });
 
 /* #############################################################################
  * #############################################################################
