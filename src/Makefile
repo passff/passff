@@ -27,44 +27,37 @@ INSTALL_UNIX_FILE := install_host_app.sh
 INSTALL_UNIX_SRC := $(HOST_SRC_DIR)/$(INSTALL_UNIX_FILE)
 INSTALL_UNIX_TARGET := $(HOST_TARGET_DIR)/$(INSTALL_UNIX_FILE)
 
-HOST_APP_FILE := passff.py
-HOST_APP_SRC := $(HOST_SRC_DIR)/$(HOST_APP_FILE)
-HOST_APP_TARGET := $(HOST_TARGET_DIR)/$(HOST_APP_FILE)
+HOST_APP_FILES := passff.py passff.json
+HOST_APP_SRC := $(addprefix $(HOST_SRC_DIR)/,$(HOST_APP_FILES))
+HOST_APP_TARGET := $(addprefix $(HOST_TARGET_DIR)/,$(HOST_APP_FILES))
 
-HOST_TARGET_FILES := $(INSTALL_WIN_TARGET) $(INSTALL_UNIX_TARGET) $(HOST_APP_TARGET)
+HOST_TARGETS := $(INSTALL_WIN_TARGET) $(INSTALL_UNIX_TARGET) $(HOST_APP_TARGET)
 
-all: $(XPI_TARGET) $(HOST_TARGET_FILES)
+all: $(XPI_TARGET) $(HOST_TARGETS)
 
-$(HOST_APP_TARGET): $(HOST_APP_SRC)
-	mkdir -p `dirname $(HOST_APP_TARGET)`
-	cp $^ $@
+%/.d:
+	mkdir -p $(@D)
+	@touch $@
 
-$(INSTALL_WIN_TARGET): $(INSTALL_WIN_SRC)
-	mkdir -p `dirname $(INSTALL_WIN_TARGET)`
-	cp $^ $@
+$(HOST_TARGETS): $(HOST_TARGET_DIR)/%: $(HOST_SRC_DIR)/% $(HOST_TARGET_DIR)/.d
+	cp $(HOST_SRC_DIR)/$* $@
 	sed -i "s/1.0testing/$(VERSION)/g" $@
 
-$(INSTALL_UNIX_TARGET): $(INSTALL_UNIX_SRC)
-	mkdir -p `dirname $(INSTALL_UNIX_TARGET)`
-	cp $^ $@
+$(MANIFEST_OUT): $(MANIFEST_SRC) $(BUILD_DIR)/.d
+	cp $(MANIFEST_SRC) $@
 	sed -i "s/1.0testing/$(VERSION)/g" $@
 
-$(MANIFEST_OUT): $(MANIFEST_SRC)
-	mkdir -p `dirname $(MANIFEST_OUT)`
-	cp $^ $@
-	sed -i "s/1.0testing/$(VERSION)/g" $@
+$(CONTENT_OUT): $(BUILD_DIR)/%: $(SRC_DIR)/% $(BUILD_DIR)/.d
+	cp -r $(SRC_DIR)/$* $@
 
-$(CONTENT_OUT): $(CONTENT_SRC)
-	mkdir -p $(BUILD_DIR)
-	cp -r $^ $(BUILD_DIR)
-
-$(XPI_TARGET): $(XPI_CONTENTS)
-	mkdir -p `dirname $(XPI_TARGET)`
+$(XPI_TARGET): $(XPI_CONTENTS) $(TARGET_DIR)/.d
 	rm -f $@
-	cd $(BUILD_DIR); zip __.zip -r ./*
+	cd $(BUILD_DIR); zip __.zip -q -r ./* -x \*/.d
 	mv $(BUILD_DIR)/__.zip $@
 
 clean:
 	rm -rf $(TARGET_DIR)
 	rm -rf $(BUILD_DIR)
+
+.PRECIOUS: %/.d
 
