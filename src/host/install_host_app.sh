@@ -116,11 +116,18 @@ else
   curl -sSL "$MANIFEST_URL" > "$MANIFEST_FILE_PATH"
 fi
 
-# Replace path to host
-sed -i -e "s/PLACEHOLDER/$ESCAPED_HOST_FILE_PATH/" "$MANIFEST_FILE_PATH"
 
-# Replace path to python3 executable
-sed -i "1c#\!${PYTHON3_PATH}" "$HOST_FILE_PATH"
+if [ $(uname -s) == 'Darwin' ]; then
+  # Replace path to python3 executable
+  /usr/bin/sed -i '' "1 s@.*@#\!${PYTHON3_PATH}@" "$HOST_FILE_PATH"
+  # Replace path to host
+  /usr/bin/sed -i '' -e "s/PLACEHOLDER/$ESCAPED_HOST_FILE_PATH/" "$MANIFEST_FILE_PATH"
+else
+  # Replace path to python3 executable
+  sed -i "1c#\!${PYTHON3_PATH}" "$HOST_FILE_PATH"
+  # Replace path to host
+  sed -i -e "s/PLACEHOLDER/$ESCAPED_HOST_FILE_PATH/" "$MANIFEST_FILE_PATH"
+fi
 
 # Set permissions for the manifest so that all users can read it.
 chmod a+x "$HOST_FILE_PATH"
