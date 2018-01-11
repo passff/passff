@@ -94,10 +94,11 @@ PassFF.Pass = (function () {
       tldName = hostGroupToMatchSplit[hostGroupToMatchSplit.length - 1];
     }
     do {
+      if (item.isField) break;
       let itemQuality = hostGroupToMatch.split(/\.+/).length * 100 + hostGroupToMatch.split(/\.+/).length;
       let hostToMatch = hostGroupToMatch;
       // Return if item has children since it is a directory!
-      if (!item.isLeaf) break;
+      if (!item.isLeaf && !item.hasFields) break;
       do {
         if (hostToMatch == tldName) break;
 
@@ -166,10 +167,16 @@ PassFF.Pass = (function () {
               = _("passff_display_hover");
             this.getDisplayItem()
               .then((passwordData) => {
-                let otherData = passwordData['fullText'];
-                let sep = otherData.indexOf("\n");
-                passOutputEl.textContent = passwordData['password'];
-                restOutputEl.textContent = otherData.substring(sep+1);
+                if (passwordData.hasOwnProperty('fullText')) {
+                    let otherData = passwordData['fullText'];
+                    let sep = otherData.indexOf("\n");
+                    passOutputEl.textContent = passwordData['password'];
+                    restOutputEl.textContent = otherData.substring(sep+1);
+                } else {
+                    passOutputEl.textContent = passwordData['password'];
+                    restOutputEl.textContent = "login: " + passwordData['login']
+                                           + "\nurl: " + passwordData['url'];
+                }
               });
           }
         });
@@ -353,7 +360,7 @@ PassFF.Pass = (function () {
             promised_results[i] = Promise.resolve(null);
           }
         }
-        return Promise.all(promised_results).then(function (results) {
+        return Promise.all(promised_results).then((results) => {
           if (typeof results[0] === "undefined") return;
           let result = {};
           for (let i = 0; i < item.children.length; i++) {
