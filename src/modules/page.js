@@ -435,7 +435,7 @@ PassFF.Page = (function () {
   return {
     init: function () {
       if (document.readyState === 'complete') onWindowLoad();
-      else window.onload = onWindowLoad();
+      else window.addEventListener("load", onWindowLoad);
 
       /*
         Allow our browser command to bypass the usual dom event mapping, so that
