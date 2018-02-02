@@ -199,10 +199,15 @@ PassFF.Page = (function () {
     if (isMouseOverIcon(e)) {
       e.target.style.backgroundImage = "url('" + passff_icon + "')";
       e.target.style.cssText += "cursor: pointer !important;";
+
+      e.target.setAttribute("passff-autocomplete", e.target.autocomplete);
+      e.target.autocomplete="off";
+
       return;
     }
     if (e.target !== popup_target) resetIcon(e.target);
     e.target.style.cursor = "auto";
+    e.target.autocomplete = e.target.getAttribute('passff-autocomplete');
   }
 
   function onIconClick(e) {
