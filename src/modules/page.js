@@ -200,6 +200,10 @@ PassFF.Page = (function () {
       e.target.style.backgroundImage = "url('" + passff_icon + "')";
       e.target.style.cssText += "cursor: pointer !important;";
 
+      /* Set autocomplete attribute to "off", so Firefox' autofill list won't
+       * overlap passff's popup menu. Also save its value beforehand, so it can
+       * be restored when the popup gets dismissed.
+       */
       e.target.setAttribute("passff-autocomplete", e.target.autocomplete);
       e.target.autocomplete="off";
 
