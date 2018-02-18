@@ -2,7 +2,7 @@
 
 Thanks for your interest in contributing to PassFF!
 
-To get started, you'll need clone the repository and install the extension from your local copy. Instructions can be found [here](docs/INSTALLATION.md).
+To get started, you'll need clone the repository and install the extension from your local copy. Instructions can be found [here](INSTALLATION.md#latest-from-github).
 
 If you're using Firefox, you'll need to use Firefox Developer Edition, since unsigned extensions aren't permitted in the normal build.
 
