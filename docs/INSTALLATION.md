@@ -24,7 +24,7 @@ Visit "chrome://extensions", check "Developer mode", then click "Load unpacked e
 Simply drag and drop the XPI file onto your browser!
 
 #### Latest from GitHub
-Clone the repository. Then, from the project's `src/` directory, execute `make`. This will create an XPI file in the project's `bin/` directory that you can install in your browser as described above.
+Clone the repository. Then, from the project's `src/` directory, execute `make`. This will create an XPI file in the project's `bin/$VERSION` directory that you can install in your browser as described above.
 
 ## Installing the host application
 For the extension to communicate with your system's `pass` script, you need to install what's called the host application.
