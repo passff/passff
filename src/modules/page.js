@@ -158,10 +158,12 @@ PassFF.Page = (function () {
   function setOtherInputs(other) {
     getOtherInputs(other).forEach(function (otherInput) {
       let value;
-      if (other.hasOwnProperty(otherInput.name)) {
-        value = other[otherInput.name];
-      } else if (other.hasOwnProperty(otherInput.id)) {
-        value = other[otherInput.id];
+      let name = (otherInput.name).toLowerCase();
+      let id = (otherInput.name).toLowerCase();
+      if (other.hasOwnProperty(name)) {
+        value = other[name];
+      } else if (other.hasOwnProperty(id)) {
+        value = other[id];
       }
       if (value) {
         writeValueWithEvents(otherInput, value);
