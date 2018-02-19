@@ -156,17 +156,14 @@ PassFF.Page = (function () {
   }
 
   function setOtherInputs(other) {
+    const goodFieldNames = Object.keys(other);
     getOtherInputs(other).forEach(function (otherInput) {
-      let value;
-      let name = (otherInput.name).toLowerCase();
-      let id = (otherInput.id).toLowerCase();
-      if (other.hasOwnProperty(name)) {
-        value = other[name];
-      } else if (other.hasOwnProperty(id)) {
-        value = other[id];
-      }
-      if (value) {
-        writeValueWithEvents(otherInput, value);
+      let inputFieldNames = readInputNames(otherInput);
+      inputFieldNames = inputFieldNames.filter(Boolean).map((n) => n.toLowerCase());
+      inputFieldNames = inputFieldNames.filter((n) => goodFieldNames.indexOf(n) >= 0);
+      const writtenField = inputFieldNames.pop();
+      if(writtenField) {
+        writeValueWithEvents(otherInput, other[writtenField]);
       }
     });
   }
