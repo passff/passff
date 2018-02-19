@@ -58,12 +58,8 @@ PassFF.Page = (function () {
     ].filter(Boolean).map((n) => n.toLowerCase());
   }
 
-  function isGoodName(name, goodNames) {
-    return goodNames.some((n) => { return name.indexOf(n.toLowerCase()) >= 0; });
-  }
-
   function hasGoodName(fieldNames, goodFieldNames) {
-    return fieldNames.some((fn) => { return isGoodName(fn, goodFieldNames); });
+    return goodFieldNames.some((n) => fieldNames.indexOf(n.toLowerCase()) >= 0);
   }
 
   function isPasswordInput(input) {
