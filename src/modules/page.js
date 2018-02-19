@@ -51,13 +51,15 @@ PassFF.Page = (function () {
   }
 
   function readInputNames(input) {
-    return [input.name,input.getAttribute('autocomplete'),input.id];
+    return [
+      input.name,
+      input.getAttribute('autocomplete'),
+      input.id
+    ].filter(Boolean).map((n) => n.toLowerCase());
   }
 
   function isGoodName(name, goodNames) {
-    if (!name) return false;
-    let nm = name.toLowerCase();
-    return goodNames.some((n) => { return nm.indexOf(n.toLowerCase()) >= 0; });
+    return goodNames.some((n) => { return name.indexOf(n.toLowerCase()) >= 0; });
   }
 
   function hasGoodName(fieldNames, goodFieldNames) {
@@ -159,7 +161,6 @@ PassFF.Page = (function () {
     const goodFieldNames = Object.keys(other);
     getOtherInputs(other).forEach(function (otherInput) {
       let inputFieldNames = readInputNames(otherInput);
-      inputFieldNames = inputFieldNames.filter(Boolean).map((n) => n.toLowerCase());
       inputFieldNames = inputFieldNames.filter((n) => goodFieldNames.indexOf(n) >= 0);
       const writtenField = inputFieldNames.pop();
       if(writtenField) {
