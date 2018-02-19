@@ -1,5 +1,5 @@
 
-VERSION := 1.0testing
+VERSION := testing
 
 SRC_DIR := .
 TARGET_DIR := ../bin/$(VERSION)
@@ -41,11 +41,11 @@ all: $(XPI_TARGET) $(HOST_TARGETS)
 
 $(HOST_TARGETS): $(HOST_TARGET_DIR)/%: $(HOST_SRC_DIR)/% $(HOST_TARGET_DIR)/.d
 	cp $(HOST_SRC_DIR)/$* $@
-	sed -i "s/1.0testing/$(VERSION)/g" $@
+	sed -i "s/_VERSIONHOLDER_/$(VERSION)/g" $@
 
 $(MANIFEST_OUT): $(MANIFEST_SRC) $(BUILD_DIR)/.d
 	cp $(MANIFEST_SRC) $@
-	sed -i "s/1.0testing/$(VERSION)/g" $@
+	sed -i "s/_VERSIONHOLDER_/$(VERSION)/g" $@
 
 $(CONTENT_OUT): $(BUILD_DIR)/%: $(SRC_DIR)/% $(BUILD_DIR)/.d
 	cp -r $(SRC_DIR)/$* $@
