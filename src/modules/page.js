@@ -58,27 +58,29 @@ PassFF.Page = (function () {
     ].filter(Boolean).map((n) => n.toLowerCase());
   }
 
-  function hasGoodName(fieldNames, goodFieldNames) {
-    return goodFieldNames.some((n) => fieldNames.indexOf(n.toLowerCase()) >= 0);
+  function hasGoodName(input, goodFieldNames) {
+    const fieldNames = readInputNames(input);
+    goodFieldNames = goodFieldNames.filter(Boolean).map((n) => n.toLowerCase());
+    return goodFieldNames.some((n) => fieldNames.indexOf(n) >= 0);
   }
 
   function isPasswordInput(input) {
     if (input.type === 'password') {
       return true;
     } else if (input.type === 'text') {
-      return hasGoodName(readInputNames(input), PassFF.Preferences.passwordInputNames)
+      return hasGoodName(input, PassFF.Preferences.passwordInputNames)
     }
     return false;
   }
 
   function isLoginInput(input) {
     return (loginInputTypes.indexOf(input.type) >= 0 &&
-            hasGoodName(readInputNames(input), PassFF.Preferences.loginInputNames));
+            hasGoodName(input, PassFF.Preferences.loginInputNames));
   }
 
   function isOtherInputCheck(other) {
     return function (input) {
-      return (hasGoodName(readInputNames(input), Object.keys(other)));
+      return (hasGoodName(input, Object.keys(other)));
     }
   }
 
