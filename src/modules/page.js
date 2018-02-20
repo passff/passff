@@ -58,6 +58,12 @@ PassFF.Page = (function () {
     ].filter(Boolean).map((n) => n.toLowerCase());
   }
 
+  function findGoodFieldNames(input, goodFieldNames) {
+    const fieldNames = readInputNames(input);
+    goodFieldNames = goodFieldNames.filter(Boolean).map((n) => n.toLowerCase());
+    return fieldNames.filter((n) => goodFieldNames.indexOf(n) >= 0);
+  }
+
   function hasGoodName(input, goodFieldNames) {
     const fieldNames = readInputNames(input);
     goodFieldNames = goodFieldNames.filter(Boolean).map((n) => n.toLowerCase());
@@ -158,9 +164,7 @@ PassFF.Page = (function () {
   function setOtherInputs(other) {
     const goodFieldNames = Object.keys(other);
     getOtherInputs(other).forEach(function (otherInput) {
-      let inputFieldNames = readInputNames(otherInput);
-      inputFieldNames = inputFieldNames.filter((n) => goodFieldNames.indexOf(n) >= 0);
-      const writtenField = inputFieldNames.pop();
+      const writtenField = findGoodFieldNames(otherInput, goodFieldNames).pop();
       if(writtenField) {
         writeValueWithEvents(otherInput, other[writtenField]);
       }
