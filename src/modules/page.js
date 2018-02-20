@@ -65,9 +65,7 @@ PassFF.Page = (function () {
   }
 
   function hasGoodName(input, goodFieldNames) {
-    const fieldNames = readInputNames(input);
-    goodFieldNames = goodFieldNames.filter(Boolean).map((n) => n.toLowerCase());
-    return goodFieldNames.some((n) => fieldNames.indexOf(n) >= 0);
+    return findGoodFieldNames(input, goodFieldNames).length >= 1;
   }
 
   function isPasswordInput(input) {
