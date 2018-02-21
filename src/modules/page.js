@@ -201,10 +201,21 @@ PassFF.Page = (function () {
     if (isMouseOverIcon(e)) {
       e.target.style.backgroundImage = "url('" + passff_icon + "')";
       e.target.style.cssText += "cursor: pointer !important;";
+
+      /* Set autocomplete attribute to "off", so Firefox' autofill list won't
+       * overlap passff's popup menu. Also save its value beforehand, so it can
+       * be restored when the popup gets dismissed.
+       */
+      if (!e.target.hasAttribute('passff-autocomplete'))
+        e.target.setAttribute("passff-autocomplete", e.target.autocomplete);
+      e.target.autocomplete="off";
+
       return;
     }
     if (e.target !== popup_target) resetIcon(e.target);
     e.target.style.cursor = "auto";
+    if (e.target.hasAttribute('passff-autocomplete'))
+      e.target.autocomplete = e.target.getAttribute('passff-autocomplete');
   }
 
   function onIconClick(e) {
