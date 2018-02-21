@@ -94,6 +94,7 @@
   display: block;
   float: right;
   white-space: nowrap;
+  color: #000;
 }
 
 .passff_popup_menu button.passff_button {
