@@ -204,7 +204,8 @@ PassFF.Page = (function () {
        * overlap passff's popup menu. Also save its value beforehand, so it can
        * be restored when the popup gets dismissed.
        */
-      e.target.setAttribute("passff-autocomplete", e.target.autocomplete);
+      if (e.target.hasAttribute('passff-autocomplete'))
+        e.target.setAttribute("passff-autocomplete", e.target.autocomplete);
       e.target.autocomplete="off";
 
       return;
