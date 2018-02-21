@@ -212,7 +212,8 @@ PassFF.Page = (function () {
     }
     if (e.target !== popup_target) resetIcon(e.target);
     e.target.style.cursor = "auto";
-    e.target.autocomplete = e.target.getAttribute('passff-autocomplete');
+    if (e.target.hasAttribute('passff-autocomplete'))
+      e.target.autocomplete = e.target.getAttribute('passff-autocomplete');
   }
 
   function onIconClick(e) {
