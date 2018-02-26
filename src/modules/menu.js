@@ -225,6 +225,12 @@ PassFF.Menu = (function () {
     if (typeof cleanMenu === "undefined") cleanMenu = true;
     log.debug("Create children menu list", items, cleanMenu);
 
+    if (PassFF.Preferences.directoriesFirst) {
+      let dirs = items.filter(item => !item.isLeaf);
+      let files = items.filter(item => item.isLeaf);
+      items = dirs.concat(files);
+    }
+
     if (cleanMenu) clearMenuList();
     let listElm = document.getElementById('passff-entries-list');
     items.forEach(function (item) {
