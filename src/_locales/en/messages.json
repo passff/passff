@@ -80,6 +80,9 @@
   "passff_prefs_handle_http_auth": {
     "message": "Handle HTTP authentication"
   },
+  "passff_prefs_directories_first": {
+    "message": "List directories first in password repository"
+  },
   "passff_prefs_case_insensitive_search": {
     "message": "Case-insensitive searching"
   },
