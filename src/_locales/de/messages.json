@@ -71,6 +71,9 @@
   "passff_prefs_tab_adding": {
     "message": "Passwörter hinzufügen"
   },
+  "passff_prefs_tab_misc": {
+    "message": "Verschiedenes"
+  },
   "passff_prefs_mark_fillable": {
     "message": "Automatisch ausfüllbare Felder mit Icon markieren"
   },
@@ -157,6 +160,9 @@
   },
   "passff_prefs_show_new_password_button": {
     "message": "Zeige 'Password hinzufügen' Schaltfläche im Menü"
+  },
+  "passff_prefs_enable_logging": {
+    "message": "Logging an die Javascript-Konsole aktivieren"
   },
   "passff_newpassword_window_title": {
     "message": "Neues Passwort"
