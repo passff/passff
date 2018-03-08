@@ -51,36 +51,40 @@ PassFF.Page = (function () {
   }
 
   function readInputNames(input) {
-    return [input.name,input.getAttribute('autocomplete'),input.id];
+    return [
+      input.name,
+      input.getAttribute('autocomplete'),
+      input.id
+    ].filter(Boolean).map((n) => n.toLowerCase());
   }
 
-  function isGoodName(name, goodNames) {
-    if (!name) return false;
-    let nm = name.toLowerCase();
-    return goodNames.some((n) => { return nm.indexOf(n.toLowerCase()) >= 0; });
+  function findGoodFieldNames(input, goodFieldNames) {
+    const fieldNames = readInputNames(input);
+    goodFieldNames = goodFieldNames.filter(Boolean).map((n) => n.toLowerCase());
+    return fieldNames.filter((n) => goodFieldNames.indexOf(n) >= 0);
   }
 
-  function hasGoodName(fieldNames, goodFieldNames) {
-    return fieldNames.some((fn) => { return isGoodName(fn, goodFieldNames); });
+  function hasGoodName(input, goodFieldNames) {
+    return findGoodFieldNames(input, goodFieldNames).length >= 1;
   }
 
   function isPasswordInput(input) {
     if (input.type === 'password') {
       return true;
     } else if (input.type === 'text') {
-      return hasGoodName(readInputNames(input), PassFF.Preferences.passwordInputNames)
+      return hasGoodName(input, PassFF.Preferences.passwordInputNames)
     }
     return false;
   }
 
   function isLoginInput(input) {
     return (loginInputTypes.indexOf(input.type) >= 0 &&
-            hasGoodName(readInputNames(input), PassFF.Preferences.loginInputNames));
+            hasGoodName(input, PassFF.Preferences.loginInputNames));
   }
 
   function isOtherInputCheck(other) {
     return function (input) {
-      return (hasGoodName(readInputNames(input), Object.keys(other)));
+      return (hasGoodName(input, Object.keys(other)));
     }
   }
 
@@ -156,17 +160,11 @@ PassFF.Page = (function () {
   }
 
   function setOtherInputs(other) {
+    const goodFieldNames = Object.keys(other);
     getOtherInputs(other).forEach(function (otherInput) {
-      let value;
-      let name = (otherInput.name).toLowerCase();
-      let id = (otherInput.id).toLowerCase();
-      if (other.hasOwnProperty(name)) {
-        value = other[name];
-      } else if (other.hasOwnProperty(id)) {
-        value = other[id];
-      }
-      if (value) {
-        writeValueWithEvents(otherInput, value);
+      const writtenField = findGoodFieldNames(otherInput, goodFieldNames).pop();
+      if(writtenField) {
+        writeValueWithEvents(otherInput, other[writtenField]);
       }
     });
   }
