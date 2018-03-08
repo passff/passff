@@ -32,7 +32,9 @@ var log = {
   function logPrototype() {
     if (PassFF.Preferences) {
       // jshint validthis: true
-      this.apply(console, log.generateArguments(arguments));
+      if (PassFF.Preferences.enableLogging) {
+        this.apply(console, log.generateArguments(arguments));
+      }
     }
   }
   log.debug = logPrototype.bind(console.debug);

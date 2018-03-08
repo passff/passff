@@ -71,6 +71,9 @@
   "passff_prefs_tab_adding": {
     "message": "Adding Passwords"
   },
+  "passff_prefs_tab_misc": {
+    "message": "Miscellaneous"
+  },
   "passff_prefs_mark_fillable": {
     "message": "Mark fillable input fields with icon"
   },
@@ -157,6 +160,9 @@
   },
   "passff_prefs_show_new_password_button": {
     "message": "Show 'New Password' button in menu"
+  },
+  "passff_prefs_enable_logging": {
+    "message": "enable Logging to the Javascript console"
   },
   "passff_newpassword_window_title": {
     "message": "New Password"
