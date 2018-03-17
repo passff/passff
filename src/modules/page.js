@@ -7,6 +7,7 @@ PassFF.Page = (function () {
     */
 
   var doc = document;
+  var inputElements = [];
   var loginInputTypes = ['text', 'email', 'tel'];
   var tab_init_pending = [];
   var matchItems = [];
@@ -33,8 +34,17 @@ PassFF.Page = (function () {
     return false;
   }
 
+  function isInvisible(el) {
+    return el.offsetHeight === 0 || el.offsetParent === null;
+  }
+
+  function isVisible(el) {
+    return !isInvisible(el);
+  }
+
   function getSubmitButton(form) {
     let buttons = form.querySelectorAll('button:not([type=reset]),input[type=submit]');
+    buttons = [].filter.call(buttons, isVisible);
     let submitButtonPredicates = [
       // explicit submit type
       (button) => button.getAttribute("type") === "submit",
@@ -44,7 +54,7 @@ PassFF.Page = (function () {
       (button, index, arr) => index + 1 === arr.length
     ];
     for (let predicate of submitButtonPredicates) {
-      let button = [].find.call(buttons, predicate);
+      let button = buttons.find(predicate);
       if (button) return button;
     }
     return null;
@@ -61,7 +71,7 @@ PassFF.Page = (function () {
       [].forEach.call(subpages, (subpage) => {
         if (subpage.contentDocument) {
           doc = subpage.contentDocument;
-          result = result.concat(PassFF.Page.processDoc(depth+1));
+          result = result.concat(processDoc(depth+1));
         }
       });
     }
@@ -71,8 +81,11 @@ PassFF.Page = (function () {
   }
 
   function readInputNames(input) {
-    return [input.name, input.id]
-      .concat([].map.call(input.labels, l => l.innerText));
+    let inputNames = [input.name, input.id];
+    if (input.labels !== null) {
+      inputNames = inputNames.concat([].map.call(input.labels, l => l.innerText));
+    }
+    return inputNames;
   }
 
   function isGoodName(name, goodNames) {
@@ -101,7 +114,7 @@ PassFF.Page = (function () {
 
   function isOtherInputCheck(other) {
     return function (input) {
-      return (hasGoodName(readInputNames(input), Object.keys(other)));
+      return hasGoodName(readInputNames(input), Object.keys(other));
     }
   }
 
@@ -134,7 +147,7 @@ PassFF.Page = (function () {
 
   function writeValueWithEvents(input, value) {
     // don't fill if element is invisible
-    if (input.offsetHeight === 0 || input.offsetParent === null) return;
+    if (isInvisible(input)) return;
     input.dispatchEvent(createFakeKeystroke('keydown'));
     input.value = value;
     input.dispatchEvent(createFakeKeystroke('keyup'));
@@ -144,10 +157,10 @@ PassFF.Page = (function () {
   }
 
   function onNodeAdded() {
+    inputElements = processDoc(0).filter(isVisible);
     if (PassFF.Preferences.markFillable) {
-      let inputs = [].slice.call(document.getElementsByTagName('input'));
-      inputs.filter(isLoginInput).forEach(injectIcon);
-      inputs.filter(isPasswordInput).forEach(injectIcon);
+      inputElements.filter(isLoginInput).forEach(injectIcon);
+      inputElements.filter(isPasswordInput).forEach(injectIcon);
     }
   }
 
@@ -610,8 +623,7 @@ PassFF.Page = (function () {
 
     submit: content_function("Page.submit", function () {
       log.debug("Unsafe submit...");
-      let inputs = [].slice.call(doc.getElementsByTagName("input"));
-      let passwords = inputs.filter(isPasswordInput);
+      let passwords = inputElements.filter(isPasswordInput);
       if (passwords.length === 0) return false;
 
       let form = passwords[0].form;
