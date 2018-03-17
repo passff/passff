@@ -157,6 +157,10 @@ PassFF.Pass = (function () {
       }
       return this.loadItems(PassFF.mode === "background")
         .then((items) => {
+          if (typeof items === "undefined") {
+            log.warn("loadItems failed!");
+            return;
+          }
           allItems = items[0];
           rootItems = items[1];
           if (PassFF.mode !== "background") contextItems = items[2];
