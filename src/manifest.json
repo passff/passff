@@ -5,11 +5,6 @@
     "description": "Integrates your zx2c4 password store into Firefox",
     "default_locale": "en",
 
-    "developer": {
-        "name": "Johan Venant et al.",
-        "url": "http://invicem.pro/pages/passff.html"
-    },
-
     "icons": {
         "128": "icon.png"
     },

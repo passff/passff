@@ -64,7 +64,7 @@ var PassFF = (function () {
  * #############################################################################
  */
 
-  function onMessage(request, sender, sendResponse) {
+  function onMessage(request, sender) {
     if (request === "refresh") {
       log.debug("Refresh request received in", PassFF.mode);
       PassFF.Preferences.init().then(() => PassFF.Pass.init());
@@ -76,9 +76,8 @@ var PassFF = (function () {
         args.unshift(sender);
       }
       let result = fname[0][fname[1]].apply(fname[0], args);
-      Promise.resolve(result)
-        .then((response) => { sendResponse({ response: response }); });
-      return true;
+      return Promise.resolve(result)
+        .then((response) => { return { response: response }; });
     }
   }
 

@@ -223,6 +223,7 @@ PassFF.Preferences = (function () {
       let obj = {};
       obj[key] = val;
       browser.storage.local.set(obj);
+      return true;
     },
 
     get: function (target, key) {

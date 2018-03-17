@@ -22,7 +22,7 @@ function _(key, params) {
 
 var log = {
   generateArguments: function (args) {
-    var argsArray = Array.slice(args);
+    var argsArray = [].slice.call(args);
     argsArray.unshift('[PassFF]');
     return argsArray;
   }
@@ -82,7 +82,7 @@ function background_function(name, fun, useSender) {
   }
   return function () {
     if (PassFF.mode !== "background") {
-      let args = Array.slice(arguments);
+      let args = [].slice.call(arguments);
       args.unshift(useSender);
       args.unshift(name);
       return background_exec.apply(null, args);
@@ -111,7 +111,7 @@ function background_exec(action, useSender) {
 function content_function(name, fun, provideTab) {
   return function () {
     if (PassFF.mode !== "content") {
-      let args = Array.slice(arguments);
+      let args = [].slice.call(arguments);
       if (!provideTab) {
         args.unshift(null);
       }
