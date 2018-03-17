@@ -70,6 +70,7 @@ PassFF.Preferences = (function () {
     command               : '/usr/bin/pass',
     commandArgs           : '',
     commandEnv            : '',
+    shellCharset          : 'UTF-8',
     autoFill              : false,
     autoSubmit            : false,
     autoFillBlacklist     : '',

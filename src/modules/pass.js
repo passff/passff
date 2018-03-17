@@ -210,7 +210,7 @@ PassFF.Pass = (function () {
           command: command,
           arguments: scriptArgs,
           environment: environment,
-          charset: 'UTF-8',
+          charset: PassFF.Preferences.shellCharset,
         };
 
         Object.assign(params, subprocessOverrides);

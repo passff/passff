@@ -125,6 +125,9 @@
   "passff_prefs_commandEnv_label": {
     "message": "Umgebungsvariablen (einmal 'VARIABLE=Wert' pro Zeile)"
   },
+  "passff_prefs_shellCharset_label": {
+    "message": "Zeichensatz für die Dekodierung der Shell-Ausgabe"
+  },
   "passff_prefs_auto_fill_label": {
     "message": "Versuche, Loginseiten automatisch auszufüllen."
   },
