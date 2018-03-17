@@ -284,6 +284,8 @@ PassFF.Pass = (function () {
               isLeaf: null,
               isField: null,
               hasFields: null,
+              isMeta: null,
+              hasMeta: null,
               fullKey: (curDepth === 0) ? key : curParent.fullKey + '/' + key,
               children: []
             };
@@ -301,7 +303,15 @@ PassFF.Pass = (function () {
           });
 
           allItems.slice().reverse().forEach(item => {
-            item.isLeaf = (item.children.length === 0);
+            let siblings = rootItems;
+            if (item.parent !== null) {
+              siblings = allItems[item.parent].children.map(c => allItems[c]);
+            }
+            item.isMeta = (item.key.substr(-5) === ".meta") &&
+              siblings.some(s => s.key + ".meta" === item.key);
+            item.hasMeta = (!item.isMeta) &&
+              siblings.some(s => s.key === item.key + ".meta");
+            item.isLeaf = (item.children.length === 0) && !item.isMeta;
             item.isField = item.isLeaf && (isLoginField(item.key)
                                            || isPasswordField(item.key)
                                            || isUrlField(item.key));
@@ -319,9 +329,59 @@ PassFF.Pass = (function () {
       }
     },
 
-    getPasswordData: function (item) {
+    getPasswordData: function (item, meta2leaf) {
       let result = {};
-      if (item.isLeaf) { // multiline-style item
+      meta2leaf = meta2leaf || false;
+      if (item.hasFields) { // hierarchical-style item
+        let promised_results = item.children.map(c => {
+            let child = this.getItemById(c);
+            if (child.isField) {
+              return this.getPasswordData(child);
+            } else {
+              return Promise.resolve(null);
+            }
+          });
+        return Promise.all(promised_results).then((results) => {
+          if (typeof results[0] === "undefined") return;
+          let result = {};
+          for (let i = 0; i < item.children.length; i++) {
+            let child = this.getItemById(item.children[i]);
+            if (child.isField) {
+              result[child.key] = results[i].password;
+            }
+          }
+          setLogin(result, item);
+          setPassword(result);
+          setUrl(result);
+          setOther(result);
+          return result;
+        });
+      } else if (item.hasMeta && !meta2leaf) { // item with corresponding *.meta
+        let promised_results = [Promise.resolve(null), Promise.resolve(null)];
+        promised_results[0] = this.getPasswordData(item, true);
+        let siblings = this.rootItems;
+        if (item.parent !== null) {
+          siblings = this.getItemById(item.parent).children;
+          siblings = siblings.map(this.getItemById);
+        }
+        promised_results[1] = siblings
+          .filter(sib => item.key + ".meta" === sib.key)
+          .map(this.getPasswordData)[0];
+        return Promise.all(promised_results).then((results) => {
+          if (typeof results[0] === "undefined") return;
+          let result = Object.assign({}, results[0], results[1]);
+          result.password = results[0].password;
+          result.login = results[1].password;
+          if (!result.hasOwnProperty("url")) {
+            result.url = item.key;
+          }
+          setLogin(result, item);
+          setPassword(result);
+          setUrl(result);
+          setOther(result);
+          return result;
+        });
+      } else { // multiline-style item
         let key = item.fullKey;
         return getPassExecPromise(key)
           .then((executionResult) => {
@@ -354,31 +414,6 @@ PassFF.Pass = (function () {
             setText(result, executionResult.stdout);
             return result;
           });
-      } else { // hierarchical-style item
-        let promised_results = new Array(item.children.length);
-        for (let i = 0; i < item.children.length; i++) {
-          let child = this.getItemById(item.children[i]);
-          if (child.isField) {
-            promised_results[i] = this.getPasswordData(child);
-          } else {
-            promised_results[i] = Promise.resolve(null);
-          }
-        }
-        return Promise.all(promised_results).then((results) => {
-          if (typeof results[0] === "undefined") return;
-          let result = {};
-          for (let i = 0; i < item.children.length; i++) {
-            let child = this.getItemById(item.children[i]);
-            if (child.isField) {
-              result[child.key] = results[i].password;
-            }
-          }
-          setLogin(result, item);
-          setPassword(result);
-          setUrl(result);
-          setOther(result);
-          return result;
-        });
       }
     },
 
