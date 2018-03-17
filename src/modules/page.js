@@ -516,7 +516,13 @@ PassFF.Page = (function () {
             if (!url.startsWith('http')) url = 'http://' + url;
             return promised_tab
               .then((tab) => {
-                return browser.tabs.update(tab.id, { url: url });
+                let tab_url = tab.url.replace(/^https?:\/+/,"");
+                if (tab_url === url.replace(/^https?:\/+/,"")) {
+                  if (autoFill) PassFF.Page.fillInputs(tab, item, submit);
+                  return null;
+                } else {
+                  return browser.tabs.update(tab.id, { url: url });
+                }
               });
           })
           .then(function (tab) {
