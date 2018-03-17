@@ -337,10 +337,11 @@ PassFF.Page = (function () {
 
     // position popup relative to input field
     let rect = target.getBoundingClientRect();
-    let scrollright = document.body.scrollWidth - (window.scrollX + rect.x);
-    let scrolltop = window.scrollY + rect.y;
-    popup_menu.style.top      = (scrolltop + rect.height + 1) + "px";
-    popup_menu.style.right    = (scrollright - rect.width) + "px";
+    let popup_width = window.getComputedStyle(popup_menu).width;
+    popup_width = parseInt(popup_width.substring(0,popup_width.length-2));
+    let scrollright = window.scrollX - popup_width;
+    popup_menu.style.top      = (window.scrollY + rect.bottom + 1) + "px";
+    popup_menu.style.left     = (scrollright + rect.right) + "px";
     popup_menu.style.display  = "block";
 
     let p = target;
