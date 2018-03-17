@@ -320,6 +320,7 @@ PassFF.Page = (function () {
 
       popup_menu.appendChild(entry);
     });
+    popup_menu.style.display = "none";
     document.body.appendChild(popup_menu);
   }
 
@@ -523,6 +524,13 @@ PassFF.Page = (function () {
           return ready_tab;
         });
       }
+    }),
+
+    refresh: content_function("Page.refresh", function () {
+      let url = window.location.href;
+      matchItems = PassFF.Pass.contextItems;
+      bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
+      setupPopup();
     }),
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%% URL changer %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -67,7 +67,11 @@ var PassFF = (function () {
   function onMessage(request, sender) {
     if (request === "refresh") {
       log.debug("Refresh request received in", PassFF.mode);
-      PassFF.Preferences.init().then(() => PassFF.Pass.init());
+      return PassFF.Preferences.init()
+        .then(() => PassFF.Pass.init())
+        .then(() => {
+          if (PassFF.mode === "content") return PassFF.Page.refresh();
+        });
     } else if (["background","content"].indexOf(PassFF.mode) >= 0) {
       log.debug("Message", request.action, "received in", PassFF.mode);
       let fname = fun_name(request.action);
@@ -154,7 +158,12 @@ var PassFF = (function () {
     refresh_all: background_function("refresh_all", function () {
       return PassFF.Preferences.init()
         .then(() => PassFF.Pass.init())
-        .then(() => browser.runtime.sendMessage("refresh"));
+        .then(() => onTabActivated())
+        .then(() => browser.runtime.sendMessage("refresh"))
+        .then(() => browser.tabs.query({}))
+        .then((tabs) => {
+            tabs.forEach((t) => browser.tabs.sendMessage(t.id, "refresh"));
+        });
     })
   };
 })();
