@@ -51,7 +51,8 @@ PassFF.Page = (function () {
   }
 
   function readInputNames(input) {
-    return [input.name,input.getAttribute('autocomplete'),input.id];
+    return [input.name, input.id]
+      .concat([].map.call(input.labels, l => l.innerText));
   }
 
   function isGoodName(name, goodNames) {
