@@ -85,37 +85,35 @@ PassFF.Page = (function () {
     if (input.labels !== null) {
       inputNames = inputNames.concat([].map.call(input.labels, l => l.innerText));
     }
-    return inputNames;
+    return inputNames.filter(Boolean).map(nm => nm.toLowerCase());
   }
 
-  function isGoodName(name, goodNames) {
-    if (!name) return false;
-    let nm = name.toLowerCase();
-    return goodNames.some((n) => { return nm.indexOf(n.toLowerCase()) >= 0; });
-  }
-
-  function hasGoodName(fieldNames, goodFieldNames) {
-    return fieldNames.some((fn) => { return isGoodName(fn, goodFieldNames); });
+  function findMatchingName(needles, haystack, exact) {
+    // return the first needle that is found in haystack
+    exact = exact || false;
+    for (let hn of haystack) {
+      for (let n of needles) {
+        if (!exact && hn.indexOf(n.toLowerCase()) >= 0
+            || (hn === n.toLowerCase())) return n;
+      }
+    }
+    return null;
   }
 
   function isPasswordInput(input) {
     if (input.type === 'password') {
       return true;
     } else if (input.type === 'text') {
-      return hasGoodName(readInputNames(input), PassFF.Preferences.passwordInputNames)
+      let goodNames = PassFF.Preferences.passwordInputNames;
+      return findMatchingName(goodNames, readInputNames(input)) !== null;
     }
     return false;
   }
 
   function isLoginInput(input) {
+    let goodNames = PassFF.Preferences.loginInputNames;
     return (loginInputTypes.indexOf(input.type) >= 0 &&
-            hasGoodName(readInputNames(input), PassFF.Preferences.loginInputNames));
-  }
-
-  function isOtherInputCheck(other) {
-    return function (input) {
-      return hasGoodName(readInputNames(input), Object.keys(other));
-    }
+            findMatchingName(goodNames, readInputNames(input)) !== null);
   }
 
 /* #############################################################################
@@ -179,18 +177,10 @@ PassFF.Page = (function () {
   }
 
   function setOtherInputs(inputs, other) {
-    inputs.filter(isOtherInputCheck(other)).forEach(function (otherInput) {
-      let value;
-      let name = (otherInput.name).toLowerCase();
-      let id = (otherInput.id).toLowerCase();
-      if (other.hasOwnProperty(name)) {
-        value = other[name];
-      } else if (other.hasOwnProperty(id)) {
-        value = other[id];
-      }
-      if (value) {
-        writeValueWithEvents(otherInput, value);
-      }
+    let otherNames = Object.keys(other);
+    inputs.forEach(function (input) {
+      let matching = findMatchingName(otherNames, readInputNames(input), true);
+      if (matching !== null) writeValueWithEvents(input, other[matching]);
     });
   }
 
