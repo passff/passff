@@ -50,6 +50,26 @@ PassFF.Page = (function () {
     return null;
   }
 
+  function processDoc(depth) {
+    depth = depth || 0;
+    // clean up before going into subpages
+    doc = (depth === 0) ? document : doc;
+    log.debug("Input search depth", depth);
+    let result = [].slice.call(doc.getElementsByTagName('input'));
+    if (depth <= PassFF.Preferences.subpageSearchDepth) {
+      let subpages = doc.querySelectorAll('iframe,frame');
+      [].forEach.call(subpages, (subpage) => {
+        if (subpage.contentDocument) {
+          doc = subpage.contentDocument;
+          result = result.concat(PassFF.Page.processDoc(depth+1));
+        }
+      });
+    }
+    // clean up after scanning subpages
+    doc = (depth === 0) ? document : doc;
+    return result;
+  }
+
   function readInputNames(input) {
     return [input.name, input.id]
       .concat([].map.call(input.labels, l => l.innerText));
@@ -83,18 +103,6 @@ PassFF.Page = (function () {
     return function (input) {
       return (hasGoodName(readInputNames(input), Object.keys(other)));
     }
-  }
-
-  function getLoginInputs() {
-    return [].filter.call(doc.getElementsByTagName('input'), isLoginInput);
-  }
-
-  function getPasswordInputs() {
-    return [].filter.call(doc.getElementsByTagName('input'), isPasswordInput);
-  }
-
-  function getOtherInputs(other) {
-    return [].filter.call(doc.getElementsByTagName('input'), isOtherInputCheck(other));
   }
 
 /* #############################################################################
@@ -137,8 +145,9 @@ PassFF.Page = (function () {
 
   function onNodeAdded() {
     if (PassFF.Preferences.markFillable) {
-      getLoginInputs().forEach(injectIcon);
-      getPasswordInputs().forEach(injectIcon);
+      let inputs = [].slice.call(document.getElementsByTagName('input'));
+      inputs.filter(isLoginInput).forEach(injectIcon);
+      inputs.filter(isPasswordInput).forEach(injectIcon);
     }
   }
 
@@ -148,16 +157,16 @@ PassFF.Page = (function () {
  * #############################################################################
  */
 
-  function setLoginInputs(login) {
-    getLoginInputs().forEach((it) => writeValueWithEvents(it, login));
+  function setLoginInputs(inputs, login) {
+    inputs.filter(isLoginInput).forEach((it) => writeValueWithEvents(it, login));
   }
 
-  function setPasswordInputs(password) {
-    getPasswordInputs().forEach((it) => writeValueWithEvents(it, password));
+  function setPasswordInputs(inputs, password) {
+    inputs.filter(isPasswordInput).forEach((it) => writeValueWithEvents(it, password));
   }
 
-  function setOtherInputs(other) {
-    getOtherInputs(other).forEach(function (otherInput) {
+  function setOtherInputs(inputs, other) {
+    inputs.filter(isOtherInputCheck(other)).forEach(function (otherInput) {
       let value;
       let name = (otherInput.name).toLowerCase();
       let id = (otherInput.id).toLowerCase();
@@ -172,10 +181,10 @@ PassFF.Page = (function () {
     });
   }
 
-  function setInputs(passwordData) {
-    setLoginInputs(passwordData.login);
-    setPasswordInputs(passwordData.password);
-    setOtherInputs(passwordData._other);
+  function setInputs(inputs, passwordData) {
+    setLoginInputs(inputs, passwordData.login);
+    setPasswordInputs(inputs, passwordData.password);
+    setOtherInputs(inputs, passwordData._other);
   }
 
 // %%%%%%%%%%%%%%% Implementation of input field marker %%%%%%%%%%%%%%%%%%%%%%%%
@@ -576,48 +585,33 @@ PassFF.Page = (function () {
     fillActiveElement: content_function("Page.fillActiveElement",
       function (passwordData) {
         doc = getActiveElement().form;
-        setInputs(passwordData);
+        setInputs(processDoc(0), passwordData);
         doc = document;
       }
     ),
 
     fillInputs: content_function("Page.fillInputs", function (item, andSubmit) {
+      let inputs = processDoc(0);
+      if (inputs.filter(isPasswordInput).length === 0) {
+        log.debug("fillInputs: No password inputs found!");
+        return null;
+      }
       return PassFF.Pass.getPasswordData(item)
         .then((passwordData) => {
           if (typeof passwordData === "undefined") return;
           log.debug('Start auto-fill using', item.fullKey, andSubmit);
-          PassFF.Page.processDoc(passwordData, 0);
+          setInputs(inputs, passwordData)
           if (andSubmit) PassFF.Page.submit();
           return passwordData;
         });
     }, true),
 
-    processDoc: content_function("Page.processDoc",
-      function (passwordData, depth) {
-        depth = depth || 0;
-        // clean up before going into subpages
-        doc = (depth === 0) ? document : doc;
-        log.debug("Fill depth", depth);
-        setInputs(passwordData);
-        if (depth <= PassFF.Preferences.subpageSearchDepth) {
-          let subpages = doc.querySelectorAll('iframe,frame');
-          [].forEach.call(subpages, (subpage) => {
-            if (subpage.contentDocument) {
-              doc = subpage.contentDocument;
-              PassFF.Page.processDoc(passwordData, depth+1);
-            }
-          });
-        }
-        // clean up after scanning subpages
-        doc = (depth === 0) ? document : doc;
-      }
-    ),
-
 // %%%%%%%%%%%%%%%%%%%%%%% Form submitter %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     submit: content_function("Page.submit", function () {
       log.debug("Unsafe submit...");
-      let passwords = getPasswordInputs();
+      let inputs = [].slice.call(doc.getElementsByTagName("input"));
+      let passwords = inputs.filter(isPasswordInput);
       if (passwords.length === 0) return false;
 
       let form = passwords[0].form;
