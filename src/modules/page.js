@@ -331,7 +331,7 @@ PassFF.Page = (function () {
     popup_width = parseInt(popup_width.substring(0,popup_width.length-2));
     let scrollright = window.scrollX - popup_width;
     popup_menu.style.top      = (window.scrollY + rect.bottom + 1) + "px";
-    popup_menu.style.left     = (scrollright + rect.right) + "px";
+    popup_menu.style.left     = (scrollright + rect.right - 2) + "px";
     popup_menu.style.display  = "block";
 
     let p = target;
