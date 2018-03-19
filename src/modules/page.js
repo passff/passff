@@ -82,22 +82,32 @@ PassFF.Page = (function () {
 
   function readInputNames(input) {
     let inputNames = [input.name, input.id];
-    if (input.labels !== null) {
+
+    /* Some pages (e.g., accounts.google.com) use the autocomplete attribute to
+     * specify the meaning of this input field in the form, even though this
+     * is not the purpose of this attribute according to the specs.
+     */
+    let autocomplete = input.getAttribute("autocomplete");
+    if (input.hasAttribute('passff-autocomplete')) {
+      autocomplete = input.getAttribute('passff-autocomplete');
+    }
+    if (autocomplete && ["on","off"].indexOf(autocomplete) === -1) {
+      inputNames.push(autocomplete);
+    }
+
+    // labels are <label> elements whose `for`-attribute points to this input
+    if (input.labels) {
       inputNames = inputNames.concat([].map.call(input.labels, l => l.innerText));
     }
+
     return inputNames.filter(Boolean).map(nm => nm.toLowerCase());
   }
 
-  function findMatchingName(needles, haystack, exact) {
-    // return the first needle that is found in haystack
-    exact = exact || false;
-    for (let hn of haystack) {
-      for (let n of needles) {
-        if (!exact && hn.indexOf(n.toLowerCase()) >= 0
-            || (hn === n.toLowerCase())) return n;
-      }
-    }
-    return null;
+  function findIntersection(arr1, arr2, callback) {
+    // find first element from arr1 in intersection of arr1 and arr2
+    // equality of elements is determined according to callback(el1, el2)
+    callback = callback || ((el1, el2) => el1 === el2);
+    return arr1.find(el1 => arr2.some(el2 => callback(el1, el2)));
   }
 
   function isPasswordInput(input) {
@@ -105,15 +115,19 @@ PassFF.Page = (function () {
       return true;
     } else if (input.type === 'text') {
       let goodNames = PassFF.Preferences.passwordInputNames;
-      return findMatchingName(goodNames, readInputNames(input)) !== null;
+      let inputNames = readInputNames(input);
+      let callback = ((gn, n) => n.indexOf(gn) >= 0);
+      return findIntersection(goodNames, inputNames, callback) !== undefined;
     }
     return false;
   }
 
   function isLoginInput(input) {
     let goodNames = PassFF.Preferences.loginInputNames;
+    let inputNames = readInputNames(input);
+    let callback = ((gn, n) => n.indexOf(gn) >= 0);
     return (loginInputTypes.indexOf(input.type) >= 0 &&
-            findMatchingName(goodNames, readInputNames(input)) !== null);
+            findIntersection(goodNames, inputNames, callback) !== undefined);
   }
 
 /* #############################################################################
@@ -177,10 +191,14 @@ PassFF.Page = (function () {
   }
 
   function setOtherInputs(inputs, other) {
+    // Other data can override already filled-in login or password data, but
+    // one of name/id/labels of the input field has to match exactly!
     let otherNames = Object.keys(other);
+    if (otherNames.length === 0) return;
     inputs.forEach(function (input) {
-      let matching = findMatchingName(otherNames, readInputNames(input), true);
-      if (matching !== null) writeValueWithEvents(input, other[matching]);
+      let inputNames = readInputNames(input);
+      let matching = findIntersection(otherNames, inputNames);
+      if (matching !== undefined) writeValueWithEvents(input, other[matching]);
     });
   }
 
@@ -220,15 +238,15 @@ PassFF.Page = (function () {
        * be restored when the popup gets dismissed.
        */
       if (!e.target.hasAttribute('passff-autocomplete'))
-        e.target.setAttribute("passff-autocomplete", e.target.autocomplete);
-      e.target.autocomplete="off";
+        e.target.setAttribute("passff-autocomplete", e.target.getAttribute("autocomplete"));
+      e.target.setAttribute("autocomplete", "off");
 
       return;
     }
     if (e.target !== popup_target) resetIcon(e.target);
     e.target.style.cursor = "auto";
     if (e.target.hasAttribute('passff-autocomplete'))
-      e.target.autocomplete = e.target.getAttribute('passff-autocomplete');
+      e.target.setAttribute("autocomplete", e.target.getAttribute('passff-autocomplete'));
   }
 
   function onIconClick(e) {

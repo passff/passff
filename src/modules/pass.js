@@ -23,7 +23,7 @@ PassFF.Pass = (function () {
   function setPassword(passwordData) {
     let password;
     for (let i = 0; i < PassFF.Preferences.passwordFieldNames.length; i++) {
-      password = passwordData[PassFF.Preferences.passwordFieldNames[i].toLowerCase()];
+      password = passwordData[PassFF.Preferences.passwordFieldNames[i]];
       if (password) break;
     }
     passwordData.password = password;
@@ -32,7 +32,7 @@ PassFF.Pass = (function () {
   function setLogin(passwordData, item) {
     let login;
     for (let i = 0; i < PassFF.Preferences.loginFieldNames.length; i++) {
-      login = passwordData[PassFF.Preferences.loginFieldNames[i].toLowerCase()];
+      login = passwordData[PassFF.Preferences.loginFieldNames[i]];
       if (login) break;
     }
     passwordData.login = (!login) ? item.key : login;
@@ -41,7 +41,7 @@ PassFF.Pass = (function () {
   function setUrl(passwordData) {
     let url;
     for (let i = 0; i < PassFF.Preferences.urlFieldNames.length; i++) {
-      url = passwordData[PassFF.Preferences.urlFieldNames[i].toLowerCase()];
+      url = passwordData[PassFF.Preferences.urlFieldNames[i]];
       if (url) break;
     }
     passwordData.url = url;
@@ -49,12 +49,9 @@ PassFF.Pass = (function () {
 
   function setOther(passwordData) {
     let other = {};
-    Object.keys(passwordData).forEach(function (key) {
-      if (!isOtherField(key) || isLoginOrPasswordInputName(key)) {
-        return;
-      }
-      other[key] = passwordData[key];
-    });
+    Object.keys(passwordData)
+      .filter(isOtherField)
+      .forEach((key) => { other[key] = passwordData[key]; });
     passwordData._other = other;
   }
 
@@ -63,24 +60,22 @@ PassFF.Pass = (function () {
   }
 
   function isLoginField(name) {
+    name = name.toLowerCase();
     return PassFF.Preferences.loginFieldNames.indexOf(name) >= 0;
   }
 
   function isPasswordField(name) {
+    name = name.toLowerCase();
     return PassFF.Preferences.passwordFieldNames.indexOf(name) >= 0;
   }
 
   function isUrlField(name) {
+    name = name.toLowerCase();
     return PassFF.Preferences.urlFieldNames.indexOf(name) >= 0;
   }
 
   function isOtherField(name) {
     return !(isLoginField(name) || isPasswordField(name) || isUrlField(name));
-  }
-
-  function isLoginOrPasswordInputName(name) {
-    return PassFF.Preferences.loginInputNames.indexOf(name) >= 0 ||
-            PassFF.Preferences.passwordInputNames.indexOf(name) >= 0;
   }
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%% Data analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

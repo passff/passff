@@ -88,7 +88,17 @@ PassFF.Preferences = (function () {
     enableLogging         : false,
   }
 
-  var listParams = [
+  var listParams = {
+    'passwordInputNames'  : ',',
+    'loginInputNames'     : ',',
+    'loginFieldNames'     : ',',
+    'passwordFieldNames'  : ',',
+    'urlFieldNames'       : ',',
+    'autoFillBlacklist'   : ',',
+    'commandArgs'         : ' '
+  };
+
+  var lowerCaseParams = [
     'passwordInputNames',
     'loginInputNames',
     'loginFieldNames',
@@ -228,21 +238,29 @@ PassFF.Preferences = (function () {
     },
 
     get: function (target, key) {
-      if (listParams.indexOf(key) >= 0) {
-        return prefParams[key].split(',')
-          .filter((entry) => { return entry.length > 0; });
-      } else if (key === "commandArgs") {
-        return prefParams[key].split(' ');
-      } else if (key === "commandEnv") {
-        return prefParams[key].split('\n').map((line) => {
-          let sep = line.indexOf("=");
-          return [line.substring(0,sep), line.substr(sep+1)];
-        });
-      } else if (prefParams.hasOwnProperty(key)) {
-        return prefParams[key];
-      } else if (target.hasOwnProperty(key)) {
+      if (target.hasOwnProperty(key)) {
         return target[key];
+      } else if (!prefParams.hasOwnProperty(key)) {
+        return undefined;
       }
+
+      let value = prefParams[key];
+
+      if (lowerCaseParams.indexOf(key) >= 0) {
+        value = value.toLowerCase();
+      }
+
+      if (listParams.hasOwnProperty(key)) {
+        value = value.split(listParams[key])
+          .filter((entry) => { return entry.length > 0; });
+      } else if (key === "commandEnv") {
+        value = value.split('\n').map((line) => {
+          let sep = line.indexOf("=");
+          return [line.substring(0, sep), line.substr(sep+1)];
+        });
+      }
+
+      return value;
     }
   });
 })();
