@@ -10,6 +10,7 @@ var PassFF = (function () {
     */
 
   var init_promise = null;
+  var activeWindow = null;
 
 /* #############################################################################
  * #############################################################################
@@ -91,23 +92,35 @@ var PassFF = (function () {
  * #############################################################################
  */
 
-  function onTabUpdated(tabId, _1, tab) {
-    PassFF.Page.init_tab(tab);
-    if (tab.status !== "complete") return;
+  function onTabUpdated(tabId, changeInfo, tab) {
+    // react only to url/status changes and tab activation
+    if (changeInfo !== null && !changeInfo.url && !changeInfo.status) return;
 
-    let url = tab.url;
-    if (typeof PassFF.Menu.state['itemPickerTarget'] !== "undefined") {
-      url = PassFF.Menu.state['itemPickerTarget'];
+    if (changeInfo === null || changeInfo.url) {
+      PassFF.Page.init_tab(tab);
     }
 
-    PassFF.Pass.loadContextItems(url);
-    setupContextMenu();
-    PassFF.Menu.onContextChanged();
+    if (tab.status === "complete" && tab.active && tab.windowId == activeWindow) {
+      let url = tab.url;
+      if (typeof PassFF.Menu.state['itemPickerTarget'] !== "undefined") {
+        url = PassFF.Menu.state['itemPickerTarget'];
+      }
+
+      PassFF.Pass.loadContextItems(url);
+      setupContextMenu();
+      PassFF.Menu.onContextChanged();
+    }
   }
 
   function onTabActivated() {
     return getActiveTab()
       .then((tab) => { return onTabUpdated(tab.id, null, tab); });
+  }
+
+  function onWindowFocus(windowId) {
+    activeWindow = windowId;
+    // Focussing a window does not trigger a browser.tabs.onActivated event!
+    return onTabActivated();
   }
 
 /* #############################################################################
@@ -149,6 +162,7 @@ var PassFF = (function () {
               browser.contextMenus.onClicked.addListener(onContextMenuClick);
               browser.tabs.onUpdated.addListener(onTabUpdated);
               browser.tabs.onActivated.addListener(onTabActivated);
+              browser.windows.onFocusChanged.addListener(onWindowFocus);
               return onTabActivated();
               break;
           }
