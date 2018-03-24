@@ -110,23 +110,8 @@
   "passff_prefs_url_field_names_label": {
     "message": "Url field names"
   },
-  "passff_prefs_command_label": {
-    "message": "Pass command"
-  },
-  "passff_prefs_command_tooltip": {
-    "message": "The pass script path"
-  },
-  "passff_prefs_commandArgs_label": {
-    "message": "Arguments"
-  },
-  "passff_prefs_commandArgs_tooltip": {
-    "message": "Arguments to pass to the pass script when run"
-  },
-  "passff_prefs_commandEnv_label": {
-    "message": "Environment variables (one 'VARIABLE=value' per line)"
-  },
-  "passff_prefs_shellCharset_label": {
-    "message": "Charset to use for stdout decoding"
+  "passff_prefs_script_howto": {
+    "message": "See passff.py for changing the command environment!"
   },
   "passff_prefs_auto_fill_label": {
     "message": "Try to auto fill page login forms"

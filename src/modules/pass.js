@@ -120,23 +120,13 @@ PassFF.Pass = (function () {
 
   function getPassExecPromise(key) {
     if (!pendingRequests.hasOwnProperty(key)) {
-      pendingRequests[key] = PassFF.Pass.executePass([key], {}, true)
+      pendingRequests[key] = PassFF.Pass.executePass([key])
         .then((result) => {
           delete pendingRequests[key];
           return result;
         });
     }
     return pendingRequests[key];
-  }
-
-// %%%%%%%%%%%%%%%%%%%% Helper for `pass` command environment %%%%%%%%%%%%%%%%%%
-
-  function getEnvParams() {
-    let params = { 'TREE_CHARSET': 'ISO-8859-1' };
-    PassFF.Preferences.commandEnv.forEach((keyval) => {
-        params[keyval[0]] = keyval[1];
-    });
-    return params;
   }
 
 /* #############################################################################
@@ -184,34 +174,15 @@ PassFF.Pass = (function () {
 // %%%%%%%%%%%%%%%%%%%%%%%%%% Execute pass script %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     executePass: background_function("Pass.executePass",
-      function (args, subprocessOverrides) {
+      function (args) {
         let result = null;
-        let scriptArgs = [];
-        let command = null;
-        let environment = getEnvParams();
 
-        command = PassFF.Preferences.command;
-        PassFF.Preferences.commandArgs.forEach(function (val) {
-          if (val && val.trim().length > 0) {
-            scriptArgs.push(val);
-          }
-        });
-
-        args.forEach(function (val) {
-          scriptArgs.push(val);
-        });
-
-        let params = {
-          command: command,
-          arguments: scriptArgs,
-          environment: environment,
-          charset: PassFF.Preferences.shellCharset,
-        };
-
-        Object.assign(params, subprocessOverrides);
-        return browser.runtime.sendNativeMessage("passff", params)
+        return browser.runtime.sendNativeMessage("passff", args)
           .then((result) => {
-            if (result.exitCode !== 0) {
+            let version = result.version || "0.0";
+            if (version !== "1.0" && version !== "testing") {
+              log.warn("The host app is outdated!", version);
+            } else if (result.exitCode !== 0) {
               log.warn('Script execution failed',
                 result.exitCode, result.stderr, result.stdout);
             } else {
@@ -239,8 +210,12 @@ PassFF.Pass = (function () {
       if (!reload) return [allItems, rootItems, contextItems];
       return this.executePass([])
         .then((result) => {
-          if (result.exitCode !== 0) return;
+          if (result.exitCode !== 0) {
+            PassFF.Menu.state.error = true;
+            return;
+          }
 
+          PassFF.Menu.state.error = false;
           allItems = [];
           rootItems = [];
 
@@ -506,11 +481,8 @@ PassFF.Pass = (function () {
 
     addNewPassword: function (name, password, additionalInfo) {
       let fileContents = [password, additionalInfo].join('\n');
-      return this.executePass(['insert', '-m', name], {
-        stdin: password + '\n' + additionalInfo + '\n'
-      }).then((result) => {
-        return result.exitCode === 0;
-      });
+      return this.executePass(['insert', name, fileContents])
+        .then((result) => { return result.exitCode === 0; });
     },
 
     generateNewPassword: function (name, length, includeSymbols) {
@@ -518,9 +490,8 @@ PassFF.Pass = (function () {
       if (!includeSymbols) {
         args.push('-n');
       }
-      return this.executePass(args).then((result) => {
-        return result.exitCode === 0;
-      });
+      return this.executePass(args)
+        .then((result) => { return result.exitCode === 0; });
     },
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%% Data analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

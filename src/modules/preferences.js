@@ -67,10 +67,6 @@ PassFF.Preferences = (function () {
     loginFieldNames       : 'login,user,username,id',
     passwordFieldNames    : 'passwd,password,pass',
     urlFieldNames         : 'url,http',
-    command               : '/usr/bin/pass',
-    commandArgs           : '',
-    commandEnv            : '',
-    shellCharset          : 'UTF-8',
     autoFill              : false,
     autoSubmit            : false,
     autoFillBlacklist     : '',
@@ -94,8 +90,7 @@ PassFF.Preferences = (function () {
     'loginFieldNames'     : ',',
     'passwordFieldNames'  : ',',
     'urlFieldNames'       : ',',
-    'autoFillBlacklist'   : ',',
-    'commandArgs'         : ' '
+    'autoFillBlacklist'   : ','
   };
 
   var lowerCaseParams = [
@@ -106,11 +101,6 @@ PassFF.Preferences = (function () {
     'urlFieldNames',
     'autoFillBlacklist'
   ];
-
-  if (browser.runtime.PlatformOs === "mac") {
-    prefParams.command = '/usr/local/bin/pass';
-    prefParams.commandEnv = 'PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin';
-  }
 
 /* #############################################################################
  * #############################################################################
@@ -253,11 +243,6 @@ PassFF.Preferences = (function () {
       if (listParams.hasOwnProperty(key)) {
         value = value.split(listParams[key])
           .filter((entry) => { return entry.length > 0; });
-      } else if (key === "commandEnv") {
-        value = value.split('\n').map((line) => {
-          let sep = line.indexOf("=");
-          return [line.substring(0, sep), line.substr(sep+1)];
-        });
       }
 
       return value;

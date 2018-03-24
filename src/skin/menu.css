@@ -149,12 +149,21 @@ div.buttonbox button.reload {
   color: #111;
 }
 
+body.error > div.message {
+    display: block;
+}
+
+body.error > div {
+    display: none;
+}
+
 .message {
   width: 100%;
   padding: 0.4rem;
   background: #d9edf7;
   font-size: 14px;
   border-top: 1px solid #b6b6b3;
+  display: none;
 }
 
 .message.error {

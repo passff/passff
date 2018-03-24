@@ -110,23 +110,8 @@
   "passff_prefs_url_field_names_label": {
     "message": "URL  Datensatznamen"
   },
-  "passff_prefs_command_label": {
-    "message": "Pass Kommando"
-  },
-  "passff_prefs_command_tooltip": {
-    "message": "Der Pfad zum 'pass' Skript"
-  },
-  "passff_prefs_commandArgs_label": {
-    "message": "Argumente"
-  },
-  "passff_prefs_commandArgs_tooltip": {
-    "message": "Argumente, die dem 'pass' Skript bei der Ausführung übergeben werden."
-  },
-  "passff_prefs_commandEnv_label": {
-    "message": "Umgebungsvariablen (einmal 'VARIABLE=Wert' pro Zeile)"
-  },
-  "passff_prefs_shellCharset_label": {
-    "message": "Zeichensatz für die Dekodierung der Shell-Ausgabe"
+  "passff_prefs_script_howto": {
+    "message": "Änderungen bitte direkt in der passff.py vornehmen!"
   },
   "passff_prefs_auto_fill_label": {
     "message": "Versuche, Loginseiten automatisch auszufüllen."

@@ -15,12 +15,19 @@ PassFF.Menu = (function () {
 
   var menuState = {
     search_val: "",
-    items: null
+    items: null,
+    error: false
   };
 
   function restoreFromState(stateObj) {
     if (typeof stateObj !== "undefined") {
       menuState = stateObj;
+    }
+
+    if (menuState.error) {
+      document.body.classList.add("error");
+    } else {
+      document.body.classList.remove("error");
     }
 
     if (PassFF.mode === "itemPicker") {
@@ -331,28 +338,6 @@ PassFF.Menu = (function () {
  *  Misc. DOM handlers
  * #############################################################################
  */
-
-  function logAndDisplayError(errorMessage) {
-    return (error) => {
-      log.error(errorMessage, ":", error);
-      addMessage(_("passff_errors_unexpected_error"));
-    };
-  }
-
-  function addMessage(message, severity) {
-    let body  = document.body,
-        panel = document.createElement('div'),
-        dismissControl = document.createElement('a'),
-        messageNode = document.createTextNode(message);
-    if (typeof severity === 'undefined') severity = 'error';
-    panel.classList.add('message', severity);
-    dismissControl.classList.add('dismiss');
-    dismissControl.textContent = '&times;';
-    dismissControl.addEventListener('click', () => body.removeChild(panel));
-    panel.appendChild(dismissControl);
-    panel.appendChild(messageNode);
-    body.insertAdjacentElement('beforeend', panel);
-  }
 
   function getDataKey(node) {
     while (node && node.dataKey === undefined) {
