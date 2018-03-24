@@ -73,34 +73,17 @@ From the extension preferences you will be able to set:
   - Login field names
   - Password field names
   - URL field names
-- Pass Script params
-  - The pass script path
-  - Pass home (if empty, uses your user home)
-  - Location of the gpg agent info file containing environment variables (relative to the home)
 - Adding Passwords
   - The default length for generating passwords
   - Whether or not to include symbols in generated passwords by default
   - Preferred new password method ("generate" or "insert")
 
 ### Issues
-If you're having problems, the most common causes are misconfigured preferences or an improperly installation of the host application. You can get more information by [debugging the extension](docs/CONTRIBUTING.md#debugging).
+If you're having problems, the most common causes are misconfigured preferences or an improperly installation of the host application. You can get more information by [debugging the extension](docs/CONTRIBUTING.md).
 
 First, [make sure the host application is installed correctly](docs/INSTALLATION.md#installing-the-host-application).
 
-If that's okay, try using the "through shell" approach in the preferences (under "Pass Script").
-
-**NOTE:** This method may also be applicable if GPG fails to provide a pin entry
-dialog, or if you experience otherwise unexplained issues with incorrect login
-and/or password data.
-
-Configure the script's execution parameters appropriately:
-
-* Set "User home" to the absolute path to your home directory
-* Set "Pass command" to the path to the `pass` binary (if installed with homebrew, the default location is `/usr/local/bin/pass`)
-* Set "Pass shell" to your preferred shell (e.g. `/bin/bash`)
-* Set "Shell arguments" to `--login`
-
-With those settings in place, the extension should be able to find your passwords.
+Configure the script's execution parameters appropriately in the host app `passff.py`: E.g., set `command` to the path to the `pass` binary (if installed with homebrew, the default location is `/usr/local/bin/pass`). With those settings in place, the extension should be able to find your passwords.
 
 ### Thanks
 Development and improvements
