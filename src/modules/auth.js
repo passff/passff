@@ -95,11 +95,15 @@ PassFF.Auth = (function () {
   return {
     init: function () {
       log.debug("Init auth module");
-      browser.webRequest.onAuthRequired.removeListener(onAuthRequired);
-      if(PassFF.Preferences.handleHttpAuth) {
-        browser.webRequest.onAuthRequired.addListener(
-          onAuthRequired, { urls: ["<all_urls>"] }, ["blocking"]
-        );
+      if (browser.webRequest.onAuthRequired) {
+        browser.webRequest.onAuthRequired.removeListener(onAuthRequired);
+        if(PassFF.Preferences.handleHttpAuth) {
+          browser.webRequest.onAuthRequired.addListener(
+            onAuthRequired, { urls: ["<all_urls>"] }, ["blocking"]
+          );
+        }
+      } else {
+        log.debug("Can't handle HTTP auth (not supported by browser)!");
       }
     },
 
