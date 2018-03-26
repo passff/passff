@@ -180,7 +180,7 @@ PassFF.Menu = (function () {
   function onRefreshButtonCommand(event) {
     log.debug('Refresh button command');
     let messages = document.getElementsByClassName('message');
-    [].forEach.call(messages, (el) => { el.parentNode().removeChild(el); });
+    [].forEach.call(messages, (el) => { el.parentNode.removeChild(el); });
     PassFF.refresh_all().then(createContextualMenu);
   }
 
