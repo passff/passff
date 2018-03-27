@@ -175,8 +175,14 @@ PassFF.Pass = (function () {
 
     executePass: background_function("Pass.executePass",
       function (args) {
-        let result = null;
-
+        let command = "ls";
+        if (args.length > 0) {
+            if (["insert","generate"].indexOf(args[0]) >= 0) {
+                command = args[0];
+            } else {
+                command = "show";
+            }
+        }
         return browser.runtime.sendNativeMessage("passff", args)
           .then((result) => {
             let version = result.version || "0.0";
@@ -186,12 +192,25 @@ PassFF.Pass = (function () {
             } else if (result.exitCode !== 0) {
               log.warn('Script execution failed',
                 result.exitCode, result.stderr, result.stdout);
+              PassFF.Page.notify("Script execution failed: \n" + result.stderr);
             } else {
               log.debug('Script execution ok');
             }
+            PassFF.Menu.state.lastResult = {
+              'timestamp': new Date(),
+              'stderr': result.stderr,
+              'exitCode': result.exitCode,
+              'command': command
+            };
             return result;
           }, (ex) => {
             log.error('Error executing pass script', ex);
+            PassFF.Menu.state.lastResult = {
+              'timestamp': new Date(),
+              'stderr': "",
+              'exitCode': -1,
+              'command': command
+            };
             return { exitCode: -1 };
           });
       }

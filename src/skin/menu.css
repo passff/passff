@@ -173,3 +173,16 @@ body.error > div {
 .message .dismiss {
   float: right;
 }
+
+#statusbar {
+  font-size: 0.7rem;
+  padding: 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  border-color: #b6b6b3;
+  border-width: 1px 0 0 0;
+  border-style: solid;
+  background-color: #555;
+  color: #fff;
+  font-family: monospace;
+}

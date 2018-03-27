@@ -82,6 +82,7 @@ PassFF.Preferences = (function () {
     submitFillable        : true,
     directoriesFirst      : false,
     enableLogging         : false,
+    showStatus            : true,
   }
 
   var listParams = {

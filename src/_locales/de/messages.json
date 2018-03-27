@@ -152,6 +152,9 @@
   "passff_prefs_enable_logging": {
     "message": "Logging an die Javascript-Konsole aktivieren"
   },
+  "passff_prefs_show_status": {
+    "message": "Statusanzeige im Toolbar-Menü aktivieren"
+  },
   "passff_newpassword_window_title": {
     "message": "Neues Passwort"
   },

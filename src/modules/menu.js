@@ -16,8 +16,32 @@ PassFF.Menu = (function () {
   var menuState = {
     search_val: "",
     items: null,
-    error: false
+    error: false,
+    lastResult: null,
   };
+
+  function showStatus() {
+    let result = menuState.lastResult;
+    let bar = document.getElementById("statusbar");
+    if (!bar) {
+      bar = document.createElement("div");
+      bar.id = "statusbar";
+      document.body.appendChild(bar);
+    }
+    if (result === null) {
+      bar.textContent = "";
+      return;
+    }
+    let msg = result.stderr;
+    let msg_maxlen = 33;
+    if (msg.length > msg_maxlen) {
+      msg = msg.substr(0, msg_maxlen-3) + "...";
+    }
+    let timestamp = result.timestamp.toTimeString();
+    timestamp = timestamp.substr(0,8);
+    bar.textContent = "[" + timestamp + "] " + result.command
+                    + " -> " + msg + " (" + result.exitCode + ")";
+  }
 
   function restoreFromState(stateObj) {
     if (typeof stateObj !== "undefined") {
@@ -35,6 +59,8 @@ PassFF.Menu = (function () {
       data_box.textContent = menuState['itemPickerTarget'];
       data_box.title = menuState['itemPickerTarget'];
     }
+
+    if (PassFF.Preferences.showStatus) showStatus();
 
     let searchInput = document.getElementById('passff-search-box');
     searchInput.value = menuState['search_val'];

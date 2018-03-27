@@ -150,7 +150,10 @@
     "message": "Show 'New Password' button in menu"
   },
   "passff_prefs_enable_logging": {
-    "message": "enable Logging to the Javascript console"
+    "message": "Enable logging to the Javascript console"
+  },
+  "passff_prefs_show_status": {
+    "message": "Show a status line in the toolbar menu"
   },
   "passff_newpassword_window_title": {
     "message": "New Password"
