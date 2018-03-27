@@ -1,4 +1,67 @@
 
+#passff_notification {
+  all: initial;
+  border: 0px none !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
+  display: block !important;
+  height: 100% !important;
+  left: 0px !important;
+  margin: 0px !important;
+  max-height: none !important;
+  max-width: none !important;
+  opacity: 1 !important;
+  outline: 0px none currentcolor !important;
+  padding: 0px !important;
+  position: fixed !important;
+  top: 0px !important;
+  visibility: visible !important;
+  width: 100% !important;
+  z-index: 2147483647 !important;
+  background-color: rgba(50,50,50,0.8) !important;
+}
+
+#passff_notification > div {
+  all: initial;
+  position: absolute;
+  top: calc(40% - 7em);
+  left: calc(50% - 15em);
+  width: 30em;
+  height: 14em;
+  padding: 2.5em 0 0 7em;
+  box-sizing: border-box;
+  background-color: #fff;
+  text-align: left;
+  background-repeat: no-repeat;
+  background-position: 1.5em calc(50% - 2em);
+  background-size: 4em 4em;
+}
+
+#passff_notification > div p {
+  all: initial;
+  font-size: 10pt !important;
+  font-family: sans-serif !important;
+}
+
+#passff_notification > div > button {
+  all: initial;
+  position: absolute;
+  right: 2em;
+  bottom: 1.5em;
+  background-color: #ddd !important;
+  padding: 0.5em 3em !important;
+  border: 1px #666 solid !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
+  color: #000 !important;
+  font-size: 10pt !important;
+  font-family: sans-serif !important;
+}
+
+#passff_notification > div > button:hover {
+  background-color: #ccc !important;
+}
+
 .passff_popup_menu {
   all: initial;
   position: absolute;

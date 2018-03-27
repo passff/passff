@@ -673,6 +673,26 @@ PassFF.Page = (function () {
         });
     }, true),
 
+// %%%%%%%%%%%%%%% Implementation of notification dialog %%%%%%%%%%%%%%%%%%%%%%%
+
+    notify: content_function("Page.notify", function (message) {
+      let dialog = document.getElementById("passff_notification");
+      let dialog_text = null;
+      if (!dialog) {
+        dialog = document.createElement("div");
+        dialog.id = "passff_notification";
+        dialog.innerHTML = "<div><p></p><button>OK</button></div>";
+        document.body.appendChild(dialog);
+        let div = dialog.querySelector("div");
+        div.style.backgroundImage = "url('" + passff_icon + "')";
+        let button = dialog.querySelector("button");
+        button.addEventListener("click", () => document.body.removeChild(dialog));
+      }
+      dialog_text = dialog.querySelector("div p");
+      dialog_text.textContent = message; // prevent HTML injection
+      dialog_text.innerHTML = dialog_text.textContent.replace(/\n/g, '<br />');
+    }),
+
 // %%%%%%%%%%%%%%%%%%%%%%%%%%% Miscellaneous %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     copyToClipboard: content_function("Page.copyToClipboard", function (text) {
