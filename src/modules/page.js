@@ -82,6 +82,9 @@ PassFF.Page = (function () {
 
   function readInputNames(input) {
     let inputNames = [input.name, input.id];
+    if (input.hasAttribute('placeholder')) {
+      inputNames.push(input.getAttribute('placeholder'));
+    }
 
     /* Some pages (e.g., accounts.google.com) use the autocomplete attribute to
      * specify the meaning of this input field in the form, even though this
