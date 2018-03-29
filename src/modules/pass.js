@@ -82,11 +82,8 @@ PassFF.Pass = (function () {
 
   let host_part_blacklist = ["www","login","accounts","edu","blog"];
 
-  function getItemQuality(item, urlStr) {
-    /* This function measures the quality of a matching between a given
-     * item and a given URL by only considering the hostname of the URL.
-     *
-     * Match quality is ranked based on strings contained in item.fullKey:
+  function hostMatchQuality(item, host) {
+    /* Match quality is ranked based on host parts contained in item.fullKey:
      *
      *  'cloud.bob.usr.example.com' > 'bob.usr.example.com' > 'usr.example.com' > 'example.com' \
      *    > 'cloud.bob.usr.example' > 'bob.usr.example' > 'usr.example' > 'example' \
@@ -98,15 +95,12 @@ PassFF.Pass = (function () {
      * and *not* matched *alone*. Same applies to very short (less than 3 chars)
      * and some very generic parts like "www"
      */
-    if (item.isField || (!item.isLeaf && !item.hasFields)) {
-      return {item: null,  quality: -1};
-    }
-    let host = (new URL(urlStr)).host.replace(/^\.+/, '').replace(/\.+$/, '');
+    host = host.replace(/^\.+/, '').replace(/\.+$/, '');
     let host_parts = host.split(/\.+/);
     let tld = (host_parts.length >= 2) ? host_parts[host_parts.length-1] : "";
     do {
       // check a.b.c.d, then a.b.c, then a.b, ...
-      let quality = host.split(/\.+/).length * 100 + host.split(/\.+/).length;
+      let quality = host.split(/\.+/).length*100 + host.split(/\.+/).length;
       let subhost = host;
       do {
         // check a.b.c.d, then b.c.d, then c.d, ...
@@ -114,9 +108,7 @@ PassFF.Pass = (function () {
             || host_part_blacklist.indexOf(subhost) >= 0) break;
 
         let regex = new RegExp(subhost.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
-        if (item.fullKey.search(regex) >= 0) {
-          return {item: item, quality: quality};
-        }
+        if (item.fullKey.search(regex) >= 0) return quality;
 
         if (subhost.indexOf('.') < 0) break;
         subhost = subhost.replace(/[^\.]+\.+/, '');
@@ -125,7 +117,35 @@ PassFF.Pass = (function () {
       if (host.indexOf('.') < 0) break;
       host = host.replace(/\.+[^\.]+$/, '');
     } while (true);
-    return {item: null,  quality: -1};
+    return -1;
+  }
+
+  function pathMatchQuality(item, path) {
+    path = path.replace(/^\/+/, '').replace(/\/+$/, '');
+    let parts = path.split(/\/+/);
+    return parts.map((part) => part.replace(/\.(html|php|jsp|cgi|asp)$/, ""))
+      .filter((part) => (part.length > 2))
+      .filter((part) => (item.fullKey.search(part) >= 0)).length;
+  }
+
+  function queryMatchQuality(item, query) {
+    query = query.replace(/^\?/, '').replace(/&$/, '');
+    let parts = query.split(/[&=]+/);
+    return parts.filter((part) => (part.length > 2))
+      .filter((part) => (item.fullKey.search(part) >= 0)).length;
+  }
+
+  function getItemQuality(item, urlStr) {
+    if (item.isField || (!item.isLeaf && !item.hasFields)) {
+      return {item: null,  quality: -1};
+    }
+    let url = new URL(urlStr);
+    let quality = 100*hostMatchQuality(item, url.host);
+    if (quality <= 0) return { item: null,  quality: -1 };
+    quality += pathMatchQuality(item, url.pathname);
+    quality *= 100;
+    quality += queryMatchQuality(item, url.search);
+    return { item: item, quality: quality };
   }
 
 /* #############################################################################
