@@ -559,8 +559,9 @@ PassFF.Page = (function () {
             if (!url.startsWith('http')) url = 'http://' + url;
             return promised_tab
               .then((tab) => {
-                let tab_url = tab.url.replace(/^https?:\/+/,"");
-                if (tab_url === url.replace(/^https?:\/+/,"")) {
+                let tab_url = tab.url.replace(/^https?:\/+/,"").replace(/\/+$/,"");
+                let test_url = url.replace(/^https?:\/+/,"").replace(/\/+$/,"");
+                if (tab_url === test_url) {
                   if (autoFill) PassFF.Page.fillInputs(tab, item, submit);
                   return null;
                 } else {
