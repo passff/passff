@@ -151,7 +151,12 @@ PassFF.Menu = (function () {
       } else if (listElm[listElm.selectedIndex].onEnterPress) {
         listElm[listElm.selectedIndex].onEnterPress(event);
       } else {
-        listElm[listElm.selectedIndex].click();
+        if (!event.shiftKey) {
+          listElm[listElm.selectedIndex].click();
+        } else {
+          listElm[listElm.selectedIndex]
+            .dispatchEvent(new CustomEvent('contextmenu'));
+        }
       }
     } else if (event.keyCode == 39) {
       /* RIGHT ARROW */
@@ -328,11 +333,13 @@ PassFF.Menu = (function () {
       ['passff_menu_display', PassFF.Menu.onDisplayItemData]
     ].forEach(function (data) {
       let onClick = function (event) {
+        event.preventDefault()
         event.stopPropagation();
         let itemId = getItem(event.target);
         let dataKey = getDataKey(event.target);
         data[1](itemId, dataKey, event.button !== 0);
         window.close();
+        return false;
       };
       let at = (data.length == 3) ? data[2] : undefined;
       let newItem = createMenuItem(item, _(data[0]), onClick, at);
@@ -345,6 +352,7 @@ PassFF.Menu = (function () {
     listItemElm.item = (item === null) ? null : item.id;
     listItemElm.dataKey = attribute;
     listItemElm.addEventListener('click', onClick);
+    listItemElm.addEventListener('contextmenu', onClick);
 
     listItemElm.onEnterPress = onEnterPress;
     listItemElm.textContent = label;
