@@ -81,6 +81,12 @@ PassFF.Pass = (function () {
 // %%%%%%%%%%%%%%%%%%%%%%%%%% Data analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   let host_part_blacklist = ["www","login","accounts","edu","blog"];
+  let regex_regex = /[-\/\\^$*+?.()|[\]{}]/g;
+
+  function ci_search_regex(str) {
+    // case insensitive RegExp for use with String.search(...)
+    return new RegExp(str.replace(regex_regex, '\\$&'), 'i');
+  }
 
   function hostMatchQuality(item, host) {
     /* Match quality is ranked based on host parts contained in item.fullKey:
@@ -107,7 +113,7 @@ PassFF.Pass = (function () {
         if (subhost.length < 3 || subhost == tld
             || host_part_blacklist.indexOf(subhost) >= 0) break;
 
-        let regex = new RegExp(subhost.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
+        let regex = ci_search_regex(subhost);
         if (item.fullKey.search(regex) >= 0) return quality;
 
         if (subhost.indexOf('.') < 0) break;
@@ -124,14 +130,14 @@ PassFF.Pass = (function () {
     path = path.replace(/^\/+/, '').replace(/\/+$/, '');
     let parts = path.split(/\/+/);
     return parts.map((part) => part.replace(/\.(html|php|jsp|cgi|asp)$/, ""))
-      .filter((part) => (part.length > 2))
+      .filter((part) => (part.length > 2)).map(ci_search_regex)
       .filter((part) => (item.fullKey.search(part) >= 0)).length;
   }
 
   function queryMatchQuality(item, query) {
     query = query.replace(/^\?/, '').replace(/&$/, '');
     let parts = query.split(/[&=]+/);
-    return parts.filter((part) => (part.length > 2))
+    return parts.filter((part) => (part.length > 1)).map(ci_search_regex)
       .filter((part) => (item.fullKey.search(part) >= 0)).length;
   }
 
