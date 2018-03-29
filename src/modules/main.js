@@ -100,7 +100,7 @@ var PassFF = (function () {
       PassFF.Page.init_tab(tab);
     }
 
-    if (tab.status === "complete" && tab.active && tab.windowId == activeWindow) {
+    if (tab.active && tab.windowId == activeWindow) {
       let url = tab.url;
       if (typeof PassFF.Menu.state['itemPickerTarget'] !== "undefined") {
         url = PassFF.Menu.state['itemPickerTarget'];
