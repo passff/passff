@@ -80,34 +80,50 @@ PassFF.Pass = (function () {
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%% Data analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  function getItemQuality(item, urlStr) {
-    let url = new URL(urlStr);
-    let hostGroupToMatch = url.host.replace(/^\.+/, '').replace(/\.+$/, '');
-    let hostGroupToMatchSplit = hostGroupToMatch.split(/\.+/);
-    let tldName = '';
-    if (hostGroupToMatchSplit.length >= 2) {
-      tldName = hostGroupToMatchSplit[hostGroupToMatchSplit.length - 1];
-    }
-    do {
-      if (item.isField) break;
-      let itemQuality = hostGroupToMatch.split(/\.+/).length * 100 + hostGroupToMatch.split(/\.+/).length;
-      let hostToMatch = hostGroupToMatch;
-      // Return if item has children since it is a directory!
-      if (!item.isLeaf && !item.hasFields) break;
-      do {
-        if (hostToMatch == tldName) break;
+  let host_part_blacklist = ["www","login","accounts","edu","blog"];
 
-        let regex = new RegExp(hostToMatch.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
+  function getItemQuality(item, urlStr) {
+    /* This function measures the quality of a matching between a given
+     * item and a given URL by only considering the hostname of the URL.
+     *
+     * Match quality is ranked based on strings contained in item.fullKey:
+     *
+     *  'cloud.bob.usr.example.com' > 'bob.usr.example.com' > 'usr.example.com' > 'example.com' \
+     *    > 'cloud.bob.usr.example' > 'bob.usr.example' > 'usr.example' > 'example' \
+     *    > 'cloud.bob.usr' > 'bob.usr' > 'usr'
+     *    > 'bob.usr' > 'usr'
+     *    > 'bob'
+     *
+     * The last part of the domain name (here: 'com') is considered to be a tld
+     * and *not* matched *alone*. Same applies to very short (less than 3 chars)
+     * and some very generic parts like "www"
+     */
+    if (item.isField || (!item.isLeaf && !item.hasFields)) {
+      return {item: null,  quality: -1};
+    }
+    let host = (new URL(urlStr)).host.replace(/^\.+/, '').replace(/\.+$/, '');
+    let host_parts = host.split(/\.+/);
+    let tld = (host_parts.length >= 2) ? host_parts[host_parts.length-1] : "";
+    do {
+      // check a.b.c.d, then a.b.c, then a.b, ...
+      let quality = host.split(/\.+/).length * 100 + host.split(/\.+/).length;
+      let subhost = host;
+      do {
+        // check a.b.c.d, then b.c.d, then c.d, ...
+        if (subhost.length < 3 || subhost == tld
+            || host_part_blacklist.indexOf(subhost) >= 0) break;
+
+        let regex = new RegExp(subhost.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
         if (item.fullKey.search(regex) >= 0) {
-          return {item: item, quality: itemQuality};
+          return {item: item, quality: quality};
         }
 
-        if (hostToMatch.indexOf('.') < 0) break;
-        hostToMatch = hostToMatch.replace(/[^\.]+\.+/, '');
-        itemQuality--;
+        if (subhost.indexOf('.') < 0) break;
+        subhost = subhost.replace(/[^\.]+\.+/, '');
+        quality--;
       } while (true);
-      if (hostGroupToMatch.indexOf('.') < 0) break;
-      hostGroupToMatch = hostGroupToMatch.replace(/\.+[^\.]+$/, '');
+      if (host.indexOf('.') < 0) break;
+      host = host.replace(/\.+[^\.]+$/, '');
     } while (true);
     return {item: null,  quality: -1};
   }
