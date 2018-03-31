@@ -18,7 +18,7 @@
     "message": "Fill and submit"
   },
   "passff_menu_goto_fill": {
-    "message": "Goto, fill"
+    "message": "Goto and fill"
   },
   "passff_menu_goto_fill_and_submit": {
     "message": "Goto, fill and submit"
@@ -30,7 +30,7 @@
     "message": "Display"
   },
   "passff_display_hover": {
-    "message": "Hover mouse pointer to show password"
+    "message": "Hover mouse pointer to show password."
   },
   "passff_toolbar_button_label": {
     "message": "PassFF"
@@ -48,7 +48,7 @@
     "message": "New"
   },
   "passff_button_root_label": {
-    "message": "Display all"
+    "message": "Display top-level"
   },
   "passff_button_context_label": {
     "message": "Display contextual"
@@ -75,10 +75,10 @@
     "message": "Miscellaneous"
   },
   "passff_prefs_mark_fillable": {
-    "message": "Mark fillable forms with an icon-shaped form menu"
+    "message": "Mark fillable input fields with the PassFF icon"
   },
   "passff_prefs_submit_fillable": {
-    "message": "Submit when selected via the form menu"
+    "message": "Submit when selected via the input menu"
   },
   "passff_prefs_handle_http_auth": {
     "message": "Handle HTTP authentication"
@@ -93,13 +93,13 @@
     "message": "Behavior of Enter key"
   },
   "passff_prefs_fields_description": {
-    "message": "Fields are used to find data inside your password repository. PassFF looks login, password and URL up in the password file. If it's a directory, PassFF looks them up in the files of this directory"
+    "message": "Fields are used to find data inside your password repository. PassFF looks login, password and URL up in the password file. If it's a directory, PassFF looks them up in the files of this directory."
   },
   "passff_prefs_password_input_names_label": {
-    "message": "Password form names"
+    "message": "Password input names"
   },
   "passff_prefs_login_input_names_label": {
-    "message": "Login form names"
+    "message": "Login input names"
   },
   "passff_prefs_login_field_names_label": {
     "message": "Login field names"
@@ -111,7 +111,7 @@
     "message": "URL field names"
   },
   "passff_prefs_script_howto": {
-    "message": "See passff.py for changing the environment variables of Pass!"
+    "message": "See passff.py for changing the environment variables of pass."
   },
   "passff_prefs_auto_fill_label": {
     "message": "Try to auto fill page login forms"
@@ -123,7 +123,7 @@
     "message": "Don't auto fill if tab's URL contains one of the strings"
   },
   "passff_prefs_default_length_tooltip": {
-    "message": "The default value for the length of a generated password"
+    "message": "Default length of a generated password"
   },
   "passff_prefs_default_length_label": {
     "message": "Default password length"
@@ -135,7 +135,7 @@
     "message": "Include at least one special character in the password by default"
   },
   "passff_prefs_preferred_new_method_tooltip": {
-    "message": "Whether new passwords default to be automatically generated or to be inserted by user"
+    "message": "Whether PassFF defaults to automatically generated passwords or passwords inserted by user"
   },
   "passff_prefs_preferred_new_method_label": {
     "message": "Preferred new method"
@@ -153,7 +153,7 @@
     "message": "Enable logging to the JavaScript web console"
   },
   "passff_prefs_show_status": {
-    "message": "Show a statusbar in the toolbar menu"
+    "message": "Show a status bar in the toolbar menu"
   },
   "passff_newpassword_window_title": {
     "message": "New Password"
@@ -183,7 +183,7 @@
     "message": "Length"
   },
   "passff_newpassword_inputs_include_symbols_label": {
-    "message": "Include symbols?"
+    "message": "Include specials characters"
   },
   "passff_newpassword_inputs_add_password_button_label": {
     "message": "Insert password"
@@ -192,22 +192,22 @@
     "message": "Generate password"
   },
   "passff_newpassword_inputs_overwrite_password_prompt": {
-    "message": "That password already exists. Are you sure you want to replace it?"
+    "message": "This password already exists. Are you sure you want to replace it?"
   },
   "passff_newpassword_errors_name_is_required": {
-    "message": "A name is required"
+    "message": "A name is required."
   },
   "passff_newpassword_errors_password_is_required": {
-    "message": "A password is required"
+    "message": "A password is required."
   },
   "passff_newpassword_errors_password_confirmation_mismatch": {
-    "message": "The passwords do not match"
+    "message": "The passwords do not match."
   },
   "passff_newpassword_errors_pass_execution_failed": {
-    "message": "Oops, something went wrong"
+    "message": "Oops, something went wrong!"
   },
   "passff_newpassword_errors_unexpected_error": {
-    "message": "Sorry, an unexpected error occurred"
+    "message": "Sorry, an unexpected error occurred!"
   },
   "passff_errors_unexpected_error": {
     "message": "Sorry, an unexpected error occurred. Make sure your preferences are correctly set and that the host app is installed."
