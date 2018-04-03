@@ -92,14 +92,8 @@
   "passff_prefs_command_label": {
     "message": "Команда для запуска pass"
   },
-  "passff_prefs_command_tooltip": {
-    "message": "Команда для запуска pass"
-  },
   "passff_prefs_commandArgs_label": {
     "message": "Аргументы"
-  },
-  "passff_prefs_commandArgs_tooltip": {
-    "message": "Аргументы для скрипта"
   },
   "passff_prefs_auto_fill_label": {
     "message": "Автоматически заполнять поля для входа"
@@ -107,20 +101,11 @@
   "passff_prefs_auto_submit_label": {
     "message": "Автоматически отправлять поля для входа"
   },
-  "passff_prefs_default_length_tooltip": {
-    "message": "Длина пароля по умолчанию"
-  },
   "passff_prefs_default_length_label": {
     "message": "Длина пароля по умолчанию"
   },
-  "passff_prefs_default_include_symbols_tooltip": {
-    "message": "Должны ли сгенерированные пароли использовать отличные от букв и цифр символы"
-  },
   "passff_prefs_default_include_symbols_label": {
     "message": "Включать все символы по умолчанию"
-  },
-  "passff_prefs_preferred_new_method_tooltip": {
-    "message": "Генерировать или вставлять новые пароли"
   },
   "passff_prefs_preferred_new_method_label": {
     "message": "Предпочтительный новый метод"

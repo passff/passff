@@ -122,20 +122,11 @@
   "passff_prefs_autofill_blacklist_label": {
     "message": "Nicht auto-ausfüllen, falls URL diese enthält"
   },
-  "passff_prefs_default_length_tooltip": {
-    "message": "Standardlänge für die Passwortgenerierung"
-  },
   "passff_prefs_default_length_label": {
     "message": "Standard Passwortlänge"
   },
-  "passff_prefs_default_include_symbols_tooltip": {
-    "message": "Sollen generierte Passwörter standardmäßig Symbole enthalten?"
-  },
   "passff_prefs_default_include_symbols_label": {
     "message": "Symbole standardmäßig verwenden"
-  },
-  "passff_prefs_preferred_new_method_tooltip": {
-    "message": "Sollen neue Passwörter standardmäßig generiert oder eingetragen werden?"
   },
   "passff_prefs_preferred_new_method_label": {
     "message": "Bevorzugte Methode"

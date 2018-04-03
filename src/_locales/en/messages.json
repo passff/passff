@@ -122,20 +122,11 @@
   "passff_prefs_autofill_blacklist_label": {
     "message": "Don't auto fill if tab's URL contains one of the strings"
   },
-  "passff_prefs_default_length_tooltip": {
-    "message": "Default length of a generated password"
-  },
   "passff_prefs_default_length_label": {
     "message": "Default password length"
   },
-  "passff_prefs_default_include_symbols_tooltip": {
-    "message": "Whether generated passwords should include symbols by default"
-  },
   "passff_prefs_default_include_symbols_label": {
     "message": "Include at least one special character in the password by default"
-  },
-  "passff_prefs_preferred_new_method_tooltip": {
-    "message": "Whether PassFF defaults to automatically generated passwords or passwords inserted by user"
   },
   "passff_prefs_preferred_new_method_label": {
     "message": "Preferred new method"
