@@ -200,8 +200,11 @@
   "passff_newpassword_errors_unexpected_error": {
     "message": "Sorry, an unexpected error occurred!"
   },
-  "passff_errors_unexpected_error": {
-    "message": "Sorry, an unexpected error occurred. Make sure your preferences are correctly set and that the host app is installed."
+  "passff_errors_exec_host_app": {
+    "message": "Connection to the host app failed or returned an unexpected result!"
+  },
+  "passff_errors_upgrade_host_app": {
+    "message": "Make sure you have the latest version of the PassFF host app installed by following the {installation instructions on GitHub}."
   },
   "passff_no_entries_found": {
     "message": "No entries matching this URL."

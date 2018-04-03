@@ -394,6 +394,13 @@ PassFF.Menu = (function () {
  */
 
   function init_ui() {
+    let errorBoxMsgs = document.querySelectorAll('div.message.error p');
+    [].forEach.call(errorBoxMsgs, function (p) {
+      p.textContent = _(p.textContent);
+      p.innerHTML = p.innerHTML.replace(/\{([^\}]+)\}/,
+        "<a href=\"https://github.com/passff/passff/blob/master/docs/INSTALLATION.md\">$1</a>");
+    });
+
     let searchBox = document.getElementById('passff-search-box');
     searchBox.setAttribute('placeholder',
                                     _('passff_toolbar_search_placeholder'));
