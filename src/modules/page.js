@@ -462,7 +462,7 @@ PassFF.Page = (function () {
     bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
 
     var obs = new MutationObserver(onNodeAdded);
-    obs.observe(document, { childList: true, subtree: true });
+    obs.observe(document, { attributes: true, childList: true, subtree: true });
     onNodeAdded();
 
     return PassFF.Page.goToAutoFillPending()
