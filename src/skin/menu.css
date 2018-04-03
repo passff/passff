@@ -149,7 +149,8 @@ div.buttonbox button.reload {
   color: #111;
 }
 
-body.error > div.message {
+body.error > div.message,
+body.error > div#statusbar {
     display: block;
 }
 
