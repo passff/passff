@@ -231,6 +231,7 @@ PassFF.Pass = (function () {
             if (version !== "1.0.1" && version !== "testing") {
               log.warn("The host app is outdated!", version);
               result.exitCode = -2;
+              result.stderr = "v" + version;
             } else if (result.exitCode !== 0) {
               log.warn('Script execution failed',
                 result.exitCode, result.stderr, result.stdout);
