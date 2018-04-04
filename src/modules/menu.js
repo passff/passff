@@ -55,18 +55,30 @@ PassFF.Menu = (function () {
       document.body.classList.remove("error");
     }
 
-    if (PassFF.mode === "itemPicker") {
-      let data_box = document.querySelector(".itemPickerTarget");
-      data_box.textContent = menuState['itemPickerTarget'];
-      data_box.title = menuState['itemPickerTarget'];
-    }
-
     if (PassFF.Preferences.showStatus) showStatus();
 
     let searchInput = document.getElementById('passff-search-box');
-    searchInput.value = menuState['search_val'];
-    createMenuList();
-    searchInput.focus();
+    if (PassFF.mode === "itemPicker") {
+      browser.windows.getCurrent()
+        .then((win) => PassFF.Auth.getAuthForPopup(win.id))
+        .then((auth) => {
+          let data_box = document.querySelector(".itemPickerTarget");
+          data_box.textContent = auth.requestUrl;
+          data_box.title = auth.requestUrl;
+          menuState['auth'] = auth;
+          if (!auth.contextItems.length) {
+            menuState['items'] = PassFF.Pass.rootItems;
+          } else {
+            menuState['items'] = auth.contextItems;
+          }
+          createMenuList();
+          searchInput.focus();
+        });
+    } else {
+      searchInput.value = menuState['search_val'];
+      createMenuList();
+      searchInput.focus();
+    }
   }
 
 /* #############################################################################
@@ -239,7 +251,15 @@ PassFF.Menu = (function () {
     let searchInput = document.getElementById('passff-search-box');
     searchInput.value = "";
     searchInput.focus();
-    createMenuList(PassFF.Pass.contextItems);
+    if (PassFF.mode === "itemPicker") {
+      if (!menuState['auth'].contextItems.length) {
+        createMenuList(PassFF.Pass.rootItems);
+      } else {
+        createMenuList(menuState['auth'].contextItems);
+      }
+    } else {
+      createMenuList(PassFF.Pass.contextItems);
+    }
   }
 
   function createMenuList(items, cleanMenu) {
@@ -248,7 +268,9 @@ PassFF.Menu = (function () {
     }
     if (typeof items !== "undefined") {
       menuState['items'] = items;
-      PassFF.Menu.backupState(menuState);
+      if (PassFF.mode !== "itemPicker") {
+        PassFF.Menu.backupState(menuState);
+      }
     }
     log.debug("Create menu list", menuState['items']);
     if (menuState['items'] instanceof Array) {
@@ -509,10 +531,10 @@ PassFF.Menu = (function () {
       }
     }),
 
-    onPickItem: background_function("Menu.onPickItem", function (itemId) {
+    onPickItem: function (itemId) {
       let item = PassFF.Pass.getItemById(itemId);
-      PassFF.Auth.resolve(item);
-    }),
+      PassFF.Auth.resolve(item, menuState['auth'].requestId);
+    },
 
     onAutoFillMenuClick: background_function("Menu.onAutoFillMenuClick",
       function (itemId) {
