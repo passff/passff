@@ -41,6 +41,7 @@ PassFF.Menu = (function () {
     timestamp = timestamp.substr(0,8);
     bar.textContent = "[" + timestamp + "] " + result.command
                     + " -> " + msg + " (" + result.exitCode + ")";
+    window.dispatchEvent(new Event('resize'));
   }
 
   function restoreFromState(stateObj) {
@@ -444,8 +445,10 @@ PassFF.Menu = (function () {
         let data_height = data_box.offsetHeight;
         let bar_height = document.querySelector("div.searchbar").offsetHeight;
         let buttonbox_height = document.querySelector("div.buttonbox").offsetHeight;
+        let statusbar = document.querySelector("#statusbar");
+        let status_height = (statusbar) ? statusbar.offsetHeight : 0;
         document.getElementById('passff-entries-list').style.height =
-          (window.innerHeight - data_height - bar_height - buttonbox_height)
+          (window.innerHeight - data_height - bar_height - buttonbox_height - status_height)
           + "px";
       }
       onresize();
