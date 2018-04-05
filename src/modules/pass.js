@@ -617,7 +617,7 @@ PassFF.Pass = (function () {
         'type': 'popup'
       })
       .then((win) => {
-        return browser.windows.update(win.id, { height: 480 });
+        setTimeout(() => browser.windows.update(win.id, { height: 480 }));
       });
     }),
   };
