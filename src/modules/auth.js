@@ -88,7 +88,7 @@ PassFF.Auth = (function () {
         })
         .then((win) => {
           if (typeof win === "undefined") return;
-          setTimeout(() => browser.windows.update(win.id, { height: 280 }));
+          setTimeout(() => browser.windows.update(win.id, { height: 280 }), 100);
           auth.popupId = win.id;
           auth.popupClose = function (windowId) {
             if (win.id === windowId) cancelAuth(auth);

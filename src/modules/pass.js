@@ -594,7 +594,7 @@ PassFF.Pass = (function () {
               'type': 'popup',
             })
             .then((win) => {
-              setTimeout(() => browser.windows.update(win.id, { height: 250 }));
+              setTimeout(() => browser.windows.update(win.id, { height: 250 }), 100);
             });
         });
     }),
@@ -617,7 +617,7 @@ PassFF.Pass = (function () {
         'type': 'popup'
       })
       .then((win) => {
-        setTimeout(() => browser.windows.update(win.id, { height: 480 }));
+        setTimeout(() => browser.windows.update(win.id, { height: 480 }), 100);
       });
     }),
   };
