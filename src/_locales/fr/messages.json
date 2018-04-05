@@ -1,0 +1,212 @@
+{
+  "passff_passphrase_title": {
+    "message": "Dépôt de mots de passe verrouillé"
+  },
+  "passff_passphrase_description": {
+    "message": "Impossible d'accéder au mot de passe\nVeuillez d'abord ajouter votre phrase de passe à gpg-agent."
+  },
+  "passff_menu_copy_password": {
+    "message": "Copier mot de passe"
+  },
+  "passff_menu_copy_login": {
+    "message": "Copier identifiant"
+  },
+  "passff_menu_fill": {
+    "message": "Remplir"
+  },
+  "passff_menu_fill_and_submit": {
+    "message": "Remplir et valider"
+  },
+  "passff_menu_goto_fill": {
+    "message": "Aller et remplir"
+  },
+  "passff_menu_goto_fill_and_submit": {
+    "message": "Aller, remplir et valider"
+  },
+  "passff_menu_goto": {
+    "message": "Aller"
+  },
+  "passff_menu_display": {
+    "message": "Afficher"
+  },
+  "passff_display_hover": {
+    "message": "Passer la souris pour révéler le mot de passe."
+  },
+  "passff_toolbar_button_label": {
+    "message": "PassFF"
+  },
+  "passff_toolbar_search_placeholder": {
+    "message": "Chercher"
+  },
+  "passff_toolbar_refresh_label": {
+    "message": "Rafraîchir"
+  },
+  "passff_toolbar_preferences_label": {
+    "message": "Préférences"
+  },
+  "passff_toolbar_new_password_label": {
+    "message": "Nouveau"
+  },
+  "passff_button_root_label": {
+    "message": "Afficher premier niveau"
+  },
+  "passff_button_context_label": {
+    "message": "Afficher contextuel"
+  },
+  "passff_prefs_headline": {
+    "message": "Préférences de PassFF"
+  },
+  "passff_prefs_tab_general": {
+    "message": "Général"
+  },
+  "passff_prefs_tab_autofilling": {
+    "message": "Remplissage automatique"
+  },
+  "passff_prefs_tab_fields": {
+    "message": "Champs"
+  },
+  "passff_prefs_tab_script": {
+    "message": "Script Pass"
+  },
+  "passff_prefs_tab_adding": {
+    "message": "Ajout de mots de passe"
+  },
+  "passff_prefs_tab_misc": {
+    "message": "Divers"
+  },
+  "passff_prefs_mark_fillable": {
+    "message": "Marquer les champs d'entrée remplissables de l'icône PassFF"
+  },
+  "passff_prefs_submit_fillable": {
+    "message": "Valider quand le mot de passe est sélectionné via le menu du champ d'entrée"
+  },
+  "passff_prefs_handle_http_auth": {
+    "message": "Gérer l'authentification HTTP"
+  },
+  "passff_prefs_directories_first": {
+    "message": "Lister les dossiers en premier dans le menu de la barre d'outils"
+  },
+  "passff_prefs_case_insensitive_search": {
+    "message": "Recherche insensible à la casse"
+  },
+  "passff_prefs_enter_behavior": {
+    "message": "Comportement de la touche Entrée"
+  },
+  "passff_prefs_fields_description": {
+    "message": "Les champs sont utilisés afin de trouver les données dans votre dépôt de mots de passe. PassFF cherche identifiant, mot de passe et URL dans le fichier mot de passe. Si c'est un dossier, PassFF les cherche dans les fichiers de ce dossier."
+  },
+  "passff_prefs_password_input_names_label": {
+    "message": "Noms des champs d'entrée de mot de passe"
+  },
+  "passff_prefs_login_input_names_label": {
+    "message": "Noms des champs d'entrée d'identifiant"
+  },
+  "passff_prefs_login_field_names_label": {
+    "message": "Noms des champs d'identifiant"
+  },
+  "passff_prefs_password_field_names_label": {
+    "message": "Noms des champs de mot de passe"
+  },
+  "passff_prefs_url_field_names_label": {
+    "message": "Noms des champs d'URL"
+  },
+  "passff_prefs_script_howto": {
+    "message": "Voir le fichier passff.py pour changer les variables d'environnement de pass."
+  },
+  "passff_prefs_auto_fill_label": {
+    "message": "Remplir automatiquement les formulaires d'identification"
+  },
+  "passff_prefs_auto_submit_label": {
+    "message": "Valider automatiquement les formulaires d'identification"
+  },
+  "passff_prefs_autofill_blacklist_label": {
+    "message": "Désactiver le remplissage automatique si l'URL contient l'une de ces chaînes de charactères"
+  },
+  "passff_prefs_default_length_label": {
+    "message": "Longueur par défaut d'un mot de passe généré"
+  },
+  "passff_prefs_default_include_symbols_label": {
+    "message": "Par défaut, inclure au moins un charactère spécial au mot de passe généré"
+  },
+  "passff_prefs_preferred_new_method_label": {
+    "message": "Méthode préférée d'ajout"
+  },
+  "passff_prefs_prefer_generate": {
+    "message": "Générer"
+  },
+  "passff_prefs_prefer_insert": {
+    "message": "Insérer"
+  },
+  "passff_prefs_show_new_password_button": {
+    "message": "Afficher le bouton «ajout de mot de passe» dans le menu de la barre d'outils"
+  },
+  "passff_prefs_enable_logging": {
+    "message": "Activer les logs dans la console web JavaScript"
+  },
+  "passff_prefs_show_status": {
+    "message": "Afficher une barre de statut dans le menu de la barre d'outils"
+  },
+  "passff_newpassword_window_title": {
+    "message": "Nouveau mot de passe"
+  },
+  "passff_newpassword_window_header": {
+    "message": "Ajouter un nouveau mot de passe"
+  },
+  "passff_newpassword_tabs_generate": {
+    "message": "Générer"
+  },
+  "passff_newpassword_tabs_insert": {
+    "message": "Insérer"
+  },
+  "passff_newpassword_inputs_password_name_label": {
+    "message": "Nom"
+  },
+  "passff_newpassword_inputs_password_label": {
+    "message": "Mot de passe"
+  },
+  "passff_newpassword_inputs_password_confirmation_label": {
+    "message": "Confirmer le mot de passe"
+  },
+  "passff_newpassword_inputs_additional_info_label": {
+    "message": "Informations complémentaires"
+  },
+  "passff_newpassword_inputs_password_length_label": {
+    "message": "Longueur"
+  },
+  "passff_newpassword_inputs_include_symbols_label": {
+    "message": "Inclure des charactères spéciaux"
+  },
+  "passff_newpassword_inputs_add_password_button_label": {
+    "message": "Insérer le mot de passe"
+  },
+  "passff_newpassword_inputs_generate_password_button_label": {
+    "message": "Générer le mot de passe"
+  },
+  "passff_newpassword_inputs_overwrite_password_prompt": {
+    "message": "Ce mot de passe existe déjà. Êtes-vous sûr de vouloir le remplacer ?"
+  },
+  "passff_newpassword_errors_name_is_required": {
+    "message": "Un nom est obligatoire."
+  },
+  "passff_newpassword_errors_password_is_required": {
+    "message": "Un mot de passe est obligatoire."
+  },
+  "passff_newpassword_errors_password_confirmation_mismatch": {
+    "message": "Les mots de passe ne correspondent pas."
+  },
+  "passff_newpassword_errors_pass_execution_failed": {
+    "message": "Oups, quelque chose a planté !"
+  },
+  "passff_newpassword_errors_unexpected_error": {
+    "message": "Désolé, une erreur inattendue est survenue !"
+  },
+  "passff_errors_exec_host_app": {
+    "message": "La connexion à l'application hôte a échoué ou a renvoyé un résultat inattendu !"
+  },
+  "passff_errors_upgrade_host_app": {
+    "message": "Assurez-vous d'avoir installé la dernière version de l'application hôte de PassFF en suivant les {procédures d'installation sur GitHub}."
+  },
+  "passff_no_entries_found": {
+    "message": "Aucune entrée ne correspond à cette URL."
+  }
+}
