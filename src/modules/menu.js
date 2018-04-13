@@ -33,14 +33,10 @@ PassFF.Menu = (function () {
       return;
     }
     let msg = result.stderr;
-    let msg_maxlen = 33;
-    if (msg.length > msg_maxlen) {
-      msg = msg.substr(0, msg_maxlen-3) + "...";
-    }
     let timestamp = result.timestamp.toTimeString();
     timestamp = timestamp.substr(0,8);
     bar.textContent = "[" + timestamp + "] " + result.command
-                    + " -> " + msg + " (" + result.exitCode + ")";
+                    + " -> " + "(" + result.exitCode + ") " + msg;
     window.dispatchEvent(new Event('resize'));
   }
 
