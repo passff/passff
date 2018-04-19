@@ -60,26 +60,6 @@ PassFF.Page = (function () {
     return null;
   }
 
-  function processDoc(depth) {
-    depth = depth || 0;
-    // clean up before going into subpages
-    doc = (depth === 0) ? document : doc;
-    log.debug("Input search depth", depth);
-    let result = [].slice.call(doc.getElementsByTagName('input'));
-    if (depth <= PassFF.Preferences.subpageSearchDepth) {
-      let subpages = doc.querySelectorAll('iframe,frame');
-      [].forEach.call(subpages, (subpage) => {
-        if (subpage.contentDocument) {
-          doc = subpage.contentDocument;
-          result = result.concat(processDoc(depth+1));
-        }
-      });
-    }
-    // clean up after scanning subpages
-    doc = (depth === 0) ? document : doc;
-    return result;
-  }
-
   function readInputNames(input) {
     let inputNames = [input.name, input.id];
     if (input.hasAttribute('placeholder')) {
@@ -172,7 +152,8 @@ PassFF.Page = (function () {
   }
 
   function onNodeAdded() {
-    inputElements = processDoc(0).filter(isVisible);
+    inputElements = document.getElementsByTagName('input');
+    inputElements = [].filter.call(inputElements, isVisible);
     if (PassFF.Preferences.markFillable) {
       inputElements.filter(isLoginInput).forEach(injectIcon);
       inputElements.filter(isPasswordInput).forEach(injectIcon);
@@ -618,15 +599,13 @@ PassFF.Page = (function () {
 
     fillActiveElement: content_function("Page.fillActiveElement",
       function (passwordData) {
-        doc = getActiveElement().form;
-        setInputs(processDoc(0), passwordData);
-        doc = document;
+        let inputs = getActiveElement().form.getElementsByTagName('input');
+        setInputs([].filter.call(inputs, isVisible), passwordData);
       }
     ),
 
     fillInputs: content_function("Page.fillInputs", function (item, andSubmit) {
-      let inputs = processDoc(0);
-      if (inputs.filter(isPasswordInput).length === 0) {
+      if (inputElements.filter(isPasswordInput).length === 0) {
         log.debug("fillInputs: No password inputs found!");
         return null;
       }
@@ -634,7 +613,7 @@ PassFF.Page = (function () {
         .then((passwordData) => {
           if (typeof passwordData === "undefined") return;
           log.debug('Start auto-fill using', item.fullKey, andSubmit);
-          setInputs(inputs, passwordData)
+          setInputs(inputElements, passwordData)
           if (andSubmit) PassFF.Page.submit();
           return passwordData;
         });
