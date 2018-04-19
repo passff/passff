@@ -32,7 +32,7 @@ PassFF.Menu = (function () {
       bar.textContent = "";
       return;
     }
-    let msg = result.stderr;
+    let msg = result.stderr || "no error message";
     let msg_maxlen = 33;
     if (msg.length > msg_maxlen) {
       msg = msg.substr(0, msg_maxlen-3) + "...";
