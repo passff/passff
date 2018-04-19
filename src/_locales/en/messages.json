@@ -62,6 +62,9 @@
   "passff_prefs_tab_autofilling": {
     "message": "Autofilling"
   },
+  "passff_prefs_tab_inputs": {
+    "message": "Inputs"
+  },
   "passff_prefs_tab_fields": {
     "message": "Fields"
   },
@@ -91,6 +94,9 @@
   },
   "passff_prefs_enter_behavior": {
     "message": "Behavior of Enter key"
+  },
+  "passff_prefs_inputs_description": {
+    "message": "Inputs are used by PassFF to find fillable input fields in web pages. Optionally, PassFF marks them with a menu to fill them."
   },
   "passff_prefs_fields_description": {
     "message": "Fields are used to find data inside your password repository. PassFF looks login, password and URL up in the password file. If it's a directory, PassFF looks them up in the files of this directory."
