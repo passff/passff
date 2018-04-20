@@ -22,7 +22,7 @@ function _(key, params) {
 
 var log = {
   generateArguments: function (args) {
-    var argsArray = [].slice.call(args);
+    var argsArray = Array.from(args);
     argsArray.unshift('[PassFF]');
     return argsArray;
   }
@@ -82,7 +82,7 @@ function background_function(name, fun, useSender) {
   }
   return function () {
     if (PassFF.mode !== "background") {
-      let args = [].slice.call(arguments);
+      let args = Array.from(arguments);
       args.unshift(useSender);
       args.unshift(name);
       return background_exec.apply(null, args);
@@ -95,7 +95,7 @@ function background_function(name, fun, useSender) {
 function background_exec(action, useSender) {
   return browser.runtime.sendMessage({
     action: action,
-    params: [].slice.call(arguments).slice(2),
+    params: Array.from(arguments).slice(2),
     useSender: useSender
   }).then((msg) => {
     if (msg) {
@@ -111,7 +111,7 @@ function background_exec(action, useSender) {
 function content_function(name, fun, provideTab) {
   return function () {
     if (PassFF.mode !== "content") {
-      let args = [].slice.call(arguments);
+      let args = Array.from(arguments);
       if (!provideTab) {
         args.unshift(null);
       }
@@ -125,7 +125,7 @@ function content_function(name, fun, provideTab) {
 
 function content_exec(targetTab, action) {
   let promised_tab = Promise.resolve(targetTab);
-  let args = [].slice.call(arguments).slice(2);
+  let args = Array.from(arguments).slice(2);
   if (!targetTab) {
     promised_tab = getActiveTab();
   }

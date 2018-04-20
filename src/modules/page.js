@@ -44,7 +44,7 @@ PassFF.Page = (function () {
 
   function getSubmitButton(form) {
     let buttons = form.querySelectorAll('button:not([type=reset]),input[type=submit]');
-    buttons = [].filter.call(buttons, isVisible);
+    buttons = Array.from(buttons).filter(isVisible);
     let submitButtonPredicates = [
       // explicit submit type
       (button) => button.getAttribute("type") === "submit",
@@ -80,7 +80,7 @@ PassFF.Page = (function () {
 
     // labels are <label> elements whose `for`-attribute points to this input
     if (input.labels) {
-      inputNames = inputNames.concat([].map.call(input.labels, l => l.innerText));
+      inputNames = inputNames.concat(Array.from(input.labels, l => l.innerText));
     }
 
     return inputNames.filter(Boolean).map(nm => nm.toLowerCase());
@@ -153,7 +153,7 @@ PassFF.Page = (function () {
 
   function onNodeAdded() {
     inputElements = document.getElementsByTagName('input');
-    inputElements = [].filter.call(inputElements, isVisible);
+    inputElements = Array.from(inputElements).filter(isVisible);
     if (PassFF.Preferences.markFillable) {
       inputElements.filter(isLoginInput).forEach(injectIcon);
       inputElements.filter(isPasswordInput).forEach(injectIcon);
