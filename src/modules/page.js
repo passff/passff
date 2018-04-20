@@ -20,16 +20,16 @@ PassFF.Page = (function () {
  * #############################################################################
  */
 
-  function getActiveElement(document, depth) {
+  function getActiveElement(doc, depth) {
     depth = depth || 0;
-    document = document || window.document;
-    if (typeof document.activeElement.contentDocument !== "undefined") {
-      if (depth > subpageSearchDepth) {
+    doc = doc || window.document;
+    if (typeof doc.activeElement.contentDocument !== "undefined") {
+      if (depth > 5) {
         return false;
       }
-      return getActiveElement(document.activeElement.contentDocument, depth++);
+      return getActiveElement(doc.activeElement.contentDocument, depth++);
     } else {
-      return document.activeElement;
+      return doc.activeElement;
     }
     return false;
   }
@@ -599,8 +599,11 @@ PassFF.Page = (function () {
 
     fillActiveElement: content_function("Page.fillActiveElement",
       function (passwordData) {
-        let inputs = getActiveElement().form.getElementsByTagName('input');
-        setInputs([].filter.call(inputs, isVisible), passwordData);
+        let activeElement = getActiveElement();
+        if (activeElement.form) {
+          let inputs = activeElement.form.getElementsByTagName('input');
+          setInputs(Array.from(inputs).filter(isVisible), passwordData);
+        }
       }
     ),
 
