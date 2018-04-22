@@ -32,7 +32,7 @@ PassFF.Menu = (function () {
       bar.textContent = "";
       return;
     }
-    let msg = result.stderr;
+    let msg = result.stderr || "no error message";
     let timestamp = result.timestamp.toTimeString();
     timestamp = timestamp.substr(0,8);
     bar.textContent = "[" + timestamp + "] " + result.command
