@@ -62,6 +62,9 @@
   "passff_prefs_tab_autofilling": {
     "message": "Remplissage automatique"
   },
+  "passff_prefs_tab_inputs": {
+    "message": "Inputs"
+  },
   "passff_prefs_tab_fields": {
     "message": "Champs"
   },
@@ -91,6 +94,9 @@
   },
   "passff_prefs_enter_behavior": {
     "message": "Comportement de la touche Entrée"
+  },
+  "passff_prefs_inputs_description": {
+    "message": "Inputs are used by PassFF to find fillable input fields in web pages. Optionally, PassFF marks them with a menu to fill them."
   },
   "passff_prefs_fields_description": {
     "message": "Les champs sont utilisés afin de trouver les données dans votre dépôt de mots de passe. PassFF cherche identifiant, mot de passe et URL dans le fichier mot de passe. Si c'est un dossier, PassFF les cherche dans les fichiers de ce dossier."
