@@ -33,14 +33,10 @@ PassFF.Menu = (function () {
       return;
     }
     let msg = result.stderr || "no error message";
-    let msg_maxlen = 33;
-    if (msg.length > msg_maxlen) {
-      msg = msg.substr(0, msg_maxlen-3) + "...";
-    }
     let timestamp = result.timestamp.toTimeString();
     timestamp = timestamp.substr(0,8);
     bar.textContent = "[" + timestamp + "] " + result.command
-                    + " -> " + msg + " (" + result.exitCode + ")";
+                    + " -> " + "(" + result.exitCode + ") " + msg;
     window.dispatchEvent(new Event('resize'));
   }
 
@@ -224,7 +220,7 @@ PassFF.Menu = (function () {
   function onRefreshButtonCommand(event) {
     log.debug('Refresh button command');
     let messages = document.getElementsByClassName('message');
-    [].forEach.call(messages, (el) => { el.parentNode.removeChild(el); });
+    Array.from(messages).forEach((el) => { el.parentNode.removeChild(el); });
     PassFF.refresh_all().then(createContextualMenu);
   }
 
@@ -418,7 +414,7 @@ PassFF.Menu = (function () {
 
   function init_ui() {
     let errorBoxMsgs = document.querySelectorAll('div.message.error p');
-    [].forEach.call(errorBoxMsgs, function (p) {
+    Array.from(errorBoxMsgs).forEach(function (p) {
       p.textContent = _(p.textContent);
       p.innerHTML = p.innerHTML.replace(/\{([^\}]+)\}/,
         "<a href=\"https://github.com/passff/passff/blob/master/docs/INSTALLATION.md\">$1</a>");

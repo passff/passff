@@ -57,7 +57,8 @@
             "modules/pass.js",
             "modules/page.js"
         ],
-        "css": [ "skin/content.css" ]
+        "css": [ "skin/content.css" ],
+        "all_frames": true
     }],
 
     "commands": {

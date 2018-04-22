@@ -20,16 +20,16 @@ PassFF.Page = (function () {
  * #############################################################################
  */
 
-  function getActiveElement(document, depth) {
+  function getActiveElement(doc, depth) {
     depth = depth || 0;
-    document = document || window.document;
-    if (typeof document.activeElement.contentDocument !== "undefined") {
-      if (depth > subpageSearchDepth) {
+    doc = doc || window.document;
+    if (typeof doc.activeElement.contentDocument !== "undefined") {
+      if (depth > 5) {
         return false;
       }
-      return getActiveElement(document.activeElement.contentDocument, depth++);
+      return getActiveElement(doc.activeElement.contentDocument, depth++);
     } else {
-      return document.activeElement;
+      return doc.activeElement;
     }
     return false;
   }
@@ -44,7 +44,7 @@ PassFF.Page = (function () {
 
   function getSubmitButton(form) {
     let buttons = form.querySelectorAll('button:not([type=reset]),input[type=submit]');
-    buttons = [].filter.call(buttons, isVisible);
+    buttons = Array.from(buttons).filter(isVisible);
     let submitButtonPredicates = [
       // explicit submit type
       (button) => button.getAttribute("type") === "submit",
@@ -58,26 +58,6 @@ PassFF.Page = (function () {
       if (button) return button;
     }
     return null;
-  }
-
-  function processDoc(depth) {
-    depth = depth || 0;
-    // clean up before going into subpages
-    doc = (depth === 0) ? document : doc;
-    log.debug("Input search depth", depth);
-    let result = [].slice.call(doc.getElementsByTagName('input'));
-    if (depth <= PassFF.Preferences.subpageSearchDepth) {
-      let subpages = doc.querySelectorAll('iframe,frame');
-      [].forEach.call(subpages, (subpage) => {
-        if (subpage.contentDocument) {
-          doc = subpage.contentDocument;
-          result = result.concat(processDoc(depth+1));
-        }
-      });
-    }
-    // clean up after scanning subpages
-    doc = (depth === 0) ? document : doc;
-    return result;
   }
 
   function readInputNames(input) {
@@ -100,7 +80,7 @@ PassFF.Page = (function () {
 
     // labels are <label> elements whose `for`-attribute points to this input
     if (input.labels) {
-      inputNames = inputNames.concat([].map.call(input.labels, l => l.innerText));
+      inputNames = inputNames.concat(Array.from(input.labels, l => l.innerText));
     }
 
     return inputNames.filter(Boolean).map(nm => nm.toLowerCase());
@@ -172,7 +152,8 @@ PassFF.Page = (function () {
   }
 
   function onNodeAdded() {
-    inputElements = processDoc(0).filter(isVisible);
+    inputElements = document.getElementsByTagName('input');
+    inputElements = Array.from(inputElements).filter(isVisible);
     if (PassFF.Preferences.markFillable) {
       inputElements.filter(isLoginInput).forEach(injectIcon);
       inputElements.filter(isPasswordInput).forEach(injectIcon);
@@ -618,15 +599,16 @@ PassFF.Page = (function () {
 
     fillActiveElement: content_function("Page.fillActiveElement",
       function (passwordData) {
-        doc = getActiveElement().form;
-        setInputs(processDoc(0), passwordData);
-        doc = document;
+        let activeElement = getActiveElement();
+        if (activeElement.form) {
+          let inputs = activeElement.form.getElementsByTagName('input');
+          setInputs(Array.from(inputs).filter(isVisible), passwordData);
+        }
       }
     ),
 
     fillInputs: content_function("Page.fillInputs", function (item, andSubmit) {
-      let inputs = processDoc(0);
-      if (inputs.filter(isPasswordInput).length === 0) {
+      if (inputElements.filter(isPasswordInput).length === 0) {
         log.debug("fillInputs: No password inputs found!");
         return null;
       }
@@ -634,7 +616,7 @@ PassFF.Page = (function () {
         .then((passwordData) => {
           if (typeof passwordData === "undefined") return;
           log.debug('Start auto-fill using', item.fullKey, andSubmit);
-          setInputs(inputs, passwordData)
+          setInputs(inputElements, passwordData)
           if (andSubmit) PassFF.Page.submit();
           return passwordData;
         });

@@ -70,7 +70,6 @@ PassFF.Preferences = (function () {
     autoFill              : false,
     autoSubmit            : false,
     autoFillBlacklist     : '',
-    subpageSearchDepth    : 5,
     caseInsensitiveSearch : true,
     handleHttpAuth        : true,
     enterBehavior         : 0,
