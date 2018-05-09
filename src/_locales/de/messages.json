@@ -63,7 +63,7 @@
     "message": "Automatisches Ausfüllen von Formularen"
   },
   "passff_prefs_tab_inputs": {
-    "message": "Inputs"
+    "message": "Eingabefelder"
   },
   "passff_prefs_tab_fields": {
     "message": "Felder in Pass-Datensätzen"
@@ -96,7 +96,7 @@
     "message": "Verhalten der Enter-Taste"
   },
   "passff_prefs_inputs_description": {
-    "message": "Inputs are used by PassFF to find fillable input fields in web pages. Optionally, PassFF marks them with a menu to fill them."
+    "message": "Diese Bezeichner werden von PassFF benutzt, um befüllbare Eingabefelder auf Webseiten zu finden. Optional platziert PassFF in jedem gefundenen Eingabefeld eine Menü-Schaltfläche."
   },
   "passff_prefs_fields_description": {
     "message": "Felder werden genutzt, um Daten in deinem Passwort-Repository zu finden. PassFF versucht, den 'login', 'passwort' oder 'url' Wert (entsprechend der Standard-Syntax) oder einen passenden Datensatznamen in den Passwortdaten zu finden."
