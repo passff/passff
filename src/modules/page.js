@@ -273,6 +273,8 @@ PassFF.Page = (function () {
   }
 
   function setupPopup() {
+    if (!PassFF.Preferences.markFillable) return;
+
     // Remove old instances of the popup menu
     let old = document.querySelector(".passff_popup_menu");
     if (old) old.parentNode.removeChild(old);
