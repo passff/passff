@@ -280,40 +280,44 @@ PassFF.Page = (function () {
     if (old) old.parentNode.removeChild(old);
 
     // Setup new instance
-    popup_menu = document.createElement("div");
+    popup_menu = document.createElement("iframe");
+    popup_menu.setAttribute("src",
+      browser.extension.getURL("content/content-popup.html"));
     popup_menu.classList.add("passff_popup_menu");
-    if (matchItems.length === 0) {
-      popup_menu.innerHTML = '<div class="alert">'
-        + _('passff_no_entries_found') + '</div>';
-    }
-    matchItems.filter(i => i.isLeaf || i.hasFields).forEach(item => {
-      let entry = document.createElement("div");
-      entry.classList.add("passff_entry");
-      entry.passff_item = item;
-      entry.innerHTML = `
-        <div><!-- display: table-row -->
-          <div><button class="passff_key"><span></span></button></div>
-          <div><button class="passff_fill passff_button"></button></div>
-          <div><button class="passff_submit passff_button"></button></div>
-        </div>
-      `;
-
-      let button = entry.querySelector(".passff_key span");
-      button.textContent = item.fullKey;
-      button.parentNode.title = item.fullKey;
-      button.parentNode.addEventListener("click", function (e) {
-        if (PassFF.Preferences.submitFillable) return onPopupSubmitClick(e);
-        return onPopupFillClick(e);
+    popup_menu.addEventListener("load", function () {
+      let doc = popup_menu.contentDocument;
+      let popup_div = doc.getElementsByTagName("div")[0];
+      if (matchItems.length === 0) {
+        popup_div.innerHTML = '<div class="alert">'
+          + _('passff_no_entries_found') + '</div>';
+      }
+      matchItems.filter(i => i.isLeaf || i.hasFields).forEach(item => {
+        let entry = document.createElement("div");
+        entry.classList.add("passff_entry");
+        entry.passff_item = item;
+        entry.innerHTML = `
+          <div><!-- display: table-row -->
+            <div><button class="passff_key"><span></span></button></div>
+            <div><button class="passff_fill passff_button"></button></div>
+            <div><button class="passff_submit passff_button"></button></div>
+          </div>
+        `;
+         let button = entry.querySelector(".passff_key span");
+        button.textContent = item.fullKey;
+        button.parentNode.title = item.fullKey;
+        button.parentNode.addEventListener("click", function (e) {
+          if (PassFF.Preferences.submitFillable) return onPopupSubmitClick(e);
+          return onPopupFillClick(e);
+        });
+        button = entry.querySelector(".passff_fill");
+        button.style.backgroundImage = "url('" + pencil_square_16 + "')";
+        button.addEventListener("click", onPopupFillClick);
+        button = entry.querySelector(".passff_submit");
+        button.style.backgroundImage = "url('" + paper_plane_16 + "')";
+        button.addEventListener("click", onPopupSubmitClick);
+        popup_div.appendChild(entry);
       });
-      button = entry.querySelector(".passff_fill");
-      button.style.backgroundImage = "url('" + pencil_square_16 + "')";
-      button.addEventListener("click", onPopupFillClick);
-      button = entry.querySelector(".passff_submit");
-      button.style.backgroundImage = "url('" + paper_plane_16 + "')";
-      button.addEventListener("click", onPopupSubmitClick);
-
-      popup_menu.appendChild(entry);
-    });
+    }, true);
     popup_menu.style.display = "none";
     document.body.appendChild(popup_menu);
   }

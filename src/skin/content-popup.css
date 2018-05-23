@@ -1,0 +1,114 @@
+
+body {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+.passff_popup_menu {
+  all: initial;
+  position: absolute;
+  border: 1px solid #888;
+  background-color: #fff;
+  z-index: 1000;
+  max-height: 10em;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+  direction: rtl; /* force scrollbar to appear on the left */
+}
+
+.passff_popup_menu * {
+  all: initial;
+  font-size: 13px;
+  font-family: sans-serif;
+  direction: ltr; /* force scrollbar to appear on the left */
+}
+
+.passff_popup_menu *:hover {
+  all: initial;
+  font-size: 13px;
+  font-family: sans-serif;
+}
+
+.passff_popup_menu div.alert {
+  padding: 1em;
+}
+
+.passff_popup_menu div.passff_entry {
+  display: table;
+  width: 100%;
+  border-bottom: 1px solid #b6b6b3;
+}
+
+.passff_popup_menu div.passff_entry:last-child {
+  border-bottom: 0;
+}
+
+.passff_popup_menu div.passff_entry > div {
+  display: table-row;
+}
+
+.passff_popup_menu div.passff_entry > div > div {
+  display: table-cell;
+}
+
+.passff_popup_menu button,
+.passff_popup_menu button:hover {
+  position:relative;
+  display: block;
+  width: 100%;
+  height: 2.2em;
+  margin: 0;
+  padding: 0 0.5em;
+  border: 0;
+  background-color: #f0f0f0;
+  color: #000;
+  outline: none;
+}
+
+.passff_popup_menu button:hover {
+  background-color: #e6e6e6;
+}
+
+.passff_popup_menu button:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0.2em;
+  right: 0;
+  width: 1px;
+  height: 1.8em;
+  background-color: #b6b6b3;
+}
+
+.passff_popup_menu div.passff_entry:hover button:after {
+  height: 2.2em;
+  top: 0;
+}
+
+.passff_popup_menu div:last-child > button:after {
+  width: 0;
+}
+
+.passff_popup_menu button.passff_key {
+  width: 19em;
+  overflow: hidden;
+}
+
+.passff_popup_menu button.passff_key span {
+  display: block;
+  float: right;
+  white-space: nowrap;
+  color: #000;
+}
+
+.passff_popup_menu button.passff_button {
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px 16px;
+  width: 16px;
+}
