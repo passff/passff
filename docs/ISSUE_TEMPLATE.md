@@ -11,10 +11,12 @@ Status line output: `[hh:mm:ss] show -> (0)`
 <!-- Enable it at the bottom of the preferences. In the toolbar menu, select & copy-paste it. -->
 
 <!-- If useful, tell us more! -->
+- Output of `pass`: 
 - Your preferences
   - In PassFF: 
   - In the host app `passff.py`: 
 - Messages in the web console: 
+<!-- Don't forget to enable logging in the web console -->
 
 ---
 
