@@ -31,12 +31,14 @@ Install the current release of PassFF for your browser:
 
 Previous releases are available for download as XPI files from [our releases page](https://github.com/passff/passff/releases). However, this is strongly discouraged for security reasons!
 
-##### Password configuration
-To make the most of the extension, you should format your password files according to our expected format.
+### Password formats
+To make the most of the extension, you should format your password files according to our expected formats.
 
-If you only want the extension to fill out passwords, you don't need any special format for your password files. But if you follow our format, the extension can also visit the website's URL and fill out the username and other input fields for you.
+If you only want the extension to fill out passwords, you don't need any special format for your password files. But if you follow our formats, the extension can also visit the website's URL and fill out the username and other input fields for you.
 
-The format is:
+##### Multi-line format
+This is the *preferred organizational scheme used by the author* of [pass](https://www.passwordstore.org/).
+
 ```
 <the_password>
 login: <the_login>
@@ -44,10 +46,23 @@ url: <the_url>
 <other_inputfield_name> : <inputfield_value>
 ```
 
-You can change or configure additional names for the login and url values in preferences.
+You can change or configure additional names for the `login` and `url` fields in preferences.
 
 Lines besides the login and URL that match the format `<other_inputfield_name>: <value>` can be used to fill in input fields besides the login and password fields. The left hand side of the colon should match the input field's `name` or `id` attribute.
 
+Examples
+```
+nu8kzeo2Aese
+login: bob
+url: https://github.com/login
+
+AephieryZ2Ya
+login: kevin
+url: example.com
+otp: 421337
+```
+
+##### File-structure format
 Alternatively, you can organize your login information with file structure. For example, if you have this file structure:
 * www
   * supersite.com
@@ -57,7 +72,7 @@ Alternatively, you can organize your login information with file structure. For 
 
 PassFF will
 * get the login from the "login" file under supersite.com
-* get the login from the "login" field inside the mysite.com entry for mysite.com (see format above)
+* get the login from the "login" field inside the mysite.com entry for mysite.com (see [format above](#multi-line-format))
 
 The file structure approach does not support custom input fields, however.
 
