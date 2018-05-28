@@ -15,16 +15,25 @@ This extension will allow you to access your **[zx2c4 pass](http://www.zx2c4.com
 You can choose to automatically fill and submit login forms if a matching password entry is found.
 
 ### Installation
-- You need **[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** installed on your computer and a password respository with [password files configured to our format](#password-configuration)
-- You will also need to **[install the host application](docs/INSTALLATION.md#installing-the-host-application)** so the extension can communicate with `pass` to retrieve your passwords
-- Install the current release for your browser:
+
+##### xz2c4 pass repository
+This extension requires **[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** to be installed and set up with a password repository. Make sure you can execute `pass show some-password-name` in a terminal before continuing.
+
+##### Host application
+For the extension to communicate with your system's `pass` script, you need to install what's called the host application from [the official GitHub repository](https://github.com/passff/passff-host).
+The host application allows the extension to communicate with `pass` on your system.
+
+##### PassFF extension
+Install the current release of PassFF for your browser:
   - [Firefox](https://addons.mozilla.org/firefox/addon/passff)
   - Chrome, Chromium (coming soon)
   - Vivaldi, Opera (coming soon)
 
-Alternatively, you can install an older version or the latest build from GitHub by refering to [instructions here](docs/INSTALLATION.md).
+Previous releases are available for download as XPI files from [our releases page](https://github.com/passff/passff/releases). However, this is strongly discouraged for security reasons!
 
 ##### Password configuration
+To make the most of the extension, you should format your password files according to our expected format.
+
 If you only want the extension to fill out passwords, you don't need any special format for your password files. But if you follow our format, the extension can also visit the website's URL and fill out the username and other input fields for you.
 
 The format is:
@@ -81,7 +90,7 @@ From the extension preferences you will be able to set:
 ### Issues
 If you're having problems, the most common causes are misconfigured preferences or an improperly installation of the host application. You can get more information by [debugging the extension](docs/CONTRIBUTING.md).
 
-First, [make sure the host application is installed correctly](docs/INSTALLATION.md#installing-the-host-application).
+First, [make sure the host application is installed correctly](https://github.com/passff/passff-host).
 
 Configure the script's execution parameters appropriately in the host app `passff.py`: E.g., set `command` to the path to the `pass` binary (if installed with homebrew, the default location is `/usr/local/bin/pass`). With those settings in place, the extension should be able to find your passwords.
 
