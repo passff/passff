@@ -155,19 +155,18 @@ PassFF.Pass = (function () {
   }
 
   function domainSecurityCheck(passItemURL) {
-    let OVERRIDE_QUESTION = _("passff_override_antiphishing_confirmation");
     try {
       var passURL = new URL(passItemURL);
     } catch(e) {
       return confirm( _("passff_error_getting_url_pass") + " (" +
-      passItemURL + ").\n" + OVERRIDE_QUESTION);
+      passItemURL + ").\n" + _("passff_override_antiphishing_confirmation"));
     }
 
     try {
       var currURL = new URL(window.location.href);
     } catch(e) {
       return confirm( _("passff_error_getting_url_curr") + " (" +
-      window.location.href + ").\n" + OVERRIDE_QUESTION);
+      window.location.href + ").\n" + _("passff_override_antiphishing_confirmation"));
     }
 
     /*
@@ -192,7 +191,8 @@ PassFF.Pass = (function () {
 
     if (passDomain != currDomain) {
 
-      return confirm( _("passff_domain_mismatch", [currDomain, passDomain]) + "\n" + OVERRIDE_QUESTION);
+      return confirm( _("passff_domain_mismatch", [currDomain, passDomain]) +
+      "\n" + _("passff_override_antiphishing_confirmation"));
     }
 
     let passProt = passURL.protocol;
@@ -203,7 +203,8 @@ PassFF.Pass = (function () {
     }
 
     if (currProt != "https:") {
-      return confirm( _("passff_http_curr_warning") + "\n" + OVERRIDE_QUESTION);
+      return confirm( _("passff_http_curr_warning") + "\n" +
+      _("passff_override_antiphishing_confirmation"));
     }
 
     return true;
