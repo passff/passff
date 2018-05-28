@@ -438,7 +438,12 @@ PassFF.Pass = (function () {
           setPassword(result);
           setUrl(result);
           setOther(result);
-          return result;
+
+          if (domainSecurityCheck(result.url)) {
+            return result
+          } else {
+            return null
+          }
         });
       } else if (item.hasMeta && !meta2leaf) { // item with corresponding *.meta
         let promised_results = [Promise.resolve(null), Promise.resolve(null)];
@@ -463,7 +468,12 @@ PassFF.Pass = (function () {
           setPassword(result);
           setUrl(result);
           setOther(result);
-          return result;
+
+          if (domainSecurityCheck(result.url)) {
+            return result
+          } else {
+            return null
+          }
         });
       } else { // multiline-style item
         let key = item.fullKey;
@@ -496,7 +506,12 @@ PassFF.Pass = (function () {
             setUrl(result);
             setOther(result);
             setText(result, executionResult.stdout);
-            return result;
+
+            if (domainSecurityCheck(result.url)) {
+              return result
+            } else {
+              return null
+            }
           });
       }
     },
