@@ -2,12 +2,13 @@
 
 Thanks for your interest in contributing to PassFF!
 
-To get started, you'll need to clone the repository and install the extension from your local copy. Instructions can be found [here](INSTALLATION.md#latest-from-github).
-
 ## Development
-For development or temporary testing in Firefox open `about:debugging` and choose to load the add-on temporarily by selecting the file `src/manifest.json` in your git working directory.
+To get started, you'll need to [fork and clone the repository](https://help.github.com/articles/fork-a-repo/).
 
-You'll probably want to enable debugging. Open the PassFF preferences from the menu or from `about:addons` and enable the preference "Enable logging to Javascript console".
+For development or temporary testing in Firefox, open `about:debugging` and choose to load the add-on temporarily by selecting the file `src/manifest.json` in your git working directory.
+You may also use the *Firefox Debugger* for faster and easier debugging. [Quick introduction to Firefox Debugger](https://mozilladevelopers.github.io/playground/debugger/).
+
+You'll probably want to enable debug logs. Open the PassFF preferences from the menu or from `about:addons` and enable the preference "Enable logging to the JavaScript web console".
 
 ## Style guide
 Please follow these conventions and amend to them when necessary.
