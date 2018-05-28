@@ -3,7 +3,7 @@ passff
 
 [![Join the chat at https://gitter.im/jvenant/passff](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jvenant/passff?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** management extension for Firefox, Chrome\*, and Opera\*
+**[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** management extension for Mozilla Firefox
 
 **Official signed version can be found on the [Mozilla add-on page](https://addons.mozilla.org/firefox/addon/passff)**
 
@@ -26,8 +26,7 @@ The host application allows the extension to communicate with `pass` on your sys
 ##### PassFF extension
 Install the current release of PassFF for your browser:
   - [Firefox](https://addons.mozilla.org/firefox/addon/passff)
-  - Chrome, Chromium (coming soon)
-  - Vivaldi, Opera (coming soon)
+  - Chrome, Chromium, Opera, Vivaldi: [Pending Chrome port](https://github.com/passff/passff/issues/105)
 
 Previous releases are available for download as XPI files from [our releases page](https://github.com/passff/passff/releases). However, this is strongly discouraged for security reasons!
 
