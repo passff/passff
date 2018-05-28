@@ -190,7 +190,6 @@ PassFF.Pass = (function () {
     let currDomain = currURL.hostname.split(".").slice(-2).join(".");
 
     if (passDomain != currDomain) {
-
       return confirm( _("passff_domain_mismatch", [currDomain, passDomain]) +
       "\n" + _("passff_override_antiphishing_confirmation"));
     }
