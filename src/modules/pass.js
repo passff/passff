@@ -155,19 +155,18 @@ PassFF.Pass = (function () {
   }
 
   function domainSecurityCheck(passItemURL) {
-    let OVERRIDE_QUESTION = "Are you sure you want to continue? This will " +
-    "override anti-phishing security checks.";
+    let OVERRIDE_QUESTION = _("passff_override_antiphishing_confirmation");
     try {
       var passURL = new URL(passItemURL);
     } catch(e) {
-      return confirm("There was an error parsing the URL from pass (" +
+      return confirm( _("passff_error_getting_url_pass") + " (" +
       passItemURL + ").\n" + OVERRIDE_QUESTION);
     }
 
     try {
       var currURL = new URL(window.location.href);
     } catch(e) {
-      return confirm("There was an error parsing the current URL (" +
+      return confirm( _("passff_error_getting_url_curr") + " (" +
       window.location.href + ").\n" + OVERRIDE_QUESTION);
     }
 
@@ -192,22 +191,19 @@ PassFF.Pass = (function () {
     let currDomain = currURL.hostname.split(".").slice(-2).join(".");
 
     if (passDomain != currDomain) {
-      return confirm("The domain of your current site (" + currDomain +
-      ") does not match the one in your pass database (" + passDomain +
-      ").\n" + OVERRIDE_QUESTION);
+
+      return confirm( _("passff_domain_mismatch", [currDomain, passDomain]) + "\n" + OVERRIDE_QUESTION);
     }
 
     let passProt = passURL.protocol;
     let currProt = currURL.protocol;
 
     if (passProt != "https:") {
-      alert("The URL in your pass database (" + passItemURL +
-      ") is not HTTPS. It is advised that you change the URL to start with 'https:'.");
+      alert( _("passff_http_pass_warning", passItemURL));
     }
 
     if (currProt != "https:") {
-      return confirm("Your current page is not protected by HTTPS. " +
-      "This could lead to your password being leaked.\n" + OVERRIDE_QUESTION);
+      return confirm( _("passff_http_curr_warning") + "\n" + OVERRIDE_QUESTION);
     }
 
     return true;

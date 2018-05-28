@@ -214,5 +214,39 @@
   },
   "passff_no_entries_found": {
     "message": "No entries matching this URL."
+  },
+  "passff_override_antiphishing_confirmation": {
+    "message": "Are you sure you want to continue? This will override anti-phishing security checks."
+  },
+  "passff_error_getting_url_pass": {
+    "message": "There was an error parsing the URL from pass"
+  },
+  "passff_error_getting_url_curr": {
+    "message": "There was an error parsing the current URL"
+  },
+  "passff_domain_mismatch": {
+    "message": "The domain of your current site ($currDomain$) does not match the one in your pass database ($passDomain$).",
+    "placeholders": {
+      "currDomain" : {
+        "content" : "$1",
+        "example" : "phishingDomain.com"
+      },
+      "passDomain": {
+        "content" : "$2",
+        "example": "realDomain.com"
+      }
+    }
+  },
+  "passff_http_pass_warning": {
+    "message": "The URL in your pass database ($passItemURL$) is not HTTPS. It is advised that you change the URL to start with 'https:'.",
+    "placeholders": {
+      "passItemURL": {
+        "content" : "$1",
+        "example" : "http://www.example.com"
+      }
+    }
+  },
+  "passff_http_curr_warning": {
+    "message": "Your current page is not protected by HTTPS. This could lead to your password being leaked."
   }
 }
