@@ -76,10 +76,13 @@ PassFF will
 
 The file structure approach does not support custom input fields, however.
 
+### Configuration and preferences
 
-##### Preferences
-From the extension preferences you will be able to set:
-- Inputs (A comma separated list of input names. Input field names in a html page containing one of those values will be filled with the corresponding value.)
+##### Extension preferences
+Accessible from the gear button in the toolbar menu, preferences let you fine-tune the behaviour of PassFF.
+Some of them are described below:
+
+- Inputs (A comma separated list of input names. Input field names in a web page *containing* one of those values will be filled with the corresponding value.)
   - Passwords input names
   - Login input names
 - Fields (A comma separated list of field names. The first matching field in the password data or in the store tree will be used as the corresponding value.)
@@ -88,8 +91,11 @@ From the extension preferences you will be able to set:
   - URL field names
 - Adding Passwords
   - The default length for generating passwords
-  - Whether or not to include symbols in generated passwords by default
+  - Whether or not to include special characters in generated passwords by default
   - Preferred new password method ("generate" or "insert")
+
+##### Host application preferences
+If you use a customized `pass` installation: environment variables, customized repository path or extensions, you may have to [configure the host application accordingly](https://github.com/passff/passff-host#preferences).
 
 ### Usage
 Once installed, you should have a new icon in your toolbar. Click the icon to browse your password repository or search using a **fuzzy matching** algorithm.
