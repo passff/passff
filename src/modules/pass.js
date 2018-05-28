@@ -158,13 +158,13 @@ PassFF.Pass = (function () {
     try {
       var passURL = new URL(passItemURL)
     } catch(e) {
-      return confirm("There was an error parsing the URL from pass: " + passItemURL + ". Override anti-phishing security checks?")
+      return confirm("There was an error parsing the URL from pass (" + passItemURL + "). Override anti-phishing security checks?")
     }
 
     try {
       var currURL = new URL(window.location.href)
     } catch(e) {
-      return confirm("There was an error parsing the current URL: " + window.location.href + ". Override anti-phishing security checks?")
+      return confirm("There was an error parsing the current URL (" + window.location.href + "). Override anti-phishing security checks?")
     }
 
     /*
