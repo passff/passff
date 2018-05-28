@@ -154,6 +154,57 @@ PassFF.Pass = (function () {
     return { item: item, quality: quality };
   }
 
+  function domainSecurityCheck(passItemURL) {
+    try {
+      var passURL = new URL(passItemURL)
+    } catch(e) {
+      return confirm("There was an error parsing the URL from pass: " + passItemURL + ". Override anti-phishing security checks?")
+    }
+
+    try {
+      var currURL = new URL(window.location.href)
+    } catch(e) {
+      return confirm("There was an error parsing the current URL: " + window.location.href + ". Override anti-phishing security checks?")
+    }
+
+    /*
+    Instead of requiring that the entire hostname match, which would lead to
+    example.com and login.example.com being considered different, only the
+    domains must match. However, identifying the domain is difficult because of
+    top-level-domains like .co.uk that have multiple dots in them, unlike the
+    more conventional single-dot TLDs like .com.
+
+    Resources on Identifying Domain:
+    https://stackoverflow.com/questions/10210058/get-the-parent-document-domain-without-subdomains
+    https://stackoverflow.com/questions/399250/going-where-php-parse-url-doesnt-parsing-only-the-domain
+    https://publicsuffix.org/
+
+    While not ideal, the current solution is to assume a single-dot TLD and
+    therefore match everything after the second-to-last dot. This is a security
+    risk on two-dot TLDs, as only the TLD (e.g. co.uk) will be matched.
+    */
+
+    let passDomain = passURL.hostname.split(".").slice(-2).join(".")
+    let currDomain = currURL.hostname.split(".").slice(-2).join(".")
+
+    if (passDomain != currDomain) {
+      return confirm("The domain of your current site (" + currDomain + ") does not match the one in your pass database (" + passDomain + "). Override anti-phishing security checks?")
+    }
+
+    let passProt = passURL.protocol
+    let currProt = currURL.protocol
+
+    if (passProt != "https:") {
+      alert("The URL in your pass database (" + passItemURL + ") is not HTTPS. It is advised that you change the URL to start with 'https:'.")
+    }
+
+    if (currProt != "https:") {
+      return confirm("Your current page is not protected by HTTPS. This could lead to your password being leaked. Override anti-phishing security checks?")
+    }
+
+    return true
+  }
+
 /* #############################################################################
  * #############################################################################
  *  Pass script interaction
