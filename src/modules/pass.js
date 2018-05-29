@@ -155,6 +155,9 @@ PassFF.Pass = (function () {
   }
 
   function domainSecurityCheck(passItemURL) {
+    if (! PassFF.Preferences.autoFillDomainCheck) {
+      return true;
+    }
     try {
       var passURL = new URL(passItemURL);
     } catch(e) {

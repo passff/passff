@@ -248,5 +248,8 @@
   },
   "passff_http_curr_warning": {
     "message": "Your current page is not protected by HTTPS. This could lead to your password being leaked."
+  },
+  "passff_prefs_domain_check_label": {
+    "message": "Warn about potential phishing sites, such as when the domain listed in the database differs from that of the current page"
   }
 }
