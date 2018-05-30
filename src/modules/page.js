@@ -241,6 +241,8 @@ PassFF.Page = (function () {
     if (typeof input.passff_injected !== "undefined") return;
     log.debug("Inject icon", input.id || input.name);
     input.passff_injected = true;
+    input.style["-moz-appearance"] = "none";
+    input.style["-webkit-appearance"] = "none";
     input.style.backgroundRepeat = "no-repeat";
     input.style.backgroundAttachment = "scroll";
     input.style.backgroundSize = "16px 16px";
