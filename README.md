@@ -129,6 +129,29 @@ First, [make sure the host application is installed correctly](https://github.co
 
 Configure the script's execution parameters appropriately in the host app `passff.py`: E.g., set `COMMAND` to the path to the `pass` binary (if installed with homebrew, the default location is `/usr/local/bin/pass`). With those settings in place, the extension should be able to find your passwords.
 
+### Troubleshooting
+
+#### I use an old version of Firefox and I have weird behaviours
+PassFF is developed for the last version of **Firefox** (version 59 as of April 2018).
+PassFF should also work on previous versions above Firefox 48, which introduced stable support for [WebExtensions](https://blog.mozilla.org/addons/2016/04/29/webextensions-in-firefox-48/).
+However, with Firefox's API transition, PassFF might behave strangely. See https://github.com/passff/passff/issues/272 for an issue now resolved.
+
+#### Nothing happens when I click on a password and select an action
+#### PassFF does not prompt me for the passphrase
+#### PassFF works but only intermittently
+It may be a problem with your pin-entry program, while your gpg-agent sometimes caches your passphrase.
+
+Solution: install another pinentry program:
+* MacOS:
+  * `brew install pinentry-mac`
+  * Add `pinentry-program /usr/local/bin/pinentry-mac` to `~/.gnupg/gpg-agent.conf`. You may need to create this file.
+* GNU/Linux:
+  * https://wiki.archlinux.org/index.php/GnuPG#pinentry
+
+See:
+ * https://github.com/passff/passff/issues/325
+ * https://github.com/passff/passff/issues/330
+
 ### Thanks
 Development and improvements
  * [Johan Venant](https://github.com/jvenant)
