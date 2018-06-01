@@ -123,11 +123,11 @@ In *any* input field, fillable or not, you can access a contextual menu (right-c
 In order to add a password in your repository, select the 'plus' (+) icon in the toolbar menu.
 
 ### Issues
-If you're having problems, the most common causes are misconfigured preferences or an improperly installation of the host application. You can get more information by [debugging the extension](docs/CONTRIBUTING.md).
+If you're having problems, the most common causes are misconfigured preferences or an incorrect installation of the host application. You can get more information by [debugging the extension](docs/CONTRIBUTING.md).
 
 First, [make sure the host application is installed correctly](https://github.com/passff/passff-host).
 
-Configure the script's execution parameters appropriately in the host app `passff.py`: E.g., set `command` to the path to the `pass` binary (if installed with homebrew, the default location is `/usr/local/bin/pass`). With those settings in place, the extension should be able to find your passwords.
+Configure the script's execution parameters appropriately in the host app `passff.py`: E.g., set `COMMAND` to the path to the `pass` binary (if installed with homebrew, the default location is `/usr/local/bin/pass`). With those settings in place, the extension should be able to find your passwords.
 
 ### Thanks
 Development and improvements
