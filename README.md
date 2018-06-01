@@ -61,18 +61,6 @@ PassFF will
 
 The file structure approach does not support custom input fields, however.
 
-### Usage
-Once installed, you should have a new icon in your toolbar. Click the icon to browse your password repository or search using a **fuzzy matching** algorithm.
-
-##### Keyboard shortcuts
-The default shortcut to open the menu is <kbd>ctrl</kbd>+<kbd>y</kbd>.
-
-With the menu open, you can press <kbd>enter</kbd> to execute one of the following commands, according to your preferences:
-- Fill and submit
-- Goto, fill and submit
-- Copy login to clipboard
-- Copy password to clipboard
-
 ##### Preferences
 From the extension preferences you will be able to set:
 - Inputs (A comma separated list of input names. Input field names in a html page containing one of those values will be filled with the corresponding value.)
@@ -86,6 +74,18 @@ From the extension preferences you will be able to set:
   - The default length for generating passwords
   - Whether or not to include symbols in generated passwords by default
   - Preferred new password method ("generate" or "insert")
+
+### Usage
+Once installed, you should have a new icon in your toolbar. Click the icon to browse your password repository or search using a **fuzzy matching** algorithm.
+
+##### Keyboard shortcuts
+The default shortcut to open the menu is <kbd>ctrl</kbd>+<kbd>y</kbd>.
+
+With the menu open, you can press <kbd>enter</kbd> to execute one of the following commands, according to your preferences:
+- Fill and submit
+- Goto, fill and submit
+- Copy login to clipboard
+- Copy password to clipboard
 
 ### Issues
 If you're having problems, the most common causes are misconfigured preferences or an improperly installation of the host application. You can get more information by [debugging the extension](docs/CONTRIBUTING.md).
