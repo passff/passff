@@ -61,6 +61,7 @@ PassFF will
 
 The file structure approach does not support custom input fields, however.
 
+
 ##### Preferences
 From the extension preferences you will be able to set:
 - Inputs (A comma separated list of input names. Input field names in a html page containing one of those values will be filled with the corresponding value.)
@@ -82,10 +83,24 @@ Once installed, you should have a new icon in your toolbar. Click the icon to br
 The default shortcut to open the menu is <kbd>ctrl</kbd>+<kbd>y</kbd>.
 
 With the menu open, you can press <kbd>enter</kbd> to execute one of the following commands, according to your preferences:
-- Fill and submit
 - Goto, fill and submit
-- Copy login to clipboard
-- Copy password to clipboard
+- Goto and fill
+- Fill and submit
+- Fill
+
+##### Input menu
+PassFF can *mark fillable input fields with the PassFF icon*. It adds an icon in the fields that PassFF can automatically fill. The icon is clickable and pops up a menu to select the password.
+PassFF fills the input fields and optionally submit depending on your preferences. You can always override this behavior by clicking the pencil (Fill) or the paper plane (Fill & Submit).
+
+This feature can be disabled in the preferences.
+
+#### Contextual menu
+In *any* input field, fillable or not, you can access a contextual menu (right-click) in order to:
+  - Add the input field's name in the *Login input names* for (auto)filling,
+  - Select a password to fill the input fields.
+
+#### Adding new passwords
+In order to add a password in your repository, select the 'plus' (+) icon in the toolbar menu.
 
 ### Issues
 If you're having problems, the most common causes are misconfigured preferences or an improperly installation of the host application. You can get more information by [debugging the extension](docs/CONTRIBUTING.md).
