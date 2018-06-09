@@ -20,7 +20,7 @@ PassFF.Preferences = (function () {
     let pref_str_change_cb = function (key, isInt) {
       return function (evt) {
         let val = evt.target.value;
-        if (isInt) val = parseInt(val);
+        if (isInt) val = parseInt(val, 10);
         PassFF.Preferences[key] = val;
       };
     };

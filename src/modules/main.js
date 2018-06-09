@@ -26,7 +26,7 @@ var PassFF = (function () {
           PassFF.Preferences.addInputName(input_type, info[1]);
         });
     } else {
-      let itemId = parseInt(info.menuItemId.split("-")[1]);
+      let itemId = parseInt(info.menuItemId.split("-")[1], 10);
       let item = PassFF.Pass.getItemById(itemId);
       PassFF.Pass.getPasswordData(item)
         .then((passwordData) => {

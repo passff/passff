@@ -342,7 +342,7 @@ PassFF.Page = (function () {
     // position popup relative to input field
     let rect = target.getBoundingClientRect();
     let popup_width = window.getComputedStyle(popup_menu).width;
-    popup_width = parseInt(popup_width.substring(0,popup_width.length-2));
+    popup_width = parseInt(popup_width.substring(0,popup_width.length-2), 10);
     let scrollright = window.scrollX - popup_width;
     popup_menu.style.top      = (window.scrollY + rect.bottom + 1) + "px";
     popup_menu.style.left     = (scrollright + rect.right - 2) + "px";
@@ -351,7 +351,7 @@ PassFF.Page = (function () {
     // get the largest z-index value and position ourselves above it
     let z = Math.max(1, ...[...document.querySelectorAll('body *')]
       .filter(e => ["static",""].indexOf(e) === -1)
-      .map(e => parseInt(window.getComputedStyle(e).zIndex))
+      .map(e => parseInt(window.getComputedStyle(e).zIndex, 10))
       .filter(e => e>0));
     popup_menu.style.zIndex = "" + z;
   }
