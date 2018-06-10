@@ -180,7 +180,7 @@
     "message": "Length"
   },
   "passff_newpassword_inputs_include_symbols_label": {
-    "message": "Include specials characters"
+    "message": "Include special characters"
   },
   "passff_newpassword_inputs_add_password_button_label": {
     "message": "Insert password"
