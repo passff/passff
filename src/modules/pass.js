@@ -154,7 +154,12 @@ PassFF.Pass = (function () {
     return { item: item, quality: quality };
   }
 
-  function domainSecurityCheck(passItemURL) {
+/* #############################################################################
+ * #############################################################################
+ *  Security Checks for (Auto)fill
+ * #############################################################################
+ */
+  function securityChecks(passItemURL) {
     if (! PassFF.Preferences.autoFillDomainCheck) {
       return true;
     }
@@ -164,52 +169,55 @@ PassFF.Pass = (function () {
       return confirm( _("passff_error_getting_url_pass") + " (" +
       passItemURL + ").\n" + _("passff_override_antiphishing_confirmation"));
     }
-
     try {
       var currURL = new URL(window.location.href);
     } catch(e) {
       return confirm( _("passff_error_getting_url_curr") + " (" +
       window.location.href + ").\n" + _("passff_override_antiphishing_confirmation"));
     }
+    return domainSecurityCheck(passURL, currURL)
+        && (protocolSecurityCheck(currURL) || protocolSecurityWarning(passURL));
+  }
 
+  function domainSecurityCheck(passURL, currURL) {
     /*
     Instead of requiring that the entire hostname match, which would lead to
     example.com and login.example.com being considered different, only the
     domains must match. However, identifying the domain is difficult because of
     top-level-domains like .co.uk that have multiple dots in them, unlike the
     more conventional single-dot TLDs like .com.
-
     Resources on Identifying Domain:
     https://stackoverflow.com/questions/10210058/get-the-parent-document-domain-without-subdomains
     https://stackoverflow.com/questions/399250/going-where-php-parse-url-doesnt-parsing-only-the-domain
     https://publicsuffix.org/
-
     While not ideal, the current solution is to assume a single-dot TLD and
     therefore match everything after the second-to-last dot. This is a security
     risk on two-dot TLDs, as only the TLD (e.g. co.uk) will be matched.
     */
-
     let passDomain = passURL.hostname.split(".").slice(-2).join(".");
     let currDomain = currURL.hostname.split(".").slice(-2).join(".");
-
     if (passDomain != currDomain) {
       return confirm( _("passff_domain_mismatch", [currDomain, passDomain]) +
       "\n" + _("passff_override_antiphishing_confirmation"));
     }
+    return true;
+  }
 
-    let passProt = passURL.protocol;
+  function protocolSecurityCheck(currURL) {
     let currProt = currURL.protocol;
-
-    if (passProt != "https:") {
-      alert( _("passff_http_pass_warning", passItemURL));
-    }
-
     if (currProt != "https:") {
       return confirm( _("passff_http_curr_warning") + "\n" +
       _("passff_override_antiphishing_confirmation"));
     }
-
     return true;
+  }
+
+  function protocolSecurityWarning(passURL) {
+    let passProt = passURL.protocol;
+    if (passProt != "https:") {
+      alert( _("passff_http_pass_warning", passURL.href));
+    }
+    return false;
   }
 
 /* #############################################################################
@@ -446,7 +454,7 @@ PassFF.Pass = (function () {
           setUrl(result);
           setOther(result);
 
-          if (domainSecurityCheck(result.url)) {
+          if (securityChecks(result.url)) {
             return result
           } else {
             return null
@@ -476,7 +484,7 @@ PassFF.Pass = (function () {
           setUrl(result);
           setOther(result);
 
-          if (domainSecurityCheck(result.url)) {
+          if (securityChecks(result.url)) {
             return result
           } else {
             return null
@@ -514,7 +522,7 @@ PassFF.Pass = (function () {
             setOther(result);
             setText(result, executionResult.stdout);
 
-            if (domainSecurityCheck(result.url)) {
+            if (securityChecks(result.url)) {
               return result
             } else {
               return null
