@@ -548,13 +548,36 @@ PassFF.Pass = (function () {
         .then((result) => { return result.exitCode === 0; });
     },
 
-    generateNewPassword: function (name, length, includeSymbols) {
+    generateNewPassword: function (name, length, includeSymbols, username, url) {
       let args = ['generate', name, length.toString()];
       if (!includeSymbols) {
         args.push('-n');
       }
       return this.executePass(args)
-        .then((result) => { return result.exitCode === 0; });
+        .then((result) => {
+          if (result.exitCode !== 0) {
+            return false;
+          }
+          if (username || url) {
+            return this.executePass([name])
+              .then((result) => {
+                if (result.exitCode !== 0) {
+                  return false;
+                }
+                var pass = result.stdout.split(/\n/);
+                var extra = ["---", name, "password: " + pass];
+                if (username) {
+                  extra.push("username: " + username);
+                }
+                if (url) {
+                  extra.push("url: " + url);
+                }
+                return this.addNewPassword(name, pass, extra.join('\n') + '\n');
+              });
+          } else {
+            return true;
+          }
+        });
     },
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%% Data analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -749,13 +772,15 @@ function handlePasswordGeneration() {
     function () {
       return {
         name           : document.getElementById('gen-password-name').value,
+        username       : document.getElementById('gen-password-username').value,
+        url            : document.getElementById('gen-password-url').value,
         length         : document.getElementById('gen-password-length').value,
         includeSymbols : document.getElementById('gen-include-symbols').checked,
       };
     },
     function (inputData) {
       return PassFF.Pass.generateNewPassword(
-        inputData.name, inputData.length, inputData.includeSymbols);
+        inputData.name, inputData.length, inputData.includeSymbols, inputData.username, inputData.url);
     }
   );
 

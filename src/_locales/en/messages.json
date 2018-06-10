@@ -173,6 +173,12 @@
   "passff_newpassword_inputs_password_confirmation_label": {
     "message": "Confirm password"
   },
+  "passff_newpassword_inputs_password_username_label": {
+    "message": "Username"
+  },
+  "passff_newpassword_inputs_password_url_label": {
+    "message": "URL"
+  },
   "passff_newpassword_inputs_additional_info_label": {
     "message": "Additional info"
   },
