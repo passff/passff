@@ -63,7 +63,7 @@
     "message": "Remplissage automatique"
   },
   "passff_prefs_tab_inputs": {
-    "message": "Inputs"
+    "message": "Entrées"
   },
   "passff_prefs_tab_fields": {
     "message": "Champs"
@@ -96,7 +96,7 @@
     "message": "Comportement de la touche Entrée"
   },
   "passff_prefs_inputs_description": {
-    "message": "Inputs are used by PassFF to find fillable input fields in web pages. Optionally, PassFF marks them with a menu to fill them."
+    "message": "Les entrées sont utilisées par PassFF afin de trouver les champs d'entrée remplissables dans les pages web. Facultativement, PassFF les marque d'un menu qui permet de les remplir."
   },
   "passff_prefs_fields_description": {
     "message": "Les champs sont utilisés afin de trouver les données dans votre dépôt de mots de passe. PassFF cherche identifiant, mot de passe et URL dans le fichier mot de passe. Si c'est un dossier, PassFF les cherche dans les fichiers de ce dossier."
@@ -126,13 +126,13 @@
     "message": "Valider automatiquement les formulaires d'identification"
   },
   "passff_prefs_autofill_blacklist_label": {
-    "message": "Désactiver le remplissage automatique si l'URL contient l'une de ces chaînes de charactères"
+    "message": "Désactiver le remplissage automatique si l'URL contient l'une de ces chaînes de caractères"
   },
   "passff_prefs_default_length_label": {
     "message": "Longueur par défaut d'un mot de passe généré"
   },
   "passff_prefs_default_include_symbols_label": {
-    "message": "Par défaut, inclure au moins un charactère spécial au mot de passe généré"
+    "message": "Par défaut, inclure au moins un caractère spécial au mot de passe généré"
   },
   "passff_prefs_preferred_new_method_label": {
     "message": "Méthode préférée d'ajout"
@@ -180,7 +180,7 @@
     "message": "Longueur"
   },
   "passff_newpassword_inputs_include_symbols_label": {
-    "message": "Inclure des charactères spéciaux"
+    "message": "Inclure des caractères spéciaux"
   },
   "passff_newpassword_inputs_add_password_button_label": {
     "message": "Insérer le mot de passe"
