@@ -467,21 +467,21 @@ PassFF.Page = (function () {
  *  Security Checks for (Auto)fill
  * #############################################################################
  */
-  function securityChecks(passItemURL) {
+  function securityChecks(passItemURL, currTabURL) {
     if (! PassFF.Preferences.autoFillDomainCheck) {
       return true;
     }
     try {
       var passURL = new URL(passItemURL);
     } catch(e) {
-      return confirm( _("passff_error_getting_url_pass") + " (" +
+      return window.confirm( _("passff_error_getting_url_pass") + " (" +
       passItemURL + ").\n" + _("passff_override_antiphishing_confirmation"));
     }
     try {
-      var currURL = new URL(window.location.href);
+      var currURL = new URL(currTabURL);
     } catch(e) {
-      return confirm( _("passff_error_getting_url_curr") + " (" +
-      window.location.href + ").\n" + _("passff_override_antiphishing_confirmation"));
+      return window.confirm( _("passff_error_getting_url_curr") + " (" +
+      currTabURL + ").\n" + _("passff_override_antiphishing_confirmation"));
     }
     return domainSecurityCheck(passURL, currURL)
         && (protocolSecurityCheck(currURL) || protocolSecurityWarning(passURL));
@@ -504,7 +504,7 @@ PassFF.Page = (function () {
     let passDomain = passURL.hostname.split(".").slice(-2).join(".");
     let currDomain = currURL.hostname.split(".").slice(-2).join(".");
     if (passDomain != currDomain) {
-      return confirm( _("passff_domain_mismatch", [currDomain, passDomain]) +
+      return window.confirm( _("passff_domain_mismatch", [currDomain, passDomain]) +
       "\n" + _("passff_override_antiphishing_confirmation"));
     }
     return true;
@@ -512,7 +512,7 @@ PassFF.Page = (function () {
   function protocolSecurityCheck(currURL) {
     let currProt = currURL.protocol;
     if (currProt != "https:") {
-      return confirm( _("passff_http_curr_warning") + "\n" +
+      return window.confirm( _("passff_http_curr_warning") + "\n" +
       _("passff_override_antiphishing_confirmation"));
     }
     return true;
@@ -520,7 +520,7 @@ PassFF.Page = (function () {
   function protocolSecurityWarning(passURL) {
     let passProt = passURL.protocol;
     if (passProt != "https:") {
-      alert( _("passff_http_pass_warning", passURL.href));
+      window.alert( _("passff_http_pass_warning", passURL.href));
     }
     return false;
   }
@@ -672,7 +672,7 @@ PassFF.Page = (function () {
         let activeElement = getActiveElement();
         if (activeElement.form) {
           let inputs = activeElement.form.getElementsByTagName('input');
-          if (!securityChecks(passwordData.url)) return;
+          if (!securityChecks(passwordData.url, window.location.href)) return;
           setInputs(Array.from(inputs).filter(isVisible), passwordData);
         }
       }
@@ -687,7 +687,7 @@ PassFF.Page = (function () {
         .then((passwordData) => {
           if (typeof passwordData === "undefined") return;
           log.debug('Start auto-fill using', item.fullKey, andSubmit);
-          if (!securityChecks(passwordData.url)) return;
+          if (!securityChecks(passwordData.url, window.location.href)) return;
           setInputs(inputElements, passwordData);
           if (andSubmit) PassFF.Page.submit();
           return passwordData;
