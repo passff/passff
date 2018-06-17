@@ -3,7 +3,7 @@ passff
 
 [![Join the chat at https://gitter.im/jvenant/passff](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jvenant/passff?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** management extension for Mozilla Firefox
+**[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** management extension for **Mozilla Firefox**. [Pending Chrome port](https://github.com/passff/passff/issues/105)
 
 **Official signed version can be found on the [Mozilla add-on page](https://addons.mozilla.org/firefox/addon/passff)**
 
@@ -26,7 +26,6 @@ The host application allows the extension to communicate with `pass` on your sys
 ##### PassFF extension
 Install the current release of PassFF for your browser:
   - [Firefox](https://addons.mozilla.org/firefox/addon/passff)
-  - Chrome, Chromium, Opera, Vivaldi: [Pending Chrome port](https://github.com/passff/passff/issues/105)
 
 Previous releases are available for download as XPI files from [our releases page](https://github.com/passff/passff/releases). However, this is strongly discouraged for security reasons!
 
@@ -134,14 +133,14 @@ Configure the script's execution parameters appropriately in the host app `passf
 #### I use an old version of Firefox and I have weird behaviours
 PassFF is developed for the last version of **Firefox** (version 59 as of April 2018).
 PassFF should also work on previous versions above Firefox 48, which introduced stable support for [WebExtensions](https://blog.mozilla.org/addons/2016/04/29/webextensions-in-firefox-48/).
-However, with Firefox's API transition, PassFF might behave strangely. See https://github.com/passff/passff/issues/272 for an issue now resolved.
+However, with Firefox's API transition, PassFF might behave strangely on these old versions.
 
 #### Nothing happens when I click on a password and select an action
 #### PassFF does not prompt me for the passphrase
 #### PassFF works but only intermittently
 It may be a problem with your pin-entry program, while your gpg-agent sometimes caches your passphrase.
 
-Solution: install another pinentry program:
+Possible solution: install another pinentry program:
 * MacOS:
   * `brew install pinentry-mac`
   * Add `pinentry-program /usr/local/bin/pinentry-mac` to `~/.gnupg/gpg-agent.conf`. You may need to create this file.
