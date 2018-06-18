@@ -483,8 +483,18 @@ PassFF.Page = (function () {
       return window.confirm( _("passff_error_getting_url_curr") + " (" +
       currTabURL + ").\n" + _("passff_override_antiphishing_confirmation"));
     }
-    return domainSecurityCheck(passURL, currURL)
-        && (protocolSecurityCheck(currURL) || protocolSecurityWarning(passURL));
+    if (domainSecurityCheck(passURL, currURL)) {
+      if (currProtocolSecurityCheck(currURL)) {
+        // Storing an HTTP link is OK if the site redirects to HTTPS
+        return true;
+      } else {
+        // Maybe the current protocol was unsafe because an unsafe URL is stored
+        passProtocolSecurityWarning(passURL);
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
   function domainSecurityCheck(passURL, currURL) {
     /*
@@ -509,7 +519,7 @@ PassFF.Page = (function () {
     }
     return true;
   }
-  function protocolSecurityCheck(currURL) {
+  function currProtocolSecurityCheck(currURL) {
     let currProt = currURL.protocol;
     if (currProt != "https:") {
       return window.confirm( _("passff_http_curr_warning") + "\n" +
@@ -517,12 +527,11 @@ PassFF.Page = (function () {
     }
     return true;
   }
-  function protocolSecurityWarning(passURL) {
+  function passProtocolSecurityWarning(passURL) {
     let passProt = passURL.protocol;
     if (passProt != "https:") {
       window.alert( _("passff_http_pass_warning", passURL.href));
     }
-    return false;
   }
 
 
