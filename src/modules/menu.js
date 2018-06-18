@@ -227,7 +227,7 @@ PassFF.Menu = (function () {
   function onPrefButtonCommand(event) {
     log.debug('Preferences button command');
     browser.runtime.openOptionsPage();
-    window.close()
+    window.close();
   }
 
   function onNewPassButtonCommand(event) {
@@ -352,7 +352,7 @@ PassFF.Menu = (function () {
       ['passff_menu_display', PassFF.Menu.onDisplayItemData]
     ].forEach(function (data) {
       let onClick = function (event) {
-        event.preventDefault()
+        event.preventDefault();
         event.stopPropagation();
         let itemId = getItem(event.target);
         let dataKey = getDataKey(event.target);
@@ -468,7 +468,7 @@ PassFF.Menu = (function () {
         document.getElementById('passff-entries-list').style.height =
           (window.innerHeight - data_height - bar_height - buttonbox_height - status_height)
           + "px";
-      }
+      };
       onresize();
     }
   }
