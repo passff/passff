@@ -137,7 +137,7 @@ PassFF.Page = (function () {
       'bubbles': true,
       'composed': true,
       'cancelable': true
-    })
+    });
   }
 
   function writeValueWithEvents(input, value) {
@@ -622,7 +622,7 @@ PassFF.Page = (function () {
         .then((passwordData) => {
           if (typeof passwordData === "undefined") return;
           log.debug('Start auto-fill using', item.fullKey, andSubmit);
-          setInputs(inputElements, passwordData)
+          setInputs(inputElements, passwordData);
           if (andSubmit) PassFF.Page.submit();
           return passwordData;
         });
@@ -702,7 +702,7 @@ PassFF.Page = (function () {
       if (input.tagName != "INPUT" || loginInputTypes.indexOf(input.type) < 0) {
         return null;
       }
-      return [input.type, input.name ? input.name : input.id]
+      return [input.type, input.name ? input.name : input.id];
     }),
   };
 })();

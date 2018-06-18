@@ -82,7 +82,7 @@ PassFF.Preferences = (function () {
     directoriesFirst      : false,
     enableLogging         : false,
     showStatus            : true,
-  }
+  };
 
   var listParams = {
     'passwordInputNames'  : ',',
