@@ -219,10 +219,22 @@
     "message": "Do you want to continue anyway? Doing so may be a security risk."
   },
   "passff_error_getting_url_pass": {
-    "message": "There was an error parsing the URL from the password database."
+    "message": "There was an error parsing the URL ($passURL$) from the password database.",
+    "placeholders": {
+      "passURL" : {
+        "content" : "$1",
+        "example" : "badlyFormattedURL.com"
+      }
+    }
   },
   "passff_error_getting_url_curr": {
-    "message": "There was an error parsing the current URL."
+    "message": "There was an error parsing the current URL ($currURL$).",
+    "placeholders": {
+      "currURL" : {
+        "content" : "$1",
+        "example" : "badlyFormattedURL.com"
+      }
+    }
   },
   "passff_domain_mismatch": {
     "message": "The domain of your current site ($currDomain$) does not match the one in your pass database ($passDomain$).",

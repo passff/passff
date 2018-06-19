@@ -474,14 +474,14 @@ PassFF.Page = (function () {
     try {
       var passURL = new URL(passItemURL);
     } catch(e) {
-      return window.confirm( _("passff_error_getting_url_pass") + " (" +
-      passItemURL + ").\n" + _("passff_override_antiphishing_confirmation"));
+      return window.confirm( _("passff_error_getting_url_pass", passItemURL) +
+      "\n" + _("passff_override_antiphishing_confirmation"));
     }
     try {
       var currURL = new URL(currTabURL);
     } catch(e) {
-      return window.confirm( _("passff_error_getting_url_curr") + " (" +
-      currTabURL + ").\n" + _("passff_override_antiphishing_confirmation"));
+      return window.confirm( _("passff_error_getting_url_curr", currTabURL) +
+      "\n" + _("passff_override_antiphishing_confirmation"));
     }
     if (domainSecurityCheck(passURL, currURL)) {
       if (currProtocolSecurityCheck(currURL)) {
