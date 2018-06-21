@@ -14,6 +14,9 @@ This extension will allow you to access your **[zx2c4 pass](http://www.zx2c4.com
 
 You can choose to automatically fill and submit login forms if a matching password entry is found.
 
+### Browser compatibility
+* Firefox 50+ (or 54 for [full support](#i-use-an-old-version-of-firefox-and-i-have-weird-behaviours))
+
 ### Installation
 
 ##### xz2c4 pass repository
@@ -131,9 +134,9 @@ Configure the script's execution parameters appropriately in the host app `passf
 ### Troubleshooting
 
 #### I use an old version of Firefox and I have weird behaviours
-PassFF is developed for the last version of **Firefox** (version 59 as of April 2018).
-PassFF should also work on previous versions above Firefox 48, which introduced stable support for [WebExtensions](https://blog.mozilla.org/addons/2016/04/29/webextensions-in-firefox-48/).
-However, with Firefox's API transition, PassFF might behave strangely on these old versions.
+PassFF is developed for the [last version of **Firefox**](https://en.wikipedia.org/wiki/Firefox_version_history#Current_and_future_releases).
+PassFF should also work on previous versions above Firefox 50, which introduced [*native messaging*](https://blog.mozilla.org/addons/2016/08/25/webextensions-in-firefox-50/) for WebExtensions.
+However, HTTP authentication is available from Firefox 54 onwards.
 
 #### Nothing happens when I click on a password and select an action
 #### PassFF does not prompt me for the passphrase
