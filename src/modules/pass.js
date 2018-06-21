@@ -227,11 +227,12 @@ PassFF.Pass = (function () {
         }
         return browser.runtime.sendNativeMessage("passff", args)
           .then((result) => {
-            let version = result.version || "0.0";
-            if (version !== "1.0.1" && version !== "testing") {
+            let version = String(result.version) || "0.0";
+            const COMPATIBLE_VERSION = "1.0.1";
+            if (version < COMPATIBLE_VERSION && version !== "testing") {
               log.warn("The host app is outdated!", version);
               result.exitCode = -2;
-              result.stderr = "v" + version;
+              result.stderr = "The host app is outdated! v" + version;
             } else if (result.exitCode !== 0) {
               log.warn('Script execution failed',
                 result.exitCode, result.stderr, result.stdout);
