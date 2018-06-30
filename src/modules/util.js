@@ -161,3 +161,76 @@ function fun_name(name) {
     return [PassFF, parts[0]];
   }
 }
+
+/* #############################################################################
+ * #############################################################################
+ *  semantic versioning
+ * #############################################################################
+ */
+
+/*
+ * This implementation has been inspired by npm's semver.
+ *
+ * For in-depth explanations,
+ * See https://github.com/passff/passff/pull/342
+ */
+
+function semver() {
+
+  /**
+   * Takes a version string as input and parses it.
+   * Returns the major, minor and patch identifiers of the version as integers.
+   */
+  function parser(version) {
+    version = version + "";
+    // This regEx is ^(id)\.(id)(?:\.(id))?(?:ext)$
+    // with id = `0|[1-9]\d*` and ext = `|[\+-].+`
+    const reg = /^(0|[1-9]\d*)\.(0|[1-9]\d*)(?:\.(0|[1-9]\d*))?(?:|[\+-].+)$/;
+    const m = version.match(reg);
+
+    if (!m) return null;
+
+    return {
+      major: +m[1] || 0,
+      minor: +m[2] || 0,
+      patch: +m[3] || 0,
+    };
+  }
+
+  /**
+   * Takes two version strings as input.
+   * Returns an integer. The latter is:
+   *   - negative (<0) if v1 < v2
+   *   - positive (>0) if v1 > v2
+   *   - zero     (=0) if v1 = v2
+   * Notice the symmetry in the relations.
+   * Last but not least, we can sort versions using Array#sort(comparator).
+   */
+  function comparator(v1,v2) {
+    v1 = parser(v1);
+    v2 = parser(v2);
+
+    if(!v1 || !v2) return NaN;
+
+    return (v1.major - v2.major ||
+            v1.minor - v2.minor ||
+            v1.patch - v2.patch);
+  }
+
+  function gt(v1, v2) {
+    return comparator(v1,v2) > 0;
+  }
+
+  function gte(v1, v2) {
+    return comparator(v1,v2) >= 0;
+  }
+
+  function eq(v1, v2) {
+    return comparator(v1,v2) == 0;
+  }
+
+  // The API is conservative for now.
+  // It could be expanded later if necessary.
+  let publicAPI = { gt, gte, eq };
+  return publicAPI;
+}
