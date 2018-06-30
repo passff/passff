@@ -417,7 +417,7 @@ PassFF.Menu = (function () {
     Array.from(errorBoxMsgs).forEach(function (p) {
       p.textContent = _(p.textContent);
       p.innerHTML = p.innerHTML.replace(/\{([^\}]+)\}/,
-        "<a href=\"https://github.com/passff/passff/blob/master/docs/INSTALLATION.md\">$1</a>");
+        "<a href=\"https://github.com/passff/passff#installation\">$1</a>");
     });
 
     let searchBox = document.getElementById('passff-search-box');
