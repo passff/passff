@@ -175,7 +175,7 @@ function fun_name(name) {
  * See https://github.com/passff/passff/pull/342
  */
 
-function semver() {
+const semver = (function semver() {
 
   /**
    * Takes a version string as input and parses it.
@@ -183,12 +183,13 @@ function semver() {
    */
   function parser(version) {
     version = version + "";
-    // This regEx is ^(id)\.(id)(?:\.(id))?(?:ext)$
-    // with id = `0|[1-9]\d*` and ext = `|[\+-].+`
-    const reg = /^(0|[1-9]\d*)\.(0|[1-9]\d*)(?:\.(0|[1-9]\d*))?(?:|[\+-].+)$/;
-    const m = version.match(reg);
 
-    if (!m) return null;
+    const id = String.raw`(0|[1-9]\d*)`;
+    const ext = String.raw`(?:|[\+-].+)`;
+    const reg = String.raw`^${id}\.${id}(?:\.${id})?${ext}$`;
+    const m = version.trim().match(reg);
+
+    if (!m) throw new TypeError('Invalid Version: ' + version);
 
     return {
       major: +m[1] || 0,
@@ -210,8 +211,6 @@ function semver() {
     v1 = parser(v1);
     v2 = parser(v2);
 
-    if(!v1 || !v2) return NaN;
-
     return (v1.major - v2.major ||
             v1.minor - v2.minor ||
             v1.patch - v2.patch);
@@ -229,8 +228,6 @@ function semver() {
     return comparator(v1,v2) == 0;
   }
 
-  // The API is conservative for now.
-  // It could be expanded later if necessary.
   let publicAPI = { gt, gte, eq };
   return publicAPI;
-}
+})();
