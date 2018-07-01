@@ -29,6 +29,9 @@
   "passff_menu_display": {
     "message": "Отобразить"
   },
+  "passff_display_hover": {
+    "message": "Наведите курсор, чтобы отобразить пароль."
+  },
   "passff_toolbar_button_label": {
     "message": "PassFF"
   },
@@ -50,6 +53,9 @@
   "passff_button_context_label": {
     "message": "Показать совпадения"
   },
+  "passff_prefs_headline": {
+    "message": "Настройки PassFF"
+  },
   "passff_prefs_tab_general": {
     "message": "Общие"
   },
@@ -68,6 +74,21 @@
   "passff_prefs_tab_adding": {
     "message": "Добавление паролей"
   },
+  "passff_prefs_tab_misc": {
+    "message": "Разное"
+  },
+  "passff_prefs_mark_fillable": {
+    "message": "Отметить поля, которые можно заполнить, иконкой PassFF"
+  },
+  "passff_prefs_submit_fillable": {
+    "message": "Отправить при выборе через меню ввода"
+  },
+  "passff_prefs_handle_http_auth": {
+    "message": "Обрабатывать аутентификацию HTTP"
+  },
+  "passff_prefs_directories_first": {
+    "message": "Показывать каталоги в начале списка в панели инструментов"
+  },
   "passff_prefs_case_insensitive_search": {
     "message": "Поиск без учета регистра"
   },
@@ -78,7 +99,7 @@
     "message": "Inputs are used by PassFF to find fillable input fields in web pages. Optionally, PassFF marks them with a menu to fill them."
   },
   "passff_prefs_fields_description": {
-    "message": "Поля которые используются для поиска данных в вашем репозитории паролей. PassFF пытается найти логин, пароль и адреса сайтов в файлах с паролями (используя стандартный синтаксис)."
+    "message": "Поля, которые используются для поиска данных в вашем репозитории паролей. PassFF пытается найти логин, пароль и адреса сайтов в файлах с паролями (используя стандартный синтаксис)."
   },
   "passff_prefs_password_input_names_label": {
     "message": "Имена полей для паролей"
@@ -95,17 +116,17 @@
   "passff_prefs_url_field_names_label": {
     "message": "Имена полей для адресов сайтов"
   },
-  "passff_prefs_command_label": {
-    "message": "Команда для запуска pass"
-  },
-  "passff_prefs_commandArgs_label": {
-    "message": "Аргументы"
+  "passff_prefs_script_howto": {
+    "message": "Смотри файл passff.py для смены переменных окружения приложения pass."
   },
   "passff_prefs_auto_fill_label": {
     "message": "Автоматически заполнять поля для входа"
   },
   "passff_prefs_auto_submit_label": {
     "message": "Автоматически отправлять поля для входа"
+  },
+  "passff_prefs_autofill_blacklist_label": {
+    "message": "Не использовать автозаполнение если адрес содержит одну из следующих строк"
   },
   "passff_prefs_default_length_label": {
     "message": "Длина пароля по умолчанию"
@@ -121,6 +142,15 @@
   },
   "passff_prefs_prefer_insert": {
     "message": "Вставить"
+  },
+  "passff_prefs_show_new_password_button": {
+    "message": "Показывать кнопку 'Новый пароль' в панели инструментов"
+  },
+  "passff_prefs_enable_logging": {
+    "message": "Включить отладку в JavaScript веб-консоли"
+  },
+  "passff_prefs_show_status": {
+    "message": "Показывать строку состояния в панели инструментов"
   },
   "passff_newpassword_window_title": {
     "message": "Новый пароль"
@@ -147,7 +177,7 @@
     "message": "Дополнительные данные"
   },
   "passff_newpassword_inputs_password_length_label": {
-    "message": "Длинна"
+    "message": "Длина"
   },
   "passff_newpassword_inputs_include_symbols_label": {
     "message": "Включая отличные от букв и цифр символы?"
@@ -159,7 +189,7 @@
     "message": "Генерировать пароль"
   },
   "passff_newpassword_inputs_overwrite_password_prompt": {
-    "message": "Пароль уже есть. Хотите ли вы его надписать?"
+    "message": "Пароль уже существует. Хотите заменить его?"
   },
   "passff_newpassword_errors_name_is_required": {
     "message": "Имя обязательно"
@@ -171,12 +201,18 @@
     "message": "Пароли не сходятся"
   },
   "passff_newpassword_errors_pass_execution_failed": {
-    "message": "Ой, чтото пошло не так"
+    "message": "Ой, что-то пошло не так"
   },
   "passff_newpassword_errors_unexpected_error": {
     "message": "Извините, произошла неожиданная ошибка"
   },
-  "passff_errors_unexpected_error": {
-    "message": "Извините, произошла неожиданная ошибка. Убедитесь что ваши установки правильны и что нативная программа заинстлирована в операционной системе."
+  "passff_errors_exec_host_app": {
+    "message": "Соединение с хост-приложением не удалось или возвратило неожиданный результат!"
+  },
+  "passff_errors_upgrade_host_app": {
+    "message": "Убедитесь, что вы используете последнюю версию хост-приложения PastFF. Смотри руководство по установке {инструкции по установке на GitHub}."
+  },
+  "passff_no_entries_found": {
+    "message": "Нет записей совпадающих с этим URL."
   }
 }
