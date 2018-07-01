@@ -161,3 +161,73 @@ function fun_name(name) {
     return [PassFF, parts[0]];
   }
 }
+
+/* #############################################################################
+ * #############################################################################
+ *  semantic versioning
+ * #############################################################################
+ */
+
+/*
+ * This implementation has been inspired by npm's semver.
+ *
+ * For in-depth explanations,
+ * See https://github.com/passff/passff/pull/342
+ */
+
+const semver = (function semver() {
+
+  /**
+   * Takes a version string as input and parses it.
+   * Returns the major, minor and patch identifiers of the version as integers.
+   */
+  function parser(version) {
+    version = version + "";
+
+    const id = String.raw`(0|[1-9]\d*)`;
+    const ext = String.raw`(?:|[\+-].+)`;
+    const reg = String.raw`^${id}\.${id}(?:\.${id})?${ext}$`;
+    const m = version.trim().match(reg);
+
+    if (!m) throw new TypeError('Invalid Version: ' + version);
+
+    return {
+      major: +m[1] || 0,
+      minor: +m[2] || 0,
+      patch: +m[3] || 0,
+    };
+  }
+
+  /**
+   * Takes two version strings as input.
+   * Returns an integer. The latter is:
+   *   - negative (<0) if v1 < v2
+   *   - positive (>0) if v1 > v2
+   *   - zero     (=0) if v1 = v2
+   * Notice the symmetry in the relations.
+   * Last but not least, we can sort versions using Array#sort(comparator).
+   */
+  function comparator(v1,v2) {
+    v1 = parser(v1);
+    v2 = parser(v2);
+
+    return (v1.major - v2.major ||
+            v1.minor - v2.minor ||
+            v1.patch - v2.patch);
+  }
+
+  function gt(v1, v2) {
+    return comparator(v1,v2) > 0;
+  }
+
+  function gte(v1, v2) {
+    return comparator(v1,v2) >= 0;
+  }
+
+  function eq(v1, v2) {
+    return comparator(v1,v2) == 0;
+  }
+
+  let publicAPI = { gt, gte, eq };
+  return publicAPI;
+})();
