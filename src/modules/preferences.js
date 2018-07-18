@@ -78,6 +78,7 @@ PassFF.Preferences = (function () {
     preferInsert          : 0,
     showNewPassButton     : true,
     markFillable          : true,
+    contextMenu           : true,
     submitFillable        : true,
     directoriesFirst      : false,
     enableLogging         : false,

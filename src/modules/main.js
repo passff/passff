@@ -107,7 +107,11 @@ var PassFF = (function () {
       }
 
       PassFF.Pass.loadContextItems(url);
-      setupContextMenu();
+      if (PassFF.Preferences.contextMenu) {
+        setupContextMenu();
+      } else {
+        chrome.contextMenus.removeAll();
+      }
       PassFF.Menu.onContextChanged();
     }
   }

@@ -80,6 +80,9 @@
   "passff_prefs_mark_fillable": {
     "message": "Automatisch ausfüllbare Felder mit Icon markieren"
   },
+  "passff_prefs_context_menu": {
+    "message": "Erstelle einen Eintrag im Kontextmenü für das Ausfüllen ausfüllbarer Felder"
+  },
   "passff_prefs_submit_fillable": {
     "message": "Formular absenden, wenn ein Eintrag über das Icon-Menü gewählt wurde"
   },

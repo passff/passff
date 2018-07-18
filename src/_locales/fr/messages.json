@@ -80,6 +80,9 @@
   "passff_prefs_mark_fillable": {
     "message": "Marquer les champs d'entrée remplissables de l'icône PassFF"
   },
+  "passff_prefs_context_menu": {
+    "message": "Add item to context menu for filling fillable input fields"
+  },
   "passff_prefs_submit_fillable": {
     "message": "Valider quand le mot de passe est sélectionné via le menu du champ d'entrée"
   },
