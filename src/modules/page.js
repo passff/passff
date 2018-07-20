@@ -464,6 +464,79 @@ PassFF.Page = (function () {
 
 /* #############################################################################
  * #############################################################################
+ *  Security Checks for (Auto)fill
+ * #############################################################################
+ */
+  function securityChecks(passItemURL, currTabURL) {
+    if (! PassFF.Preferences.autoFillDomainCheck) {
+      return true;
+    }
+    try {
+      var passURL = new URL(passItemURL);
+    } catch(e) {
+      return window.confirm( _("passff_error_getting_url_pass", passItemURL) +
+      "\n" + _("passff_override_antiphishing_confirmation"));
+    }
+    try {
+      var currURL = new URL(currTabURL);
+    } catch(e) {
+      return window.confirm( _("passff_error_getting_url_curr", currTabURL) +
+      "\n" + _("passff_override_antiphishing_confirmation"));
+    }
+    if (domainSecurityCheck(passURL, currURL)) {
+      if (currProtocolSecurityCheck(currURL)) {
+        // Storing an HTTP link is OK if the site redirects to HTTPS
+        return true;
+      } else {
+        // Maybe the current protocol was unsafe because an unsafe URL is stored
+        passProtocolSecurityWarning(passURL);
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+  function domainSecurityCheck(passURL, currURL) {
+    /*
+    Instead of requiring that the entire hostname match, which would lead to
+    example.com and login.example.com being considered different, only the
+    domains must match. However, identifying the domain is difficult because of
+    top-level-domains like .co.uk that have multiple dots in them, unlike the
+    more conventional single-dot TLDs like .com.
+    Resources on Identifying Domain:
+    https://stackoverflow.com/questions/10210058/get-the-parent-document-domain-without-subdomains
+    https://stackoverflow.com/questions/399250/going-where-php-parse-url-doesnt-parsing-only-the-domain
+    https://publicsuffix.org/
+    While not ideal, the current solution is to assume a single-dot TLD and
+    therefore match everything after the second-to-last dot. This is a security
+    risk on two-dot TLDs, as only the TLD (e.g. co.uk) will be matched.
+    */
+    let passDomain = passURL.hostname.split(".").slice(-2).join(".");
+    let currDomain = currURL.hostname.split(".").slice(-2).join(".");
+    if (passDomain != currDomain) {
+      return window.confirm( _("passff_domain_mismatch", [currDomain, passDomain]) +
+      "\n" + _("passff_override_antiphishing_confirmation"));
+    }
+    return true;
+  }
+  function currProtocolSecurityCheck(currURL) {
+    let currProt = currURL.protocol;
+    if (currProt != "https:") {
+      return window.confirm( _("passff_http_curr_warning") + "\n" +
+      _("passff_override_antiphishing_confirmation"));
+    }
+    return true;
+  }
+  function passProtocolSecurityWarning(passURL) {
+    let passProt = passURL.protocol;
+    if (passProt != "https:") {
+      window.alert( _("passff_http_pass_warning", passURL.href));
+    }
+  }
+
+
+/* #############################################################################
+ * #############################################################################
  *  Main interface
  * #############################################################################
  */
@@ -608,6 +681,7 @@ PassFF.Page = (function () {
         let activeElement = getActiveElement();
         if (activeElement.form) {
           let inputs = activeElement.form.getElementsByTagName('input');
+          if (!securityChecks(passwordData.url, window.location.href)) return;
           setInputs(Array.from(inputs).filter(isVisible), passwordData);
         }
       }
@@ -622,6 +696,7 @@ PassFF.Page = (function () {
         .then((passwordData) => {
           if (typeof passwordData === "undefined") return;
           log.debug('Start auto-fill using', item.fullKey, andSubmit);
+          if (!securityChecks(passwordData.url, window.location.href)) return;
           setInputs(inputElements, passwordData);
           if (andSubmit) PassFF.Page.submit();
           return passwordData;

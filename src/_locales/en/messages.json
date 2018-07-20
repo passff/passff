@@ -217,5 +217,54 @@
   },
   "passff_no_entries_found": {
     "message": "No entries matching this URL."
+  },
+  "passff_override_antiphishing_confirmation": {
+    "message": "Do you want to continue anyway? Doing so may be a security risk."
+  },
+  "passff_error_getting_url_pass": {
+    "message": "There was an error parsing the URL ($passURL$) from the password database.",
+    "placeholders": {
+      "passURL" : {
+        "content" : "$1",
+        "example" : "badlyFormattedURL.com"
+      }
+    }
+  },
+  "passff_error_getting_url_curr": {
+    "message": "There was an error parsing the current URL ($currURL$).",
+    "placeholders": {
+      "currURL" : {
+        "content" : "$1",
+        "example" : "badlyFormattedURL.com"
+      }
+    }
+  },
+  "passff_domain_mismatch": {
+    "message": "The domain of your current site ($currDomain$) does not match the one in your pass database ($passDomain$).",
+    "placeholders": {
+      "currDomain" : {
+        "content" : "$1",
+        "example" : "phishingDomain.com"
+      },
+      "passDomain": {
+        "content" : "$2",
+        "example": "realDomain.com"
+      }
+    }
+  },
+  "passff_http_pass_warning": {
+    "message": "The URL in your password database ($passItemURL$) uses an insecure protocol. It is advised that you change the URL to start with 'https:'.",
+    "placeholders": {
+      "passItemURL": {
+        "content" : "$1",
+        "example" : "http://www.example.com"
+      }
+    }
+  },
+  "passff_http_curr_warning": {
+    "message": "The current page uses an insecure protocol that could compromize your password."
+  },
+  "passff_prefs_domain_check_label": {
+    "message": "Warn about potential phishing sites, such as when the domain listed in the database differs from that of the current page"
   }
 }
