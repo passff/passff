@@ -467,35 +467,35 @@ PassFF.Page = (function () {
  *  Security Checks for (Auto)fill
  * #############################################################################
  */
+
   function securityChecks(passItemURL, currTabURL) {
-    if (! PassFF.Preferences.autoFillDomainCheck) {
-      return true;
+    if (!PassFF.Preferences.autoFillDomainCheck) {
+      return Promise.resolve(true);
     }
+
     try {
       var passURL = new URL(passItemURL);
     } catch(e) {
-      return window.confirm( _("passff_error_getting_url_pass", passItemURL) +
-      "\n" + _("passff_override_antiphishing_confirmation"));
+      return PassFF.Page.confirm(
+        _("passff_error_getting_url_pass", passItemURL) + " "
+        + _("passff_override_antiphishing_confirmation"));
     }
+
     try {
       var currURL = new URL(currTabURL);
     } catch(e) {
-      return window.confirm( _("passff_error_getting_url_curr", currTabURL) +
-      "\n" + _("passff_override_antiphishing_confirmation"));
+      return PassFF.Page.confirm(
+        _("passff_error_getting_url_curr", currTabURL) + " "
+        + _("passff_override_antiphishing_confirmation"));
     }
-    if (domainSecurityCheck(passURL, currURL)) {
-      if (currProtocolSecurityCheck(currURL)) {
-        // Storing an HTTP link is OK if the site redirects to HTTPS
-        return true;
-      } else {
-        // Maybe the current protocol was unsafe because an unsafe URL is stored
-        passProtocolSecurityWarning(passURL);
-        return false;
-      }
-    } else {
-      return false;
-    }
+
+    return domainSecurityCheck(passURL, currURL)
+      .then((result) => {
+        if (!result) return false;
+        return protocolSecurityCheck(currURL, passURL);
+      });
   }
+
   function domainSecurityCheck(passURL, currURL) {
     /*
     Instead of requiring that the entire hostname match, which would lead to
@@ -514,26 +514,32 @@ PassFF.Page = (function () {
     let passDomain = passURL.hostname.split(".").slice(-2).join(".");
     let currDomain = currURL.hostname.split(".").slice(-2).join(".");
     if (passDomain != currDomain) {
-      return window.confirm( _("passff_domain_mismatch", [currDomain, passDomain]) +
-      "\n" + _("passff_override_antiphishing_confirmation"));
+      return PassFF.Page.confirm(
+        _("passff_domain_mismatch", [currDomain, passDomain]) + " "
+        + _("passff_override_antiphishing_confirmation"));
     }
-    return true;
-  }
-  function currProtocolSecurityCheck(currURL) {
-    let currProt = currURL.protocol;
-    if (currProt != "https:") {
-      return window.confirm( _("passff_http_curr_warning") + "\n" +
-      _("passff_override_antiphishing_confirmation"));
-    }
-    return true;
-  }
-  function passProtocolSecurityWarning(passURL) {
-    let passProt = passURL.protocol;
-    if (passProt != "https:") {
-      window.alert( _("passff_http_pass_warning", passURL.href));
-    }
+    return Promise.resolve(true);
   }
 
+  function protocolSecurityCheck(currURL, passURL) {
+    let currProt = currURL.protocol;
+    let passProt = passURL.protocol;
+    if (currProt == "https:") {
+      // Storing an HTTP link is OK if the site redirects to HTTPS
+      return Promise.resolve(true);
+    }
+
+    return PassFF.Page.confirm(
+             _("passff_http_curr_warning") + " "
+             + _("passff_override_antiphishing_confirmation")
+      ).then((result) => {
+        // Maybe the current protocol was unsafe because an unsafe URL is stored
+        if (!result && passProt != "https:") {
+          PassFF.Page.notify(_("passff_http_pass_warning", passURL.href));
+        }
+        return result;
+      });
+  }
 
 /* #############################################################################
  * #############################################################################
@@ -679,11 +685,13 @@ PassFF.Page = (function () {
     fillActiveElement: content_function("Page.fillActiveElement",
       function (passwordData) {
         let activeElement = getActiveElement();
-        if (activeElement.form) {
-          let inputs = activeElement.form.getElementsByTagName('input');
-          if (!securityChecks(passwordData.url, window.location.href)) return;
-          setInputs(Array.from(inputs).filter(isVisible), passwordData);
-        }
+        if (!activeElement.form) return;
+        return securityChecks(passwordData.url, window.location.href)
+          .then((result) => {
+            if (!result) return;
+            let inputs = activeElement.form.getElementsByTagName('input');
+            setInputs(Array.from(inputs).filter(isVisible), passwordData);
+          });
       }
     ),
 
@@ -696,7 +704,10 @@ PassFF.Page = (function () {
         .then((passwordData) => {
           if (typeof passwordData === "undefined") return;
           log.debug('Start auto-fill using', item.fullKey, andSubmit);
-          if (!securityChecks(passwordData.url, window.location.href)) return;
+          return securityChecks(passwordData.url, window.location.href);
+        })
+        .then((result) => {
+          if (!result) return;
           setInputs(inputElements, passwordData);
           if (andSubmit) PassFF.Page.submit();
           return passwordData;
