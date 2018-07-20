@@ -669,20 +669,53 @@ PassFF.Page = (function () {
 
     notify: content_function("Page.notify", function (message) {
       let dialog = document.getElementById("passff_notification");
-      let dialog_text = null;
       if (!dialog) {
         dialog = document.createElement("div");
         dialog.id = "passff_notification";
-        dialog.innerHTML = "<div><p></p><button>OK</button></div>";
         document.body.appendChild(dialog);
-        let div = dialog.querySelector("div");
-        div.style.backgroundImage = "url('" + passff_icon + "')";
-        let button = dialog.querySelector("button");
-        button.addEventListener("click", () => document.body.removeChild(dialog));
       }
+      dialog.innerHTML = "<div><p></p><div><button>OK</button></div></div>";
+      let div = dialog.querySelector("div");
+      div.style.backgroundImage = "url('" + passff_icon + "')";
+      let dialog_text = null;
       dialog_text = dialog.querySelector("div p");
       dialog_text.textContent = message; // prevent HTML injection
       dialog_text.innerHTML = dialog_text.textContent.replace(/\n/g, '<br />');
+      return new Promise(function (resolve, reject) {
+        let button = dialog.querySelector("button");
+        button.addEventListener("click", () => {
+          document.body.removeChild(dialog);
+          resolve(true);
+        });
+      });
+    }),
+
+    confirm: content_function("Page.confirm", function (message) {
+      let dialog = document.getElementById("passff_notification");
+      if (!dialog) {
+        dialog = document.createElement("div");
+        dialog.id = "passff_notification";
+        document.body.appendChild(dialog);
+      }
+      dialog.innerHTML = "<div><p></p><div><button>OK</button> <button>Cancel</button></div></div>";
+      let div = dialog.querySelector("div");
+      div.style.backgroundImage = "url('" + passff_icon + "')";
+      let dialog_text = null;
+      dialog_text = dialog.querySelector("div p");
+      dialog_text.textContent = message; // prevent HTML injection
+      dialog_text.innerHTML = dialog_text.textContent.replace(/\n/g, '<br />');
+      return new Promise(function (resolve, reject) {
+        let button = dialog.querySelector("button:first-child");
+        button.addEventListener("click", () => {
+          document.body.removeChild(dialog);
+          resolve(true);
+        });
+        button = dialog.querySelector("button:last-child");
+        button.addEventListener("click", () => {
+          document.body.removeChild(dialog);
+          resolve(false);
+        });
+      });
     }),
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%% Miscellaneous %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

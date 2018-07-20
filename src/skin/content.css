@@ -43,11 +43,17 @@
   font-family: sans-serif !important;
 }
 
-#passff_notification > div > button {
+#passff_notification > div > div {
   all: initial;
   position: absolute;
   right: 2em;
   bottom: 1.5em;
+  padding: 0;
+  margin: 0;
+}
+
+#passff_notification > div > div > button {
+  all: initial;
   background-color: #ddd !important;
   padding: 0.5em 3em !important;
   border: 1px #666 solid !important;
@@ -58,7 +64,7 @@
   font-family: sans-serif !important;
 }
 
-#passff_notification > div > button:hover {
+#passff_notification > div > div > button:hover {
   background-color: #ccc !important;
 }
 
