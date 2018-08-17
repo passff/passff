@@ -704,13 +704,13 @@ PassFF.Page = (function () {
         .then((passwordData) => {
           if (typeof passwordData === "undefined") return;
           log.debug('Start auto-fill using', item.fullKey, andSubmit);
-          return securityChecks(passwordData.url, window.location.href);
-        })
-        .then((result) => {
-          if (!result) return;
-          setInputs(inputElements, passwordData);
-          if (andSubmit) PassFF.Page.submit();
-          return passwordData;
+          return securityChecks(passwordData.url, window.location.href)
+            .then((result) => {
+              if (!result) return;
+              setInputs(inputElements, passwordData);
+              if (andSubmit) PassFF.Page.submit();
+              return passwordData;
+            });
         });
     }, true),
 
