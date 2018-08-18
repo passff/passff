@@ -74,8 +74,8 @@
   "passff_prefs_tab_adding": {
     "message": "Добавление паролей"
   },
-  "passff_prefs_tab_misc": {
-    "message": "Разное"
+  "passff_prefs_tab_dev": {
+    "message": "Отладка"
   },
   "passff_prefs_mark_fillable": {
     "message": "Отметить поля, которые можно заполнить, иконкой PassFF"

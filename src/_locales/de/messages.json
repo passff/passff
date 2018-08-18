@@ -74,8 +74,8 @@
   "passff_prefs_tab_adding": {
     "message": "Passwörter hinzufügen"
   },
-  "passff_prefs_tab_misc": {
-    "message": "Verschiedenes"
+  "passff_prefs_tab_dev": {
+    "message": "Fehlersuche"
   },
   "passff_prefs_mark_fillable": {
     "message": "Automatisch ausfüllbare Felder mit Icon markieren"

@@ -74,8 +74,8 @@
   "passff_prefs_tab_adding": {
     "message": "Ajout de mots de passe"
   },
-  "passff_prefs_tab_misc": {
-    "message": "Divers"
+  "passff_prefs_tab_dev": {
+    "message": "Déverminage"
   },
   "passff_prefs_mark_fillable": {
     "message": "Marquer les champs d'entrée remplissables de l'icône PassFF"

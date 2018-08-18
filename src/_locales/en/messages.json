@@ -74,8 +74,8 @@
   "passff_prefs_tab_adding": {
     "message": "Adding Passwords"
   },
-  "passff_prefs_tab_misc": {
-    "message": "Miscellaneous"
+  "passff_prefs_tab_dev": {
+    "message": "Debugging and Development"
   },
   "passff_prefs_mark_fillable": {
     "message": "Mark fillable input fields with the PassFF icon"
