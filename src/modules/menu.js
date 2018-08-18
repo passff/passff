@@ -17,7 +17,7 @@ PassFF.Menu = (function () {
     search_val: "",
     items: null,
     error: false,
-    lastResult: null,
+    lastResult: null
   };
 
   function showStatus() {
@@ -232,7 +232,7 @@ PassFF.Menu = (function () {
 
   function onNewPassButtonCommand(event) {
     log.debug('New password button command');
-    PassFF.Pass.newPasswordUI();
+    PassFF.Pass.newPasswordUI(menuState['items']);
     window.close();
   }
 

@@ -13,6 +13,7 @@ PassFF.Pass = (function () {
   var contextItems = [];
   var displayItem = null;
   var pendingRequests = {};
+  var addPasswordContext = '/';
 
 /* #############################################################################
  * #############################################################################
@@ -613,7 +614,13 @@ PassFF.Pass = (function () {
  * #############################################################################
  */
 
-    newPasswordUI: background_function("Pass.newPasswordUI", () => {
+    newPasswordUI: background_function("Pass.newPasswordUI", (context) => {
+      addPasswordContext = '/';
+      if (context instanceof Array && context.length > 0) {
+        context = context[0];
+      }
+      if (context) addPasswordContext += context.fullKey;
+      addPasswordContext = addPasswordContext.replace(/\/[^\/]*$/, '/');
       return browser.windows.create({
         'url': browser.extension.getURL('/content/passwordGenerator.html'),
         'width': 640,
@@ -624,6 +631,10 @@ PassFF.Pass = (function () {
         setTimeout(() => browser.windows.update(win.id, { height: 480 }), 100);
       });
     }),
+
+    getAddPasswordContext: background_function("Pass.getAddPasswordContext",
+      function () { return addPasswordContext; }
+    ),
   };
 })();
 
@@ -767,4 +778,9 @@ function handlePasswordGeneration() {
   saveButton.addEventListener('click', onAddPassword);
   let genSaveButton = document.getElementById("gen-save-button");
   genSaveButton.addEventListener('click', onGeneratePassword);
+
+  PassFF.Pass.getAddPasswordContext().then((path) => {
+    document.getElementById('add-password-name').value = path;
+    document.getElementById('gen-password-name').value = path;
+  });
 }
