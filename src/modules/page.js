@@ -568,7 +568,7 @@ PassFF.Page = (function () {
             even if an input box is focused.
           */
           document.addEventListener('keydown', function (evt) {
-            if (shortcut.commandLetter !== evt.key) return;
+            if (shortcut.commandLetter !== evt.key.toLowerCase()) return;
 
             for (var modifier in shortcut.expectedModifierState) {
               if (shortcut.expectedModifierState[modifier] !==
