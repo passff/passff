@@ -92,6 +92,9 @@
   "passff_prefs_directories_first": {
     "message": "Lister les dossiers en premier dans le menu de la barre d'outils"
   },
+  "passff_prefs_tb_menu_shortcut_label": {
+    "message": "Raccourcie clavier pour le menu de la barre d'outils"
+  },
   "passff_prefs_case_insensitive_search": {
     "message": "Recherche insensible à la casse"
   },

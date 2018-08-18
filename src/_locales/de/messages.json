@@ -92,6 +92,9 @@
   "passff_prefs_directories_first": {
     "message": "Zeige Verzeichnisse im Passwort-Repository zuoberst"
   },
+  "passff_prefs_tb_menu_shortcut_label": {
+    "message": "Tastenkombination für das Menü in der Werkzeugleiste"
+  },
   "passff_prefs_case_insensitive_search": {
     "message": "Groß-Kleinschreibung ignorieren"
   },

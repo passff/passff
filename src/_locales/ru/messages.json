@@ -92,6 +92,9 @@
   "passff_prefs_directories_first": {
     "message": "Показывать каталоги в начале списка в панели инструментов"
   },
+  "passff_prefs_tb_menu_shortcut_label": {
+    "message": "Сочетание клавиш для меню панели инструментов"
+  },
   "passff_prefs_case_insensitive_search": {
     "message": "Поиск без учета регистра"
   },

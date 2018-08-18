@@ -84,6 +84,7 @@ PassFF.Preferences = (function () {
     directoriesFirst      : false,
     enableLogging         : false,
     showStatus            : true,
+    tbMenuShortcut        : '',
   };
 
   var listParams = {
@@ -112,7 +113,11 @@ PassFF.Preferences = (function () {
 
   var prefObj = {
     init: function () {
-      return browser.storage.local.get(Object.keys(prefParams))
+      return PassFF.Preferences.getBrowserCommand()
+        .then((command) => {
+            prefParams['tbMenuShortcut'] = command.shortcut;
+            return browser.storage.local.get(Object.keys(prefParams));
+        })
         .then((res) => {
           let obj = {};
           for (let [key, val] of Object.entries(prefParams)) {
@@ -125,12 +130,17 @@ PassFF.Preferences = (function () {
           return browser.storage.local.set(obj);
         })
         .then(() => {
+          return updateBrowserCommand();
+        })
+        .then(() => {
           browser.storage.onChanged.addListener((changes, areaName) => {
             if (areaName !== "local") return;
             for (var item of Object.keys(changes)) {
               prefParams[item] = changes[item].newValue;
               if (item == "handleHttpAuth" && PassFF.mode === "background") {
                 PassFF.Auth.init();
+              } else if (item == "tbMenuShortcut") {
+                updateBrowserCommand();
               }
             }
           });
@@ -164,56 +174,73 @@ PassFF.Preferences = (function () {
       PassFF.refresh_all();
     },
 
-// %%%%%%%%%%%%%%%%%%%%% Determine keyboard shortcut %%%%%%%%%%%%%%%%%%%%%%%%%%%
+// %%%%%%%%%%%%%%%%%%%%%% Get/set keyboard shortcut %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     getKeyboardShortcut: background_function("Preferences.getKeyboardShortcut",
       function () {
-        /*
-          Read the _execute_browser_action command to get its shortcut. We're
-          ignoring the shortcut specified in preferences because there is
-          currently no way to apply that preference. See open mozilla bug at
-          https://bugzilla.mozilla.org/show_bug.cgi?id=1215061
-        */
+        return PassFF.Preferences.getBrowserCommand()
+          .then((command) => {
+            let shortcut = null;
+            if (command) {
+              shortcut = {
+                commandLetter: '',
+                expectedModifierState: {
+                    'Alt': false,
+                    'Meta': false,
+                    'Control': false,
+                    'Shift': false
+                }
+              };
+
+              // Mapping between modifier names in manifest.json and DOM KeyboardEvent.
+              let commandModifiers = {
+                'Ctrl': browser.runtime.PlatformOs == 'mac' ? 'Meta' : 'Control',
+                'MacCtrl': 'Control',
+                'Command': 'Meta',
+                'Alt': 'Alt',
+                'Shift': 'Shift'
+              };
+
+              command.shortcut.split(/\s*\+\s*/).forEach((part) => {
+                if (commandModifiers.hasOwnProperty(part)) {
+                  shortcut.expectedModifierState[commandModifiers[part]] = true;
+                } else {
+                  shortcut.commandLetter = part.toLowerCase();
+                }
+              });
+            }
+            return shortcut;
+          });
+      }
+    ),
+
+    getBrowserCommand: background_function("Preferences.getBrowserCommand",
+      function () {
         let name = '_execute_browser_action';
         return browser.commands.getAll()
           .then((commands) => {
-            let shortcut = null;
-            commands.forEach((command) => {
-              if (name == command.name && command.shortcut) {
-                shortcut = {
-                  commandLetter: '',
-                  expectedModifierState: {
-                      'Alt': false,
-                      'Meta': false,
-                      'Control': false,
-                      'Shift': false
-                  }
-                };
-
-                // Mapping between modifier names in manifest.json and DOM KeyboardEvent.
-                let commandModifiers = {
-                  'Ctrl': browser.runtime.PlatformOs == 'mac' ? 'Meta' : 'Control',
-                  'MacCtrl': 'Control',
-                  'Command': 'Meta',
-                  'Alt': 'Alt',
-                  'Shift': 'Shift'
-                };
-
-                command.shortcut.split(/\s*\+\s*/).forEach((part) => {
-                  if (commandModifiers.hasOwnProperty(part)) {
-                    shortcut.expectedModifierState[commandModifiers[part]] = true;
-                  } else {
-                    shortcut.commandLetter = part.toLowerCase();
-                  }
-                });
+            let command = { "name": name, "shortcut": '' };
+            commands.forEach((c) => {
+              if (name == c.name && c.shortcut) {
+                command.shortcut = c.shortcut;
               }
             });
-            return shortcut;
+            return command;
           });
       }
     ),
   };
 
+  function updateBrowserCommand() {
+    if (browser.commands && browser.commands.update) {
+      return browser.commands.update({
+        name: "_execute_browser_action",
+        shortcut: prefParams["tbMenuShortcut"]
+      });
+    } else {
+      return Promise.resolve(false);
+    }
+  }
 
 /* #############################################################################
  * #############################################################################
