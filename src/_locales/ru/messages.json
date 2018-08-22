@@ -63,7 +63,7 @@
     "message": "Автозаполнение"
   },
   "passff_prefs_tab_inputs": {
-    "message": "Inputs"
+    "message": "Входы"
   },
   "passff_prefs_tab_fields": {
     "message": "Поля"
@@ -96,7 +96,7 @@
     "message": "Поведение клавиши ввода"
   },
   "passff_prefs_inputs_description": {
-    "message": "Inputs are used by PassFF to find fillable input fields in web pages. Optionally, PassFF marks them with a menu to fill them."
+    "message": "Входы используются PassFF, чтобы найти на веб-страницах поля, которые можно автоматически заполнить. PassFF может помечать такие поля специальной иконкой, нажатие на которую вызовет автозаполнение полей."
   },
   "passff_prefs_fields_description": {
     "message": "Поля, которые используются для поиска данных в вашем репозитории паролей. PassFF пытается найти логин, пароль и адреса сайтов в файлах с паролями (используя стандартный синтаксис)."
