@@ -23,7 +23,7 @@ function _(key, params) {
 var log = {
   generateArguments: function (args) {
     var argsArray = Array.from(args);
-    argsArray.unshift('[PassFF]');
+    argsArray.unshift('[PassFF.' + PassFF.mode + ']');
     return argsArray;
   }
 };

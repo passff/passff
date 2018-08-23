@@ -192,6 +192,7 @@ PassFF.Page = (function () {
   }
 
   function setInputs(inputs, passwordData) {
+    log.debug("Set inputs...")
     setLoginInputs(inputs, passwordData.login);
     setPasswordInputs(inputs, passwordData.password);
     setOtherInputs(inputs, passwordData._other);
@@ -384,7 +385,9 @@ PassFF.Page = (function () {
     PassFF.Pass.getPasswordData(item)
       .then((passwordData) => {
         if (typeof passwordData === "undefined") return;
-        PassFF.Page.fillActiveElement(passwordData);
+        return PassFF.Page.fillActiveElement(passwordData);
+      })
+      .then(() => {
         doc = form_doc;
         PassFF.Page.submit();
       });
@@ -722,7 +725,6 @@ PassFF.Page = (function () {
 // %%%%%%%%%%%%%%%%%%%%%%% Form submitter %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     submit: content_function("Page.submit", function () {
-      log.debug("Unsafe submit...");
       let passwords = inputElements.filter(isPasswordInput);
       if (passwords.length === 0) return false;
 
