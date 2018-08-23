@@ -693,11 +693,17 @@ PassFF.Page = (function () {
     fillActiveElement: content_function("Page.fillActiveElement",
       function (passwordData) {
         let activeElement = getActiveElement();
-        if (!activeElement.form) return;
+        let inputTypes = Array.concat(loginInputTypes, ["password"]);
+        log.debug("Fill active element", activeElement);
+        if (activeElement.tagName !== "INPUT"
+            || inputTypes.indexOf(activeElement.type) < 0) return;
         return securityChecks(passwordData.url, window.location.href)
           .then((result) => {
             if (!result) return;
-            let inputs = activeElement.form.getElementsByTagName('input');
+            let inputs = [activeElement];
+            if (activeElement.form) {
+              inputs = activeElement.form.getElementsByTagName('input');
+            }
             setInputs(Array.from(inputs).filter(isVisible), passwordData);
           });
       }
