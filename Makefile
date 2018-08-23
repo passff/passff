@@ -1,9 +1,9 @@
 
 VERSION := testing
 
-SRC_DIR := .
-TARGET_DIR := ../bin/$(VERSION)
-BUILD_DIR := ../build/$(VERSION)
+SRC_DIR := ./src
+TARGET_DIR := ./bin/$(VERSION)
+BUILD_DIR := ./build/$(VERSION)
 
 CONTENT_FILES := content _locales modules skin icon.png
 CONTENT_SRC := $(addprefix $(SRC_DIR)/,$(CONTENT_FILES))
