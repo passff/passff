@@ -40,6 +40,6 @@ if (true)
 ```
 
 ## Building (only useful for the maintainer, don't do it)
-From the project's `src/` directory, execute `make VERSION=testing`. This will create an XPI file in the project's `bin/testing/` directory that you can install in your browser.
+From the project's root directory, execute `make VERSION=testing`. This will create an XPI file in the project's `bin/testing/` directory that you can install in your browser.
 
 Note that Firefox will not accept unsigned extensions unless you deactivate `xpinstall.signatures.required` in `about:config`.
