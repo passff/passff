@@ -74,6 +74,9 @@
   "passff_prefs_tab_adding": {
     "message": "Passwörter hinzufügen"
   },
+  "passff_prefs_tab_browsing": {
+    "message": "Navigieren und Suchen im Passwort-Repository"
+  },
   "passff_prefs_tab_dev": {
     "message": "Fehlersuche"
   },
@@ -157,6 +160,9 @@
   },
   "passff_prefs_show_status": {
     "message": "Statusanzeige im Toolbar-Menü aktivieren"
+  },
+  "passff_prefs_recognised_suffixes": {
+    "message": "Domain-Endungen, die wie Top-Level-Domains behandelt werden"
   },
   "passff_newpassword_window_title": {
     "message": "Neues Passwort"

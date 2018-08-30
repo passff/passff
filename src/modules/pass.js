@@ -92,24 +92,21 @@ PassFF.Pass = (function () {
   function hostMatchQuality(item, host) {
     /* Match quality is ranked based on host parts contained in item.fullKey:
      *
-     *  'cloud.bob.usr.example.com' > 'bob.usr.example.com' > 'usr.example.com' > 'example.com' \
-     *    > 'cloud.bob.usr.example' > 'bob.usr.example' > 'usr.example' > 'example' \
-     *    > 'cloud.bob.usr' > 'bob.usr' > 'usr'
-     *    > 'bob.usr' > 'usr'
-     *    > 'bob'
+     *  'cloud.bob.example.co.uk' > 'bob.example.co.uk' > 'example.co.uk' \
+     *    > 'cloud.bob.example' > 'bob.example' > 'example' \
+     *    > 'cloud.bob' > 'bob'
      *
-     * The last part of the domain name (here: 'com') is considered to be a public suffix
-     * and *not* matched *alone*. Same applies to very short (less than 3 chars)
-     * and some very generic parts like "www"
+     * The last part of the domain name (here: 'co.uk') is considered to be a
+     * public suffix and *not* matched *alone*. Same applies to very short (less
+     * than 3 chars) and some very generic parts like "www"
      */
-    let suffixes=PassFF.Preferences.recognisedSuffixes.split(',');
     host = host.replace(/^\.+/, '').replace(/\.+$/, '');
     let host_parts = host.split(/\.+/);
     let suffix = (host_parts.length >= 2) ? host_parts[host_parts.length-1] : "";
-    suffixes.forEach(function(s) {
-        if (host.endsWith(s)) suffix = s;
-    })
-    console.log('suffix: ' + suffix);
+    PassFF.Preferences.recognisedSuffixes
+      .map((s) => s.trim())
+      .filter((s) => host.endsWith(s))
+      .forEach((s) => suffix = s);
     do {
       // check a.b.c.d, then a.b.c, then a.b, ...
       let quality = host.split(/\.+/).length*100 + host.split(/\.+/).length;
@@ -127,7 +124,12 @@ PassFF.Pass = (function () {
         quality--;
       } while (true);
       if (host.indexOf('.') < 0) break;
-      host = host.replace(/\.+[^\.]+$/, '');
+      if (suffix.length > 0) {
+        host = host.substr(0, host.length - suffix.length - 1);
+        suffix = "";
+      } else {
+        host = host.replace(/\.+[^\.]+$/, '');
+      }
     } while (true);
     return -1;
   }

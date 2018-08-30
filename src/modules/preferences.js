@@ -94,7 +94,8 @@ PassFF.Preferences = (function () {
     'loginFieldNames'     : ',',
     'passwordFieldNames'  : ',',
     'urlFieldNames'       : ',',
-    'autoFillBlacklist'   : ','
+    'autoFillBlacklist'   : ',',
+    'recognisedSuffixes'  : ','
   };
 
   var lowerCaseParams = [

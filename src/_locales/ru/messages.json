@@ -74,6 +74,9 @@
   "passff_prefs_tab_adding": {
     "message": "Добавление паролей"
   },
+  "passff_prefs_tab_browsing": {
+    "message": "Browsing and searching the password store"
+  },
   "passff_prefs_tab_dev": {
     "message": "Отладка"
   },
@@ -157,6 +160,9 @@
   },
   "passff_prefs_show_status": {
     "message": "Показывать строку состояния в панели инструментов"
+  },
+  "passff_prefs_recognised_suffixes": {
+    "message": "Domain suffixes to treat like TLDs"
   },
   "passff_newpassword_window_title": {
     "message": "Новый пароль"
