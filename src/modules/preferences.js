@@ -85,6 +85,7 @@ PassFF.Preferences = (function () {
     enableLogging         : false,
     showStatus            : true,
     tbMenuShortcut        : '',
+    recognisedSuffixes    : 'co.uk,org.uk,me.uk,co.jp,com.au',
   };
 
   var listParams = {

@@ -98,20 +98,25 @@ PassFF.Pass = (function () {
      *    > 'bob.usr' > 'usr'
      *    > 'bob'
      *
-     * The last part of the domain name (here: 'com') is considered to be a tld
+     * The last part of the domain name (here: 'com') is considered to be a public suffix
      * and *not* matched *alone*. Same applies to very short (less than 3 chars)
      * and some very generic parts like "www"
      */
+    let suffixes=PassFF.Preferences.recognisedSuffixes.split(',');
     host = host.replace(/^\.+/, '').replace(/\.+$/, '');
     let host_parts = host.split(/\.+/);
-    let tld = (host_parts.length >= 2) ? host_parts[host_parts.length-1] : "";
+    let suffix = (host_parts.length >= 2) ? host_parts[host_parts.length-1] : "";
+    suffixes.forEach(function(s) {
+        if (host.endsWith(s)) suffix = s;
+    })
+    console.log('suffix: ' + suffix);
     do {
       // check a.b.c.d, then a.b.c, then a.b, ...
       let quality = host.split(/\.+/).length*100 + host.split(/\.+/).length;
       let subhost = host;
       do {
         // check a.b.c.d, then b.c.d, then c.d, ...
-        if (subhost.length < 3 || subhost == tld
+        if (subhost.length < 3 || subhost == suffix
             || host_part_blacklist.indexOf(subhost) >= 0) break;
 
         let regex = ci_search_regex(subhost);

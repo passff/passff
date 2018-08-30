@@ -74,6 +74,9 @@
   "passff_prefs_tab_adding": {
     "message": "Adding Passwords"
   },
+  "passff_prefs_tab_browsing": {
+    "message": "Browsing & Searching the password store"
+  },
   "passff_prefs_tab_dev": {
     "message": "Debugging and Development"
   },
@@ -157,6 +160,9 @@
   },
   "passff_prefs_show_status": {
     "message": "Show a status bar in the toolbar menu"
+  },
+  "passff_prefs_recognised_suffixes": {
+    "message": "DNS suffixes to treat like TLDs"
   },
   "passff_newpassword_window_title": {
     "message": "New Password"

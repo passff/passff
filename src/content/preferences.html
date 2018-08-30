@@ -19,22 +19,8 @@
             <label>passff_prefs_tb_menu_shortcut_label</label>
             <input type="text" id="pref_tbMenuShortcut" value="" />
           </p><p>
-            <input type="checkbox" id="pref_caseInsensitiveSearch" />
-            <label for="pref_caseInsensitiveSearch">passff_prefs_case_insensitive_search</label>
-          </p><p>
             <input type="checkbox" id="pref_handleHttpAuth" />
             <label for="pref_handleHttpAuth">passff_prefs_handle_http_auth</label>
-          </p><p>
-            <input type="checkbox" id="pref_directoriesFirst" />
-            <label for="pref_directoriesFirst">passff_prefs_directories_first</label>
-          </p><p>
-            <label>passff_prefs_enter_behavior</label>
-            <select id="pref_enterBehavior">
-              <option value="0">passff_menu_goto_fill_and_submit</option>
-              <option value="1">passff_menu_goto_fill</option>
-              <option value="2">passff_menu_fill_and_submit</option>
-              <option value="3">passff_menu_fill</option>
-            </select>
           </p>
         </fieldset>
       </div>
@@ -133,6 +119,33 @@
           </p>
         </fieldset>
       </div>
+
+
+      <div class="tab">
+        <input type="radio" name="tab_radio" id="tab4">
+        <label for="tab4">passff_prefs_tab_browsing</label>
+        <fieldset>
+          <p>
+            <input type="checkbox" id="pref_directoriesFirst" />
+            <label for="pref_directoriesFirst">passff_prefs_directories_first</label>
+          </p><p>
+            <input type="checkbox" id="pref_caseInsensitiveSearch" />
+            <label for="pref_caseInsensitiveSearch">passff_prefs_case_insensitive_search</label>
+          </p><p>
+            <label>passff_prefs_enter_behavior</label>
+            <select id="pref_enterBehavior">
+              <option value="0">passff_menu_goto_fill_and_submit</option>
+              <option value="1">passff_menu_goto_fill</option>
+              <option value="2">passff_menu_fill_and_submit</option>
+              <option value="3">passff_menu_fill</option>
+            </select>
+          </p><p>
+            <label>passff_prefs_recognised_suffixes</label>
+            <input type="text" id="pref_recognisedSuffixes" value="" />
+          </p>
+        </fieldset>
+      </div>
+
 
       <div class="tab">
         <input type="radio" name="tab_radio" id="tab4">
