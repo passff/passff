@@ -350,6 +350,7 @@ PassFF.Page = (function () {
 
     // get the largest z-index value and position ourselves above it
     let z = [...document.querySelectorAll('*')]
+      .filter(e => e.style.position !== "static")
       .map(e => window.getComputedStyle(e).zIndex)
       .filter(e => e>0)
       .sort()
