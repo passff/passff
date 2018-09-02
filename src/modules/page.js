@@ -348,13 +348,13 @@ PassFF.Page = (function () {
     popup_menu.style.left     = (scrollright + rect.right - 2) + "px";
     popup_menu.style.display  = "block";
 
-    let p = target;
-    let z = 1;
-    while (p = p.parentElement) {
-      let st = window.getComputedStyle(p);
-      if (st.zIndex !== "auto") z += parseInt(st.zIndex);
-    }
-    popup_menu.style.zIndex = "" + z;
+    // get the largest z-index value and position ourselves above it
+    let z = [...document.querySelectorAll('*')]
+      .map(e => window.getComputedStyle(e).zIndex)
+      .filter(e => e>0)
+      .sort()
+      .slice(-1)[0];
+    popup_menu.style.zIndex = "" + (+z+1 || 1);
   }
 
   function getPopupEntryItem(target) {
