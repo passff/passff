@@ -349,8 +349,8 @@ PassFF.Page = (function () {
     popup_menu.style.display  = "block";
 
     // get the largest z-index value and position ourselves above it
-    let z = [...document.querySelectorAll('*')]
-      .filter(e => e.style.position !== "static")
+    let z = [...document.querySelectorAll('body *')]
+      .filter(e => !(e.style.position in ["static", ""]))
       .map(e => window.getComputedStyle(e).zIndex)
       .filter(e => e>0)
       .sort()
