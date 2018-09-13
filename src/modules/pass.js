@@ -259,10 +259,10 @@ PassFF.Pass = (function () {
             };
             return result;
           }, (ex) => {
-            log.error('Error executing pass script', ex);
+            log.error('PassFF failed to execute the host app', ex);
             PassFF.Menu.state.lastResult = {
               'timestamp': new Date(),
-              'stderr': "",
+              'stderr': "PassFF failed to execute the host app",
               'exitCode': -1,
               'command': command
             };
