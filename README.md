@@ -154,6 +154,17 @@ See:
  * https://github.com/passff/passff/issues/325
  * https://github.com/passff/passff/issues/330
 
+### Contributing
+
+##### Is the documentation too obscure?
+Open a new issue. We will gratefully clarify the doc.
+
+##### Would you like to translate PassFF?
+Open a new issue to tell us about it, or make a pull request.
+
+##### Would you like to code?
+See [CONTRIBUTING](docs/CONTRIBUTING.md).
+
 ### Thanks
 Development and improvements
  * [Johan Venant](https://github.com/jvenant)
