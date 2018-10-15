@@ -32,6 +32,17 @@ Install the current release of PassFF for your browser:
 
 Previous releases are available for download as XPI files from [our releases page](https://github.com/passff/passff/releases). However, this is strongly discouraged for security reasons!
 
+##### A graphical *pinentry* program
+This program prompts you for your passphrase. One is probably already installed.
+If PassFF does not work, install one of these programs:
+  - For Ubuntu/Debian: `pinentry-gtk` or `pinentry-qt` or `pinentry-fltk`
+  - For CentOS/RHEL: `pinentry-qt4` or `pinentry-qt`
+  - For MacOS: `pinentry-mac`
+
+If that does not work for you, you may have to configure GnuPG to use the right pinentry program. See the [Troubleshooting](#troubleshooting) section.
+
+Note: Since the host app runs non-interactively, **a console *pinentry* such as `pinentry-ncurses` is useless** and may render PassFF unusable if this is the default pinentry.
+
 ### Password formats
 To make the most of the extension, you should format your password files according to our expected formats.
 
@@ -138,21 +149,23 @@ PassFF is developed for the [last version of **Firefox**](https://en.wikipedia.o
 PassFF should also work on previous versions above Firefox 50, which introduced [*native messaging*](https://blog.mozilla.org/addons/2016/08/25/webextensions-in-firefox-50/) for WebExtensions.
 However, HTTP authentication is available from Firefox 54 onwards.
 
+#### I get a window saying: *gpg: decryption failed: No secret key*
 #### Nothing happens when I click on a password and select an action
 #### PassFF does not prompt me for the passphrase
 #### PassFF works but only intermittently
 It may be a problem with your pin-entry program, while your gpg-agent sometimes caches your passphrase.
 
-Possible solution: install another pinentry program:
-* MacOS:
-  * `brew install pinentry-mac`
-  * Add `pinentry-program /usr/local/bin/pinentry-mac` to `~/.gnupg/gpg-agent.conf`. You may need to create this file.
-* GNU/Linux:
-  * https://wiki.archlinux.org/index.php/GnuPG#pinentry
+Possible solutions:
+  - [Install a graphical pinentry program](#A-graphical-pinentry-program)
+  - Configure GnuPG to call your pinentry program
+    - Add the line `pinentry-program /path/to/your/pinentry` to `~/.gnupg/gpg-agent.conf`
+    - You may need to create this file.
+    - See https://wiki.archlinux.org/index.php/GnuPG#pinentry
 
-See:
- * https://github.com/passff/passff/issues/325
- * https://github.com/passff/passff/issues/330
+Related issues:
+ * [No dialog opening up on Arch Linux](https://github.com/passff/passff/issues/325)
+ * [Decryption failed on MacOS](https://github.com/passff/passff/issues/330)
+ * [Script execution failed on CentOS](https://github.com/passff/passff/issues/367)
 
 ### Contributing
 
