@@ -14,6 +14,9 @@ This extension will allow you to access your **[zx2c4 pass](http://www.zx2c4.com
 
 You can choose to automatically fill and submit login forms if a matching password entry is found.
 
+### Browser compatibility
+* Firefox 50+ (or 54 for [full support](#i-use-an-old-version-of-firefox-and-i-have-weird-behaviours))
+
 ### Installation
 
 ##### xz2c4 pass repository
@@ -28,6 +31,17 @@ Install the current release of PassFF for your browser:
   - [Firefox](https://addons.mozilla.org/firefox/addon/passff)
 
 Previous releases are available for download as XPI files from [our releases page](https://github.com/passff/passff/releases). However, this is strongly discouraged for security reasons!
+
+##### A graphical *pinentry* program
+This program prompts you for your passphrase. One is probably already installed.
+If PassFF does not work, install one of these programs:
+  - For Ubuntu/Debian: `pinentry-gtk` or `pinentry-qt` or `pinentry-fltk`
+  - For CentOS/RHEL: `pinentry-qt4` or `pinentry-qt`
+  - For MacOS: `pinentry-mac`
+
+If that does not work for you, you may have to configure GnuPG to use the right pinentry program. See the [Troubleshooting](#troubleshooting) section.
+
+Note: Since the host app runs non-interactively, **a console *pinentry* such as `pinentry-ncurses` is useless** and may render PassFF unusable if this is the default pinentry.
 
 ### Password formats
 To make the most of the extension, you should format your password files according to our expected formats.
@@ -131,25 +145,38 @@ Configure the script's execution parameters appropriately in the host app `passf
 ### Troubleshooting
 
 #### I use an old version of Firefox and I have weird behaviours
-PassFF is developed for the last version of **Firefox** (version 59 as of April 2018).
-PassFF should also work on previous versions above Firefox 48, which introduced stable support for [WebExtensions](https://blog.mozilla.org/addons/2016/04/29/webextensions-in-firefox-48/).
-However, with Firefox's API transition, PassFF might behave strangely on these old versions.
+PassFF is developed for the [last version of **Firefox**](https://en.wikipedia.org/wiki/Firefox_version_history#Current_and_future_releases).
+PassFF should also work on previous versions above Firefox 50, which introduced [*native messaging*](https://blog.mozilla.org/addons/2016/08/25/webextensions-in-firefox-50/) for WebExtensions.
+However, HTTP authentication is available from Firefox 54 onwards.
 
+#### I get a window saying: *gpg: decryption failed: No secret key*
 #### Nothing happens when I click on a password and select an action
 #### PassFF does not prompt me for the passphrase
 #### PassFF works but only intermittently
 It may be a problem with your pin-entry program, while your gpg-agent sometimes caches your passphrase.
 
-Possible solution: install another pinentry program:
-* MacOS:
-  * `brew install pinentry-mac`
-  * Add `pinentry-program /usr/local/bin/pinentry-mac` to `~/.gnupg/gpg-agent.conf`. You may need to create this file.
-* GNU/Linux:
-  * https://wiki.archlinux.org/index.php/GnuPG#pinentry
+Possible solutions:
+  - [Install a graphical pinentry program](#A-graphical-pinentry-program)
+  - Configure GnuPG to call your pinentry program
+    - Add the line `pinentry-program /path/to/your/pinentry` to `~/.gnupg/gpg-agent.conf`
+    - You may need to create this file.
+    - See https://wiki.archlinux.org/index.php/GnuPG#pinentry
 
-See:
- * https://github.com/passff/passff/issues/325
- * https://github.com/passff/passff/issues/330
+Related issues:
+ * [No dialog opening up on Arch Linux](https://github.com/passff/passff/issues/325)
+ * [Decryption failed on MacOS](https://github.com/passff/passff/issues/330)
+ * [Script execution failed on CentOS](https://github.com/passff/passff/issues/367)
+
+### Contributing
+
+##### Is the documentation too obscure?
+Open a new issue. We will gratefully clarify the doc.
+
+##### Would you like to translate PassFF?
+Open a new issue to tell us about it, or make a pull request.
+
+##### Would you like to code?
+See [CONTRIBUTING](docs/CONTRIBUTING.md).
 
 ### Thanks
 Development and improvements
