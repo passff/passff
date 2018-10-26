@@ -60,6 +60,9 @@ url: <the_url>
 
 You can change or configure additional names for the `login` and `url` fields in preferences.
 
+If none of the provided fields matches a login field name, the username is taken from the filename, e.g.
+`example.com/janedoe` will have a default username of `janedoe`.
+
 Lines besides the login and URL that match the format `<other_inputfield_name>: <value>` can be used to fill in input fields besides the login and password fields. The left hand side of the colon should match the input field's `name` or `id` attribute.
 
 Examples
@@ -79,14 +82,17 @@ Alternatively, you can organize your login information with file structure. For 
 * www
   * supersite.com
     * login
-    * user
+    * password
+    * url
   * mysite.com
 
 PassFF will
-* get the login from the "login" file under supersite.com
+* get the login from the "login", the url from the "url" and the password from the "password" file under supersite.com
 * get the login from the "login" field inside the mysite.com entry for mysite.com (see [format above](#multi-line-format))
 
-The file structure approach does not support custom input fields, however.
+The file structure approach does not support custom input fields.
+
+Note that the file structure format is recognized and assumed by PassFF whenever a file name matches a reserved field name such as `user`, `url`, `password` or `login`. This might cause unexpected behavior in cases where there is a file in [multi-line format](#multi-line-format) whose name happens to be a reserved field name.
 
 ### Configuration and preferences
 
