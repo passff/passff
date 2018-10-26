@@ -82,11 +82,12 @@ Alternatively, you can organize your login information with file structure. For 
 * www
   * supersite.com
     * login
-    * user
+    * password
+    * url
   * mysite.com
 
 PassFF will
- * get the login from the "login", the url from the "url" and the password from the "password" file under supersite.com
+* get the login from the "login", the url from the "url" and the password from the "password" file under supersite.com
 * get the login from the "login" field inside the mysite.com entry for mysite.com (see [format above](#multi-line-format))
 
 The file structure approach does not support custom input fields.
