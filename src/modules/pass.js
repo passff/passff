@@ -560,13 +560,29 @@ PassFF.Pass = (function () {
         .then((result) => { return result.exitCode === 0; });
     },
 
-    generateNewPassword: function (name, length, includeSymbols) {
+    generateNewPassword: function (name, length, includeSymbols, additionalInfo) {
       let args = ['generate', name, length.toString()];
       if (!includeSymbols) {
         args.push('-n');
       }
       return this.executePass(args)
-        .then((result) => { return result.exitCode === 0; });
+        .then((result) => {
+          if (result.exitCode !== 0) {
+            return false;
+          }
+          if (additionalInfo) {
+            return this.executePass([name])
+              .then((result) => {
+                if (result.exitCode !== 0) {
+                  return false;
+                }
+                var pass = result.stdout.split(/\n/);
+                return this.addNewPassword(name, pass, additionalInfo)
+              });
+          } else {
+            return true;
+          }
+        });
     },
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%% Data analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -756,7 +772,7 @@ function handlePasswordGeneration() {
         name                 : document.getElementById('add-password-name').value,
         password             : document.getElementById('add-password').value,
         passwordConfirmation : document.getElementById('add-password-confirmation').value,
-        additionalInfo       : document.getElementById('add-additional-info').value,
+        additionalInfo       : document.getElementById('add-additional-info-insert').value,
       };
     },
     function (inputData) {
@@ -773,11 +789,12 @@ function handlePasswordGeneration() {
         name           : document.getElementById('gen-password-name').value,
         length         : document.getElementById('gen-password-length').value,
         includeSymbols : document.getElementById('gen-include-symbols').checked,
+        additionalInfo : document.getElementById('add-additional-info-generate').value,
       };
     },
     function (inputData) {
       return PassFF.Pass.generateNewPassword(
-        inputData.name, inputData.length, inputData.includeSymbols);
+        inputData.name, inputData.length, inputData.includeSymbols, inputData.additionalInfo);
     }
   );
 
