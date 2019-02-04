@@ -85,7 +85,7 @@ PassFF.Menu = (function () {
 
 // %%%%%%%%%%%%%%%%%%%%% Search bar key events %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  function onSearchKeypress(event) {
+  function onSearchKeydown(event) {
     log.debug('Search keydown', event.keyCode);
 
     if (event.ctrlKey || event.altKey) {
@@ -424,7 +424,7 @@ PassFF.Menu = (function () {
     searchBox.setAttribute('placeholder',
                                     _('passff_toolbar_search_placeholder'));
     searchBox.addEventListener('click', function (e) { e.target.select(); });
-    searchBox.addEventListener('keypress', onSearchKeypress);
+    searchBox.addEventListener('keydown', onSearchKeydown);
     searchBox.addEventListener('keyup', onSearchKeyup);
 
     let entryList = document.getElementById('passff-entries-list');
