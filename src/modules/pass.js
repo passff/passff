@@ -48,6 +48,15 @@ PassFF.Pass = (function () {
     passwordData.url = url;
   }
 
+  function setOtpauth(passwordData) {
+    let otpauth;
+    for (let i = 0; i < PassFF.Preferences.otpauthFieldNames.length; i++) {
+      otpauth = passwordData[PassFF.Preferences.otpauthFieldNames[i]];
+      if (otpauth) break;
+    }
+    passwordData.otpauth = !!otpauth;
+  }
+
   function setOther(passwordData) {
     let other = {};
     Object.keys(passwordData)
@@ -455,14 +464,18 @@ PassFF.Pass = (function () {
             setLogin(result, item);
             setPassword(result);
             setUrl(result);
+            setOtpauth(result);
             setOther(result);
             setText(result, executionResult.stdout);
 
-            return this.generateOtp(key)
-              .then((otp) => {
-                result.otp = otp;
-                return result;
-              });
+            if (result.otpauth) {
+              return this.generateOtp(key)
+                .then((otp) => {
+                  log.debug('Generating OTP token');
+                  result.otp = otp;
+                  return result;
+                });
+            }
 
             return result;
           });

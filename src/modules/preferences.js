@@ -68,6 +68,7 @@ PassFF.Preferences = (function () {
     loginFieldNames       : 'login,user,username,id',
     passwordFieldNames    : 'passwd,password,pass',
     urlFieldNames         : 'url,http',
+    otpauthFieldNames     : 'otpauth',
     autoFill              : false,
     autoSubmit            : false,
     autoFillBlacklist     : '',
@@ -96,6 +97,7 @@ PassFF.Preferences = (function () {
     'loginFieldNames'     : ',',
     'passwordFieldNames'  : ',',
     'urlFieldNames'       : ',',
+    'otpauthFieldNames'   : ',',
     'autoFillBlacklist'   : ',',
     'recognisedSuffixes'  : ','
   };
@@ -107,6 +109,7 @@ PassFF.Preferences = (function () {
     'loginFieldNames',
     'passwordFieldNames',
     'urlFieldNames',
+    'otpauthFieldNames',
     'autoFillBlacklist'
   ];
 

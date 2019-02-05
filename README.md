@@ -43,6 +43,9 @@ If that does not work for you, you may have to configure GnuPG to use the right 
 
 Note: Since the host app runs non-interactively, **a console *pinentry* such as `pinentry-ncurses` is useless** and may render PassFF unusable if this is the default pinentry.
 
+##### One-time-password (OTP) Authentication
+PassFF can generate tokens to fill OTP input fields if the [pass-otp](https://github.com/tadfisher/pass-otp) extension is installed and the key URI is configured in the password file.
+
 ### Password formats
 To make the most of the extension, you should format your password files according to our expected formats.
 
@@ -70,11 +73,14 @@ Examples
 nu8kzeo2Aese
 login: bob
 url: https://github.com/login
+```
 
+```
 AephieryZ2Ya
 login: kevin
 url: example.com
-otp: 421337
+otpauth://totp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example
+pin: 1234
 ```
 
 ##### File-structure format
@@ -90,7 +96,7 @@ PassFF will
 * get the login from the "login", the url from the "url" and the password from the "password" file under supersite.com
 * get the login from the "login" field inside the mysite.com entry for mysite.com (see [format above](#multi-line-format))
 
-The file structure approach does not support custom input fields.
+The file structure approach does not support custom input fields or OTP Auth.
 
 Note that the file structure format is recognized and assumed by PassFF whenever a file name matches a reserved field name such as `user`, `url`, `password` or `login`. This might cause unexpected behavior in cases where there is a file in [multi-line format](#multi-line-format) whose name happens to be a reserved field name.
 
@@ -103,10 +109,12 @@ Some of them are described below:
 - Inputs (A comma separated list of input names. Input field names in a web page *containing* one of those values will be filled with the corresponding value.)
   - Passwords input names
   - Login input names
+  - OTP input names
 - Fields (A comma separated list of field names. The first matching field in the password data or in the store tree will be used as the corresponding value.)
   - Login field names
   - Password field names
   - URL field names
+  - OTP Auth field names
 - Adding Passwords
   - The default length for generating passwords
   - Whether or not to include special characters in generated passwords by default
@@ -136,6 +144,7 @@ This feature can be disabled in the preferences.
 #### Contextual menu
 In *any* input field, fillable or not, you can access a contextual menu (right-click) in order to:
   - Add the input field's name in the *Login input names* for (auto)filling,
+  - Add the input field's name in the *OTP input names* for (auto)filling,
   - Select a password to fill the input fields.
 
 #### Adding new passwords
