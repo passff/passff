@@ -118,6 +118,13 @@ PassFF.Page = (function () {
             findIntersection(goodNames, inputNames, callback) !== undefined);
   }
 
+  function isOtpInput(input) {
+    let goodNames = PassFF.Preferences.otpInputNames;
+    let inputNames = readInputNames(input);
+    let callback = ((gn, n) => n.indexOf(gn) >= 0);
+    return findIntersection(goodNames, inputNames, callback) !== undefined;
+  }
+
 /* #############################################################################
  * #############################################################################
  *  Helpers for DOM event handling/simulation
@@ -162,6 +169,7 @@ PassFF.Page = (function () {
     if (PassFF.Preferences.markFillable) {
       inputElements.filter(isLoginInput).forEach(injectIcon);
       inputElements.filter(isPasswordInput).forEach(injectIcon);
+      inputElements.filter(isOtpInput).forEach(injectIcon);
     }
   }
 
@@ -177,6 +185,10 @@ PassFF.Page = (function () {
 
   function setPasswordInputs(inputs, password) {
     inputs.filter(isPasswordInput).forEach((it) => writeValueWithEvents(it, password));
+  }
+
+  function setOtpInputs(inputs, otp) {
+    inputs.filter(isOtpInput).forEach((it) => writeValueWithEvents(it, otp));
   }
 
   function setOtherInputs(inputs, other) {
@@ -195,6 +207,7 @@ PassFF.Page = (function () {
     log.debug("Set inputs...")
     setLoginInputs(inputs, passwordData.login);
     setPasswordInputs(inputs, passwordData.password);
+    setOtpInputs(inputs, passwordData.otp);
     setOtherInputs(inputs, passwordData._other);
   }
 

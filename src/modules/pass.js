@@ -457,6 +457,13 @@ PassFF.Pass = (function () {
             setUrl(result);
             setOther(result);
             setText(result, executionResult.stdout);
+
+            return this.generateOtp(key)
+              .then((otp) => {
+                result.otp = otp;
+                return result;
+              });
+
             return result;
           });
       }
@@ -558,6 +565,19 @@ PassFF.Pass = (function () {
       let fileContents = [password, additionalInfo].join('\n');
       return this.executePass(['insert', name, fileContents])
         .then((result) => { return result.exitCode === 0; });
+    },
+
+    generateOtp: function (key) {
+      let args = ['otp', key];
+      return this.executePass(args)
+        .then((result) => {
+          if (result.exitCode !== 0) return;
+          let lines = result.stdout.trim().split('\n');
+          if (lines.length == 1) {
+            let otp = lines[0];
+            return otp;
+          }
+        });
     },
 
     generateNewPassword: function (name, length, includeSymbols, additionalInfo) {

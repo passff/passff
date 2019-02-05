@@ -116,6 +116,9 @@
   "passff_prefs_login_input_names_label": {
     "message": "Login input names"
   },
+  "passff_prefs_otp_input_names_label": {
+    "message": "OTP input names"
+  },
   "passff_prefs_login_field_names_label": {
     "message": "Login field names"
   },
