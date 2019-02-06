@@ -169,8 +169,8 @@ Possible solutions:
     - See https://wiki.archlinux.org/index.php/GnuPG#pinentry
 
 Related issues:
- * [No dialog opening up on Arch Linux](https://github.com/passff/passff/issues/325)
- * [Decryption failed on MacOS](https://github.com/passff/passff/issues/330)
+ * [No dialog opening up on Arch Linux](https://github.com/passff/passff/issues/330)
+ * [Decryption failed on MacOS](https://github.com/passff/passff/issues/325)
  * [Script execution failed on CentOS](https://github.com/passff/passff/issues/367)
 
 ### Contributing
