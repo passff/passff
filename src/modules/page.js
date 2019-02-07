@@ -188,7 +188,9 @@ PassFF.Page = (function () {
   }
 
   function setOtpInputs(inputs, otp) {
-    inputs.filter(isOtpInput).forEach((it) => writeValueWithEvents(it, otp));
+    if (otp) {
+      inputs.filter(isOtpInput).forEach((it) => writeValueWithEvents(it, otp));
+    }
   }
 
   function setOtherInputs(inputs, other) {

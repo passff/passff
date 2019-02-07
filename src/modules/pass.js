@@ -254,9 +254,13 @@ PassFF.Pass = (function () {
               result.exitCode = -2;
               result.stderr = `The host app (v${version}) is outdated!`;
             } else if (result.exitCode !== 0) {
-              log.warn('Script execution failed',
-                result.exitCode, result.stderr, result.stdout);
-              PassFF.Page.notify("Script execution failed: \n" + result.stderr);
+              if (result.stderr.trim() == "Error: /otp is not in the password store.") {
+                PassFF.Page.notify("OTP Support requires Host app version 1.1.0 or later.\nhttps://github.com/passff/passff-host/");
+              } else {
+                log.warn('Script execution failed',
+                  result.exitCode, result.stderr, result.stdout);
+                PassFF.Page.notify("Script execution failed: \n" + result.stderr);
+              }
             } else {
               log.debug('Script execution ok');
             }
