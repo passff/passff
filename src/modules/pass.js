@@ -236,7 +236,7 @@ PassFF.Pass = (function () {
       function (args) {
         let command = "ls";
         if (args.length > 0) {
-            if (["insert","generate"].indexOf(args[0]) >= 0) {
+            if (["insert","generate","otp"].indexOf(args[0]) >= 0) {
                 command = args[0];
             } else {
                 command = "show";
@@ -253,14 +253,13 @@ PassFF.Pass = (function () {
               log.warn("The host app is outdated!", version);
               result.exitCode = -2;
               result.stderr = `The host app (v${version}) is outdated!`;
+            } else if (command == "otp" && semver.gt("1.1.0", version)) {
+              log.warn("This version of the host app does not support OTP!", version);
+              PassFF.Page.notify("OTP Support requires Host app version 1.1.0 or later.\nhttps://github.com/passff/passff-host/");
             } else if (result.exitCode !== 0) {
-              if (result.stderr.trim() == "Error: /otp is not in the password store.") {
-                PassFF.Page.notify("OTP Support requires Host app version 1.1.0 or later.\nhttps://github.com/passff/passff-host/");
-              } else {
-                log.warn('Script execution failed',
-                  result.exitCode, result.stderr, result.stdout);
-                PassFF.Page.notify("Script execution failed: \n" + result.stderr);
-              }
+              log.warn('Script execution failed',
+                result.exitCode, result.stderr, result.stdout);
+              PassFF.Page.notify("Script execution failed: \n" + result.stderr);
             } else {
               log.debug('Script execution ok');
             }
