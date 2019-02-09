@@ -222,7 +222,13 @@
     "message": "La connexion à l'application hôte a échoué ou a renvoyé un résultat inattendu !"
   },
   "passff_errors_upgrade_host_app": {
-    "message": "Assurez-vous d'avoir installé la dernière version de l'application hôte de PassFF en suivant les {procédures d'installation sur GitHub}."
+    "message": "Assurez-vous d'avoir installé la dernière version de l'application hôte de PassFF en suivant les [procédures officielles d'installation]($passffURL$).",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
   },
   "passff_no_entries_found": {
     "message": "Aucune entrée ne correspond à cette URL."

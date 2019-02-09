@@ -254,12 +254,15 @@ PassFF.Pass = (function () {
               result.exitCode = -2;
               result.stderr = `The host app (v${version}) is outdated!`;
             } else if (command == "otp" && semver.gt("1.1.0", version)) {
-              log.warn("This version of the host app does not support OTP!", version);
-              PassFF.Page.notify("OTP Support requires Host app version 1.1.0 or later.\nhttps://github.com/passff/passff-host/");
+              log.warn("This version of the host app does not support OTP!",
+                version);
+              PassFF.Page.notify(_("passff_error_otp_host_version",
+                [PASSFF_URL_GIT_HOST]));
             } else if (result.exitCode !== 0) {
               log.warn('Script execution failed',
                 result.exitCode, result.stderr, result.stdout);
-              PassFF.Page.notify("Script execution failed: \n" + result.stderr);
+              PassFF.Page.notify(_("passff_error_script_failed",
+                [result.stderr]));
             } else {
               log.debug('Script execution ok');
             }

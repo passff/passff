@@ -1,6 +1,10 @@
 /* jshint node: true */
 'use strict';
 
+const PASSFF_URL_GIT = "https://github.com/passff/passff";
+const PASSFF_URL_GIT_HOST = "https://github.com/passff/passff-host";
+const PASSFF_URL_INSTALLATION = PASSFF_URL_GIT + "#installation";
+
 /* #############################################################################
  * #############################################################################
  *  i18n string handling
@@ -12,6 +16,32 @@ function _(key, params) {
     return browser.i18n.getMessage(key, params);
   }
   return browser.i18n.getMessage(key);
+}
+
+function parse_markdown(obj) {
+  let str = obj.innerHTML;
+  str = str.replace(/\[([^\]]+)\]\(([^\}]+)\)/,
+    function (match, p1, p2) {
+      let a = document.createElement("a");
+      a.setAttribute("href", p2);
+      a.textContent = p1;
+      return a.outerHTML;
+    });
+  str = str.replace(/```([\s\S]+)```/,
+    function (match, p1) {
+      let c = document.createElement("code");
+      c.classList.add("block");
+      c.textContent = p1;
+      return c.outerHTML;
+    });
+  str = str.replace(/`([\s\S]+)`/,
+    function (match, p1) {
+      let c = document.createElement("code");
+      c.textContent = p1;
+      return c.outerHTML;
+    });
+  str = str.replace(/\n/g, '<br />');
+  obj.innerHTML = str;
 }
 
 /* #############################################################################

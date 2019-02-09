@@ -222,7 +222,13 @@
     "message": "Die Verbindung zur Host-App ist fehlgeschlagen oder lieferte ein unerwartetes Ergebnis!"
   },
   "passff_errors_upgrade_host_app": {
-    "message": "Stellen Sie sicher, dass die aktuellste Version der PassFF-Host-App installiert ist, indem Sie den {Installationsanweisungen auf GitHub} folgen."
+    "message": "Stellen Sie sicher, dass die aktuellste Version der PassFF-Host-App installiert ist, indem Sie den [offiziellen Installationsanweisungen]($passffURL$) folgen.",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
   },
   "passff_no_entries_found": {
     "message": "Keine passenden Einträge für diese URL."

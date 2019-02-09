@@ -43,6 +43,30 @@
   font-family: sans-serif !important;
 }
 
+#passff_notification > div p a {
+  all: initial;
+  cursor: pointer;
+  text-decoration: underline;
+  color: blue;
+  font-size: 10pt !important;
+  font-family: sans-serif !important;
+}
+
+#passff_notification > div p code {
+  all: initial;
+  font-size: 10pt !important;
+  font-family: monospace !important;
+}
+
+#passff_notification > div p code.block {
+  display: block;
+  padding: 0.5em;
+  margin: 0.5em 0.5em 0 0;
+  background-color: #f7f7f7;
+  overflow: auto;
+  height: 5em;
+}
+
 #passff_notification > div > div {
   all: initial;
   position: absolute;

@@ -793,7 +793,7 @@ PassFF.Page = (function () {
       let dialog_text = null;
       dialog_text = dialog.querySelector("div p");
       dialog_text.textContent = message; // prevent HTML injection
-      dialog_text.innerHTML = dialog_text.textContent.replace(/\n/g, '<br />');
+      parse_markdown(dialog_text);
       return new Promise(function (resolve, reject) {
         let button = dialog.querySelector("button");
         button.addEventListener("click", () => {

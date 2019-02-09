@@ -228,7 +228,13 @@
     "message": "Connection to the host app failed or returned an unexpected result!"
   },
   "passff_errors_upgrade_host_app": {
-    "message": "Make sure you have the latest version of the PassFF host app installed by following the {installation instructions on GitHub}."
+    "message": "Make sure you have the latest version of the PassFF host app installed by following the [official installation instructions]($passffURL$).",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
   },
   "passff_no_entries_found": {
     "message": "No entries matching this URL."
@@ -251,6 +257,24 @@
       "currURL" : {
         "content" : "$1",
         "example" : "badlyFormattedURL.com"
+      }
+    }
+  },
+  "passff_error_otp_host_version": {
+    "message": "OTP support requires the PassFF host app version 1.1.0 or later. Please follow the [official installation instructions]($passffURL$).",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_error_script_failed": {
+    "message": "Script execution failed: ```$errMsg$```",
+    "placeholders": {
+      "errMsg": {
+        "content": "$1",
+        "example": "gpg: cancelled by user"
       }
     }
   },

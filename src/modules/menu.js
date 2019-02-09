@@ -415,9 +415,8 @@ PassFF.Menu = (function () {
   function init_ui() {
     let errorBoxMsgs = document.querySelectorAll('div.message.error p');
     Array.from(errorBoxMsgs).forEach(function (p) {
-      p.textContent = _(p.textContent);
-      p.innerHTML = p.innerHTML.replace(/\{([^\}]+)\}/,
-        "<a href=\"https://github.com/passff/passff#installation\">$1</a>");
+      p.textContent = _(p.textContent, [PASSFF_URL_INSTALLATION]);
+      parse_markdown(p);
     });
 
     let searchBox = document.getElementById('passff-search-box');
