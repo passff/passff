@@ -48,6 +48,15 @@ PassFF.Pass = (function () {
     passwordData.url = url;
   }
 
+  function setOtpauth(passwordData) {
+    let otpauth;
+    for (let i = 0; i < PassFF.Preferences.otpauthFieldNames.length; i++) {
+      otpauth = passwordData[PassFF.Preferences.otpauthFieldNames[i]];
+      if (otpauth) break;
+    }
+    passwordData.otpauth = !!otpauth;
+  }
+
   function setOther(passwordData) {
     let other = {};
     Object.keys(passwordData)
@@ -227,7 +236,7 @@ PassFF.Pass = (function () {
       function (args) {
         let command = "ls";
         if (args.length > 0) {
-            if (["insert","generate"].indexOf(args[0]) >= 0) {
+            if (["insert","generate","otp"].indexOf(args[0]) >= 0) {
                 command = args[0];
             } else {
                 command = "show";
@@ -244,6 +253,9 @@ PassFF.Pass = (function () {
               log.warn("The host app is outdated!", version);
               result.exitCode = -2;
               result.stderr = `The host app (v${version}) is outdated!`;
+            } else if (command == "otp" && semver.gt("1.1.0", version)) {
+              log.warn("This version of the host app does not support OTP!", version);
+              PassFF.Page.notify("OTP Support requires Host app version 1.1.0 or later.\nhttps://github.com/passff/passff-host/");
             } else if (result.exitCode !== 0) {
               log.warn('Script execution failed',
                 result.exitCode, result.stderr, result.stdout);
@@ -455,8 +467,19 @@ PassFF.Pass = (function () {
             setLogin(result, item);
             setPassword(result);
             setUrl(result);
+            setOtpauth(result);
             setOther(result);
             setText(result, executionResult.stdout);
+
+            if (result.otpauth) {
+              return this.generateOtp(key)
+                .then((otp) => {
+                  log.debug('Generating OTP token');
+                  result.otp = otp;
+                  return result;
+                });
+            }
+
             return result;
           });
       }
@@ -558,6 +581,19 @@ PassFF.Pass = (function () {
       let fileContents = [password, additionalInfo].join('\n');
       return this.executePass(['insert', name, fileContents])
         .then((result) => { return result.exitCode === 0; });
+    },
+
+    generateOtp: function (key) {
+      let args = ['otp', key];
+      return this.executePass(args)
+        .then((result) => {
+          if (result.exitCode !== 0) return;
+          let lines = result.stdout.trim().split('\n');
+          if (lines.length == 1) {
+            let otp = lines[0];
+            return otp;
+          }
+        });
     },
 
     generateNewPassword: function (name, length, includeSymbols, additionalInfo) {

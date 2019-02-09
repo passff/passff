@@ -64,9 +64,11 @@ PassFF.Preferences = (function () {
   var prefParams = {
     passwordInputNames    : 'passwd,password,pass',
     loginInputNames       : 'login,user,mail,email,username,opt_login,log,usr_name',
+    otpInputNames         : 'otp,code',
     loginFieldNames       : 'login,user,username,id',
     passwordFieldNames    : 'passwd,password,pass',
     urlFieldNames         : 'url,http',
+    otpauthFieldNames     : 'otpauth',
     autoFill              : false,
     autoSubmit            : false,
     autoFillBlacklist     : '',
@@ -91,9 +93,11 @@ PassFF.Preferences = (function () {
   var listParams = {
     'passwordInputNames'  : ',',
     'loginInputNames'     : ',',
+    'otpInputNames'       : ',',
     'loginFieldNames'     : ',',
     'passwordFieldNames'  : ',',
     'urlFieldNames'       : ',',
+    'otpauthFieldNames'   : ',',
     'autoFillBlacklist'   : ',',
     'recognisedSuffixes'  : ','
   };
@@ -101,9 +105,11 @@ PassFF.Preferences = (function () {
   var lowerCaseParams = [
     'passwordInputNames',
     'loginInputNames',
+    'otpInputNames',
     'loginFieldNames',
     'passwordFieldNames',
     'urlFieldNames',
+    'otpauthFieldNames',
     'autoFillBlacklist'
   ];
 
@@ -160,6 +166,9 @@ PassFF.Preferences = (function () {
       if (type == "password") {
         names = PassFF.Preferences.passwordInputNames;
       }
+      if (type == "otp") {
+        names = PassFF.Preferences.otpInputNames;
+      }
       for (let i = 0; i < names.length; i++) {
         if (name.toLowerCase().indexOf(names[i].toLowerCase()) >= 0) {
           return false;
@@ -170,6 +179,8 @@ PassFF.Preferences = (function () {
       names = names.join(",");
       if (type == "password") {
         PassFF.Preferences.passwordInputNames = names;
+      } else if (type == "otp") {
+        PassFF.Preferences.otpInputNames = names;
       } else {
         PassFF.Preferences.loginInputNames = names;
       }

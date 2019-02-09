@@ -116,6 +116,9 @@
   "passff_prefs_login_input_names_label": {
     "message": "Login input names"
   },
+  "passff_prefs_otp_input_names_label": {
+    "message": "OTP input names"
+  },
   "passff_prefs_login_field_names_label": {
     "message": "Login field names"
   },
@@ -124,6 +127,9 @@
   },
   "passff_prefs_url_field_names_label": {
     "message": "URL field names"
+  },
+  "passff_prefs_otpauth_field_names_label": {
+    "message": "OTP Auth field names"
   },
   "passff_prefs_script_howto": {
     "message": "See passff.py for changing the environment variables of pass."

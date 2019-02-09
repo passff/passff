@@ -25,6 +25,11 @@ var PassFF = (function () {
           let input_type = (info[0] == "password") ? "password" : "login";
           PassFF.Preferences.addInputName(input_type, info[1]);
         });
+    } else if (info.menuItemId == "otp-add") {
+      PassFF.Page.getActiveInput()
+        .then(function (info) {
+          PassFF.Preferences.addInputName("otp", info[1]);
+        });
     } else {
       let itemId = parseInt(info.menuItemId.split("-")[1], 10);
       let item = PassFF.Pass.getItemById(itemId);
@@ -41,6 +46,11 @@ var PassFF = (function () {
     chrome.contextMenus.create({
       id: "login-add",
       title: "Add login input name",
+      contexts: ["editable"]
+    });
+    chrome.contextMenus.create({
+      id: "otp-add",
+      title: "Add otp input name",
       contexts: ["editable"]
     });
     chrome.contextMenus.create({
