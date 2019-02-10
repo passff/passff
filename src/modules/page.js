@@ -66,7 +66,7 @@ PassFF.Page = (function () {
   }
 
   function readInputNames(input) {
-    let inputNames = [input.name, input.id];
+    let inputNames = [input.name || "", input.id || ""];
     if (input.hasAttribute('placeholder')) {
       inputNames.push(input.getAttribute('placeholder'));
     }
@@ -88,7 +88,9 @@ PassFF.Page = (function () {
       inputNames = inputNames.concat(Array.from(input.labels, l => l.innerText));
     }
 
-    return inputNames.filter(Boolean).map(nm => nm.toLowerCase());
+    return inputNames.slice(0,2)
+      .concat(inputNames.slice(2).filter(Boolean))
+      .map(nm => nm.toLowerCase());
   }
 
   function findIntersection(arr1, arr2, callback) {
@@ -98,31 +100,43 @@ PassFF.Page = (function () {
     return arr1.find(el1 => arr2.some(el2 => callback(el1, el2)));
   }
 
-  function isPasswordInput(input) {
+  function rateInputNames(input, goodNames) {
+    let inputNames = readInputNames(input);
+    let rt = inputNames.map(inputName => {
+      let rating = 0;
+      for (let gn of goodNames) {
+        if (inputName.indexOf(gn) >= 0) {
+          rating = 1;
+          if (inputName == gn) {
+            return 2;
+          }
+        }
+      }
+      return rating;
+    });
+    rt = 10*(rt[0] + rt[1]) + rt.slice(2).reduce((a,b) => a + b, 0);
+    return rt;
+  }
+
+  function ratePasswordInput(input) {
     if (input.type === 'password') {
-      return true;
+      return 100;
     } else if (input.type === 'text') {
-      let goodNames = PassFF.Preferences.passwordInputNames;
-      let inputNames = readInputNames(input);
-      let callback = ((gn, n) => n.indexOf(gn) >= 0);
-      return findIntersection(goodNames, inputNames, callback) !== undefined;
+      return rateInputNames(input, PassFF.Preferences.passwordInputNames);
     }
-    return false;
+    return 0;
   }
 
-  function isLoginInput(input) {
-    let goodNames = PassFF.Preferences.loginInputNames;
-    let inputNames = readInputNames(input);
-    let callback = ((gn, n) => n.indexOf(gn) >= 0);
-    return (loginInputTypes.indexOf(input.type) >= 0 &&
-            findIntersection(goodNames, inputNames, callback) !== undefined);
+  function rateLoginInput(input) {
+    if (loginInputTypes.indexOf(input.type) < 0) {
+      return 0;
+    } else {
+      return rateInputNames(input, PassFF.Preferences.loginInputNames);
+    }
   }
 
-  function isOtpInput(input) {
-    let goodNames = PassFF.Preferences.otpInputNames;
-    let inputNames = readInputNames(input);
-    let callback = ((gn, n) => n.indexOf(gn) >= 0);
-    return findIntersection(goodNames, inputNames, callback) !== undefined;
+  function rateOtpInput(input) {
+    return rateInputNames(input, PassFF.Preferences.otpInputNames);
   }
 
 /* #############################################################################
@@ -163,13 +177,33 @@ PassFF.Page = (function () {
     input.dispatchEvent(createFakeInputEvent('change'));
   }
 
+  function annotateInputs(inputs) {
+    return inputs.map(input => {
+      let rt_login = rateLoginInput(input);
+      let rt_pw = ratePasswordInput(input);
+      let rt_otp = rateOtpInput(input);
+      let input_type = "";
+      if (rt_otp > rt_login) {
+        if (rt_otp > rt_pw) {
+          input_type = "otp";
+        } else {
+          input_type = "password";
+        }
+      } else if (rt_pw > rt_login) {
+        input_type = "password";
+      } else if (rt_login > 0) {
+        input_type = "login";
+      }
+      return [input, input_type];
+    });
+  }
+
   function onNodeAdded() {
     inputElements = document.getElementsByTagName('input');
-    inputElements = Array.from(inputElements).filter(isVisible);
+    inputElements = annotateInputs(Array.from(inputElements).filter(isVisible));
     if (PassFF.Preferences.markFillable) {
-      inputElements.filter(isLoginInput).forEach(injectIcon);
-      inputElements.filter(isPasswordInput).forEach(injectIcon);
-      inputElements.filter(isOtpInput).forEach(injectIcon);
+      inputElements.filter(inp => inp[1] != "")
+        .forEach(inp => injectIcon(inp[0]));
     }
   }
 
@@ -179,38 +213,27 @@ PassFF.Page = (function () {
  * #############################################################################
  */
 
-  function setLoginInputs(inputs, login) {
-    inputs.filter(isLoginInput).forEach((it) => writeValueWithEvents(it, login));
-  }
-
-  function setPasswordInputs(inputs, password) {
-    inputs.filter(isPasswordInput).forEach((it) => writeValueWithEvents(it, password));
-  }
-
-  function setOtpInputs(inputs, otp) {
-    if (otp) {
-      inputs.filter(isOtpInput).forEach((it) => writeValueWithEvents(it, otp));
-    }
-  }
-
-  function setOtherInputs(inputs, other) {
-    // Other data can override already filled-in login or password data, but
-    // one of name/id/labels of the input field has to match exactly!
-    let otherNames = Object.keys(other);
-    if (otherNames.length === 0) return;
-    inputs.forEach(function (input) {
-      let inputNames = readInputNames(input);
-      let matching = findIntersection(otherNames, inputNames);
-      if (matching !== undefined) writeValueWithEvents(input, other[matching]);
-    });
-  }
-
   function setInputs(inputs, passwordData) {
-    log.debug("Set inputs...")
-    setLoginInputs(inputs, passwordData.login);
-    setPasswordInputs(inputs, passwordData.password);
-    setOtpInputs(inputs, passwordData.otp);
-    setOtherInputs(inputs, passwordData._other);
+    log.debug("Set inputs...");
+    let otherNames = Object.keys(passwordData._other);
+    inputs.forEach(annotatedInput => {
+      let input = annotatedInput[0];
+      let input_type = annotatedInput[1];
+      if (otherNames.length > 0) {
+        // Other data is checked before default input types, but
+        // one of name/id/labels of the input field has to match exactly!
+        let inputNames = readInputNames(input);
+        let matching = findIntersection(otherNames, inputNames);
+        if (matching !== undefined) {
+          writeValueWithEvents(input, passwordData._other[matching]);
+          return;
+        }
+      }
+      if (input_type != "") {
+        let pd = passwordData[input_type];
+        if (input_type != "otp" || pd) writeValueWithEvents(input, pd);
+      }
+    });
   }
 
 // %%%%%%%%%%%%%%% Implementation of input field marker %%%%%%%%%%%%%%%%%%%%%%%%
@@ -718,13 +741,14 @@ PassFF.Page = (function () {
             if (activeElement.form) {
               inputs = activeElement.form.getElementsByTagName('input');
             }
-            setInputs(Array.from(inputs).filter(isVisible), passwordData);
+            inputs = annotateInputs(Array.from(inputs).filter(isVisible));
+            setInputs(inputs, passwordData);
           });
       }
     ),
 
     fillInputs: content_function("Page.fillInputs", function (item, andSubmit) {
-      if (inputElements.filter(isPasswordInput).length === 0) {
+      if (inputElements.filter(inp => inp[1] == "password").length === 0) {
         log.debug("fillInputs: No password inputs found!");
         return null;
       }
