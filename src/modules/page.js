@@ -425,8 +425,7 @@ PassFF.Page = (function () {
         return PassFF.Page.fillActiveElement(passwordData);
       })
       .then(() => {
-        doc = form_doc;
-        PassFF.Page.submit();
+        PassFF.Page.submit(form_doc);
       });
   }
 
@@ -768,13 +767,14 @@ PassFF.Page = (function () {
 
 // %%%%%%%%%%%%%%%%%%%%%%% Form submitter %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    submit: content_function("Page.submit", function () {
-      let passwords = inputElements.filter(isPasswordInput);
-      if (passwords.length === 0) return false;
+    submit: content_function("Page.submit", function (form) {
+      if (typeof form === "undefined") {
+        let passwords = inputElements.filter(inp => inp[1] == "password");
+        if (passwords.length === 0) return false;
+        form = passwords[0][0].form;
+      }
 
-      let form = passwords[0].form;
       if (!form) return false;
-
       let submitBtn = getSubmitButton(form);
       log.debug("Unsafe submit...", submitBtn);
       if (submitBtn) {
