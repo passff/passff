@@ -259,10 +259,16 @@ PassFF.Pass = (function () {
               PassFF.Page.notify(_("passff_error_otp_host_version",
                 [PASSFF_URL_GIT_HOST]));
             } else if (result.exitCode !== 0) {
-              log.warn('Script execution failed',
-                result.exitCode, result.stderr, result.stdout);
-              PassFF.Page.notify(_("passff_error_script_failed",
-                [result.stderr]));
+              if (command == "otp" && result.stderr.trim() == "Error: "
+                  + "otp is not in the password store.") {
+                log.warn("pass-otp plugin is not installed, "
+                         + "but entry contains otpauth.");
+              } else {
+                log.warn('Script execution failed',
+                  result.exitCode, result.stderr, result.stdout);
+                PassFF.Page.notify(_("passff_error_script_failed",
+                  [result.stderr]));
+              }
             } else {
               log.debug('Script execution ok');
             }
