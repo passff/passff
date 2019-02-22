@@ -8,7 +8,8 @@
   - Host app: 
 
 Status line output: `[hh:mm:ss] show -> (0)`
-<!-- Enable it at the bottom of the preferences. In the toolbar menu, select & copy-paste it. -->
+<!-- Enable 'Show a status bar in the toolbar menu' at the bottom of the
+PassFF Extension preferences. In the toolbar menu, select & copy-paste it. -->
 
 <!-- If useful, tell us more! -->
 - Output of `pass`: 
