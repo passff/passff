@@ -253,7 +253,7 @@ PassFF.Pass = (function () {
               log.warn("The host app is outdated!", version);
               result.exitCode = -2;
               result.stderr = `The host app (v${version}) is outdated!`;
-            } else if (command == "otp" && semver.gt("1.1.0", version)) {
+            } else if (command == "otp" && version !== "testing" && semver.gt("1.1.0", version)) {
               log.warn("This version of the host app does not support OTP!",
                 version);
               PassFF.Page.notify(_("passff_error_otp_host_version",
