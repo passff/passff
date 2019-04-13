@@ -128,6 +128,9 @@
   "passff_prefs_url_field_names_label": {
     "message": "URL field names"
   },
+  "passff_prefs_index_meta_urls_label": {
+    "message": "Index URL fields on startup. This will read all URL field values into browser memory and allow them to be used when passff looks for passwords. (Requires passff-host >=1.2.0)"
+  },
   "passff_prefs_otpauth_field_names_label": {
     "message": "OTP Auth field names"
   },
@@ -262,6 +265,15 @@
   },
   "passff_error_otp_host_version": {
     "message": "OTP support requires the PassFF host app version 1.1.0 or later. Please follow the [official installation instructions]($passffURL$).",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_error_grep_host_version": {
+    "message": "Indexing meta urls requires the PassFF host app version 1.2.0 or later. Please follow the [official installation instructions]($passffURL$).",
     "placeholders": {
       "passffURL": {
         "content": "$1",
