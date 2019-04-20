@@ -11,6 +11,7 @@ PassFF.Pass = (function () {
   var allItems = [];
   var rootItems = [];
   var contextItems = [];
+  var metaUrls = null;
   var displayItem = null;
   var pendingRequests = {};
   var addPasswordContext = '/';
@@ -126,7 +127,7 @@ PassFF.Pass = (function () {
             || host_part_blacklist.indexOf(subhost) >= 0) break;
 
         let regex = ci_search_regex(subhost);
-        if (item.fullKey.search(regex) >= 0) return quality;
+        if (item.fullKey.search(regex) >= 0 || regexSearchMetaUrls(item, regex)) return quality;
 
         if (subhost.indexOf('.') < 0) break;
         subhost = subhost.replace(/[^\.]+\.+/, '');
@@ -141,6 +142,22 @@ PassFF.Pass = (function () {
       }
     } while (true);
     return -1;
+  }
+
+  function regexSearchMetaUrls(item, regex) {
+    if (metaUrls === null) {
+      return false;
+    }
+    const itemMetaUrls = metaUrls.get(item.fullKey);
+    if (itemMetaUrls === undefined || itemMetaUrls.length === 0) {
+      return false;
+    }
+    for (let url of itemMetaUrls) {
+      if (url.search(regex) >= 0) {
+        return true;
+      }
+    }
+    return false;
   }
 
   function pathMatchQuality(item, path) {
@@ -227,6 +244,7 @@ PassFF.Pass = (function () {
                 }
               });
           }
+          this.indexMetaUrls();
         });
     },
 
@@ -236,7 +254,7 @@ PassFF.Pass = (function () {
       function (args) {
         let command = "ls";
         if (args.length > 0) {
-            if (["insert","generate","otp"].indexOf(args[0]) >= 0) {
+          if (["insert", "generate", "otp", "grepMetaUrls"].indexOf(args[0]) >= 0) {
                 command = args[0];
             } else {
                 command = "show";
@@ -253,13 +271,18 @@ PassFF.Pass = (function () {
               log.warn("The host app is outdated!", version);
               result.exitCode = -2;
               result.stderr = `The host app (v${version}) is outdated!`;
-            } else if (command == "otp" && version !== "testing" && semver.gt("1.1.0", version)) {
+            } else if (command === "otp" && version !== "testing" && semver.gt("1.1.0", version)) {
               log.warn("This version of the host app does not support OTP!",
                 version);
               PassFF.Page.notify(_("passff_error_otp_host_version",
                 [PASSFF_URL_GIT_HOST]));
+            } else if (command === "grepMetaUrls" && version !== "testing" && semver.gt("1.2.0", version)) {
+              log.warn("This version of the host app does not support indexing meta urls!",
+                version);
+              PassFF.Page.notify(_("passff_error_grep_host_version",
+                [PASSFF_URL_GIT_HOST]));
             } else if (result.exitCode !== 0) {
-              if (command == "otp" && result.stderr.trim() == "Error: "
+              if (command === "otp" && result.stderr.trim() === "Error: "
                   + "otp is not in the password store.") {
                 log.warn("pass-otp plugin is not installed, "
                          + "but entry contains otpauth.");
@@ -385,6 +408,53 @@ PassFF.Pass = (function () {
           });
 
           return [allItems, rootItems];
+        });
+    }),
+
+    indexMetaUrls: background_function("Pass.indexMetaUrls", function () {
+      if (!PassFF.Preferences.indexMetaUrls) {
+        metaUrls = null;
+        return;
+      }
+      if (metaUrls !== null) {
+        return;
+      }
+      log.debug("Indexing meta urls");
+      metaUrls = new Map();
+      return this.executePass(["grepMetaUrls", PassFF.Preferences.urlFieldNames])
+        .then((result) => {
+          PassFF.Menu.state.indexingMetaUrls = false;
+          let stdout = result.stdout;
+          //remove escape codes
+          stdout = stdout.replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, "");
+
+          let lines = stdout.split("\n");
+
+          let fullKey = "";
+          let urls = [];
+
+          for (let line of stdout.split("\n")) {
+            let metaTagRegexp = /^(host|url):/;
+            if (!metaTagRegexp.test(line)) {
+              //reached next fullKey in output
+              if (urls.length > 0) {
+                metaUrls.set(fullKey, urls);
+              }
+
+              //current line ends with a colon which we need to strip
+              fullKey = line.substring(0, line.length - 1);
+              urls = [];
+            } else {
+              //current line is an url matching the last found fullKey
+              //'host:' or 'url:" needs to be stripped
+              let url = line.replace(metaTagRegexp, "").trim();
+              urls.push(url);
+            }
+          }
+          if (urls.length > 0) {
+            metaUrls.set(fullKey, urls);
+          }
+          log.debug(`Finished indexing meta urls, found ${metaUrls.size} entries that include urls`);
         });
     }),
 

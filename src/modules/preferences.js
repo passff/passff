@@ -68,6 +68,7 @@ PassFF.Preferences = (function () {
     loginFieldNames       : 'login,user,username,id',
     passwordFieldNames    : 'passwd,password,pass',
     urlFieldNames         : 'url,http',
+    indexMetaUrls         : false,
     otpauthFieldNames     : 'otpauth',
     autoFill              : false,
     autoSubmit            : false,
