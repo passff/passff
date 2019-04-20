@@ -122,24 +122,22 @@ PassFF.Preferences = (function () {
 
   var prefObj = {
     init: function () {
-      return PassFF.Preferences.getBrowserCommand()
-        .then((command) => {
-            prefParams['tbMenuShortcut'] = command.shortcut;
-            return browser.storage.local.get(Object.keys(prefParams));
-        })
+      let changes = {};
+      return browser.storage.local.get(Object.keys(prefParams))
         .then((res) => {
-          let obj = {};
           for (let [key, val] of Object.entries(prefParams)) {
             if (typeof res[key] === 'undefined') {
-              obj[key] = val;
+              changes[key] = val;
             } else {
               prefParams[key] = res[key];
             }
           }
-          return browser.storage.local.set(obj);
+          return PassFF.Preferences.getBrowserCommand();
         })
-        .then(() => {
-          return updateBrowserCommand();
+        .then((command) => {
+          prefParams['tbMenuShortcut'] = command.shortcut;
+          changes['tbMenuShortcut'] = command.shortcut;
+          return browser.storage.local.set(changes);
         })
         .then(() => {
           browser.storage.onChanged.addListener((changes, areaName) => {
