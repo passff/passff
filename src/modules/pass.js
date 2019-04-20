@@ -127,7 +127,10 @@ PassFF.Pass = (function () {
             || host_part_blacklist.indexOf(subhost) >= 0) break;
 
         let regex = ci_search_regex(subhost);
-        if (item.fullKey.search(regex) >= 0 || regexSearchMetaUrls(item, regex)) return quality;
+        if (item.fullKey.search(regex) >= 0
+            || regexSearchMetaUrls(item, regex)) {
+          return quality;
+        }
 
         if (subhost.indexOf('.') < 0) break;
         subhost = subhost.replace(/[^\.]+\.+/, '');
@@ -254,11 +257,14 @@ PassFF.Pass = (function () {
       function (args) {
         let command = "ls";
         if (args.length > 0) {
-          if (["insert", "generate", "otp", "grepMetaUrls"].indexOf(args[0]) >= 0) {
-                command = args[0];
-            } else {
-                command = "show";
-            }
+          if (["insert",
+               "generate",
+               "otp",
+               "grepMetaUrls"].indexOf(args[0]) >= 0) {
+            command = args[0];
+          } else {
+            command = "show";
+          }
         }
         return browser.runtime.sendNativeMessage("passff", args)
           .then((result) => {
@@ -271,14 +277,16 @@ PassFF.Pass = (function () {
               log.warn("The host app is outdated!", version);
               result.exitCode = -2;
               result.stderr = `The host app (v${version}) is outdated!`;
-            } else if (command === "otp" && version !== "testing" && semver.gt("1.1.0", version)) {
+            } else if (command === "otp" && version !== "testing"
+                       && semver.gt("1.1.0", version)) {
               log.warn("This version of the host app does not support OTP!",
                 version);
               PassFF.Page.notify(_("passff_error_otp_host_version",
                 [PASSFF_URL_GIT_HOST]));
-            } else if (command === "grepMetaUrls" && version !== "testing" && semver.gt("1.2.0", version)) {
-              log.warn("This version of the host app does not support indexing meta urls!",
-                version);
+            } else if (command === "grepMetaUrls" && version !== "testing"
+                       && semver.gt("1.2.0", version)) {
+              log.warn("This version of the host app does not support "
+                + "indexing meta urls!", version);
               PassFF.Page.notify(_("passff_error_grep_host_version",
                 [PASSFF_URL_GIT_HOST]));
             } else if (result.exitCode !== 0) {
@@ -454,7 +462,8 @@ PassFF.Pass = (function () {
           if (urls.length > 0) {
             metaUrls.set(fullKey, urls);
           }
-          log.debug(`Finished indexing meta urls, found ${metaUrls.size} entries that include urls`);
+          log.debug(`Finished indexing meta urls, found ${metaUrls.size} `
+            + `entries that include urls`);
         });
     }),
 
@@ -675,7 +684,10 @@ PassFF.Pass = (function () {
         });
     },
 
-    generateNewPassword: function (name, length, includeSymbols, additionalInfo) {
+    generateNewPassword: function (name,
+                                   length,
+                                   includeSymbols,
+                                   additionalInfo) {
       let args = ['generate', name, length.toString()];
       if (!includeSymbols) {
         args.push('-n');
@@ -813,7 +825,10 @@ function handlePasswordGeneration() {
     }
   }
 
-  function makePasswordAdder(validations, errorsContainerId, getInput, addPassword) {
+  function makePasswordAdder(validations,
+                             errorsContainerId,
+                             getInput,
+                             addPassword) {
     return function () {
       try {
         let inputData = getInput(),
