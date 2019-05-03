@@ -1,0 +1,321 @@
+{
+  "passff_passphrase_title": {
+    "message": "Repozytorium zablokowane"
+  },
+  "passff_passphrase_description": {
+    "message": "Brak dostępu do hasła.\nDodaj hasło do gpg-agent."
+  },
+  "passff_menu_copy_password": {
+    "message": "Kopiuj hasło"
+  },
+  "passff_menu_copy_login": {
+    "message": "Kopiuj login"
+  },
+  "passff_menu_fill": {
+    "message": "Uzupełnij"
+  },
+  "passff_menu_fill_and_submit": {
+    "message": "Uzupełnij i prześlij"
+  },
+  "passff_menu_goto_fill": {
+    "message": "Przejdź do i wypełnij"
+  },
+  "passff_menu_goto_fill_and_submit": {
+    "message": "Przejdź do, wypełnij i prześlij"
+  },
+  "passff_menu_goto": {
+    "message": "Przejdź do"
+  },
+  "passff_menu_display": {
+    "message": "Pokaż"
+  },
+  "passff_display_hover": {
+    "message": "Wskaż kursorem, aby pokazać hasło."
+  },
+  "passff_toolbar_button_label": {
+    "message": "PassFF"
+  },
+  "passff_toolbar_search_placeholder": {
+    "message": "Szukaj"
+  },
+  "passff_toolbar_refresh_label": {
+    "message": "Odśwież"
+  },
+  "passff_toolbar_preferences_label": {
+    "message": "Ustawienia"
+  },
+  "passff_toolbar_new_password_label": {
+    "message": "Nowe"
+  },
+  "passff_button_root_label": {
+    "message": "Wyświetl główny katalog"
+  },
+  "passff_button_context_label": {
+    "message": "Wyświetl pasujące"
+  },
+  "passff_prefs_headline": {
+    "message": "Ustawienia PassFF"
+  },
+  "passff_prefs_tab_general": {
+    "message": "Ogólne"
+  },
+  "passff_prefs_tab_autofilling": {
+    "message": "Automatyczne wypełnianie"
+  },
+  "passff_prefs_tab_inputs": {
+    "message": "Wprowadzanie"
+  },
+  "passff_prefs_tab_fields": {
+    "message": "Pola"
+  },
+  "passff_prefs_tab_script": {
+    "message": "Skrypt pass"
+  },
+  "passff_prefs_tab_adding": {
+    "message": "Dodawanie haseł"
+  },
+  "passff_prefs_tab_browsing": {
+    "message": "Przeglądanie i wyszukiwanie haseł"
+  },
+  "passff_prefs_tab_dev": {
+    "message": "Debugowanie i rozwój"
+  },
+  "passff_prefs_mark_fillable": {
+    "message": "Oznacz pola tekstowe ikoną PassFF"
+  },
+  "passff_prefs_context_menu": {
+    "message": "Dodaj wpis do menu kontekstowego pól tekstowych"
+  },
+  "passff_prefs_submit_fillable": {
+    "message": "Wyślij, gdy wybrano za pomocą menu"
+  },
+  "passff_prefs_handle_http_auth": {
+    "message": "Obsługuj autoryzację HTTP"
+  },
+  "passff_prefs_directories_first": {
+    "message": "Pokazuj katalogi przed plikami na pasku narzędziowym"
+  },
+  "passff_prefs_tb_menu_shortcut_label": {
+    "message": "Skróty klawiaturowe paska narzędziowego"
+  },
+  "passff_prefs_case_insensitive_search": {
+    "message": "Nie uwzględniaj wielkości liter przy wyszukiwaniu"
+  },
+  "passff_prefs_enter_behavior": {
+    "message": "Zachowanie klawisza Enter"
+  },
+  "passff_prefs_inputs_description": {
+    "message": "Pola są używane przez PassFF do wyszukiwania pól tekstowych do wypełnienia. Opcjonalnie, PassFF oznacza je menu do wypełniania."
+  },
+  "passff_prefs_fields_description": {
+    "message": "Rubryki są używane do wyszukiwania danych w Twoim repozytorium. PassFF szuka loginu, hasła i URL w pliku z hasłem. Jeżeli jest katalogiem, PassFF szuka ich w plikach w tym katalogu."
+  },
+  "passff_prefs_password_input_names_label": {
+    "message": "Nazwy pól z hasłami"
+  },
+  "passff_prefs_login_input_names_label": {
+    "message": "Nazwy pól z loginami"
+  },
+  "passff_prefs_otp_input_names_label": {
+    "message": "Nazwy pól z hasłami jednorazowymi (OTP)"
+  },
+  "passff_prefs_login_field_names_label": {
+    "message": "Nazwy rubryk z loginami"
+  },
+  "passff_prefs_password_field_names_label": {
+    "message": "Nazwy rubryk z hasłami"
+  },
+  "passff_prefs_url_field_names_label": {
+    "message": "Nazwy rubryk z URL"
+  },
+  "passff_prefs_index_meta_urls_label": {
+    "message": "Indeksuj rubryki URL po starcie. Ta funkcja odczytuje wszystkie rubryki z URL do pamięci przeglądarki i używa ich przy wyszukowaniu haseł. (Wymaga passff-host >=1.2.0)"
+  },
+  "passff_prefs_otpauth_field_names_label": {
+    "message": "Nazwy rubryk z hasłami jednorazowymi (OTP)"
+  },
+  "passff_prefs_script_howto": {
+    "message": "Zobacz do passff.py, aby zmienić środowisko pass."
+  },
+  "passff_prefs_auto_fill_label": {
+    "message": "Próbuj automatycznie wypełniać pola"
+  },
+  "passff_prefs_auto_submit_label": {
+    "message": "Próbuj automatycznie wysyłać pola"
+  },
+  "passff_prefs_autofill_blacklist_label": {
+    "message": "Nie używaj automatycznego wypełniania, jeżeli adres strony zawiera jeden z tych ciągów"
+  },
+  "passff_prefs_default_length_label": {
+    "message": "Dpmyślna długość hasła"
+  },
+  "passff_prefs_default_include_symbols_label": {
+    "message": "Domyślnie dodawaj co najmniej 1 znak specjalny do hasła"
+  },
+  "passff_prefs_preferred_new_method_label": {
+    "message": "Preferowana metoda tworzenia nowych haseł"
+  },
+  "passff_prefs_prefer_generate": {
+    "message": "Wygeneruj"
+  },
+  "passff_prefs_prefer_insert": {
+    "message": "Wstaw"
+  },
+  "passff_prefs_show_new_password_button": {
+    "message": "Pokazuj opcje 'Nowe hasło' w pasku narzędziowym"
+  },
+  "passff_prefs_enable_logging": {
+    "message": "Zapisuj logi do konsoli JavaScript"
+  },
+  "passff_prefs_show_status": {
+    "message": "Pokaż pasek statusu w menu paska narzędziowego"
+  },
+  "passff_prefs_recognised_suffixes": {
+    "message": "Przyrostki nazw domen, które powinny być traktowane jako domeny najwyższego poziomu"
+  },
+  "passff_newpassword_window_title": {
+    "message": "Nowe hasło"
+  },
+  "passff_newpassword_window_header": {
+    "message": "Dodaj nowe hasło"
+  },
+  "passff_newpassword_tabs_generate": {
+    "message": "Generuj"
+  },
+  "passff_newpassword_tabs_insert": {
+    "message": "Wstaw"
+  },
+  "passff_newpassword_inputs_password_name_label": {
+    "message": "Nazwa"
+  },
+  "passff_newpassword_inputs_password_label": {
+    "message": "Hasło"
+  },
+  "passff_newpassword_inputs_password_confirmation_label": {
+    "message": "Potwierdź hasło"
+  },
+  "passff_newpassword_inputs_additional_info_label": {
+    "message": "Dodatkowe informacje"
+  },
+  "passff_newpassword_inputs_password_length_label": {
+    "message": "Długość"
+  },
+  "passff_newpassword_inputs_include_symbols_label": {
+    "message": "Dodaj znaki specjalne"
+  },
+  "passff_newpassword_inputs_add_password_button_label": {
+    "message": "Wstaw hasło"
+  },
+  "passff_newpassword_inputs_generate_password_button_label": {
+    "message": "Generuj hasło"
+  },
+  "passff_newpassword_inputs_overwrite_password_prompt": {
+    "message": "To hasło już istnieje. Czy chcesz je nadpisać?"
+  },
+  "passff_newpassword_errors_name_is_required": {
+    "message": "Nazwa jest wymagana."
+  },
+  "passff_newpassword_errors_password_is_required": {
+    "message": "Hasło jest wymagane."
+  },
+  "passff_newpassword_errors_password_confirmation_mismatch": {
+    "message": "Hasła się nie zgadzają."
+  },
+  "passff_newpassword_errors_pass_execution_failed": {
+    "message": "Coś poszło nie tak!"
+  },
+  "passff_newpassword_errors_unexpected_error": {
+    "message": "Przepraszamy, wystąpił nieoczekiwany błąd!"
+  },
+  "passff_errors_exec_host_app": {
+    "message": "Połączenie z aplikacją przerwane lub aplikacja zwróciła nieoczekiwany rezultat!"
+  },
+  "passff_errors_upgrade_host_app": {
+    "message": "Upewnij się, że masz zainstalowaną najnowszą wersje aplikacji, zgodnie z [oficjalną instrukcją instalacji]($passffURL$).",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_no_entries_found": {
+    "message": "Nie znaleziono wpisów pasujących do tego URL."
+  },
+  "passff_override_antiphishing_confirmation": {
+    "message": "Czy chcesz kontynuować mimo to? Może to spowodować zagrożenie bezpieczeństwa."
+  },
+  "passff_error_getting_url_pass": {
+    "message": "Wystąpił błąd przy próbie odczytania adresu URL ($passURL$) z bazy danych.",
+    "placeholders": {
+      "passURL" : {
+        "content" : "$1",
+        "example" : "badlyFormattedURL.com"
+      }
+    }
+  },
+  "passff_error_getting_url_curr": {
+    "message": "Wystąpił błąd przy próbie odczytania obecnego adresu URL ($currURL$).",
+    "placeholders": {
+      "currURL" : {
+        "content" : "$1",
+        "example" : "badlyFormattedURL.com"
+      }
+    }
+  },
+  "passff_error_otp_host_version": {
+    "message": "Wsparcie haseł jednorazowych wymaga aplikacji w wersji 1.1.0 lub nowszej. Postępuj zgodnie z [oficjalną instrukcją instalacji]($passffURL$).",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_error_grep_host_version": {
+    "message": "Indeksowanie adresów URL wymaga aplikacji w wersji 1.2.0 lub nowszej. Postępuj zgodnie z [oficjalną instrukcją instalacji]($passffURL$).",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_error_script_failed": {
+    "message": "Wykonanie skryptu nie udało się: ```$errMsg$```",
+    "placeholders": {
+      "errMsg": {
+        "content": "$1",
+        "example": "gpg: cancelled by user"
+      }
+    }
+  },
+  "passff_domain_mismatch": {
+    "message": "Domena na której jesteś ($currDomain$) różni się od tej w bazie danych ($passDomain$).",
+    "placeholders": {
+      "currDomain" : {
+        "content" : "$1",
+        "example" : "phishingDomain.com"
+      },
+      "passDomain": {
+        "content" : "$2",
+        "example": "realDomain.com"
+      }
+    }
+  },
+  "passff_http_pass_warning": {
+    "message": "Adres URL w bazie danych ($passItemURL$) używa nieszyfrowanego protokołu. Zalecamy zmianę adresu na zaczynający się od 'https:'.",
+    "placeholders": {
+      "passItemURL": {
+        "content" : "$1",
+        "example" : "http://www.example.com"
+      }
+    }
+  },
+  "passff_http_curr_warning": {
+    "message": "Obecna strona używa nieszyfrowanego protokołu HTTP który może ujawnić Twoje hasła."
+  },
+  "passff_prefs_domain_check_label": {
+    "message": "Ostrzegaj o potencjalnych stronach wyłudzających dane, np kiedy adres strony różni się od adresu w bazie danych"
+  }
+}
