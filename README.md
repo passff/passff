@@ -90,13 +90,14 @@ Alternatively, you can organize your login information with file structure. For 
     * login
     * password
     * url
+    * totp
   * mysite.com
 
 PassFF will
 * get the login from the "login", the url from the "url" and the password from the "password" file under supersite.com
 * get the login from the "login" field inside the mysite.com entry for mysite.com (see [format above](#multi-line-format))
 
-The file structure approach does not support custom input fields or OTP Auth.
+The file structure approach does not support custom input fields.
 
 Note that the file structure format is recognized and assumed by PassFF whenever a file name matches a reserved field name such as `user`, `url`, `password` or `login`. This might cause unexpected behavior in cases where there is a file in [multi-line format](#multi-line-format) whose name happens to be a reserved field name.
 
