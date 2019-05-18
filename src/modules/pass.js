@@ -85,8 +85,13 @@ PassFF.Pass = (function () {
     return PassFF.Preferences.urlFieldNames.indexOf(name) >= 0;
   }
 
+  function isOtpauthField(name) {
+    name = name.toLowerCase();
+    return PassFF.Preferences.otpauthFieldNames.indexOf(name) >= 0;
+  }
+
   function isOtherField(name) {
-    return !(isLoginField(name) || isPasswordField(name) || isUrlField(name));
+    return !(isLoginField(name) || isPasswordField(name) || isUrlField(name) || isOtpauthField(name));
   }
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%% Data analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -411,7 +416,8 @@ PassFF.Pass = (function () {
             item.isLeaf = (item.children.length === 0) && !item.isMeta;
             item.isField = item.isLeaf && (isLoginField(item.key)
                                            || isPasswordField(item.key)
-                                           || isUrlField(item.key));
+                                           || isUrlField(item.key)
+                                           || isOtpauthField(item.key));
             item.hasFields = item.children.some(c => allItems[c].isField);
           });
 
@@ -489,9 +495,12 @@ PassFF.Pass = (function () {
         return Promise.all(promised_results).then((results) => {
           if (typeof results[0] === "undefined") return;
           let result = {};
+          let otpauthkey;
           for (let i = 0; i < item.children.length; i++) {
             let child = this.getItemById(item.children[i]);
-            if (child.isField) {
+            if (isOtpauthField(child.key)) {
+              otpauthkey = child.fullKey;
+            } else if (child.isField) {
               result[child.key] = results[i].password;
             }
           }
@@ -499,6 +508,15 @@ PassFF.Pass = (function () {
           setPassword(result);
           setUrl(result);
           setOther(result);
+
+          if (!!otpauthkey) {
+            return this.generateOtp(otpauthkey)
+              .then((otp) => {
+                log.debug('Generating OTP token');
+                result.otp = otp;
+                return result;
+              });
+          }
           return result;
         });
       } else if (item.hasMeta && !meta2leaf) { // item with corresponding *.meta
