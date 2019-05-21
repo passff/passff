@@ -134,6 +134,9 @@
   "passff_prefs_otpauth_field_names_label": {
     "message": "OTP Auth field names"
   },
+  "passff_prefs_filter_path_regex_label": {
+    "message": "Regex for hiding items, one per line (tests full path)"
+  },
   "passff_prefs_script_howto": {
     "message": "See passff.py for changing the environment variables of pass."
   },

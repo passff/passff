@@ -145,6 +145,7 @@ Some of them are described below:
   - Password field names
   - URL field names
   - OTP Auth field names
+  - Regex for hiding items (tests the full path to the item)
 - Adding Passwords
   - The default length for generating passwords
   - Whether or not to include special characters in generated passwords by default

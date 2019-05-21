@@ -389,6 +389,7 @@ PassFF.Pass = (function () {
               isMeta: null,
               hasMeta: null,
               fullKey: (curDepth === 0) ? key : curParent.fullKey + '/' + key,
+              isHidden: null,
               children: []
             };
 
@@ -403,6 +404,8 @@ PassFF.Pass = (function () {
               rootItems.push(item);
             }
           });
+
+          var isHiddenRegex = new RegExp(PassFF.Preferences.filterPathRegex.join("|"), 'i');
 
           allItems.slice().reverse().forEach(item => {
             let siblings = rootItems;
@@ -419,6 +422,7 @@ PassFF.Pass = (function () {
                                            || isUrlField(item.key)
                                            || isOtpauthField(item.key));
             item.hasFields = item.children.some(c => allItems[c].isField);
+            item.isHidden = isHiddenRegex.test(item.fullKey);
           });
 
           return [allItems, rootItems];
@@ -630,7 +634,8 @@ PassFF.Pass = (function () {
         .map(i => getItemQuality(i, urlStr))
         .filter(i => (i.quality >= 0))
         .sort((i1,i2) => (i2.quality - i1.quality))
-        .map(i => i.item);
+        .map(i => i.item)
+        .filter(i => !i.isHidden);
       log.debug(matchingItems.length, 'matches for', urlStr);
       return matchingItems;
     },
