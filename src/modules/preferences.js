@@ -89,6 +89,7 @@ PassFF.Preferences = (function () {
     showStatus            : true,
     tbMenuShortcut        : '',
     recognisedSuffixes    : 'co.uk,org.uk,me.uk,co.jp,com.au',
+    filterPathRegex       : 'notes\nattributes\nattachments',
   };
 
   var listParams = {
@@ -100,7 +101,8 @@ PassFF.Preferences = (function () {
     'urlFieldNames'       : ',',
     'otpauthFieldNames'   : ',',
     'autoFillBlacklist'   : ',',
-    'recognisedSuffixes'  : ','
+    'recognisedSuffixes'  : ',',
+    'filterPathRegex'     : '\n',
   };
 
   var lowerCaseParams = [
