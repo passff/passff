@@ -232,7 +232,10 @@ PassFF.Pass = (function () {
           }
           allItems = items[0];
           rootItems = items[1];
-          if (PassFF.mode !== "background") contextItems = items[2];
+          if (PassFF.mode !== "background") {
+            contextItems = items[2];
+            metaUrls = items[3];
+          }
           if (PassFF.mode === "itemMonitor") {
             let passOutputEl = document.getElementsByTagName("pre")[0];
             let restOutputEl = document.getElementsByTagName("pre")[1];
@@ -252,7 +255,6 @@ PassFF.Pass = (function () {
                 }
               });
           }
-          this.indexMetaUrls();
         });
     },
 
@@ -339,7 +341,7 @@ PassFF.Pass = (function () {
     },
 
     loadItems: background_function("Pass.loadItems", function (reload) {
-      if (!reload) return [allItems, rootItems, contextItems];
+      if (!reload) return [allItems, rootItems, contextItems, metaUrls];
       return this.executePass([])
         .then((result) => {
           if (result.exitCode !== 0) {
@@ -425,6 +427,7 @@ PassFF.Pass = (function () {
             item.isHidden = isHiddenRegex.test(item.fullKey);
           });
 
+          this.indexMetaUrls();
           return [allItems, rootItems];
         });
     }),
@@ -474,6 +477,9 @@ PassFF.Pass = (function () {
           }
           log.debug(`Finished indexing meta urls, found ${metaUrls.size} `
             + `entries that include urls`);
+          browser.tabs.query({}).then((tabs) => {
+            tabs.forEach((t) => browser.tabs.sendMessage(t.id, "refresh"));
+          });
         });
     }),
 

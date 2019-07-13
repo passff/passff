@@ -650,7 +650,7 @@ PassFF.Page = (function () {
 
     refresh: content_function("Page.refresh", function () {
       let url = window.location.href;
-      matchItems = PassFF.Pass.contextItems;
+      matchItems = PassFF.Pass.getUrlMatchingItems(url);
       bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
       setupPopup();
     }),
