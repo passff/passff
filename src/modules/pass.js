@@ -696,6 +696,7 @@ PassFF.Pass = (function () {
 
     addNewPassword: function (name, password, additionalInfo) {
       let fileContents = [password, additionalInfo].join('\n');
+      fileContents = fileContents.trim() + "\n";
       return this.executePass(['insert', name, fileContents])
         .then((result) => { return result.exitCode === 0; });
     },
@@ -732,7 +733,7 @@ PassFF.Pass = (function () {
                 if (result.exitCode !== 0) {
                   return false;
                 }
-                var pass = result.stdout.split(/\n/);
+                var pass = result.stdout.split("\n")[0];
                 return this.addNewPassword(name, pass, additionalInfo)
               });
           } else {
