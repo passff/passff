@@ -729,7 +729,7 @@ PassFF.Page = (function () {
     fillActiveElement: content_function("Page.fillActiveElement",
       function (passwordData) {
         let activeElement = getActiveElement();
-        let inputTypes = Array.concat(loginInputTypes, ["password", "number"]);
+        let inputTypes = loginInputTypes.concat(["password", "number"]);
         log.debug("Fill active element", activeElement);
         if (activeElement.tagName !== "INPUT"
             || inputTypes.indexOf(activeElement.type) < 0) return;
