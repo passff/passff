@@ -490,45 +490,40 @@ PassFF.Pass = (function () {
       }
     },
 
-    getPasswordData: function (item, meta2leaf) {
+    getPasswordData: async function (item, meta2leaf) {
       let result = {};
       meta2leaf = meta2leaf || false;
       if (item.hasFields) { // hierarchical-style item
-        let promised_results = item.children.map(c => {
-            let child = this.getItemById(c);
-            if (child.isField) {
-              return this.getPasswordData(child);
-            } else {
-              return Promise.resolve(null);
-            }
-          });
-        return Promise.all(promised_results).then((results) => {
-          if (typeof results[0] === "undefined") return;
-          let result = {};
-          let otpauthkey;
-          for (let i = 0; i < item.children.length; i++) {
-            let child = this.getItemById(item.children[i]);
-            if (isOtpauthField(child.key)) {
-              otpauthkey = child.fullKey;
-            } else if (child.isField) {
-              result[child.key] = results[i].password;
-            }
+        let results = [];
+        for (let child of item.children.map(this.getItemById)) {
+          if (child.isField) {
+            results.push(await this.getPasswordData(child));
+          } else {
+            results.push(null);
           }
-          setLogin(result, item);
-          setPassword(result);
-          setUrl(result);
-          setOther(result);
+        }
+        if (typeof results[0] === "undefined") return;
+        let result = {};
+        let otpauthkey;
+        for (let i = 0; i < item.children.length; i++) {
+          let child = this.getItemById(item.children[i]);
+          if (isOtpauthField(child.key)) {
+            otpauthkey = child.fullKey;
+          } else if (child.isField) {
+            result[child.key] = results[i].password;
+          }
+        }
+        setLogin(result, item);
+        setPassword(result);
+        setUrl(result);
+        setOther(result);
 
-          if (!!otpauthkey) {
-            return this.generateOtp(otpauthkey)
-              .then((otp) => {
-                log.debug('Generating OTP token');
-                result.otp = otp;
-                return result;
-              });
-          }
-          return result;
-        });
+        if (!!otpauthkey) {
+          let otp = await this.generateOtp(otpauthkey);
+          log.debug('Generating OTP token');
+          result.otp = otp;
+        }
+        return result;
       } else if (item.hasMeta && !meta2leaf) { // item with corresponding *.meta
         let promised_results = [Promise.resolve(null), Promise.resolve(null)];
         promised_results[0] = this.getPasswordData(item, true);
