@@ -454,8 +454,12 @@ PassFF.Pass = (function () {
           let fullKey = "";
           let urls = [];
 
+          // build RegExp for detecting metaTag lines
+          let metaTagURLPart = PassFF.Preferences.urlFieldNames.join('|');
+          metaTagURLPart = metaTagURLPart || "host|url";  // fallback
+          let metaTagRegexp = new RegExp("^("+metaTagURLPart+"):",'i');
+
           for (let line of stdout.split("\n")) {
-            let metaTagRegexp = /^(host|url):/;
             if (!metaTagRegexp.test(line)) {
               //reached next fullKey in output
               if (urls.length > 0) {
