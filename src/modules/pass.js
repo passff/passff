@@ -501,7 +501,9 @@ PassFF.Pass = (function () {
         let results = [];
         for (let child of item.children.map(this.getItemById)) {
           if (child.isField) {
-            results.push(await this.getPasswordData(child));
+            let data = await this.getPasswordData(child);
+            if (typeof data === "undefined") return;
+            results.push(data);
           } else {
             results.push(null);
           }
