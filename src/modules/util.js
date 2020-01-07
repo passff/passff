@@ -214,6 +214,15 @@ const semver = (function semver() {
   function parser(version) {
     version = version + "";
 
+    // _VERSIONHOLDER_ alias 0.0.0-development
+    if (version === "_VERSIONHOLDER_") {
+      return {
+        major: 0,
+        minor: 0,
+        patch: 0,
+      }
+    }
+
     const id = String.raw`(0|[1-9]\d*)`;
     const ext = String.raw`(?:|[\+-].+)`;
     const reg = String.raw`^${id}\.${id}(?:\.${id})?${ext}$`;
