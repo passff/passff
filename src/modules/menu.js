@@ -418,6 +418,11 @@ PassFF.Menu = (function () {
       parse_markdown(p);
     });
 
+    let menuBox = document.getElementById('menu');
+    if (menuBox) {
+      menuBox.style.width = PassFF.Preferences.lookMenuWidth;
+    }
+
     let searchBox = document.getElementById('passff-search-box');
     searchBox.setAttribute(
       'placeholder',

@@ -86,6 +86,12 @@
   "passff_prefs_tab_dev": {
     "message": "Debugging and Development"
   },
+  "passff_prefs_tab_look": {
+    "message": "Look and style"
+  },
+  "passff_prefs_look_menu_width": {
+    "message": "Menu width"
+  },
   "passff_prefs_mark_fillable": {
     "message": "Mark fillable input fields with the PassFF icon"
   },
