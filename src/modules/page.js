@@ -128,11 +128,12 @@ PassFF.Page = (function () {
   }
 
   function rateLoginInput(input) {
-    if (loginInputTypes.indexOf(input.type) < 0) {
-      return 0;
-    } else {
+    if (input.type === 'email') {
+      return 100;
+    } else if (input.type === 'text') {
       return rateInputNames(input, PassFF.Preferences.loginInputNames);
     }
+    return 0;
   }
 
   function rateOtpInput(input) {
