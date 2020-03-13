@@ -63,7 +63,7 @@ PassFF.Preferences = (function () {
 
   var prefParams = {
     passwordInputNames    : 'passwd,password,pass',
-    loginInputNames       : 'login,user,mail,email,username,opt_login,log,usr_name',
+    loginInputNames       : 'login,user,mail,email,tel,username,opt_login,log,usr_name',
     otpInputNames         : 'otp,code',
     loginFieldNames       : 'login,user,username,id',
     passwordFieldNames    : 'passwd,password,pass',

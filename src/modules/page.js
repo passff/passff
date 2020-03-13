@@ -88,6 +88,10 @@ PassFF.Page = (function () {
       inputNames = inputNames.concat(Array.from(input.labels, l => l.innerText));
     }
 
+    if (["email","tel"].indexOf(input.type) >= 0) {
+      inputNames.push(input.type);
+    }
+
     return inputNames.slice(0,2)
       .concat(inputNames.slice(2).filter(Boolean))
       .map(nm => nm.toLowerCase());
