@@ -169,9 +169,8 @@ PassFF.Menu = (function () {
       }
     } else if (event.keyCode == 39) {
       /* RIGHT ARROW */
-      let itemId = getItem(listElm[listElm.selectedIndex]);
-      if (itemId !== null) {
-        createMenuList(itemId);
+      if (listElm.selectedIndex >= 0) {
+        listElm[listElm.selectedIndex].click();
       }
     } else if (event.keyCode == 37) {
       /* LEFT ARROW */
