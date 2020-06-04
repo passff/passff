@@ -77,6 +77,8 @@ PassFF.Preferences = (function () {
     caseInsensitiveSearch : true,
     handleHttpAuth        : true,
     enterBehavior         : 0,
+    shiftEnterBehavior    : 4,
+    ctrlEnterBehavior     : 3,
     defaultPasswordLength : 16,
     defaultIncludeSymbols : true,
     preferInsert          : 0,

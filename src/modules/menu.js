@@ -183,8 +183,8 @@ PassFF.Menu = (function () {
       }
       menuState['items'] = PassFF.Pass.rootItems;
       createMenuList();
-    } else if (!event.shiftKey && event.keyCode != 40 && event.keyCode != 38) {
-      /* NOT: SHIFT, DOWN ARROW, UP ARROW */
+    } else if (!event.shiftKey && event.key != 'Control' && event.keyCode != 40 && event.keyCode != 38) {
+      /* NOT: SHIFT, CTRL, DOWN ARROW, UP ARROW */
       document.getElementById('passff-search-box').focus();
     }
   }
@@ -297,7 +297,7 @@ PassFF.Menu = (function () {
           if (PassFF.mode === "itemPicker") {
             PassFF.Menu.onPickItem(getItem(this));
           } else {
-            PassFF.Menu.onEnter(getItem(this), event.shiftKey);
+            PassFF.Menu.onEnter(getItem(this), event.shiftKey, event.ctrlKey);
             window.close();
           }
         };
@@ -502,17 +502,21 @@ PassFF.Menu = (function () {
 
 // %%%%%%%%%%%%% Event handlers that are delegated to background %%%%%%%%%%%%%%%
 
-    onEnter: background_function("Menu.onEnter", function (itemId, shiftKey) {
+    onEnter: background_function("Menu.onEnter", function (itemId, shiftKey, ctrlKey) {
       let item = PassFF.Pass.getItemById(itemId);
-      log.debug("Enter press on item", item.fullKey, shiftKey);
-      switch (PassFF.Preferences.enterBehavior) {
+      log.debug("Enter press on item", item.fullKey, shiftKey, ctrlKey);
+      let behavior =
+        ctrlKey   ? PassFF.Preferences.ctrlEnterBehavior :
+        shiftKey  ? PassFF.Preferences.shiftEnterBehavior :
+                    PassFF.Preferences.enterBehavior
+      switch (behavior) {
         case 0:
           //goto url, fill, submit
-          PassFF.Page.goToItemUrl(item, shiftKey, true, true);
+          PassFF.Page.goToItemUrl(item, false, true, true);
           break;
         case 1:
           //goto url, fill
-          PassFF.Page.goToItemUrl(item, shiftKey, true, false);
+          PassFF.Page.goToItemUrl(item, false, true, false);
           break;
         case 2:
           //fill, submit
@@ -521,6 +525,34 @@ PassFF.Menu = (function () {
         case 3:
           //fill
           PassFF.Page.fillInputs(null, item, false);
+          break;
+        case 4:
+          //goto url, fill, submit (new tab)
+          PassFF.Page.goToItemUrl(item, true, true, true);
+          break;
+        case 5:
+          //goto url, fill (new tab)
+          PassFF.Page.goToItemUrl(item, true, true, false);
+          break;
+        case 6:
+          //copy password
+          PassFF.Pass.getPasswordData(item)
+            .then((passwordData) => {
+              if (typeof passwordData === "undefined") return;
+              PassFF.Page.copyToClipboard(passwordData.password);
+            });
+          break;
+        case 7:
+          //copy login
+          PassFF.Pass.getPasswordData(item)
+            .then((passwordData) => {
+              if (typeof passwordData === "undefined") return;
+              PassFF.Page.copyToClipboard(passwordData.login);
+            });
+          break;
+        case 8:
+          //display
+          PassFF.Pass.displayItem(item);
           break;
       }
     }),
