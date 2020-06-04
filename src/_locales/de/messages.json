@@ -104,6 +104,12 @@
   "passff_prefs_enter_behavior": {
     "message": "Verhalten der Enter-Taste"
   },
+  "passff_prefs_shift_enter_behavior": {
+    "message": "Verhalten der Shift-Enter-Taste"
+  },
+  "passff_prefs_ctrl_enter_behavior": {
+    "message": "Verhalten der Ctrl-Enter-Taste"
+  },
   "passff_prefs_inputs_description": {
     "message": "Diese Bezeichner werden von PassFF benutzt, um befüllbare Eingabefelder auf Webseiten zu finden. Optional platziert PassFF in jedem gefundenen Eingabefeld eine Menü-Schaltfläche."
   },

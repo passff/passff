@@ -104,6 +104,12 @@
   "passff_prefs_enter_behavior": {
     "message": "Zachowanie klawisza Enter"
   },
+  "passff_prefs_shift_enter_behavior": {
+    "message": "Zachowanie klawisza Shift-Enter"
+  },
+  "passff_prefs_ctrl_enter_behavior": {
+    "message": "Zachowanie klawisza Ctrl-Enter"
+  },
   "passff_prefs_inputs_description": {
     "message": "Pola są używane przez PassFF do wyszukiwania pól tekstowych do wypełnienia. Opcjonalnie, PassFF oznacza je menu do wypełniania."
   },
