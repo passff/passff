@@ -243,6 +243,7 @@ PassFF.Pass = (function () {
               = _("passff_display_hover");
             this.getDisplayItem()
               .then((passwordData) => {
+                if (passwordData === null) return;
                 if (passwordData.hasOwnProperty('fullText')) {
                     let otherData = passwordData['fullText'];
                     let sep = otherData.indexOf("\n");
@@ -786,7 +787,10 @@ PassFF.Pass = (function () {
     }),
 
     getDisplayItem: background_function("Pass.getDisplayItem", () => {
-      return displayItem;
+      // make sure passwordData can only be requested once
+      var item = displayItem;
+      displayItem = null;
+      return item;
     }),
 
 /* #############################################################################
