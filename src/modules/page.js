@@ -752,8 +752,12 @@ PassFF.Page = (function () {
 
     fillInputs: content_function("Page.fillInputs", function (item, andSubmit) {
       if (inputElements.filter(inp => inp[1] == "password").length === 0) {
-        log.debug("fillInputs: No password inputs found!");
-        return null;
+        if (inputElements.length == 0) {
+          log.debug("fillInputs: No relevant login input elements recognized.");
+          return null;
+        } else {
+          log.debug("fillInputs: Warning: no password inputs found!");
+        }
       }
       return PassFF.Pass.getPasswordData(item)
         .then((passwordData) => {
