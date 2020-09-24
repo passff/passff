@@ -9,6 +9,7 @@ PassFF.Page = (function () {
   var doc = document;
   var inputElements = [];
   var loginInputTypes = ['text', 'email', 'tel'];
+  var otpInputTypes = ['text', 'number', 'password'];
   var tab_init_pending = [];
   var matchItems = [];
   var bestFitItem = null;
@@ -140,7 +141,11 @@ PassFF.Page = (function () {
   }
 
   function rateOtpInput(input) {
-    return rateInputNames(input, PassFF.Preferences.otpInputNames);
+    if (otpInputTypes.indexOf(input.type) < 0) {
+      return 0;
+    } else {
+      return rateInputNames(input, PassFF.Preferences.otpInputNames);
+    }
   }
 
 /* #############################################################################
