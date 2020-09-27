@@ -725,13 +725,14 @@ PassFF.Page = (function () {
 
       log.info('Start pref-auto-fill');
       if (bestFitItem) {
-        PassFF.Page.fillInputs(bestFitItem).then((passwordData) => {
-          if (PassFF.Preferences.autoSubmit
-              && PassFF.Pass.getItemsLeafs(matchItems).length == 1
-              && passwordData._other['autosubmit'] !== "false") {
-            PassFF.Page.safeSubmit();
-          }
-        });
+        PassFF.Page.fillInputs(bestFitItem, false, true)
+          .then((passwordData) => {
+            if (PassFF.Preferences.autoSubmit
+                && PassFF.Pass.getItemsLeafs(matchItems).length == 1
+                && passwordData._other['autosubmit'] !== "false") {
+              PassFF.Page.safeSubmit();
+            }
+          });
       }
     }),
 
@@ -755,28 +756,29 @@ PassFF.Page = (function () {
       }
     ),
 
-    fillInputs: content_function("Page.fillInputs", function (item, andSubmit) {
-      if (inputElements.filter(inp => inp[1] == "password").length === 0) {
-        if (inputElements.length == 0) {
-          log.debug("fillInputs: No relevant login input elements recognized.");
-          return null;
-        } else {
-          log.debug("fillInputs: Warning: no password inputs found!");
+    fillInputs: content_function("Page.fillInputs",
+      function (item, andSubmit, cautious) {
+        if (inputElements.filter(inp => inp[1] == "password").length === 0) {
+          if (inputElements.length == 0 || cautious) {
+            log.debug("fillInputs: No relevant login input elements recognized.");
+            return null;
+          } else {
+            log.debug("fillInputs: Warning: no password inputs found!");
+          }
         }
-      }
-      return PassFF.Pass.getPasswordData(item)
-        .then((passwordData) => {
-          if (typeof passwordData === "undefined") return;
-          log.debug('Start auto-fill using', item.fullKey, andSubmit);
-          return securityChecks(passwordData.url, window.location.href)
-            .then((result) => {
-              if (!result) return;
-              setInputs(inputElements, passwordData);
-              if (andSubmit) PassFF.Page.submit();
-              return passwordData;
-            });
-        });
-    }, true),
+        return PassFF.Pass.getPasswordData(item)
+          .then((passwordData) => {
+            if (typeof passwordData === "undefined") return;
+            log.debug('Start auto-fill using', item.fullKey, andSubmit);
+            return securityChecks(passwordData.url, window.location.href)
+              .then((result) => {
+                if (!result) return;
+                setInputs(inputElements, passwordData);
+                if (andSubmit) PassFF.Page.submit();
+                return passwordData;
+              });
+          });
+      }, true),
 
 // %%%%%%%%%%%%%%%%%%%%%%% Form submitter %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
