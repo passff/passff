@@ -19,7 +19,7 @@ You can choose to automatically fill and submit login forms if a matching passwo
 
 ### Installation
 
-##### xz2c4 pass repository
+##### zx2c4 pass repository
 This extension requires **[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** to be installed and set up with a password repository. Make sure you can execute `pass show some-password-name` in a terminal before continuing.
 
 ##### Host application
