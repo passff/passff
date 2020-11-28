@@ -247,16 +247,16 @@ PassFF.Page = (function () {
 
 // %%%%%%%%%%%%%%% Implementation of input field marker %%%%%%%%%%%%%%%%%%%%%%%%
 
-  let passff_icon = browser.extension.getURL('/icon.png');
-  let passff_icon_light = browser.extension.getURL('/skin/icon-light.png');
+  let passff_icon = browser.extension.getURL('/skin/icon.svg');
+  let passff_icon_light = browser.extension.getURL('/skin/icon-light.svg');
 
   /* The following two icons have been taken from
    *  https://github.com/encharm/Font-Awesome-SVG-PNG (MIT-License)
    * which provides PNG/SVG versions for Font Awesome icons:
    *  http://fontawesome.io/ (License: SIL OFL 1.1)
    */
-  let paper_plane_16 = browser.extension.getURL('/skin/paper-plane.png');
-  let pencil_square_16 = browser.extension.getURL('/skin/pencil-square.png');
+  let paper_plane_16 = browser.extension.getURL('/skin/paper-plane.svg');
+  let pencil_square_16 = browser.extension.getURL('/skin/pencil-square.svg');
 
   function isMouseOverIcon(e) {
     if (typeof e.target.passff_injected === "undefined") return false;

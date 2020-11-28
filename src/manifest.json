@@ -70,9 +70,9 @@
     },
 
     "web_accessible_resources": [
-        "skin/paper-plane.png",
-        "skin/pencil-square.png",
-        "skin/icon-light.png",
+        "skin/paper-plane.svg",
+        "skin/pencil-square.svg",
+        "skin/icon-light.svg",
         "icon.png"
     ],
 
