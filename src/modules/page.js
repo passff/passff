@@ -154,36 +154,45 @@ PassFF.Page = (function () {
  * #############################################################################
  */
 
-  function createFakeKeystroke(typeArg, key) {
-    return new KeyboardEvent(typeArg, {
-      'key': ' ',
-      'code': ' ',
-      'charCode': ' '.charCodeAt(0),
-      'keyCode': ' '.charCodeAt(0),
-      'which': ' '.charCodeAt(0),
-      'bubbles': true,
-      'composed': true,
-      'cancelable': true
-    });
-  }
-
-  function createFakeInputEvent(typeArg) {
-    return new InputEvent(typeArg, {
-      'bubbles': true,
-      'composed': true,
-      'cancelable': true
-    });
+  function createFakeEvent(typeArg) {
+    if (['keydown', 'keyup', 'keypress'].includes(typeArg)) {
+      return new KeyboardEvent(typeArg, {
+        'key': ' ',
+        'code': ' ',
+        'charCode': ' '.charCodeAt(0),
+        'keyCode': ' '.charCodeAt(0),
+        'which': ' '.charCodeAt(0),
+        'bubbles': true,
+        'composed': true,
+        'cancelable': true
+      });
+    } else if (['input', 'change'].includes(typeArg)) {
+      return new InputEvent(typeArg, {
+        'bubbles': true,
+        'composed': true,
+        'cancelable': true
+      });
+    } else if (['focus', 'blur'].includes(typeArg)) {
+      return new FocusEvent(typeArg, {
+        'bubbles': true,
+        'composed': true,
+        'cancelable': true
+      });
+    } else {
+        log.error("createFakeEvent: Unknown event type: " + typeArg);
+        return null;
+    }
   }
 
   function writeValueWithEvents(input, value) {
     // don't fill if element is invisible
     if (isInvisible(input)) return;
-    input.dispatchEvent(createFakeKeystroke('keydown'));
     input.value = value;
-    input.dispatchEvent(createFakeKeystroke('keyup'));
-    input.dispatchEvent(createFakeKeystroke('keypress'));
-    input.dispatchEvent(createFakeInputEvent('input'));
-    input.dispatchEvent(createFakeInputEvent('change'));
+    for (let action of ['focus', 'keydown', 'keyup', 'keypress',
+                        'input', 'change', 'blur']) {
+      input.dispatchEvent(createFakeEvent(action));
+      input.value = value;
+    }
   }
 
   function annotateInputs(inputs) {
