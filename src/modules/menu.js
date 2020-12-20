@@ -539,7 +539,7 @@ PassFF.Menu = (function () {
           PassFF.Pass.getPasswordData(item)
             .then((passwordData) => {
               if (typeof passwordData === "undefined") return;
-              PassFF.Page.copyToClipboard(passwordData.password);
+              navigator.clipboard.writeText(passwordData.password);
             });
           break;
         case 7:
@@ -547,7 +547,7 @@ PassFF.Menu = (function () {
           PassFF.Pass.getPasswordData(item)
             .then((passwordData) => {
               if (typeof passwordData === "undefined") return;
-              PassFF.Page.copyToClipboard(passwordData.login);
+              navigator.clipboard.writeText(passwordData.login);
             });
           break;
         case 8:
@@ -603,7 +603,7 @@ PassFF.Menu = (function () {
         PassFF.Pass.getPasswordData(item)
           .then((passwordData) => {
             if (typeof passwordData === "undefined") return;
-            PassFF.Page.copyToClipboard(passwordData[dataKey]);
+            navigator.clipboard.writeText(passwordData[dataKey]);
           });
       }
     )

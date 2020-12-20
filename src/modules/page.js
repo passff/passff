@@ -881,16 +881,6 @@ PassFF.Page = (function () {
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%% Miscellaneous %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    copyToClipboard: content_function("Page.copyToClipboard", function (text) {
-      document.addEventListener("copy", function oncopy(event) {
-        document.removeEventListener("copy", oncopy, true);
-        event.stopImmediatePropagation();
-        event.preventDefault();
-        event.clipboardData.setData("text/plain", text);
-      }, true);
-      document.execCommand("copy");
-    }),
-
     getActiveInput: content_function("Page.getActiveInput", function () {
       let input = getActiveElement();
       if (input.tagName != "INPUT" || loginInputTypes.indexOf(input.type) < 0) {
