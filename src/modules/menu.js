@@ -7,14 +7,14 @@ PassFF.Menu = (function () {
     * item picker (during HTTP auth requests).
     */
 
-/* #############################################################################
- * #############################################################################
- *  Menu state handlers
- * #############################################################################
- */
+  /* ###########################################################################
+   * ###########################################################################
+   *  Menu state handlers
+   * ###########################################################################
+   */
 
   var menuState = {
-    search_val: "",
+    search_val: '',
     items: null,
     error: false,
     lastResult: null
@@ -22,10 +22,10 @@ PassFF.Menu = (function () {
 
   function showStatus() {
     let result = menuState.lastResult;
-    let bar = document.getElementById("statusbar");
+    let bar = document.getElementById('statusbar');
     if (!bar) {
-      bar = document.createElement("div");
-      bar.id = "statusbar";
+      bar = document.createElement('div');
+      bar.id = 'statusbar';
       document.body.appendChild(bar);
     }
     if (result === null) {
@@ -418,9 +418,15 @@ PassFF.Menu = (function () {
       parse_markdown(p);
     });
 
+    let menuBox = document.getElementById('menu');
+    if (menuBox) {
+      menuBox.style.width = PassFF.Preferences.lookMenuWidth;
+    }
+
     let searchBox = document.getElementById('passff-search-box');
-    searchBox.setAttribute('placeholder',
-                                    _('passff_toolbar_search_placeholder'));
+    searchBox.setAttribute(
+      'placeholder',
+      _('passff_toolbar_search_placeholder'));
     searchBox.addEventListener('click', function (e) { e.target.select(); });
     searchBox.addEventListener('keydown', onSearchKeydown);
     searchBox.addEventListener('keyup', onSearchKeyup);
@@ -440,7 +446,7 @@ PassFF.Menu = (function () {
     refreshButton.setAttribute('title', _('passff_toolbar_refresh_label'));
     refreshButton.addEventListener('click', onRefreshButtonCommand);
 
-    if (PassFF.mode === "menu") {
+    if (PassFF.mode === 'menu') {
       let prefsButton = document.querySelector('.actions button.config');
       prefsButton.setAttribute('title', _('passff_toolbar_preferences_label'));
       prefsButton.addEventListener('click', onPrefButtonCommand);
@@ -450,11 +456,12 @@ PassFF.Menu = (function () {
         let newPasswordDiv = newPasswordButton.parentNode;
         newPasswordDiv.parentNode.removeChild(newPasswordDiv);
       } else {
-        newPasswordButton.setAttribute('title',
-                              _('passff_toolbar_new_password_label'));
+        newPasswordButton.setAttribute(
+          'title',
+          _('passff_toolbar_new_password_label'));
         newPasswordButton.addEventListener('click', onNewPassButtonCommand);
       }
-    } else if (PassFF.mode === "itemPicker") {
+    } else if (PassFF.mode === 'itemPicker') {
       window.onresize = function onresize() {
         // Rescale select box to fit window's height
         let data_box = document.querySelector(".itemPickerTarget");
