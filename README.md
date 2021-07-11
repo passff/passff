@@ -66,6 +66,10 @@ You can change or configure additional names for the `login` and `url` fields in
 If none of the provided fields matches a login field name, the username is taken from the filename, e.g.
 `example.com/janedoe` will have a default username of `janedoe`.
 
+If your login credentials do not include any login name information (only a password), you can instruct PassFF to omit
+filling any login name by adding `login: PASSFF_OMIT_FIELD` to your pass entry. The same keyword can be used for
+credentials without password, but only login name.
+
 Lines besides the login and URL that match the format `<other_inputfield_name>: <value>` can be used to fill in input fields besides the login and password fields. The left hand side of the colon should match the input field's `name` or `id` attribute.
 
 Examples
@@ -117,7 +121,7 @@ https://my.example.com/cloud
 https://my.example.com/blog?login
 https://my.example.com/blog?admin
 ```
-You could store them in your password store as 
+You could store them in your password store as
 ```
 /some/path/my.example.com/cloud
 /some/path/my.example.com/blog-login
@@ -212,7 +216,7 @@ Related issues:
  * [No dialog opening up on Arch Linux](https://github.com/passff/passff/issues/330)
  * [Decryption failed on MacOS](https://github.com/passff/passff/issues/325)
  * [Script execution failed on CentOS](https://github.com/passff/passff/issues/367)
- 
+
 ##### The icon/toolbar menu suggests no or the wrong entries
 
 See the section [Improve Suggestions](https://github.com/passff/passff#improve-suggestions) above.
