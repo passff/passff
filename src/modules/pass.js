@@ -118,6 +118,10 @@ PassFF.Pass = (function () {
     host = host.replace(/^\.+/, '').replace(/\.+$/, '');
     let host_parts = host.split(/\.+/);
     let suffix = (host_parts.length >= 2) ? host_parts[host_parts.length-1] : "";
+    if (/^[0-9]+$/.test(suffix)) {
+      // this is probably an IPv4 address (no suffix)
+      suffix = "";
+    }
     PassFF.Preferences.recognisedSuffixes
       .map((s) => s.trim())
       .filter((s) => host.endsWith(s))
@@ -188,8 +192,13 @@ PassFF.Pass = (function () {
       return {item: null,  quality: -1};
     }
     let url = new URL(urlStr);
-    let quality = 100*hostMatchQuality(item, url.host);
+    let quality = hostMatchQuality(item, url.host);
     if (quality <= 0) return { item: null,  quality: -1 };
+    if (url.port != "") {
+      quality *= 10;
+      quality += (item.fullKey.indexOf(url.port) >= 0) ? 1 : 0;
+    }
+    quality *= 100;
     quality += pathMatchQuality(item, url.pathname);
     quality *= 100;
     quality += queryMatchQuality(item, url.search);
