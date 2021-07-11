@@ -109,7 +109,7 @@ Note that the file structure format is recognized and assumed by PassFF whenever
 
 Unless you activate the preference "Index URL fields on startup", the auto-suggestions in the menus are based on matches of the current web page's URL against the *names* of password store entries. In the following, you find an explanation how you can improve matching quality by adapting the names and paths of your password store entries.
 
-Generally speaking, the match quality is best, if the exact hostname as well as all alphanumeric parts of the URL's path appear exactly in your entry's name. An entry is excluded from the matching if no part of the hostname is contained in its name. Matching (parts of) the hostname is more important than matching parts from the rest of the URL.
+Generally speaking, the match quality is best if the exact hostname as well as all alphanumeric parts of the URL's path appear exactly in your entry's name. An entry is excluded from the matching if no part of the hostname is contained in its name. Matching (parts of) the hostname is more important than matching parts from the rest of the URL.
 
 For the URL `https://bugs.gentoo.org/index.cgi?GoAheadAndLogIn=1`, best match quality is reached if your password store entry contains the strings `bugs.gentoo.org`, `index` and `GoAheadAndLogIn` in arbitrary order, but for it to be ranked in the matching process at all, it's enough for it to contain the strings `bugs` or `gentoo`.
 
@@ -132,6 +132,15 @@ However, the following will work equally well:
 /business/cloud/my.example.com
 /personal/my.example.com-blog-login
 /personal/my.example.com-blog-admin
+```
+
+For the rare case where you need several entries for one hostname but with different ports (e.g. if you have different
+entries for `http://example.com:2000/` and `http://example.com/`), you might want to include the port number `2000`
+into the name of the entry for `http://example.com:2000/`:
+```
+/business/cloud/example.com:2000
+/business/cloud/example.com-2000
+/business/cloud/example.com/port2000
 ```
 
 ### Configuration and preferences
