@@ -196,6 +196,18 @@ PassFF.Pass = (function () {
     return { item: item, quality: quality };
   }
 
+  function stringSimilarity(str1, str2, caseInsensitive) {
+    // currently only returns 1 or 0
+    // to be replaced later by something more sophisticated
+    let regexFlags = caseInsensitive ? 'i' : '';
+    let searchRegex = '';
+    for (let i = 0; i < str1.length; i++) {
+      searchRegex += str1.charAt(i) + '.*';
+    }
+    searchRegex = new RegExp(searchRegex, regexFlags);
+    return (str2.search(searchRegex) >= 0) ? 1 : 0;
+  }
+
 /* #############################################################################
  * #############################################################################
  *  Pass script interaction
@@ -606,34 +618,16 @@ PassFF.Pass = (function () {
 // %%%%%%%%%%%%%%%%%%%%%%%%%% Data filtering %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     getMatchingItems: function (search, limit) {
-      let searchRegex = '';
-
-      for (let i = 0; i < search.length; i++) {
-        searchRegex += search.charAt(i) + '.*';
-      }
-
-      let BreakException = {};
-      let matches = [];
-
-      try {
-        allItems.forEach(function (item) {
-          let flags = PassFF.Preferences.caseInsensitiveSearch ? 'i' : '';
-          let regex = new RegExp(searchRegex, flags);
-
-          if ((item.isLeaf || item.hasFields) && item.fullKey.search(regex) >= 0) {
-            matches.push(item);
-          }
-
-          if (matches.length == limit) {
-            throw BreakException;
-          }
-        });
-      } catch (e) {
-        if (e !== BreakException) {
-          throw e;
-        }
-      }
-      return matches;
+      return allItems
+        .filter(i => (i.isLeaf || i.hasFields))
+        .map(i => Object({
+          "item": i,
+          "similarity": stringSimilarity(
+            search, i.fullKey, PassFF.Preferences.caseInsensitiveSearch)
+        }))
+        .sort((i1, i2) => (i2.similarity - i1.similarity))
+        .slice(0, limit)
+        .map(i => i.item);
     },
 
     getUrlMatchingItems: function (urlStr) {
@@ -641,7 +635,7 @@ PassFF.Pass = (function () {
       let matchingItems = allItems
         .map(i => getItemQuality(i, urlStr))
         .filter(i => (i.quality >= 0))
-        .sort((i1,i2) => (i2.quality - i1.quality))
+        .sort((i1, i2) => (i2.quality - i1.quality))
         .map(i => i.item)
         .filter(i => !i.isHidden);
       log.debug(matchingItems.length, 'matches for', urlStr);
