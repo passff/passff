@@ -251,7 +251,9 @@ PassFF.Page = (function () {
       }
       if (input_type != "") {
         let pd = passwordData[input_type];
-        if (input_type != "otp" || pd) writeValueWithEvents(input, pd);
+        if (pd != "PASSFF_OMIT_FIELD" && (input_type != "otp" || pd)) {
+          writeValueWithEvents(input, pd);
+        }
       }
     });
   }

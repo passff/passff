@@ -35,9 +35,9 @@ PassFF.Pass = (function () {
     let login;
     for (let i = 0; i < PassFF.Preferences.loginFieldNames.length; i++) {
       login = passwordData[PassFF.Preferences.loginFieldNames[i]];
-      if (login) break;
+      if (login !== undefined) break;
     }
-    passwordData.login = (!login) ? item.key : login;
+    passwordData.login = (login === undefined) ? item.key : login;
   }
 
   function setUrl(passwordData) {
