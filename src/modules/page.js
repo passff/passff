@@ -217,8 +217,10 @@ PassFF.Page = (function () {
   }
 
   function onNodeAdded() {
-    inputElements = document.getElementsByTagName('input');
-    inputElements = annotateInputs(Array.from(inputElements).filter(isVisible));
+    inputElements = annotateInputs(
+      Array.from(document.getElementsByTagName('input')).concat(
+        Array.from(document.getElementsByTagName('select'))
+      ).filter(isVisible));
     if (PassFF.Preferences.markFillable) {
       inputElements.filter(inp => inp[1] != "")
         .forEach(inp => injectIcon(inp[0]));
