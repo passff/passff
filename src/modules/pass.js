@@ -206,8 +206,17 @@ PassFF.Pass = (function () {
   }
 
   function stringSimilarity(str1, str2, caseInsensitive) {
-    // currently only returns 1 or 0
+    // currently only returns 2, 1 or 0
     // to be replaced later by something more sophisticated
+
+    if (caseInsensitive) {
+      str1 = str1.toLowerCase();
+      str2 = str2.toLowerCase();
+    }
+
+    // return 2 if str2 is exactly contained in str1
+    if (str2.indexOf(str1) >= 0) return 2;
+
     let regexFlags = caseInsensitive ? 'i' : '';
     let searchRegex = '';
     for (let i = 0; i < str1.length; i++) {
