@@ -645,6 +645,7 @@ PassFF.Pass = (function () {
         }))
         .sort((i1, i2) => (i2.similarity - i1.similarity))
         .slice(0, limit)
+        .filter(i => (i.similarity > 0))
         .map(i => i.item);
     },
 
