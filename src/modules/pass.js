@@ -637,7 +637,7 @@ PassFF.Pass = (function () {
 
     getMatchingItems: function (search, limit) {
       return allItems
-        .filter(i => (i.isLeaf || i.hasFields))
+        .filter(i => (i.isLeaf && !i.isField || i.hasFields))
         .map(i => Object({
           "item": i,
           "similarity": stringSimilarity(
