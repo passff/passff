@@ -608,7 +608,7 @@ PassFF.Pass = (function () {
               }
             }
 
-            if (noFields && lines.length > 1) {
+            if (noFields && lines.length > 1 && lines[1] != "") {
                 result.login = lines[1];
             }
 

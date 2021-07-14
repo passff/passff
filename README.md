@@ -58,25 +58,47 @@ This is the *preferred organizational scheme used by the author* of [pass](https
 <the_password>
 login: <the_login>
 url: <the_url>
-<other_inputfield_name> : <inputfield_value>
+<other_inputfield_name>: <inputfield_value>
 ```
 
 You can change or configure additional names for the `login` and `url` fields in preferences.
 
-If none of the provided fields matches a login field name, the username is taken from the filename, e.g.
-`example.com/janedoe` will have a default username of `janedoe`.
+If there are no colons (`:`) on any of the lines, and there are at least 2 lines, then the first two lines are assumed
+to contain the password and login name respectively:
+
+```
+<the_password>
+<the_login>
+<ignored_content>
+```
+
+If there is only a single line, or none of the provided fields matches a login field name, the username is taken from
+the filename, e.g. `example.com/janedoe` will have a default username of `janedoe`:
+
+```
+<the_password>
+url: <the_url>
+<other_inputfield_name>: <inputfield_value>
+```
 
 If your login credentials do not include any login name information (only a password), you can instruct PassFF to omit
 filling any login name by adding `login: PASSFF_OMIT_FIELD` to your pass entry. The same keyword can be used for
 credentials without password, but only login name.
 
-Lines besides the login and URL that match the format `<other_inputfield_name>: <value>` can be used to fill in input fields besides the login and password fields. The left hand side of the colon should match the input field's `name` or `id` attribute.
+Lines besides the login and URL that match the format `<other_inputfield_name>: <value>` can be used to fill in input
+fields besides the login and password fields. The left hand side of the colon should match the input field's `name` or
+`id` attribute.
 
 Examples
 ```
 nu8kzeo2Aese
 login: bob
 url: https://github.com/login
+```
+
+```
+Sae7gohsooquahCoh3ie
+alice
 ```
 
 ```
