@@ -87,9 +87,10 @@ credentials without password, but only login name.
 
 Lines besides the login and URL that match the format `<other_inputfield_name>: <value>` can be used to fill in input
 fields besides the login and password fields. The left hand side of the colon should match the input field's `name` or
-`id` attribute.
+`id` attribute (for compatibility purposes matching the `autocomplete` field or `placeholder` is also possible).
 
-Examples
+###### Examples
+
 ```
 nu8kzeo2Aese
 login: bob
@@ -156,9 +157,9 @@ However, the following will work equally well:
 /personal/my.example.com-blog-admin
 ```
 
-For the rare case where you need several entries for one hostname but with different ports (e.g. if you have different
-entries for `http://example.com:2000/` and `http://example.com/`), you might want to include the port number `2000`
-into the name of the entry for `http://example.com:2000/`:
+For the rare case where you need several entries for one hostname but with different ports
+(e.g. if you have different entries for `http://example.com:2000/` and `http://example.com/`),
+you might want to include the port number (`2000`) into the name of the entry for `http://example.com:2000/`:
 ```
 /business/cloud/example.com:2000
 /business/cloud/example.com-2000
@@ -187,10 +188,12 @@ Some of them are described below:
   - Preferred new password method ("generate" or "insert")
 
 ##### Host application preferences
-If you use a customized `pass` installation: environment variables, customized repository path or extensions, you may have to [configure the host application accordingly](https://github.com/passff/passff-host#preferences).
+If you use a customized `pass` installation: environment variables, customized repository path or extensions,
+you may have to [configure the host application accordingly](https://github.com/passff/passff-host#preferences).
 
 ### Usage
-Once installed, you should have a new icon in your toolbar. Click the icon to browse your password repository or search using a **fuzzy matching** algorithm.
+Once installed, you should have a new icon in your toolbar.
+Click the icon to browse your password repository or search using a **fuzzy matching** algorithm.
 
 ##### Keyboard shortcuts
 The default shortcut to open the menu is <kbd>ctrl</kbd>+<kbd>y</kbd>.
@@ -202,26 +205,32 @@ With the menu open, you can press <kbd>enter</kbd> to execute one of the followi
 - Fill
 
 ##### Input menu
-PassFF can *mark fillable input fields with the PassFF icon*. It adds an icon in the fields that PassFF can automatically fill. The icon is clickable and pops up a menu to select the password.
-PassFF fills the input fields and optionally submit depending on your preferences. You can always override this behavior by clicking the pencil (Fill) or the paper plane (Fill & Submit).
+PassFF can *mark fillable input fields with the PassFF icon*.
+It adds an icon in the fields that PassFF can automatically fill. The icon is clickable and pops up a menu to select the password.
+
+PassFF fills the input fields and optionally submits depending on your preferences.
+You can always override this behavior by clicking the pencil (Fill) or the paper plane (Fill & Submit).
 
 This feature can be disabled in the preferences.
 
 #### Contextual menu
 In *any* input field, fillable or not, you can access a contextual menu (right-click) in order to:
-  - Add the input field's name in the *Login input names* for (auto)filling,
-  - Add the input field's name in the *OTP input names* for (auto)filling,
-  - Select a password to fill the input fields.
+- Add the input field's name in the *Login input names* for (auto)filling,
+- Add the input field's name in the *OTP input names* for (auto)filling,
+- Select a password to fill the input fields.
 
 #### Adding new passwords
 In order to add a password in your repository, select the 'plus' (+) icon in the toolbar menu.
 
 ### Issues
-If you're having problems, the most common causes are misconfigured preferences or an incorrect installation of the host application. You can get more information by [debugging the extension](docs/CONTRIBUTING.md).
+If you're having problems, the most common causes are misconfigured preferences or an incorrect installation of the host application.
+You can get more information by [debugging the extension](docs/CONTRIBUTING.md).
 
 First, [make sure the host application is installed correctly](https://github.com/passff/passff-host).
 
-Configure the script's execution parameters appropriately in the host app `passff.py`: E.g., set `COMMAND` to the path to the `pass` binary (if installed with homebrew, the default location is `/usr/local/bin/pass`). With those settings in place, the extension should be able to find your passwords.
+Configure the script's execution parameters appropriately in the host app `passff.py`:
+E.g., set `COMMAND` to the path to the `pass` binary (if installed with homebrew, the default location is `/usr/local/bin/pass`).
+With those settings in place, the extension should be able to find your passwords.
 
 ### Troubleshooting
 
