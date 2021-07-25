@@ -271,3 +271,8 @@ Development and improvements
  * [Thomas Vogt](https://github.com/tuxor1337)
 
 Russian translation : [Grigorii Horos](https://github.com/horosgrisa)
+
+### Similar projects
+
+- https://github.com/hsanson/chrome-pass: Simplistic login data alternative for Chrome
+- https://github.com/browserpass/browserpass-extension: cross-browser, fancier extension that seems to only handle logins
