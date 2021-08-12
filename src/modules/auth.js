@@ -17,7 +17,6 @@ PassFF.Auth = (function () {
   // Find a currentAuth for the current realm at the root URI as per [0]
   // [0] https://datatracker.ietf.org/doc/html/rfc7235#section-2.2
   function getAuthByRootUriAndRealm(rootUri, realm) {
-    log.debug(rootUri, realm, "currentAuths", currentAuths);
     let auth = currentAuths.filter(a => (
         a.rootUri === rootUri
         && a.realm === realm
@@ -55,14 +54,11 @@ PassFF.Auth = (function () {
     log.debug("onAuthRequired", details.requestId, details.url);
     let auth = getAuthById(details.requestId);
     if (auth === null) {
-      log.debug('no auth for', details.requestId);
       let rootUri = getRootUri(details.url);
        auth = getAuthByRootUriAndRealm(
          rootUri,
          details.realm
        );
-       log.debug("existing for ", rootUri,
-         details.realm, auth);
        // If we still have an unresolved promise for the same Root/Realm
        // (i.e., if the promise has already resolved and we're back here,
        // the previous resolved data is not good, and we should retry)
