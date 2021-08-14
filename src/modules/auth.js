@@ -7,10 +7,27 @@ PassFF.Auth = (function () {
     */
 
   var currentAuths = [];
+  var promises = {};
 
   function getAuthById(requestId) {
     let auth = currentAuths.filter(a => a.requestId === requestId);
     return (!auth.length) ? null : auth[0];
+  }
+
+  // Find a currentAuth for the current realm at the root URI as per [0]
+  // [0] https://datatracker.ietf.org/doc/html/rfc7235#section-2.2
+  function getAuthByRootUriAndRealm(rootUri, realm) {
+    let auth = currentAuths.filter(a => (
+        a.rootUri === rootUri
+        && a.realm === realm
+    ));
+    return (!auth.length) ? null : auth[0];
+  }
+
+  // Get the root URI (scheme + authority [0]) from a URL
+  // [0] https://datatracker.ietf.org/doc/html/rfc3986#section-3.2
+  function getRootUri(url) {
+      return url.replace(/^(.*\/\/[^\/?#]*).*$/,"$1");
   }
 
   function cancelAuth(auth) {
@@ -37,22 +54,45 @@ PassFF.Auth = (function () {
     log.debug("onAuthRequired", details.requestId, details.url);
     let auth = getAuthById(details.requestId);
     if (auth === null) {
-      auth = {
-        requestId: null,
-        requestUrl: null,
-        popupId: null,
-        popupClose: null,
-        resolveItem: null,
-        resolveAttempts: 0,
-        contextItems: [],
-      };
-      currentAuths.push(auth);
+      let rootUri = getRootUri(details.url);
+       auth = getAuthByRootUriAndRealm(
+         rootUri,
+         details.realm
+       );
+       // If we still have an unresolved promise for the same Root/Realm
+       // (i.e., if the promise has already resolved and we're back here,
+       // the previous resolved data is not good, and we should retry)
+       if (auth !== null && auth.resolveItem == null) {
+         log.debug("Auth window already showing for realm "
+           + details.realm
+           + " from root "
+           + rootUri
+           + ", skipping popup");
+           return promises[auth.requestId];
+       } else {
+        auth = {
+          requestId: null,
+          requestUrl: null,
+          rootUri: null,
+          realm: null,
+          popupId: null,
+          popupClose: null,
+          promise: null,
+          resolveItem: null,
+          resolveAttempts: 0,
+          contextItems: [],
+        };
+
+        currentAuths.push(auth);
+      }
     }
 
     auth.requestId = details.requestId;
     auth.requestUrl = details.url;
+    auth.rootUri= getRootUri(details.url);
+    auth.realm = details.realm;
     auth.contextItems = PassFF.Pass.getUrlMatchingItems(auth.requestUrl);
-    return new Promise((resolve, reject) => {
+    promises[auth.requestId] = new Promise((resolve, reject) => {
       auth.resolve = resolve;
       PassFF.Page.goToAutoFillPending()
         .then(function (pending) {
@@ -96,6 +136,7 @@ PassFF.Auth = (function () {
           browser.windows.onRemoved.addListener(auth.popupClose);
         });
     });
+    return promises[auth.requestId];
   }
 
 /* #############################################################################
