@@ -7,27 +7,23 @@ PassFF.Auth = (function () {
     */
 
   var currentAuths = [];
-  var promises = {};
 
   function getAuthById(requestId) {
-    let auth = currentAuths.filter(a => a.requestId === requestId);
-    return (!auth.length) ? null : auth[0];
+    return currentAuths.find(a => a.requestId === requestId) || null;
   }
 
   // Find a currentAuth for the current realm at the root URI as per [0]
   // [0] https://datatracker.ietf.org/doc/html/rfc7235#section-2.2
   function getAuthByRootUriAndRealm(rootUri, realm) {
-    let auth = currentAuths.filter(a => (
-        a.rootUri === rootUri
-        && a.realm === realm
-    ));
-    return (!auth.length) ? null : auth[0];
+    return currentAuths.find(a => (
+      a.rootUri === rootUri && a.realm === realm
+    )) || null;
   }
 
   // Get the root URI (scheme + authority [0]) from a URL
   // [0] https://datatracker.ietf.org/doc/html/rfc3986#section-3.2
   function getRootUri(url) {
-      return url.replace(/^(.*\/\/[^\/?#]*).*$/,"$1");
+    return url.replace(/^(.*?\/\/[^\/?#]*).*$/,"$1");
   }
 
   function cancelAuth(auth) {
@@ -51,48 +47,37 @@ PassFF.Auth = (function () {
   }
 
   function onAuthRequired(details) {
-    log.debug("onAuthRequired", details.requestId, details.url);
+    log.debug("onAuthRequired", details.requestId, details.url, details.realm);
     let auth = getAuthById(details.requestId);
     if (auth === null) {
       let rootUri = getRootUri(details.url);
-       auth = getAuthByRootUriAndRealm(
-         rootUri,
-         details.realm
-       );
-       // If we still have an unresolved promise for the same Root/Realm
-       // (i.e., if the promise has already resolved and we're back here,
-       // the previous resolved data is not good, and we should retry)
-       if (auth !== null && auth.resolveItem == null) {
-         log.debug("Auth window already showing for realm "
-           + details.realm
-           + " from root "
-           + rootUri
-           + ", skipping popup");
-           return promises[auth.requestId];
-       } else {
-        auth = {
-          requestId: null,
-          requestUrl: null,
-          rootUri: null,
-          realm: null,
-          popupId: null,
-          popupClose: null,
-          promise: null,
-          resolveItem: null,
-          resolveAttempts: 0,
-          contextItems: [],
-        };
-
-        currentAuths.push(auth);
+      auth = getAuthByRootUriAndRealm(rootUri, details.realm);
+      if (auth && auth.resolveItem == null) {
+        log.debug("Auth window already showing for realm", details.realm,
+                  "from root", rootUri, "; skipping popup");
+        return auth.promise;
       }
+      auth = {
+        requestId: null,
+        requestUrl: null,
+        rootUri: null,
+        realm: null,
+        popupId: null,
+        popupClose: null,
+        promise: null,
+        resolveItem: null,
+        resolveAttempts: 0,
+        contextItems: [],
+      };
+      currentAuths.push(auth);
     }
 
     auth.requestId = details.requestId;
     auth.requestUrl = details.url;
-    auth.rootUri= getRootUri(details.url);
+    auth.rootUri = getRootUri(details.url);
     auth.realm = details.realm;
     auth.contextItems = PassFF.Pass.getUrlMatchingItems(auth.requestUrl);
-    promises[auth.requestId] = new Promise((resolve, reject) => {
+    auth.promise = new Promise((resolve, reject) => {
       auth.resolve = resolve;
       PassFF.Page.goToAutoFillPending()
         .then(function (pending) {
@@ -136,7 +121,7 @@ PassFF.Auth = (function () {
           browser.windows.onRemoved.addListener(auth.popupClose);
         });
     });
-    return promises[auth.requestId];
+    return auth.promise;
   }
 
 /* #############################################################################
@@ -162,7 +147,7 @@ PassFF.Auth = (function () {
 
     getAuthForPopup: background_function("Auth.getAuthForPopup", function (popupId) {
       let auth = currentAuths.filter(a => a.popupId === popupId);
-      return (!auth.length) ? null : auth[0];
+      return (!auth.length) ? null : { ...auth[0], promise: null };
     }),
 
     resolve: background_function("Auth.resolve", function (item, requestId) {

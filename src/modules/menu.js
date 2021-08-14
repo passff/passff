@@ -59,8 +59,9 @@ PassFF.Menu = (function () {
         .then((win) => PassFF.Auth.getAuthForPopup(win.id))
         .then((auth) => {
           let data_box = document.querySelector(".itemPickerTarget");
-          data_box.textContent = auth.requestUrl;
-          data_box.title = auth.requestUrl;
+          let url_info = `${auth.requestUrl} (${auth.realm})`;
+          data_box.textContent = url_info;
+          data_box.title = url_info;
           menuState['auth'] = auth;
           if (!auth.contextItems.length) {
             menuState['items'] = PassFF.Pass.rootItems;
