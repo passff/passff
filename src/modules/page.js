@@ -260,16 +260,16 @@ PassFF.Page = (function () {
 
 // %%%%%%%%%%%%%%% Implementation of input field marker %%%%%%%%%%%%%%%%%%%%%%%%
 
-  let passff_icon = browser.extension.getURL('/skin/icon.svg');
-  let passff_icon_light = browser.extension.getURL('/skin/icon-light.svg');
+  let passff_icon = browser.runtime.getURL('/skin/icon.svg');
+  let passff_icon_light = browser.runtime.getURL('/skin/icon-light.svg');
 
   /* The following two icons have been taken from
    *  https://github.com/encharm/Font-Awesome-SVG-PNG (MIT-License)
    * which provides PNG/SVG versions for Font Awesome icons:
    *  http://fontawesome.io/ (License: SIL OFL 1.1)
    */
-  let paper_plane_16 = browser.extension.getURL('/skin/paper-plane.svg');
-  let pencil_square_16 = browser.extension.getURL('/skin/pencil-square.svg');
+  let paper_plane_16 = browser.runtime.getURL('/skin/paper-plane.svg');
+  let pencil_square_16 = browser.runtime.getURL('/skin/pencil-square.svg');
 
   function isMouseOverIcon(e) {
     if (typeof e.target.passff_injected === "undefined") return false;
@@ -348,7 +348,7 @@ PassFF.Page = (function () {
     // Setup new instance
     popup_menu = document.createElement("iframe");
     popup_menu.setAttribute("src",
-      browser.extension.getURL("content/content-popup.html"));
+      browser.runtime.getURL("content/content-popup.html"));
     popup_menu.classList.add("passff_popup_menu");
     popup_menu.addEventListener("load", function () {
       let doc = popup_menu.contentDocument;

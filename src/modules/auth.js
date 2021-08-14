@@ -80,7 +80,7 @@ PassFF.Auth = (function () {
 
           log.debug("Open HTTP auth dialog");
           return browser.windows.create({
-            'url': browser.extension.getURL('/content/itemPicker.html'),
+            'url': browser.runtime.getURL('/content/itemPicker.html'),
             'width': 450,
             'height': 281,
             'type': 'popup',
