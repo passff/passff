@@ -79,7 +79,7 @@
     "applications": {
         "gecko": {
             "id": "passff@invicem.pro",
-            "strict_min_version": "50.0"
+            "strict_min_version": "60.0"
         }
     }
 }
