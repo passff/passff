@@ -20,28 +20,46 @@ function _(key, params) {
 
 function parse_markdown(obj) {
   let str = obj.innerHTML;
-  str = str.replace(/\[([^\]]+)\]\(([^\}]+)\)/,
-    function (match, p1, p2) {
+  obj.innerHTML = "";
+  let patterns = [
+    [/\[([^\]]+)\]\(([^\}\)]+)\)/, function (match, p1, p2) {
       let a = document.createElement("a");
       a.setAttribute("href", p2);
       a.textContent = p1;
-      return a.outerHTML;
-    });
-  str = str.replace(/```([\s\S]+)```/,
-    function (match, p1) {
+      return a;
+    }],
+    [/```([\s\S]+)```/, function (match, p1) {
       let c = document.createElement("code");
       c.classList.add("block");
       c.textContent = p1;
-      return c.outerHTML;
-    });
-  str = str.replace(/`([\s\S]+)`/,
-    function (match, p1) {
+      return c;
+    }],
+    [/`([\s\S]+)`/, function (match, p1) {
       let c = document.createElement("code");
       c.textContent = p1;
-      return c.outerHTML;
-    });
-  str = str.replace(/\n/g, '<br />');
-  obj.innerHTML = str;
+      return c;
+    }],
+    [/\n/, function (match) {
+      return document.createElement("br");
+    }],
+  ];
+  while (str.length > 0) {
+    let matches = patterns.map(p => str.match(p[0]));
+    let [i_match, match_start] = matches
+      .map((m, i) => [i, (m === null) ? -1 : m.index])
+      .filter(m => m[1] >= 0)
+      .reduce((acc, val) => (val[1] < acc[1]) ? val : acc, [-1, str.length + 1]);
+    let match_end = str.length;
+    if (i_match >= 0) {
+      let match = matches[i_match];
+      match_end = match_start + match[0].length;
+      obj.appendChild(document.createTextNode(str.substring(0, match_start)));
+      obj.appendChild(patterns[i_match][1](...match));
+    } else {
+      obj.appendChild(document.createTextNode(str));
+    }
+    str = str.substring(match_end);
+  }
 }
 
 /* #############################################################################

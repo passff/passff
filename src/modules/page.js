@@ -354,8 +354,11 @@ PassFF.Page = (function () {
       let doc = popup_menu.contentDocument;
       let popup_div = doc.getElementsByTagName("div")[0];
       if (matchItems.length === 0) {
-        popup_div.innerHTML = '<div class="alert">'
-          + _('passff_no_entries_found') + '</div>';
+        let alert_el = doc.createElement("div");
+        alert_el.classList.add("alert");
+        alert_el.textContent = _('passff_no_entries_found');
+        popup_div.innerHTML = "";
+        popup_div.appendChild(alert_el);
       }
       matchItems.filter(i => i.isLeaf || i.hasFields).forEach(item => {
         let entry = document.createElement("div");
@@ -868,7 +871,7 @@ PassFF.Page = (function () {
       let dialog_text = null;
       dialog_text = dialog.querySelector("div p");
       dialog_text.textContent = message; // prevent HTML injection
-      dialog_text.innerHTML = dialog_text.textContent.replace(/\n/g, '<br />');
+      parse_markdown(dialog_text);
       return new Promise(function (resolve, reject) {
         let button = dialog.querySelector("button:first-child");
         button.addEventListener("click", () => {
