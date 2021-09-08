@@ -44,11 +44,7 @@ PassFF.Page = (function () {
   }
 
   function getSubmitButton(form) {
-    let buttonQueries = [
-      "button:not([type=reset])",
-      "input[type=submit]",
-      "input[type=button]"
-    ];
+    let buttonQueries = PassFF.Preferences.buttonInputQueries;
     let buttons = form.querySelectorAll(buttonQueries.join(","));
     buttons = Array.from(buttons).filter(isVisible);
     let submitButtonPredicates = [

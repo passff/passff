@@ -137,6 +137,9 @@
   "passff_prefs_otp_input_names_label": {
     "message": "OTP input names"
   },
+  "passff_prefs_button_input_queries_label": {
+    "message": "Form submit button queries, one per line"
+  },
   "passff_prefs_login_field_names_label": {
     "message": "Login field names"
   },
