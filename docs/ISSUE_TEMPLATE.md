@@ -1,16 +1,17 @@
-### General information. Describe your environment
+## Environment
 <!-- Please give as much information as possible, thanks! -->
 
-- Versions
-  - Operating system: 
-  - Browser: 
-  - PassFF: 
-  - Host app: 
+### Versions
+- Operating system: 
+- Browser: 
+- PassFF: 
+- Host app: 
 
 Status line output: `[hh:mm:ss] show -> (0)`
-<!-- Enable 'Show a status bar in the toolbar menu' at the bottom of the
-PassFF Extension preferences. In the toolbar menu, select & copy-paste it. -->
+<!-- Enable 'Show a status bar in the toolbar menu' at the bottom of the PassFF Extension preferences.
+In the toolbar menu, select & copy-paste it. -->
 
+### Observations
 <!-- If useful, tell us more! -->
 - Output of `pass`: 
 - Your preferences
@@ -21,13 +22,13 @@ PassFF Extension preferences. In the toolbar menu, select & copy-paste it. -->
 
 ---
 
-### Actual behaviour
-Describe *objectively* your problem. What happened?
-
-### Expected behaviour
-What should happen instead?
-
-### Steps to reproduce the behaviour
+### Steps to reproduce the issue
 1.
 2.
 3.
+
+### Actual behaviour
+<!-- Describe your problem objectively. What happened? -->
+
+### Expected behaviour
+<!-- What should happen instead? -->
