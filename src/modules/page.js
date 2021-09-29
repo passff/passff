@@ -14,6 +14,7 @@ PassFF.Page = (function () {
   var matchItems = [];
   var bestFitItem = null;
   var goToAutoFillPending = null;
+  var lastActiveElement = null;
 
 /* #############################################################################
  * #############################################################################
@@ -33,6 +34,12 @@ PassFF.Page = (function () {
       return doc.activeElement;
     }
     return false;
+  }
+
+  function refocus() {
+    if (lastActiveElement !== null) {
+      lastActiveElement.focus();
+    }
   }
 
   function isInvisible(el) {
@@ -642,6 +649,7 @@ PassFF.Page = (function () {
               the DOM won't let the input box handle the keypress, and
               it'll get routed to _execute_browser_action instead.
             */
+            lastActiveElement = getActiveElement();
             document.firstElementChild.focus();
           }, true);
         });
@@ -770,6 +778,7 @@ PassFF.Page = (function () {
 
     fillInputs: content_function("Page.fillInputs",
       function (item, andSubmit, cautious) {
+        refocus();
         if (inputElements.filter(inp => inp[1] == "password").length === 0) {
           if (inputElements.length == 0 || cautious) {
             log.debug("fillInputs: No relevant login input elements recognized.");
@@ -786,7 +795,11 @@ PassFF.Page = (function () {
               .then((result) => {
                 if (!result) return;
                 setInputs(inputElements, passwordData);
-                if (andSubmit) PassFF.Page.submit();
+                if (andSubmit) {
+                  PassFF.Page.submit();
+                } else {
+                  refocus();
+                }
                 return passwordData;
               });
           });
