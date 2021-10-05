@@ -599,10 +599,16 @@ PassFF.Pass = (function () {
             for (let i = 1; i < lines.length; i++) {
               let line = lines[i];
               let splitPos = line.indexOf(':');
-
+              let splitLen = 1;
               if (splitPos >= 0) {
+                // support attribute names that contain a colon (but no space)
+                let splitPos2 = line.indexOf(': ');
+                if (splitPos2 >= 0) {
+                  splitPos = splitPos2;
+                  splitLen = 2;
+                }
                 let attributeName = line.substring(0, splitPos).toLowerCase();
-                let attributeValue = line.substring(splitPos + 1);
+                let attributeValue = line.substring(splitPos + splitLen);
                 result[attributeName] = attributeValue.trim();
                 noFields = false;
               }
