@@ -1,0 +1,345 @@
+{
+  "passff_passphrase_title": {
+    "message": "Parola deposu kilitli"
+  },
+  "passff_passphrase_description": {
+    "message": "Parolanıza erişilemiyor.\nLütfen önce anahtarınızı gpg-agent'a ekleyin."
+  },
+  "passff_menu_copy_password": {
+    "message": "Parolayı kopyala"
+  },
+  "passff_menu_copy_login": {
+    "message": "Kullanıcı adını kopyala"
+  },
+  "passff_menu_fill": {
+    "message": "Doldur"
+  },
+  "passff_menu_fill_and_submit": {
+    "message": "Doldur ve gönder"
+  },
+  "passff_menu_goto_fill": {
+    "message": "Git ve doldur"
+  },
+  "passff_menu_goto_fill_and_submit": {
+    "message": "Git, doldur ve gönder"
+  },
+  "passff_menu_goto_fill_new_tab": {
+    "message": "Git ve doldur (yeni sekmede)"
+  },
+  "passff_menu_goto_fill_and_submit_new_tab": {
+    "message": "Git, doldur ve gönder (yeni sekmede)"
+  },
+  "passff_menu_goto": {
+    "message": "Git"
+  },
+  "passff_menu_display": {
+    "message": "Görüntüle"
+  },
+  "passff_display_hover": {
+    "message": "Parolayı göstermek için imleci üzerine getirin"
+  },
+  "passff_toolbar_button_label": {
+    "message": "PassFF"
+  },
+  "passff_toolbar_search_placeholder": {
+    "message": "Ara"
+  },
+  "passff_toolbar_refresh_label": {
+    "message": "Yenile"
+  },
+  "passff_toolbar_preferences_label": {
+    "message": "Ayarlar"
+  },
+  "passff_toolbar_new_password_label": {
+    "message": "Yeni"
+  },
+  "passff_button_root_label": {
+    "message": "En üst dizini görüntüle"
+  },
+  "passff_button_context_label": {
+    "message": "İçerik menüsünü görüntüle"
+  },
+  "passff_prefs_headline": {
+    "message": "PassFF Ayarları"
+  },
+  "passff_prefs_tab_general": {
+    "message": "Genel"
+  },
+  "passff_prefs_tab_autofilling": {
+    "message": "Otomatik Doldurma"
+  },
+  "passff_prefs_tab_inputs": {
+    "message": "Girdiler"
+  },
+  "passff_prefs_tab_fields": {
+    "message": "Alanlar"
+  },
+  "passff_prefs_tab_script": {
+    "message": "Pass Betiği"
+  },
+  "passff_prefs_tab_adding": {
+    "message": "Parola Ekleme"
+  },
+  "passff_prefs_tab_browsing": {
+    "message": "Parola deposunda gezinme ve arama"
+  },
+  "passff_prefs_tab_dev": {
+    "message": "Hata Ayıklama ve Geliştirme"
+  },
+  "passff_prefs_tab_look": {
+    "message": "Görünüm"
+  },
+  "passff_prefs_look_menu_width": {
+    "message": "Menü genişliği"
+  },
+  "passff_prefs_mark_fillable": {
+    "message": "Doldurulabilir girdi alanlarını PassFF simgesiyle işaretle"
+  },
+  "passff_prefs_context_menu": {
+    "message": "Doldurulabilir girdi alanlarını doldurmak için içerik menüsüne öge ekle"
+  },
+  "passff_prefs_submit_fillable": {
+    "message": "Girdi menüsü aracılığıyla seçildiğinde gönder"
+  },
+  "passff_prefs_handle_http_auth": {
+    "message": "HTTP kimlik doğrulamasını destekle"
+  },
+  "passff_prefs_directories_first": {
+    "message": "Araç çubuğu menüsünde ilk olarak dizinleri listele"
+  },
+  "passff_prefs_tb_menu_shortcut_label": {
+    "message": "Araç çubuğu menüsü için klavye kısayolu"
+  },
+  "passff_prefs_case_insensitive_search": {
+    "message": "Büyük/küçük harfe duyarsız ara"
+  },
+  "passff_prefs_enter_behavior": {
+    "message": "Enter tuşunun davranışı"
+  },
+  "passff_prefs_shift_enter_behavior": {
+    "message": "Shift-Enter tuşunun davranışı"
+  },
+  "passff_prefs_ctrl_enter_behavior": {
+    "message": "Ctrl-Enter tuşunun davranışı"
+  },
+  "passff_prefs_inputs_description": {
+    "message": "Girdiler, PassFF tarafından web sayfalarında doldurulabilir girdi alanlarını bulmak için kullanılır. İsteğe bağlı olarak, PassFF onları doldurmak için bir menü ile işaretler."
+  },
+  "passff_prefs_fields_description": {
+    "message": "Alanlar, parola deponuzdaki verileri bulmak için kullanılır. PassFF, parola dosyasında kullanıcı adı, parola ve URL'yi arar. Bu bir dizinse, PassFF onları bu dizinin içindeki dosyalarda arar."
+  },
+  "passff_prefs_password_input_names_label": {
+    "message": "Parola girdi adları"
+  },
+  "passff_prefs_login_input_names_label": {
+    "message": "Kullanıcı adı girdi adları"
+  },
+  "passff_prefs_otp_input_names_label": {
+    "message": "Bir defalık parola (OTP) girdi adları"
+  },
+  "passff_prefs_button_input_queries_label": {
+    "message": "Form gönder düğmesi sorguları, her satırda bir tane"
+  },
+  "passff_prefs_login_field_names_label": {
+    "message": "Kullanıcı adı alanı adları"
+  },
+  "passff_prefs_password_field_names_label": {
+    "message": "Parola alanı adları"
+  },
+  "passff_prefs_url_field_names_label": {
+    "message": "URL alanı adları"
+  },
+  "passff_prefs_index_meta_urls_label": {
+    "message": "Başlangıçta URL alanlarını dizinle. Bu, tüm URL alanı değerlerini tarayıcı belleğine okuyacak ve passff parolaları aradığında bunların kullanılmasını sağlayacaktır. (passff-host >=1.2.0 gerektirir)"
+  },
+  "passff_prefs_otpauth_field_names_label": {
+    "message": "OTP yetkilendirme alanı adları"
+  },
+  "passff_prefs_filter_path_regex_label": {
+    "message": "Ögeleri gizlemek için düzenli ifade, her satırda bir tane (tam yolu test eder)"
+  },
+  "passff_prefs_script_howto": {
+    "message": "Pass ortam değişkenlerini değiştirmek için passff.py dosyasına bakın."
+  },
+  "passff_prefs_auto_fill_label": {
+    "message": "Sayfa girdi formlarını otomatik doldurmayı dene"
+  },
+  "passff_prefs_auto_submit_label": {
+    "message": "Sayfa girdi formlarını otomatik göndermeyi dene"
+  },
+  "passff_prefs_autofill_blacklist_label": {
+    "message": "Sekmenin URL'si dizgelerden birini içeriyorsa otomatik doldurma"
+  },
+  "passff_prefs_default_length_label": {
+    "message": "Öntanımlı parola uzunluğu"
+  },
+  "passff_prefs_default_include_symbols_label": {
+    "message": "Öntanımlı olarak parolaya en az bir özel karakter ekle"
+  },
+  "passff_prefs_preferred_new_method_label": {
+    "message": "Tercih edilen yeni yöntemi"
+  },
+  "passff_prefs_prefer_generate": {
+    "message": "Oluştur"
+  },
+  "passff_prefs_prefer_insert": {
+    "message": "Gir"
+  },
+  "passff_prefs_show_new_password_button": {
+    "message": "Araç çubuğu menüsünde 'Yeni Parola' düğmesini göster"
+  },
+  "passff_prefs_enable_logging": {
+    "message": "JavaScript web konsolunda günlüğe kaydetmeyi etkinleştir"
+  },
+  "passff_prefs_show_status": {
+    "message": "Araç çubuğu menüsünde bir durum çubuğu göster"
+  },
+  "passff_prefs_recognised_suffixes": {
+    "message": "En üst düzey etki alanları gibi davranılacak etki alanı son ekleri"
+  },
+  "passff_newpassword_window_title": {
+    "message": "Yeni Parola"
+  },
+  "passff_newpassword_window_header": {
+    "message": "Yeni bir parola ekle"
+  },
+  "passff_newpassword_tabs_generate": {
+    "message": "Oluştur"
+  },
+  "passff_newpassword_tabs_insert": {
+    "message": "Gir"
+  },
+  "passff_newpassword_inputs_password_name_label": {
+    "message": "Ad"
+  },
+  "passff_newpassword_inputs_password_label": {
+    "message": "Parola"
+  },
+  "passff_newpassword_inputs_password_confirmation_label": {
+    "message": "Parolayı doğrula"
+  },
+  "passff_newpassword_inputs_additional_info_label": {
+    "message": "Ek bilgiler"
+  },
+  "passff_newpassword_inputs_password_length_label": {
+    "message": "Uzunluk"
+  },
+  "passff_newpassword_inputs_include_symbols_label": {
+    "message": "Özel karakterleri dahil et"
+  },
+  "passff_newpassword_inputs_add_password_button_label": {
+    "message": "Parolayı gir"
+  },
+  "passff_newpassword_inputs_generate_password_button_label": {
+    "message": "Parola oluştur"
+  },
+  "passff_newpassword_inputs_overwrite_password_prompt": {
+    "message": "Bu parola zaten var. Değiştirmek istediğinizden emin misiniz?"
+  },
+  "passff_newpassword_errors_name_is_required": {
+    "message": "Bir ad gerekli."
+  },
+  "passff_newpassword_errors_password_is_required": {
+    "message": "Bir parola gerekli."
+  },
+  "passff_newpassword_errors_password_confirmation_mismatch": {
+    "message": "Parolalar eşleşmiyor."
+  },
+  "passff_newpassword_errors_pass_execution_failed": {
+    "message": "Tüh, bir şeyler yanlış gitti!"
+  },
+  "passff_newpassword_errors_unexpected_error": {
+    "message": "Üzgünüm, beklenmedik bir hata oluştu!"
+  },
+  "passff_errors_exec_host_app": {
+    "message": "Ana makine uygulamasına bağlantı başarısız oldu veya beklenmeyen bir sonuç döndürdü!"
+  },
+  "passff_errors_upgrade_host_app": {
+    "message": "[Resmi kurulum talimatlarını]($passffURL$) izleyerek PassFF ana makine uygulamasının en son sürümünün kurulu olduğundan emin olun.",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_no_entries_found": {
+    "message": "Bu URL ile eşleşen girdi yok."
+  },
+  "passff_override_antiphishing_confirmation": {
+    "message": "Yine de devam etmek istiyor musunuz? Bunu yapmak bir güvenlik riski olabilir."
+  },
+  "passff_error_getting_url_pass": {
+    "message": "URL ($passURL$) parola veri tabanından ayrıştırılırken bir hata oluştu.",
+    "placeholders": {
+      "passURL" : {
+        "content" : "$1",
+        "example" : "badlyFormattedURL.com"
+      }
+    }
+  },
+  "passff_error_getting_url_curr": {
+    "message": "Geçerli URL ($currURL$) ayrıştırılırken bir hata oluştu.",
+    "placeholders": {
+      "currURL" : {
+        "content" : "$1",
+        "example" : "badlyFormattedURL.com"
+      }
+    }
+  },
+  "passff_error_otp_host_version": {
+    "message": "OTP desteği, PassFF ana makine uygulamasının 1.1.0 veya sonraki sürümünü gerektirir. Lütfen [resmi kurulum talimatlarını]($passffURL$) takip edin.",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_error_grep_host_version": {
+    "message": "Üst URL'lerin dizinlenmesi, PassFF ana makine uygulamasının 1.2.0 veya sonraki sürümünü gerektirir. Lütfen [resmi kurulum talimatlarını]($passffURL$) takip edin.",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_error_script_failed": {
+    "message": "Betik çalıştırma başarısız oldu: ```$errMsg$```",
+    "placeholders": {
+      "errMsg": {
+        "content": "$1",
+        "example": "gpg: cancelled by user"
+      }
+    }
+  },
+  "passff_domain_mismatch": {
+    "message": "Geçerli sitenizin etki alanı ($currDomain$) pass veri tabanınızdakiyle ($passDomain$) eşleşmiyor.",
+    "placeholders": {
+      "currDomain" : {
+        "content" : "$1",
+        "example" : "phishingDomain.com"
+      },
+      "passDomain": {
+        "content" : "$2",
+        "example": "realDomain.com"
+      }
+    }
+  },
+  "passff_http_pass_warning": {
+    "message": "Parola veri tabanınızdaki ($passItemURL$) URL güvenli olmayan bir protokol kullanıyor. URL'yi 'https:' ile başlayacak şekilde değiştirmeniz tavsiye edilir.",
+    "placeholders": {
+      "passItemURL": {
+        "content" : "$1",
+        "example" : "http://www.example.com"
+      }
+    }
+  },
+  "passff_http_curr_warning": {
+    "message": "Geçerli sayfa, parolanızı tehlikeye atabilecek güvenli olmayan bir protokol kullanıyor."
+  },
+  "passff_prefs_domain_check_label": {
+    "message": "Veri tabanında listelenen etki alanının geçerli sayfanınkinden farklı olması gibi olası kimlik avı siteleri hakkında uyar."
+  }
+}
