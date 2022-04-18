@@ -86,8 +86,8 @@ filling any login name by adding `login: PASSFF_OMIT_FIELD` to your pass entry. 
 credentials without password, but only login name.
 
 Lines besides the login and URL that match the format `<other_inputfield_name>: <value>` can be used to fill in input
-fields besides the login and password fields. The left hand side of the colon should match the input field's `name` or
-`id` attribute.
+fields besides the login and password fields. The left hand side of the colon should match the input field's `name`,
+`id`, `autocomplete`, or `placeholder` attribute.
 
 Examples
 ```

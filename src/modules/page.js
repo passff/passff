@@ -69,20 +69,22 @@ PassFF.Page = (function () {
     return null;
   }
 
-  function readInputNames(input) {
-    let inputNames = [input.name || "", input.id || ""];
-    if (input.hasAttribute('placeholder') && input.getAttribute('placeholder').toLowerCase().indexOf('search') === -1) {
-      inputNames.push(input.getAttribute('placeholder'));
-    }
-
-    /* Some pages (e.g., accounts.google.com) use the autocomplete attribute to
-     * specify the meaning of this input field in the form, even though this
-     * is not the purpose of this attribute according to the specs.
-     */
+  function getAutocompleteAttr(input) {
     let autocomplete = input.getAttribute("autocomplete");
     if (input.hasAttribute('passff-autocomplete')) {
       autocomplete = input.getAttribute('passff-autocomplete');
     }
+    return autocomplete;
+  }
+
+  function readInputNames(input) {
+    let inputNames = [input.name || "", input.id || ""];
+    let placeholder = input.getAttribute('placeholder');
+    if (placeholder && placeholder.toLowerCase().indexOf('search') === -1) {
+      inputNames.push(placeholder);
+    }
+
+    let autocomplete = getAutocompleteAttr(input);
     if (autocomplete && ["on","off"].indexOf(autocomplete) === -1) {
       inputNames.push(autocomplete);
     }
@@ -122,7 +124,13 @@ PassFF.Page = (function () {
       }
       return rating;
     });
-    rt = 10*(rt[0] + rt[1]) + rt.slice(2).reduce((a,b) => a + b, 0);
+    rt = 10 * (rt[0] + rt[1]) + rt.slice(2).reduce((a,b) => a + b, 0);
+    // We ignore `autocomplete="off"` if the rating is at least 10 (which
+    // usually means a match in the "id" and/or "name" attribute).
+    // https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion#the_autocomplete_attribute_and_login_fields
+    if (getAutocompleteAttr(input) == "off" && rt < 10) {
+      rt = 0;
+    }
     return rt;
   }
 
