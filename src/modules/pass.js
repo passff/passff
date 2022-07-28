@@ -438,6 +438,7 @@ PassFF.Pass = (function () {
             }
           });
 
+          var isInUseHiddenRegex = PassFF.Preferences.filterPathRegex.length != 0;
           var isHiddenRegex = new RegExp(PassFF.Preferences.filterPathRegex.join("|"), 'i');
 
           allItems.slice().reverse().forEach(item => {
@@ -455,7 +456,7 @@ PassFF.Pass = (function () {
                                            || isUrlField(item.key)
                                            || isOtpauthField(item.key));
             item.hasFields = item.children.some(c => allItems[c].isField);
-            item.isHidden = isHiddenRegex.test(item.fullKey);
+            item.isHidden = isInUseHiddenRegex && isHiddenRegex.test(item.fullKey);
           });
 
           this.indexMetaUrls();
