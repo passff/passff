@@ -64,7 +64,7 @@ PassFF.Preferences = (function () {
   var prefParams = {
     passwordInputNames    : 'passwd,password,pass',
     loginInputNames       : 'login,user,mail,email,tel,username,opt_login,log,usr_name',
-    otpInputNames         : 'otp,code,otc,user[otp_attempt]',
+    otpInputNames         : 'otp,code,otc,user[otp_attempt],twofactor_token',
     buttonInputQueries    : 'button:not([type=reset])\ninput[type=submit]\ninput[type=button]\n[role=button]',
     loginFieldNames       : 'login,user,username,id',
     passwordFieldNames    : 'passwd,password,pass',
