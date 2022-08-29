@@ -78,6 +78,7 @@ PassFF.Page = (function () {
   }
 
   function readInputNames(input) {
+    log.debug("test")
     let inputNames = [input.name || "", input.id || ""];
     let placeholder = input.getAttribute('placeholder');
     if (placeholder && placeholder.toLowerCase().indexOf('search') === -1) {
@@ -529,7 +530,7 @@ PassFF.Page = (function () {
     bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
 
     var obs = new MutationObserver(onNodeAdded);
-    obs.observe(document, { attributes: true, childList: true, subtree: true });
+    obs.observe(document, { attributes: false, childList: true, subtree: true });
     onNodeAdded();
 
     return PassFF.Page.goToAutoFillPending()
@@ -790,7 +791,7 @@ PassFF.Page = (function () {
         if (inputElements.filter(inp => inp[1] == "password").length === 0) {
           if (inputElements.length == 0 || cautious) {
             log.debug("fillInputs: No relevant login input elements recognized.");
-            return null;
+            return Promise.resolve();
           } else {
             log.debug("fillInputs: Warning: no password inputs found!");
           }
