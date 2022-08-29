@@ -529,7 +529,7 @@ PassFF.Page = (function () {
     bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
 
     var obs = new MutationObserver(onNodeAdded);
-    obs.observe(document, { attributes: false, childList: true, subtree: true });
+    obs.observe(document, { attributes: true, childList: false, subtree: true, attributeFilter: ["id", "name"] });
     onNodeAdded();
 
     return PassFF.Page.goToAutoFillPending()
