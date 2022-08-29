@@ -78,7 +78,6 @@ PassFF.Page = (function () {
   }
 
   function readInputNames(input) {
-    log.debug("test")
     let inputNames = [input.name || "", input.id || ""];
     let placeholder = input.getAttribute('placeholder');
     if (placeholder && placeholder.toLowerCase().indexOf('search') === -1) {
