@@ -790,7 +790,7 @@ PassFF.Page = (function () {
         if (inputElements.filter(inp => inp[1] == "password").length === 0) {
           if (inputElements.length == 0 || cautious) {
             log.debug("fillInputs: No relevant login input elements recognized.");
-            return null;
+            return Promise.resolve();
           } else {
             log.debug("fillInputs: Warning: no password inputs found!");
           }
