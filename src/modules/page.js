@@ -621,6 +621,20 @@ PassFF.Page = (function () {
       });
   }
 
+  function isSubdomainInclusive(currDomainStr, passDomainStr) {
+    const currDomainParts = currDomainStr.split('.').reverse();
+    const passDomainParts = passDomainStr.split('.').reverse();
+    if(passDomainParts.length > currDomainParts.length) {
+      return false;
+    }
+    for (let i = 0; i < passDomainParts.length; ++i) {
+      if(currDomainParts[i] !== passDomainParts[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 /* #############################################################################
  * #############################################################################
  *  Main interface
@@ -785,21 +799,50 @@ PassFF.Page = (function () {
     ),
 
     fillInputs: content_function("Page.fillInputs",
-      function (item, andSubmit, cautious) {
+      function (item, andSubmit, isAutoFill) {
         refocus();
         if (inputElements.filter(inp => inp[1] == "password").length === 0) {
-          if (inputElements.length == 0 || cautious) {
+          if (inputElements.length == 0 || isAutoFill) {
             log.debug("fillInputs: No relevant login input elements recognized.");
             return Promise.resolve();
           } else {
             log.debug("fillInputs: Warning: no password inputs found!");
           }
         }
+        const url = window.location.href;
         return PassFF.Pass.getPasswordData(item)
           .then((passwordData) => {
             if (typeof passwordData === "undefined") return;
-            log.debug('Start auto-fill using', item.fullKey, andSubmit);
-            return securityChecks(passwordData.url, window.location.href)
+            log.debug('fillInputs: Start auto-fill using', item.fullKey, andSubmit, passwordData.url);
+
+            if(isAutoFill && PassFF.Preferences.autoFillSubDomainCheck) {
+              let passDomain;
+              if(passwordData.url) {
+                try {
+                  passDomain = (new URL(passwordData.url)).host;
+                } catch(e) {
+                  log.debug("fillInputs: Cannot parse domain in password db", passwordData.url, e);
+                  return Promise.resolve();
+                }
+              } else {
+                passDomain = item.key;
+              }
+
+              let currDomain;
+              try {
+                currDomain = (new URL(url)).host;
+              } catch(e) {
+                log.debug("fillInputs: Cannot parse current URL", url, e);
+                return Promise.resolve();
+              }
+              log.debug("fillInputs: checking exact domain match for auto-fill", currDomain, passDomain);
+              if(!isSubdomainInclusive(currDomain, passDomain)) {
+                log.debug('fillInputs: Url not an inclusive subdomain of best fitting item: refusing to auto fill', currDomain, passDomain);
+                return Promise.resolve();
+              }
+            }
+
+            return securityChecks(passwordData.url, url)
               .then((result) => {
                 if (!result) return;
                 setInputs(inputElements, passwordData);
