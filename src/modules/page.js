@@ -634,17 +634,9 @@ PassFF.Page = (function () {
   }
 
   function isSubdomainInclusive(currDomainStr, passDomainStr) {
-    const currDomainParts = currDomainStr.split('.').reverse();
-    const passDomainParts = passDomainStr.split('.').reverse();
-    if(passDomainParts.length > currDomainParts.length) {
-      return false;
-    }
-    for (let i = 0; i < passDomainParts.length; ++i) {
-      if(currDomainParts[i] !== passDomainParts[i]) {
-        return false;
-      }
-    }
-    return true;
+    const currDomainParts = currDomainStr.split('.');
+    const passDomainLength = passDomainStr.split('.').length;
+    return currDomainParts.slice(-passDomainLength).join(".") == passDomain;
   }
 
 /* #############################################################################
