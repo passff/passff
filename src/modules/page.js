@@ -548,7 +548,7 @@ PassFF.Page = (function () {
  * #############################################################################
  */
 
-  function securityChecks(passItemURL, currTabURL, failSilently=false) {
+  function securityChecks(passItemURL, currTabURL) {
     if (!PassFF.Preferences.autoFillDomainCheck) {
       return Promise.resolve(true);
     }
@@ -556,9 +556,6 @@ PassFF.Page = (function () {
     try {
       var passURL = new URL(passItemURL);
     } catch(e) {
-      if(failSilently) {
-        return Promise.resolve(false);
-      }
       return PassFF.Page.confirm(
         _("passff_error_getting_url_pass", passItemURL) + " "
         + _("passff_override_antiphishing_confirmation"));
@@ -567,9 +564,6 @@ PassFF.Page = (function () {
     try {
       var currURL = new URL(currTabURL);
     } catch(e) {
-      if(failSilently) {
-        return Promise.resolve(false);
-      }
       return PassFF.Page.confirm(
         _("passff_error_getting_url_curr", currTabURL) + " "
         + _("passff_override_antiphishing_confirmation"));
@@ -582,7 +576,7 @@ PassFF.Page = (function () {
       });
   }
 
-  function domainSecurityCheck(passURL, currURL, failSilently=false) {
+  function domainSecurityCheck(passURL, currURL) {
     /*
     Instead of requiring that the entire hostname match, which would lead to
     example.com and login.example.com being considered different, only the
@@ -600,9 +594,6 @@ PassFF.Page = (function () {
     let passDomain = passURL.hostname.split(".").slice(-2).join(".");
     let currDomain = currURL.hostname.split(".").slice(-2).join(".");
     if (passDomain != currDomain) {
-      if(failSilently) {
-        return Promise.resolve(false);
-      }
       return PassFF.Page.confirm(
         _("passff_domain_mismatch", [currDomain, passDomain]) + " "
         + _("passff_override_antiphishing_confirmation"));
@@ -610,7 +601,7 @@ PassFF.Page = (function () {
     return Promise.resolve(true);
   }
 
-  function protocolSecurityCheck(currURL, passURL, failSilently=false) {
+  function protocolSecurityCheck(currURL, passURL) {
     let currProt = currURL.protocol;
     let passProt = passURL.protocol;
     if (currProt == "https:") {
@@ -618,9 +609,6 @@ PassFF.Page = (function () {
       return Promise.resolve(true);
     }
 
-    if(failSilently) {
-      return Promise.resolve(false);
-    }
     return PassFF.Page.confirm(
              _("passff_http_curr_warning") + " "
              + _("passff_override_antiphishing_confirmation")
@@ -846,12 +834,9 @@ PassFF.Page = (function () {
               }
             }
 
-            return securityChecks(passwordData.url, url, isAutoFill)
+            return securityChecks(passwordData.url, url)
               .then((result) => {
-                if (!result) {
-                  log.debug('fillInputs: security checks failed');
-                  return;
-                }
+                if (!result) return;
                 setInputs(inputElements, passwordData);
                 if (andSubmit) {
                   PassFF.Page.submit();

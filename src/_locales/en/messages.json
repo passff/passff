@@ -340,7 +340,7 @@
     "message": "The current page uses an insecure protocol that could compromize your password."
   },
   "passff_prefs_domain_check_label": {
-    "message": "Warn about potential phishing sites, such as when the domain listed in the database differs from that of the current page (this also prevents auto fill)."
+    "message": "Warn about potential phishing sites, such as when the domain listed in the database differs from that of the current page"
   },
   "passff_prefs_autofill_subdomain_check_label": {
     "message": "Do not auto fill if the tab's domain is not equal to or a subdomain of the URL field in the password database or the entries file name."
