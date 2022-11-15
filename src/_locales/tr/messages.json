@@ -327,15 +327,6 @@
       }
     }
   },
-  "passff_http_pass_warning": {
-    "message": "Parola veri tabanınızdaki ($passItemURL$) URL güvenli olmayan bir protokol kullanıyor. URL'yi 'https:' ile başlayacak şekilde değiştirmeniz tavsiye edilir.",
-    "placeholders": {
-      "passItemURL": {
-        "content" : "$1",
-        "example" : "http://www.example.com"
-      }
-    }
-  },
   "passff_http_curr_warning": {
     "message": "Geçerli sayfa, parolanızı tehlikeye atabilecek güvenli olmayan bir protokol kullanıyor."
   },

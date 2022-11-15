@@ -327,15 +327,6 @@
       }
     }
   },
-  "passff_http_pass_warning": {
-    "message": "The URL in your password database ($passItemURL$) uses an insecure protocol. It is advised that you change the URL to start with 'https:'.",
-    "placeholders": {
-      "passItemURL": {
-        "content" : "$1",
-        "example" : "http://www.example.com"
-      }
-    }
-  },
   "passff_http_curr_warning": {
     "message": "The current page uses an insecure protocol that could compromize your password."
   },

@@ -309,15 +309,6 @@
       }
     }
   },
-  "passff_http_pass_warning": {
-    "message": "Adres URL w bazie danych ($passItemURL$) używa nieszyfrowanego protokołu. Zalecamy zmianę adresu na zaczynający się od 'https:'.",
-    "placeholders": {
-      "passItemURL": {
-        "content" : "$1",
-        "example" : "http://www.example.com"
-      }
-    }
-  },
   "passff_http_curr_warning": {
     "message": "Obecna strona używa nieszyfrowanego protokołu HTTP który może ujawnić Twoje hasła."
   },
