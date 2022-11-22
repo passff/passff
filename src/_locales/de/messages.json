@@ -239,7 +239,7 @@
   "passff_no_entries_found": {
     "message": "Keine passenden Einträge für diese URL."
   },
-  "passff_prefs_autofill_subdomain_check_label": {
-    "message": "Nicht auto-ausfüllen, wenn die URL nicht dem URL-Feld in der Passwortdatenbank bzw. dem Dateinamen des Eintrags entspricht (oder eine Subdomain davon ist)."
+  "passff_prefs_autofill_use_entry_key_name": {
+    "message": "Nutze den Dateinamen eines Eintrags als Domain, wenn kein URL-Feld vorhanden ist."
   }
 }

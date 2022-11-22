@@ -330,10 +330,40 @@
   "passff_http_curr_warning": {
     "message": "The current page uses an insecure protocol that could compromize your password."
   },
-  "passff_prefs_domain_check_label": {
-    "message": "Warn about potential phishing sites, such as when the domain listed in the database differs from that of the current page"
+  "passff_menu_autofill_check_ignore": {
+    "message": "Ignore check error (continue auto filling)"
   },
-  "passff_prefs_autofill_subdomain_check_label": {
-    "message": "Do not auto fill if the tab's domain is not equal to or a subdomain of the URL field in the password database or the entries file name."
+  "passff_menu_autofill_check_warn": {
+    "message": "Ask on failure before auto filling"
+  },
+  "passff_menu_autofill_check_enforce": {
+    "message": "Do not auto fill on failure"
+  },
+  "passff_prefs_domain_check_label": {
+    "message": "Activate domain/protocol checks when filling manually."
+  },
+  "passff_prefs_autofill_domain_check_level": {
+    "message": "Domain check when auto filling"
+  },
+  "passff_menu_autofill_domain_check_level_common_domain": {
+    "message": "Site and pass db entry's URL field must have a common domain"
+  },
+  "passff_menu_autofill_domain_check_level_subdomain": {
+    "message": "Site domain must be equal to or a subdomain of the pass db entry's URL field's domain"
+  },
+  "passff_menu_autofill_domain_check_level_equal_domain": {
+    "message": "Site domain must be equal to the pass db entry's URL field's domain"
+  },
+  "passff_prefs_autofill_protocol_check": {
+    "message": "Protocol check when auto filling"
+  },
+  "passff_menu_autofill_proto_check_min": {
+    "message": "Only require HTTPS when the pass db entry's URL field has HTTPS protocol"
+  },
+  "passff_menu_autofill_proto_check_https": {
+    "message": "Always require HTTPS"
+  },
+  "passff_prefs_autofill_use_entry_key_name": {
+    "message": "Use an entry's file name as domain name if no URL field exists."
   }
 }
