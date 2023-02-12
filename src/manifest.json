@@ -16,6 +16,10 @@
                 "light": "skin/icon-light.svg",
                 "dark": "skin/icon.svg",
                 "size": 16
+            }, {
+                "light": "skin/icon-light.svg",
+                "dark": "skin/icon.svg",
+                "size": 32
             }],
         "default_popup": "content/menu.html"
     },
