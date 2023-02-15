@@ -1,0 +1,346 @@
+{
+  "passff_passphrase_title": {
+    "message": "Repositório de senhas trancado;"
+  },
+  "passff_passphrase_description": {
+    "message": "Não é possível acessar sua senha.\n Por-favor adicione sua senha ao gpg-agent."
+  },
+  "passff_menu_copy_password": {
+    "message": "Copiar senha"
+  },
+  "passff_menu_copy_login": {
+    "message": "Copiar login"
+  },
+  "passff_menu_fill": {
+    "message": "Preencher"
+  },
+  "passff_menu_fill_and_submit": {
+    "message": "Preencher e entrar"
+  },
+  "passff_menu_goto_fill": {
+    "message": "Ir para a página e preencher"
+  },
+  "passff_menu_goto_fill_and_submit": {
+    "message": "Ir para a página, preencher e entrar"
+  },
+  "passff_menu_goto_fill_new_tab": {
+    "message": "Ir para a página (em outra aba) e preencher"
+  },
+  "passff_menu_goto_fill_and_submit_new_tab": {
+    "message": "Ir para a página (em outra aba), preencher e entrar"
+  },
+  "passff_menu_goto": {
+    "message": "Ir para a página"
+  },
+  "passff_menu_display": {
+    "message": "Exibir"
+  },
+  "passff_display_hover": {
+    "message": "Passe o mouse para exibir a senha."
+  },
+  "passff_toolbar_button_label": {
+    "message": "PassFF"
+  },
+  "passff_toolbar_search_placeholder": {
+    "message": "Pesquisar"
+  },
+  "passff_toolbar_refresh_label": {
+    "message": "Atualizar"
+  },
+  "passff_toolbar_preferences_label": {
+    "message": "Preferências"
+  },
+  "passff_toolbar_new_password_label": {
+    "message": "Nova senha"
+  },
+  "passff_button_root_label": {
+    "message": "Voltar ao começo"
+  },
+  "passff_button_context_label": {
+    "message": "Senhas para a página atual"
+  },
+  "passff_prefs_headline": {
+    "message": "Preferências do PassFF"
+  },
+  "passff_prefs_tab_general": {
+    "message": "Geral"
+  },
+  "passff_prefs_tab_autofilling": {
+    "message": "Auto-preenchimento"
+  },
+  "passff_prefs_tab_inputs": {
+    "message": "Inputs"
+  },
+  "passff_prefs_tab_fields": {
+    "message": "Campos"
+  },
+  "passff_prefs_tab_script": {
+    "message": "Pass Script"
+  },
+  "passff_prefs_tab_adding": {
+    "message": "Criação de senhas"
+  },
+  "passff_prefs_tab_browsing": {
+    "message": "Localizar senhas"
+  },
+  "passff_prefs_tab_dev": {
+    "message": "Debug e desenvolvimento"
+  },
+  "passff_prefs_tab_look": {
+    "message": "Aparência"
+  },
+  "passff_prefs_look_menu_width": {
+    "message": "Largura do menu"
+  },
+  "passff_prefs_mark_fillable": {
+    "message": "Mostrar ícone do PassFF em campos de senhas"
+  },
+  "passff_prefs_context_menu": {
+    "message": "Adicione opção no menu de senhas para preencher todos os campos"
+  },
+  "passff_prefs_submit_fillable": {
+    "message": "Entrar quando selecionado pelo menu"
+  },
+  "passff_prefs_handle_http_auth": {
+    "message": "Realizar autenticação HTTP"
+  },
+  "passff_prefs_directories_first": {
+    "message": "Mostrar pastas no início no menu da barra de ferramentas"
+  },
+  "passff_prefs_tb_menu_shortcut_label": {
+    "message": "Atalho para mostrar o menu da barra de ferramentas"
+  },
+  "passff_prefs_case_insensitive_search": {
+    "message": "Case-insensitive searching"
+  },
+  "passff_prefs_enter_behavior": {
+    "message": "Ação da tecla Enter"
+  },
+  "passff_prefs_shift_enter_behavior": {
+    "message": "Ação da combinação Shift-Enter"
+  },
+  "passff_prefs_ctrl_enter_behavior": {
+    "message": "Ação da combinação Ctrl-Enter"
+  },
+  "passff_prefs_inputs_description": {
+    "message": "Inputs são utilizados pelo PassFF para encontrar campos autopreenchíveis nas páginas. O PassFF irá marcá-los com um menu para seu preenchimento"
+  },
+  "passff_prefs_fields_description": {
+    "message": "Campos são usados para encontrar, no repositório, os valores a serem preenchidos. O PassFF analisa login, senha e URL nos arquivos de senha. Caso seja um diretório o PassFF procura nos arquivos dentro dele."
+  },
+  "passff_prefs_password_input_names_label": {
+    "message": "Nomes para o input de password"
+  },
+  "passff_prefs_login_input_names_label": {
+    "message": "Nomes para o input de login"
+  },
+  "passff_prefs_otp_input_names_label": {
+    "message": "Nomes para o input de OTP"
+  },
+  "passff_prefs_button_input_queries_label": {
+    "message": "Queries de botão para envio de botão. Uma por linha"
+  },
+  "passff_prefs_login_field_names_label": {
+    "message": "Campos para login"
+  },
+  "passff_prefs_password_field_names_label": {
+    "message": "Campos para senha"
+  },
+  "passff_prefs_url_field_names_label": {
+    "message": "Campos para URL"
+  },
+  "passff_prefs_index_meta_urls_label": {
+    "message": "Indexar os campos de URL na abertura do navegador, colocando todos os campos na memória e permitindo seu uso sempre que o PassFF buscar por senhas. (Requere passff-host >=1.2.0)"
+  },
+  "passff_prefs_otpauth_field_names_label": {
+    "message": "Campos para OTP Auth"
+  },
+  "passff_prefs_filter_path_regex_label": {
+    "message": "Regex para esconder os itens, um por linha (o regex será comparado com todo o caminho)"
+  },
+  "passff_prefs_script_howto": {
+    "message": "Veja o arquivo passff.py para alterar as variáveis de ambiente de pass"
+  },
+  "passff_prefs_auto_fill_label": {
+    "message": "Tentar autopreencher campos de login"
+  },
+  "passff_prefs_auto_submit_label": {
+    "message": "Tentar autopreencher e entrar quando há campos de login conhecidos"
+  },
+  "passff_prefs_autofill_blacklist_label": {
+    "message": "Não autopreencha se a URL contiver um das strings"
+  },
+  "passff_prefs_default_length_label": {
+    "message": "Tamanho padrão da senha"
+  },
+  "passff_prefs_default_include_symbols_label": {
+    "message": "Incluir ao menos um caractere especial na senha"
+  },
+  "passff_prefs_preferred_new_method_label": {
+    "message": "Método padrão de criação de senhas"
+  },
+  "passff_prefs_prefer_generate": {
+    "message": "Gerar automaticamente"
+  },
+  "passff_prefs_prefer_insert": {
+    "message": "Inserir manualmente"
+  },
+  "passff_prefs_show_new_password_button": {
+    "message": "Mostrar a opção 'Nova senha' no menu da barra de ferramentas"
+  },
+  "passff_prefs_enable_logging": {
+    "message": "Habilitar log no console do javascript"
+  },
+  "passff_prefs_show_status": {
+    "message": "Mostrar uma barra de status no menu da barra de ferramentas"
+  },
+  "passff_prefs_recognised_suffixes": {
+    "message": "Sufixos de domínios"
+  },
+  "passff_newpassword_window_title": {
+    "message": "Nova senha"
+  },
+  "passff_newpassword_window_header": {
+    "message": "Inserir nova senha"
+  },
+  "passff_newpassword_tabs_generate": {
+    "message": "Gerar"
+  },
+  "passff_newpassword_tabs_insert": {
+    "message": "Inserir"
+  },
+  "passff_newpassword_inputs_password_name_label": {
+    "message": "Nome"
+  },
+  "passff_newpassword_inputs_password_label": {
+    "message": "Senha"
+  },
+  "passff_newpassword_inputs_password_confirmation_label": {
+    "message": "Confirmar senha"
+  },
+  "passff_newpassword_inputs_additional_info_label": {
+    "message": "Informações adicionais"
+  },
+  "passff_newpassword_inputs_password_length_label": {
+    "message": "Tamanho"
+  },
+  "passff_newpassword_inputs_include_symbols_label": {
+    "message": "Incluir caracteres especiais"
+  },
+  "passff_newpassword_inputs_add_password_button_label": {
+    "message": "Inserir senha"
+  },
+  "passff_newpassword_inputs_generate_password_button_label": {
+    "message": "Gerar senha"
+  },
+  "passff_newpassword_inputs_overwrite_password_prompt": {
+    "message": "Já existe uma senha, deseja sobrescrevê-la?"
+  },
+  "passff_newpassword_errors_name_is_required": {
+    "message": "Um nome é requerido."
+  },
+  "passff_newpassword_errors_password_is_required": {
+    "message": "Uma senha é requerida."
+  },
+  "passff_newpassword_errors_password_confirmation_mismatch": {
+    "message": "As senhas não conferem."
+  },
+  "passff_newpassword_errors_pass_execution_failed": {
+    "message": "Oops, algo deu errado!"
+  },
+  "passff_newpassword_errors_unexpected_error": {
+    "message": "Infelizmente um erro inesperado ocorreu!"
+  },
+  "passff_errors_exec_host_app": {
+    "message": "Conexão à aplicação do host deu errado!"
+  },
+  "passff_errors_upgrade_host_app": {
+    "message": "Certifique-se de que a última versão do PassFF-host está instalada, seguindo as [instalações oficiais de instalação($passffURL$).",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_no_entries_found": {
+    "message": "Não foi encontrada uma entrada para essa URL."
+  },
+  "passff_override_antiphishing_confirmation": {
+    "message": "Você deseja continuar mesmo assim? Fazê-lo poderá significar um risco à segurança."
+  },
+  "passff_error_getting_url_pass": {
+    "message": "Houve um erro ao interpretar a URL \"$passURL$\" contida no arquivo de senha.",
+    "placeholders": {
+      "passURL" : {
+        "content" : "$1",
+        "example" : "URLMalFormatada.com"
+      }
+    }
+  },
+  "passff_error_getting_url_curr": {
+    "message": "Houve um erro ao interpretar a URL atual \"$currURl$\"",
+    "placeholders": {
+      "currURL" : {
+        "content" : "$1",
+        "example" : "URLMalFormatada.com"
+      }
+    }
+  },
+  "passff_error_otp_host_version": {
+    "message": "OTP support requires the PassFF host app version 1.1.0 or later. Please follow the [official installation instructions]($passffURL$).",
+    "message": "O suporte à função de OTP necessita que o PassFF-host tenha versão 1.2.0 ou superior. Por-favor siga as [instalações oficiais de instalação($passffURL$)",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_error_grep_host_version": {
+    "message": "A indexação de meta-URLs necessita que o PassFF-host tenha versão 1.2.0 ou superior. Por-favor siga as [instalações oficiais de instalação($passffURL$)",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_error_script_failed": {
+    "message": "A execução do script falhou com a mensagem: ```$errMsg$```",
+    "placeholders": {
+      "errMsg": {
+        "content": "$1",
+        "example": "gpg: cancelado pelo usuário"
+      }
+    }
+  },
+  "passff_domain_mismatch": {
+    "message": "O domínio do site atual ($currDomain$) é distinto daquele presente no arquivo de senha ($passDomain$).",
+    "placeholders": {
+      "currDomain" : {
+        "content" : "$1",
+        "example" : "dominioDePhishing.com"
+      },
+      "passDomain": {
+        "content" : "$2",
+        "example": "siteLegitimo.com"
+      }
+    }
+  },
+  "passff_http_pass_warning": {
+    "message": "A URL contida no arquivo de senha ($passItemURL$) utiliza um protocolo inseguro. Sugere-se alterar o começo da URL para https:.",
+    "placeholders": {
+      "passItemURL": {
+        "content" : "$1",
+        "example" : "http://www.example.com"
+      }
+    }
+  },
+  "passff_http_curr_warning": {
+    "message": "A página atual usa um protocolo não criptografado. Qualquer indivíduo com acesso administrativo à sua rede poderá visualizar sua senha."
+  },
+  "passff_prefs_domain_check_label": {
+    "message": "Avisar sobre potenciais sites de phishing, como quando o domínio do campo URL for distinto daquele da página"
+  }
+}
