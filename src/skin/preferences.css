@@ -1,6 +1,16 @@
+html {
+    color-scheme: light dark;
+}
 
 html, body, div {
     margin: 0; padding: 0; width: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #23222b;
+        color: #fbfbfe;
+    }
 }
 
 h1 {
@@ -74,6 +84,13 @@ fieldset p > input[type=checkbox] ~ label:before {
     color: #fafafa;
 }
 
+@media (prefers-color-scheme: dark) {
+    fieldset p > input[type=checkbox] ~ label:before {
+        background-color: #23222b;
+        color: #23222b;
+    }
+}
+
 fieldset p > input[type=checkbox] ~ label:hover:before {
     border-color: #2292d0;
 }
@@ -100,6 +117,13 @@ fieldset p > input[type=radio] ~ label:before {
     background-color: #fafafa;
     font-size: 1.3rem;
     color: #fafafa;
+}
+
+@media (prefers-color-scheme: dark) {
+    fieldset p > input[type=radio] ~ label:before {
+        background-color: #23222b;
+        color: #23222b;
+    }
 }
 
 fieldset p > input[type=radio] ~ label:hover:before {
