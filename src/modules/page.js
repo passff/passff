@@ -548,32 +548,46 @@ PassFF.Page = (function () {
  * #############################################################################
  */
 
+  class SecurityError extends Error {
+  }
+
   function securityChecks(passItemURL, currTabURL) {
     if (!PassFF.Preferences.autoFillDomainCheck) {
       return Promise.resolve(true);
     }
 
-    try {
-      var passURL = new URL(passItemURL);
-    } catch(e) {
-      return PassFF.Page.confirm(
-        _("passff_error_getting_url_pass", passItemURL) + " "
-        + _("passff_override_antiphishing_confirmation"));
-    }
+    return Promise.resolve(true)
+    .then(() => {
+      try {
+        var passURL = new URL(passItemURL);
+      } catch(e) {
+        return Promise.reject(new SecurityError(
+          _("passff_error_getting_url_pass", passItemURL) + " "
+          + _("passff_override_antiphishing_confirmation")));
+      }
 
-    try {
-      var currURL = new URL(currTabURL);
-    } catch(e) {
-      return PassFF.Page.confirm(
-        _("passff_error_getting_url_curr", currTabURL) + " "
-        + _("passff_override_antiphishing_confirmation"));
-    }
+      try {
+        var currURL = new URL(currTabURL);
+      } catch(e) {
+        return Promise.reject(new SecurityError(
+          _("passff_error_getting_url_curr", currTabURL) + " "
+          + _("passff_override_antiphishing_confirmation")));
+      }
 
-    return domainSecurityCheck(passURL, currURL)
-      .then((result) => {
-        if (!result) return false;
-        return protocolSecurityCheck(currURL, passURL);
-      });
+      return domainSecurityCheck(passURL, currURL)
+        .then((result) => {
+          if (!result) return false;
+          return protocolSecurityCheck(currURL, passURL);
+        });
+    })
+    .catch((e) => {
+      if(e instanceof SecurityError) {
+        return PassFF.Page.confirm(e.message);
+      } else {
+        log.error(e);
+        return Promise.resolve(false);
+      }
+    });
   }
 
   function domainSecurityCheck(passURL, currURL) {
@@ -594,9 +608,9 @@ PassFF.Page = (function () {
     let passDomain = passURL.hostname.split(".").slice(-2).join(".");
     let currDomain = currURL.hostname.split(".").slice(-2).join(".");
     if (passDomain != currDomain) {
-      return PassFF.Page.confirm(
+      return Promise.reject(new SecurityError(
         _("passff_domain_mismatch", [currDomain, passDomain]) + " "
-        + _("passff_override_antiphishing_confirmation"));
+        + _("passff_override_antiphishing_confirmation")));
     }
     return Promise.resolve(true);
   }
@@ -609,16 +623,16 @@ PassFF.Page = (function () {
       return Promise.resolve(true);
     }
 
-    return PassFF.Page.confirm(
+    return Promise.reject(new SecurityError(
              _("passff_http_curr_warning") + " "
              + _("passff_override_antiphishing_confirmation")
-      ).then((result) => {
-        // Maybe the current protocol was unsafe because an unsafe URL is stored
-        if (!result && passProt != "https:") {
-          PassFF.Page.notify(_("passff_http_pass_warning", passURL.href));
-        }
-        return result;
-      });
+      ));
+  }
+
+  function isSubdomainInclusive(currDomainStr, passDomainStr) {
+    const currDomainParts = currDomainStr.split('.');
+    const passDomainLength = passDomainStr.split('.').length;
+    return currDomainParts.slice(-passDomainLength).join(".") == passDomain;
   }
 
 /* #############################################################################
@@ -785,30 +799,60 @@ PassFF.Page = (function () {
     ),
 
     fillInputs: content_function("Page.fillInputs",
-      function (item, andSubmit, cautious) {
+      function (item, andSubmit, isAutoFill) {
         refocus();
         if (inputElements.filter(inp => inp[1] == "password").length === 0) {
-          if (inputElements.length == 0 || cautious) {
+          if (inputElements.length == 0 || isAutoFill) {
             log.debug("fillInputs: No relevant login input elements recognized.");
             return Promise.resolve();
           } else {
             log.debug("fillInputs: Warning: no password inputs found!");
           }
         }
+        const url = window.location.href;
         return PassFF.Pass.getPasswordData(item)
           .then((passwordData) => {
             if (typeof passwordData === "undefined") return;
-            log.debug('Start auto-fill using', item.fullKey, andSubmit);
-            return securityChecks(passwordData.url, window.location.href)
-              .then((result) => {
-                if (!result) return;
-                setInputs(inputElements, passwordData);
-                if (andSubmit) {
-                  PassFF.Page.submit();
-                } else {
-                  refocus();
+            log.debug('fillInputs: Start auto-fill using', item.fullKey, andSubmit, passwordData.url);
+
+            if(isAutoFill && PassFF.Preferences.autoFillSubDomainCheck) {
+              let passDomain;
+              if(passwordData.url) {
+                try {
+                  passDomain = (new URL(passwordData.url)).host;
+                } catch(e) {
+                  log.debug("fillInputs: Cannot parse domain in password db", passwordData.url, e);
+                  return Promise.resolve();
                 }
-                return passwordData;
+              } else {
+                passDomain = item.key;
+              }
+
+              let currDomain;
+              try {
+                currDomain = (new URL(url)).host;
+              } catch(e) {
+                log.debug("fillInputs: Cannot parse current URL", url, e);
+                return Promise.resolve();
+              }
+              log.debug("fillInputs: checking exact domain match for auto-fill", currDomain, passDomain);
+              if(!isSubdomainInclusive(currDomain, passDomain)) {
+                log.debug('fillInputs: Url not an inclusive subdomain of best fitting item: refusing to auto fill', currDomain, passDomain);
+                return Promise.resolve();
+              }
+            }
+
+            return securityChecks(passwordData.url, url)
+              .then((result) => {
+                if (result) {
+                  setInputs(inputElements, passwordData);
+                  if (andSubmit) {
+                    PassFF.Page.submit();
+                  } else {
+                    refocus();
+                  }
+                  return passwordData;
+                }
               });
           });
       }, true),

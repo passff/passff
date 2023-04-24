@@ -238,5 +238,8 @@
   },
   "passff_no_entries_found": {
     "message": "Keine passenden Einträge für diese URL."
+  },
+  "passff_prefs_autofill_use_entry_key_name": {
+    "message": "Nutze den Dateinamen eines Eintrags als Domain, wenn kein URL-Feld vorhanden ist."
   }
 }

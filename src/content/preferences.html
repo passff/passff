@@ -95,6 +95,32 @@
             <label>passff_prefs_autofill_blacklist_label</label>
             <input type="text" id="pref_autoFillBlacklist" value="" />
           </p><p>
+            <label>passff_prefs_autofill_domain_check_level</label>
+            <select id="pref_autofillDomainCheckLevel">
+              <option value="1">passff_menu_autofill_domain_check_level_common_domain</option>
+              <option value="2">passff_menu_autofill_domain_check_level_subdomain</option>
+              <option value="3">passff_menu_autofill_domain_check_level_equal_domain</option>
+            </select>
+            <select id="pref_autofillDomainCheckErrorBehavior">
+              <option value="0">passff_menu_autofill_check_ignore</option>
+              <option value="1">passff_menu_autofill_check_warn</option>
+              <option value="2">passff_menu_autofill_check_enforce</option>
+            </select>
+          </p><p>
+            <input type="checkbox" id="pref_autoFillUseEntryKeyName" />
+            <label for="pref_autoFillUseEntryKeyName">passff_prefs_autofill_use_entry_key_name</label>
+          </p><p>
+            <label>passff_prefs_autofill_protocol_check</label>
+            <select id="pref_autofillProtocolCheck">
+              <option value="1">passff_menu_autofill_proto_check_min</option>
+              <option value="2">passff_menu_autofill_proto_check_https</option>
+            </select>
+            <select id="pref_autofillProtocolCheckErrorBehavior">
+              <option value="0">passff_menu_autofill_check_ignore</option>
+              <option value="1">passff_menu_autofill_check_warn</option>
+              <option value="2">passff_menu_autofill_check_enforce</option>
+            </select>
+          </p><p>
             <input type="checkbox" id="pref_autoFillDomainCheck" />
             <label for="pref_autoFillDomainCheck">passff_prefs_domain_check_label</label>
           </p>
