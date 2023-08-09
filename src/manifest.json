@@ -80,7 +80,7 @@
         "icon.png"
     ],
 
-    "applications": {
+    "browser_specific_settings": {
         "gecko": {
             "id": "passff@invicem.pro",
             "strict_min_version": "60.0"

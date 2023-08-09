@@ -288,7 +288,6 @@
     }
   },
   "passff_error_otp_host_version": {
-    "message": "OTP support requires the PassFF host app version 1.1.0 or later. Please follow the [official installation instructions]($passffURL$).",
     "message": "O suporte à função de OTP necessita que o PassFF-host tenha versão 1.2.0 ou superior. Por-favor siga as [instalações oficiais de instalação($passffURL$)",
     "placeholders": {
       "passffURL": {
