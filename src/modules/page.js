@@ -787,7 +787,10 @@ PassFF.Page = (function () {
     fillInputs: content_function("Page.fillInputs",
       function (item, andSubmit, cautious) {
         refocus();
-        if (inputElements.filter(inp => inp[1] == "password").length === 0) {
+        if (
+          inputElements.filter(inp => inp[1] == "password" || inp[1] == "otp")
+            .length === 0
+        ) {
           if (inputElements.length == 0 || cautious) {
             log.debug("fillInputs: No relevant login input elements recognized.");
             return Promise.resolve();
