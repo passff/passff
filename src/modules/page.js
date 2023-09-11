@@ -776,7 +776,9 @@ PassFF.Page = (function () {
             if (!result) return;
             let inputs = [activeElement];
             if (activeElement.form) {
-              inputs = activeElement.form.getElementsByTagName('input');
+              inputs = Array.from(activeElement.form.elements).filter(
+                el => el.tagName == "INPUT"
+              );
             }
             inputs = annotateInputs(Array.from(inputs).filter(isVisible));
             setInputs(inputs, passwordData);
