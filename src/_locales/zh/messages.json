@@ -126,7 +126,7 @@
     "message": "PassFF 会自动寻找指定输入框标记并填充，您可以在下面配置它的行为。"
   },
   "passff_prefs_fields_description": {
-    "message": "Fields are used to find data inside your password repository. PassFF looks login, password and URL up in the password file. If it's a directory, PassFF looks them up in the files of this directory."
+    "message": "用于在密码存储库中查找数据。PassFF会在密码文件中查找登录名、密码和网址信息。如果是一个目录，PassFF会在该目录的文件中查找它们。"
   },
   "passff_prefs_password_input_names_label": {
     "message": "密码输入框名称"
@@ -141,22 +141,22 @@
     "message": "表单提交 (确认) 按钮选择器， 每行一个。"
   },
   "passff_prefs_login_field_names_label": {
-    "message": "Login field names"
+    "message": "登录字段名称"
   },
   "passff_prefs_password_field_names_label": {
-    "message": "Password field names"
+    "message": "密码字段名称"
   },
   "passff_prefs_url_field_names_label": {
-    "message": "URL field names"
+    "message": "URL 字段名称"
   },
   "passff_prefs_index_meta_urls_label": {
-    "message": "Index URL fields on startup. This will read all URL field values into browser memory and allow them to be used when passff looks for passwords. (Requires passff-host >=1.2.0)"
+    "message": "在启动时索引 URL。将读取所有URL字段值到浏览器内存中，并允许它们在PassFF查找密码时使用（需要 passff-host >= 1.2.0）"
   },
   "passff_prefs_otpauth_field_names_label": {
-    "message": "OTP Auth field names"
+    "message": "OTP (两部验证) 字段名称"
   },
   "passff_prefs_filter_path_regex_label": {
-    "message": "Regex for hiding items, one per line (tests full path)"
+    "message": "用于隐藏的正则表达式，每行一个。"
   },
   "passff_prefs_script_howto": {
     "message": "请查看 passff.py 以更改 pass 的环境变量"
@@ -297,7 +297,7 @@
     }
   },
   "passff_error_grep_host_version": {
-    "message": "Indexing meta urls requires the PassFF host app version 1.2.0 or later. Please follow the [official installation instructions]($passffURL$).",
+    "message": "索引 URL 需要 PassFF Host 程序版本 1.2.0 或更高。请按照 [官方安装说明]($passffURL$) 操作。",
     "placeholders": {
       "passffURL": {
         "content": "$1",
@@ -315,7 +315,7 @@
     }
   },
   "passff_domain_mismatch": {
-    "message": "The domain of your current site ($currDomain$) does not match the one in your pass database ($passDomain$).",
+    "message": "当前网站的域名 ($currDomain$) 与密码库中的域名 ($passDomain$) 不匹配。",
     "placeholders": {
       "currDomain": {
         "content": "$1",
@@ -328,7 +328,7 @@
     }
   },
   "passff_http_pass_warning": {
-    "message": "The URL in your password database ($passItemURL$) uses an insecure protocol. It is advised that you change the URL to start with 'https:'.",
+    "message": "密码库中的 URL ($passItemURL$) 使用了不安全的协议。建议您将 URL 更改为 'https:' 开头。",
     "placeholders": {
       "passItemURL": {
         "content": "$1",
@@ -337,9 +337,9 @@
     }
   },
   "passff_http_curr_warning": {
-    "message": "The current page uses an insecure protocol that could compromize your password."
+    "message": "当前页面使用不安全的协议，可能会危及您的密码安全。"
   },
   "passff_prefs_domain_check_label": {
-    "message": "Warn about potential phishing sites, such as when the domain listed in the database differs from that of the current page"
+    "message": "钓鱼网站警告，例如当库保存的域名和当前页面的域名不一致时。"
   }
 }
