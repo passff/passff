@@ -1,0 +1,345 @@
+{
+  "passff_passphrase_title": {
+    "message": "密码仓库已锁定"
+  },
+  "passff_passphrase_description": {
+    "message": "无法解锁密码仓库。\n请先解锁您的 gpg。"
+  },
+  "passff_menu_copy_password": {
+    "message": "复制密码"
+  },
+  "passff_menu_copy_login": {
+    "message": "复制登录信息"
+  },
+  "passff_menu_fill": {
+    "message": "填充"
+  },
+  "passff_menu_fill_and_submit": {
+    "message": "填充并提交"
+  },
+  "passff_menu_goto_fill": {
+    "message": "打开页面并填充"
+  },
+  "passff_menu_goto_fill_and_submit": {
+    "message": "打开页面并填充然后提交"
+  },
+  "passff_menu_goto_fill_new_tab": {
+    "message": "打开页面并填充 (新标签页)"
+  },
+  "passff_menu_goto_fill_and_submit_new_tab": {
+    "message": "打开页面并填充然后提交 (新标签页)"
+  },
+  "passff_menu_goto": {
+    "message": "打开页面"
+  },
+  "passff_menu_display": {
+    "message": "显示密码"
+  },
+  "passff_display_hover": {
+    "message": "将鼠标悬停在此处以显示密码"
+  },
+  "passff_toolbar_button_label": {
+    "message": "密码仓库 PassFF"
+  },
+  "passff_toolbar_search_placeholder": {
+    "message": "搜索"
+  },
+  "passff_toolbar_refresh_label": {
+    "message": "刷新"
+  },
+  "passff_toolbar_preferences_label": {
+    "message": "偏好设置"
+  },
+  "passff_toolbar_new_password_label": {
+    "message": "新密码"
+  },
+  "passff_button_root_label": {
+    "message": "显示全部"
+  },
+  "passff_button_context_label": {
+    "message": "匹配页面"
+  },
+  "passff_prefs_headline": {
+    "message": "PassFF 配置"
+  },
+  "passff_prefs_tab_general": {
+    "message": "通用"
+  },
+  "passff_prefs_tab_autofilling": {
+    "message": "自动填充"
+  },
+  "passff_prefs_tab_inputs": {
+    "message": "输入字段"
+  },
+  "passff_prefs_tab_fields": {
+    "message": "密码记录字段"
+  },
+  "passff_prefs_tab_script": {
+    "message": "密码脚本"
+  },
+  "passff_prefs_tab_adding": {
+    "message": "添加密码"
+  },
+  "passff_prefs_tab_browsing": {
+    "message": "浏览和搜索密码仓库"
+  },
+  "passff_prefs_tab_dev": {
+    "message": "开发调试"
+  },
+  "passff_prefs_tab_look": {
+    "message": "外观和样式"
+  },
+  "passff_prefs_look_menu_width": {
+    "message": "工具栏宽度"
+  },
+  "passff_prefs_mark_fillable": {
+    "message": "使用 PassFF 图标标记可填充的输入字段"
+  },
+  "passff_prefs_context_menu": {
+    "message": "右键菜单中添加填充密码选项"
+  },
+  "passff_prefs_submit_fillable": {
+    "message": "Submit when selected via the input menu"
+  },
+  "passff_prefs_handle_http_auth": {
+    "message": "处理 HTTP 基础身份验证 (BaseAuth)"
+  },
+  "passff_prefs_directories_first": {
+    "message": "优先显示目录"
+  },
+  "passff_prefs_tb_menu_shortcut_label": {
+    "message": "工具栏键盘快捷键"
+  },
+  "passff_prefs_case_insensitive_search": {
+    "message": "大小写不敏感搜索"
+  },
+  "passff_prefs_enter_behavior": {
+    "message": "Enter (回车) 键操作"
+  },
+  "passff_prefs_shift_enter_behavior": {
+    "message": "Shift-Enter (上档+回车) 组合键操作"
+  },
+  "passff_prefs_ctrl_enter_behavior": {
+    "message": "Ctrl-Enter (控制+回车) 组合键操作"
+  },
+  "passff_prefs_inputs_description": {
+    "message": "PassFF 会自动寻找指定输入框标记并填充，您可以在下面配置它的行为。"
+  },
+  "passff_prefs_fields_description": {
+    "message": "用于在密码存储库中查找数据。PassFF会在密码文件中查找登录名、密码和网址信息。如果是一个目录，PassFF会在该目录的文件中查找它们。"
+  },
+  "passff_prefs_password_input_names_label": {
+    "message": "密码输入框名称"
+  },
+  "passff_prefs_login_input_names_label": {
+    "message": "登录信息输入框名称"
+  },
+  "passff_prefs_otp_input_names_label": {
+    "message": "OTP (两部验证) 输入框名称"
+  },
+  "passff_prefs_button_input_queries_label": {
+    "message": "表单提交 (确认) 按钮选择器， 每行一个。"
+  },
+  "passff_prefs_login_field_names_label": {
+    "message": "登录字段名称"
+  },
+  "passff_prefs_password_field_names_label": {
+    "message": "密码字段名称"
+  },
+  "passff_prefs_url_field_names_label": {
+    "message": "URL 字段名称"
+  },
+  "passff_prefs_index_meta_urls_label": {
+    "message": "在启动时索引 URL。将读取所有URL字段值到浏览器内存中，并允许它们在PassFF查找密码时使用（需要 passff-host >= 1.2.0）"
+  },
+  "passff_prefs_otpauth_field_names_label": {
+    "message": "OTP (两部验证) 字段名称"
+  },
+  "passff_prefs_filter_path_regex_label": {
+    "message": "用于隐藏的正则表达式，每行一个。"
+  },
+  "passff_prefs_script_howto": {
+    "message": "请查看 passff.py 以更改 pass 的环境变量"
+  },
+  "passff_prefs_auto_fill_label": {
+    "message": "尝试自动填充页面登录表单"
+  },
+  "passff_prefs_auto_submit_label": {
+    "message": "尝试自动提交表单"
+  },
+  "passff_prefs_autofill_blacklist_label": {
+    "message": "自动填充 URL 黑名单 (如果标签的URL包含以下字符串之一，将不会自动填充)"
+  },
+  "passff_prefs_default_length_label": {
+    "message": "默认密码长度"
+  },
+  "passff_prefs_default_include_symbols_label": {
+    "message": "默认情况下在密码中包含至少一个特殊字符"
+  },
+  "passff_prefs_preferred_new_method_label": {
+    "message": "首选新密码方式"
+  },
+  "passff_prefs_prefer_generate": {
+    "message": "生成密码"
+  },
+  "passff_prefs_prefer_insert": {
+    "message": "添加密码"
+  },
+  "passff_prefs_show_new_password_button": {
+    "message": "在工具栏中显示 “新密码” 按钮"
+  },
+  "passff_prefs_enable_logging": {
+    "message": "启用控制台 JavaScript 日志输出 "
+  },
+  "passff_prefs_show_status": {
+    "message": "在工具栏中显示状态栏"
+  },
+  "passff_prefs_recognised_suffixes": {
+    "message": "定义其他顶级域名后缀"
+  },
+  "passff_newpassword_window_title": {
+    "message": "新密码"
+  },
+  "passff_newpassword_window_header": {
+    "message": "添加新密码"
+  },
+  "passff_newpassword_tabs_generate": {
+    "message": "生成"
+  },
+  "passff_newpassword_tabs_insert": {
+    "message": "添加"
+  },
+  "passff_newpassword_inputs_password_name_label": {
+    "message": "名称"
+  },
+  "passff_newpassword_inputs_password_label": {
+    "message": "密码"
+  },
+  "passff_newpassword_inputs_password_confirmation_label": {
+    "message": "确认密码"
+  },
+  "passff_newpassword_inputs_additional_info_label": {
+    "message": "附加信息"
+  },
+  "passff_newpassword_inputs_password_length_label": {
+    "message": "长度"
+  },
+  "passff_newpassword_inputs_include_symbols_label": {
+    "message": "特殊字符"
+  },
+  "passff_newpassword_inputs_add_password_button_label": {
+    "message": "添加密码"
+  },
+  "passff_newpassword_inputs_generate_password_button_label": {
+    "message": "生成密码"
+  },
+  "passff_newpassword_inputs_overwrite_password_prompt": {
+    "message": "此密码已存在。您确定要替换它吗？"
+  },
+  "passff_newpassword_errors_name_is_required": {
+    "message": "名称不能为空"
+  },
+  "passff_newpassword_errors_password_is_required": {
+    "message": "密码不能为空"
+  },
+  "passff_newpassword_errors_password_confirmation_mismatch": {
+    "message": "两次密码不匹配"
+  },
+  "passff_newpassword_errors_pass_execution_failed": {
+    "message": "糟糕，出了些问题！"
+  },
+  "passff_newpassword_errors_unexpected_error": {
+    "message": "抱歉，发生了意外错误！"
+  },
+  "passff_errors_exec_host_app": {
+    "message": "连接主机应用失败或返回了意外的结果！"
+  },
+  "passff_errors_upgrade_host_app": {
+    "message": "请确保您已按照 [官方安装说明]($passffURL$) 安装了最新版 PassFF 主机应用。",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_no_entries_found": {
+    "message": "没有与此 URL 匹配的记录。"
+  },
+  "passff_override_antiphishing_confirmation": {
+    "message": "您是否要继续？这样做可能存在安全风险。"
+  },
+  "passff_error_getting_url_pass": {
+    "message": "解析密码仓库中的 URL（$passURL$）时出错。",
+    "placeholders": {
+      "passURL": {
+        "content": "$1",
+        "example": "badlyFormattedURL.com"
+      }
+    }
+  },
+  "passff_error_getting_url_curr": {
+    "message": "解析当前 URL（$currURL$）时出错。",
+    "placeholders": {
+      "currURL": {
+        "content": "$1",
+        "example": "badlyFormattedURL.com"
+      }
+    }
+  },
+  "passff_error_otp_host_version": {
+    "message": "OTP 需要 PassFF 主机应用版本 1.1.0 或更高。请按照 [官方安装说明]($passffURL$) 进行安装。",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_error_grep_host_version": {
+    "message": "索引 URL 需要 PassFF Host 程序版本 1.2.0 或更高。请按照 [官方安装说明]($passffURL$) 操作。",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_error_script_failed": {
+    "message": "脚本执行失败：```$errMsg$```",
+    "placeholders": {
+      "errMsg": {
+        "content": "$1",
+        "example": "gpg: cancelled by user"
+      }
+    }
+  },
+  "passff_domain_mismatch": {
+    "message": "当前网站的域名 ($currDomain$) 与密码库中的域名 ($passDomain$) 不匹配。",
+    "placeholders": {
+      "currDomain": {
+        "content": "$1",
+        "example": "phishingDomain.com"
+      },
+      "passDomain": {
+        "content": "$2",
+        "example": "realDomain.com"
+      }
+    }
+  },
+  "passff_http_pass_warning": {
+    "message": "密码库中的 URL ($passItemURL$) 使用了不安全的协议。建议您将 URL 更改为 'https:' 开头。",
+    "placeholders": {
+      "passItemURL": {
+        "content": "$1",
+        "example": "http://www.example.com"
+      }
+    }
+  },
+  "passff_http_curr_warning": {
+    "message": "当前页面使用不安全的协议，可能会危及您的密码安全。"
+  },
+  "passff_prefs_domain_check_label": {
+    "message": "钓鱼网站警告，例如当库保存的域名和当前页面的域名不一致时。"
+  }
+}
