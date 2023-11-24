@@ -349,6 +349,7 @@ PassFF.Menu = (function () {
       ['passff_menu_goto', PassFF.Menu.onGoto],
       ['passff_menu_copy_login', PassFF.Menu.onCopyToClipboard, 'login'],
       ['passff_menu_copy_password', PassFF.Menu.onCopyToClipboard, 'password'],
+      ['passff_menu_copy_otp', PassFF.Menu.onCopyToClipboard, 'otp'],
       ['passff_menu_display', PassFF.Menu.onDisplayItemData]
     ].forEach(function (data) {
       let onClick = function (event) {
@@ -516,7 +517,7 @@ PassFF.Menu = (function () {
       let behavior =
         ctrlKey   ? PassFF.Preferences.ctrlEnterBehavior :
         shiftKey  ? PassFF.Preferences.shiftEnterBehavior :
-                    PassFF.Preferences.enterBehavior
+                    PassFF.Preferences.enterBehavior;
       switch (behavior) {
         case 0:
           //goto url, fill, submit

@@ -11,6 +11,9 @@
   "passff_menu_copy_login": {
     "message": "Kopiere Login"
   },
+  "passff_menu_copy_otp": {
+    "message": "Kopiere Einmalkennwort (OTP-Token)"
+  },
   "passff_menu_fill": {
     "message": "Ausfüllen"
   },

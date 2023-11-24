@@ -11,6 +11,9 @@
   "passff_menu_copy_login": {
     "message": "Copy login"
   },
+  "passff_menu_copy_otp": {
+    "message": "Copy OTP token"
+  },
   "passff_menu_fill": {
     "message": "Fill"
   },
