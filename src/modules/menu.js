@@ -184,7 +184,12 @@ PassFF.Menu = (function () {
       }
       menuState['items'] = PassFF.Pass.rootItems;
       createMenuList();
-    } else if (!event.shiftKey && event.key != 'Control' && event.keyCode != 40 && event.keyCode != 38) {
+    } else if (
+      !event.shiftKey
+      && event.key != 'Control'
+      && event.keyCode != 40
+      && (event.keyCode != 38 || listElm.selectedIndex === 0)
+    ) {
       /* NOT: SHIFT, CTRL, DOWN ARROW, UP ARROW */
       document.getElementById('passff-search-box').focus();
     }
