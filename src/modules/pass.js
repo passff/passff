@@ -243,6 +243,45 @@ PassFF.Pass = (function () {
     return pendingRequests[key];
   }
 
+  function getGpgCodesFromStderr(stderr) {
+    let messages = [];
+    stderr.split("\n").forEach((line) => {
+      // append gpg indented line continuation to previous message
+      if (messages.length > 0 && line.startsWith('  ')) {
+        messages[messages.length - 1] += `\n${line}`;
+      } else {
+        messages.push(line);
+      }
+    });
+
+    // extract GPG error codes from status and debug messages
+    // https://github.com/gpg/libgpg-error/blob/master/src/err-codes.h.in
+    let gpg_error_code = 0;
+    messages.forEach((msg) => {
+      if (msg.startsWith('gpg: DBG:')) {
+        let m = /chan_\d+ (?:<-|->) ERR (\d+)/.exec(msg);
+        if (m !== null) {
+          gpg_error_code = parseInt(m[1]) & 0xFFFF;
+        }
+      } else if (msg.startsWith("[GNUPG:]")) {
+        let m = /ERROR pkdecrypt_failed (\d+)/.exec(msg);
+        if (m !== null) {
+          gpg_error_code = parseInt(m[1]) & 0xFFFF;
+        } else if (msg.search('NO_SECKEY') >= 0) {
+          gpg_error_code = 17;
+        }
+      }
+    });
+
+    // filter out debug and status outputs
+    let stderr_filtered = messages.filter((msg) => (
+      /\[GNUPG:\] (BEGIN|END)_DECRYPTION/.test(msg)
+      || !["gpg: DBG:", "[GNUPG:]"].some((s) => msg.startsWith(s))
+    )).join("\n");
+
+    return [stderr_filtered, gpg_error_code];
+  }
+
 /* #############################################################################
  * #############################################################################
  *  Main interface
@@ -311,6 +350,9 @@ PassFF.Pass = (function () {
               const MIN_VERSION = '1.0.1';
               return version === "testing" || semver.gte(version, MIN_VERSION);
             })(version);
+            let gpgerr = getGpgCodesFromStderr(result.stderr);
+            result.stderr = gpgerr[0];
+            result.gpgErrorCode = gpgerr[1];
             if (!compatible) {
               log.warn("The host app is outdated!", version);
               result.exitCode = -2;
@@ -332,11 +374,19 @@ PassFF.Pass = (function () {
                   + "otp is not in the password store.") {
                 log.warn("pass-otp plugin is not installed, "
                          + "but entry contains otpauth.");
+              } else if (result.gpgErrorCode == 99) {
+                // "decryption failed: Operation cancelled"
+                log.debug('Script execution ok, operation cancelled by user.');
+                result.stderr = "gpg: Operation cancelled";
               } else {
-                log.warn('Script execution failed',
-                  result.exitCode, result.stderr, result.stdout);
-                PassFF.Page.notify(_("passff_error_script_failed",
-                  [result.stderr]));
+                log.warn(
+                  'Script execution failed',
+                  result.exitCode, result.gpgErrorCode,
+                  result.stderr, result.stdout,
+                );
+                PassFF.Page.notify(
+                  _("passff_error_script_failed", [result.stderr])
+                );
               }
             } else {
               log.debug('Script execution ok');
@@ -345,7 +395,7 @@ PassFF.Pass = (function () {
               'timestamp': new Date(),
               'stderr': result.stderr,
               'exitCode': result.exitCode,
-              'command': command
+              'command': command,
             };
             return result;
           }, (ex) => {
