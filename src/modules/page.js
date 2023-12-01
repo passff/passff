@@ -198,12 +198,28 @@ PassFF.Page = (function () {
   function writeValueWithEvents(input, value) {
     // don't fill if element is invisible
     if (isInvisible(input)) return;
-    input.value = value;
-    for (let action of ['focus', 'keydown', 'keyup', 'keypress',
-                        'input', 'change', 'blur']) {
-      input.dispatchEvent(createFakeEvent(action));
-      input.value = value;
+    let inputs = [input];
+    let values = [value];
+    if (input.maxLength == 1) {
+      inputs = Array.from(
+        document.getElementsByTagName('input')
+      ).filter(el => el.maxLength == 1);
+      if (inputs.length == value.length) {
+        values = value.split("");
+      } else {
+        inputs = [input];
+      }
     }
+    values.forEach((value, i) => {
+      input = inputs[i];
+      input.value = value;
+      for (let action of ['focus', 'keydown', 'keyup', 'keypress',
+                          'input', 'change', 'blur']) {
+        input.dispatchEvent(createFakeEvent(action));
+        input.value = value;
+      }
+    });
+
   }
 
   function annotateInputs(inputs) {
