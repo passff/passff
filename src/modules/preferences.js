@@ -35,6 +35,7 @@ PassFF.Preferences = (function () {
       document.querySelectorAll("h1,label,p.text,option")
         .forEach(function (el) {
           el.textContent = _(el.textContent);
+          parse_markdown(el);
         });
       ui_i18n_init = true;
     }

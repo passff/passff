@@ -59,6 +59,11 @@ fieldset p.text {
     padding: 0;
 }
 
+fieldset p.text code {
+    background-color: #f0f0f0;
+    padding: 0.1em 0.2em;
+}
+
 fieldset p > label:first-child {
     display: block;
     margin: 0.8rem 0 0.3rem;

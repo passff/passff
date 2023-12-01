@@ -34,7 +34,7 @@ function parse_markdown(obj) {
       c.textContent = p1;
       return c;
     }],
-    [/`([\s\S]+)`/, function (match, p1) {
+    [/`([^`]+)`/, function (match, p1) {
       let c = document.createElement("code");
       c.textContent = p1;
       return c;

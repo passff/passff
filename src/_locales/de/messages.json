@@ -101,6 +101,9 @@
   "passff_prefs_tb_menu_shortcut_label": {
     "message": "Tastenkombination für das Menü in der Werkzeugleiste"
   },
+  "passff_prefs_shortcut_syntax_help": {
+    "message": "Beispiele für gültige Tastenkombinationen: `Ctrl+Shift+L`, `Ctrl+Alt+U`. Die Syntax ist in den [MDN web docs](https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/manifest.json/commands#shortcut_values) spezifiziert."
+  },
   "passff_prefs_case_insensitive_search": {
     "message": "Groß-Kleinschreibung ignorieren"
   },
