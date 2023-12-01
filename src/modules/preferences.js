@@ -214,18 +214,21 @@ PassFF.Preferences = (function () {
 
               // Mapping between modifier names in manifest.json and DOM KeyboardEvent.
               let commandModifiers = {
-                'Ctrl': browser.runtime.PlatformOs == 'mac' ? 'Meta' : 'Control',
-                'MacCtrl': 'Control',
-                'Command': 'Meta',
-                'Alt': 'Alt',
-                'Shift': 'Shift'
+                'ctrl': browser.runtime.PlatformOs == 'mac' ? 'Meta' : 'Control',
+                'macctrl': 'Control',
+                'command': 'Meta',
+                'alt': 'Alt',
+                'shift': 'Shift'
               };
 
-              command.shortcut.split(/\s*\+\s*/).forEach((part) => {
+              command.shortcut
+              .split(/\s*\+\s*/)
+              .map((part) => part.toLowerCase())
+              .forEach((part) => {
                 if (commandModifiers.hasOwnProperty(part)) {
                   shortcut.expectedModifierState[commandModifiers[part]] = true;
                 } else {
-                  shortcut.commandLetter = part.toLowerCase();
+                  shortcut.commandLetter = part;
                 }
               });
             }
@@ -251,11 +254,32 @@ PassFF.Preferences = (function () {
     ),
   };
 
+  function normalizeBrowserShortcut(shortcut) {
+    let camelCaseParts = {};
+    [
+      "MacCtrl", "PageUp", "PageDown", "MediaNextTrack", "MediaPlayPause",
+      "MediaPrevTrack", "MediaStop",
+    ].forEach((part) => {
+      camelCaseParts[part.toLowerCase()] = part
+    });
+    return (
+      shortcut
+      .split(/\s*\+\s*/)
+      .map((part) => part.toLowerCase())
+      .map((part) => (
+        camelCaseParts.hasOwnProperty(part)
+        ? camelCaseParts[part]
+        : part[0].toUpperCase() + part.slice(1)
+       ))
+      .join("+")
+    );
+  }
+
   function updateBrowserCommand() {
     if (browser.commands && browser.commands.update) {
       return browser.commands.update({
         name: "_execute_browser_action",
-        shortcut: prefParams["tbMenuShortcut"]
+        shortcut: normalizeBrowserShortcut(prefParams["tbMenuShortcut"]),
       });
     } else {
       return Promise.resolve(false);
