@@ -263,6 +263,18 @@ PassFF.Page = (function () {
   function setInputs(inputs, passwordData) {
     log.debug("Set inputs...");
     let otherNames = Object.keys(passwordData._other);
+
+    // If the number of OTP input fields agrees with the length of the OTP
+    // token, fill one digit from the token into each of the input fields.
+    let otp_inputs = inputs.filter((inp) => inp[1] == "otp");
+    let otp_filled = false;
+    if (otp_inputs.length == passwordData["otp"]?.length) {
+      passwordData["otp"].forEach((v, i) => {
+        writeValueWithEvents(otp_inputs[i], v);
+      })
+      otp_filled = true;
+    }
+
     inputs.forEach(annotatedInput => {
       let input = annotatedInput[0];
       let input_type = annotatedInput[1];
@@ -278,7 +290,10 @@ PassFF.Page = (function () {
       }
       if (input_type != "") {
         let pd = passwordData[input_type];
-        if (pd != "PASSFF_OMIT_FIELD" && (input_type != "otp" || pd)) {
+        if (
+          pd != "PASSFF_OMIT_FIELD"
+          && (input_type != "otp" || pd && !otp_filled)
+        ) {
           writeValueWithEvents(input, pd);
         }
       }
