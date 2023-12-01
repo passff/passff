@@ -268,9 +268,9 @@ PassFF.Page = (function () {
     // token, fill one digit from the token into each of the input fields.
     let otp_inputs = inputs.filter((inp) => inp[1] == "otp");
     let otp_filled = false;
-    if (otp_inputs.length == passwordData["otp"]?.length) {
-      passwordData["otp"].forEach((v, i) => {
-        writeValueWithEvents(otp_inputs[i], v);
+    if (otp_inputs.length == passwordData.otp?.length) {
+      otp_inputs.forEach((annotatedInput, i) => {
+        writeValueWithEvents(annotatedInput[0], passwordData.otp[i]);
       })
       otp_filled = true;
     }
@@ -284,7 +284,15 @@ PassFF.Page = (function () {
         let inputNames = readInputNames(input);
         let matching = findIntersection(otherNames, inputNames);
         if (matching !== undefined) {
-          writeValueWithEvents(input, passwordData._other[matching]);
+          let value = passwordData._other[matching];
+          if (value == "PASSFF_FIELD_OTP") {
+            value = passwordData.otp;
+          } else if (value == "PASSFF_FIELD_LOGIN") {
+            value = passwordData.login;
+          } else if (value == "PASSFF_FIELD_PASSWORD") {
+            value = passwordData.password;
+          }
+          writeValueWithEvents(input, value);
           return;
         }
       }
