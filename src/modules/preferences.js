@@ -75,7 +75,6 @@ PassFF.Preferences = (function () {
     autoFill              : false,
     autoSubmit            : false,
     autoFillBlacklist     : '',
-    autoFillSubDomainCheck: false,
     autoFillDomainCheck   : false,
     caseInsensitiveSearch : true,
     handleHttpAuth        : true,

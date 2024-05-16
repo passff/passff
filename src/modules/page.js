@@ -606,18 +606,20 @@ PassFF.Page = (function () {
     .then(() => {
       try {
         var passURL = new URL(passItemURL);
-      } catch(e) {
+      } catch (e) {
         return Promise.reject(new SecurityError(
-          _("passff_error_getting_url_pass", passItemURL) + "```" + e.message + "```"
-          + _("passff_override_antiphishing_confirmation")));
+          _("passff_error_getting_url_pass", passItemURL) + "```" + e.message + "```",
+          {cause: {code: "InvalidPassUrl"}},
+        ));
       }
 
       try {
         var currURL = new URL(currTabURL);
-      } catch(e) {
+      } catch (e) {
         return Promise.reject(new SecurityError(
-          _("passff_error_getting_url_curr", currTabURL) + " "
-          + _("passff_override_antiphishing_confirmation")));
+          _("passff_error_getting_url_curr", currTabURL) + " ",
+          {cause: {code: "InvalidCurrUrl"}},
+        ));
       }
 
       return domainSecurityCheck(passURL, currURL)
@@ -628,7 +630,15 @@ PassFF.Page = (function () {
     })
     .catch((e) => {
       if(e instanceof SecurityError) {
-        return PassFF.Page.confirm(e.message);
+        return PassFF.Page.confirm(
+          e.message + _("passff_override_antiphishing_confirmation")
+        ).then((result) => {
+          // Maybe the current protocol was unsafe because an unsafe URL is stored
+          if (!result && e.cause.code == "unsafeCurrUrl" && e.cause.passURL.protocol != "https:") {
+            PassFF.Page.notify(_("passff_http_pass_warning", e.cause.passURL.href));
+          }
+          return result;
+        });
       } else {
         log.error(e);
         return Promise.resolve(false);
@@ -637,48 +647,33 @@ PassFF.Page = (function () {
   }
 
   function domainSecurityCheck(passURL, currURL) {
-    /*
-    Instead of requiring that the entire hostname match, which would lead to
-    example.com and login.example.com being considered different, only the
-    domains must match. However, identifying the domain is difficult because of
-    top-level-domains like .co.uk that have multiple dots in them, unlike the
-    more conventional single-dot TLDs like .com.
-    Resources on Identifying Domain:
-    https://stackoverflow.com/questions/10210058/get-the-parent-document-domain-without-subdomains
-    https://stackoverflow.com/questions/399250/going-where-php-parse-url-doesnt-parsing-only-the-domain
-    https://publicsuffix.org/
-    While not ideal, the current solution is to assume a single-dot TLD and
-    therefore match everything after the second-to-last dot. This is a security
-    risk on two-dot TLDs, as only the TLD (e.g. co.uk) will be matched.
-    */
-    let passDomain = passURL.hostname.split(".").slice(-2).join(".");
-    let currDomain = currURL.hostname.split(".").slice(-2).join(".");
-    if (passDomain != currDomain) {
-      return Promise.reject(new SecurityError(
-        _("passff_domain_mismatch", [currDomain, passDomain]) + " "
-        + _("passff_override_antiphishing_confirmation")));
+    let passHost = passURL.hostname;
+    let currHost = currURL.hostname;
+    if (passHost == currHost) {
+      return Promise.resolve(true);
     }
-    return Promise.resolve(true);
+    let passDomain = getMainDomain(passHost);
+    let currDomain = getMainDomain(currHost);
+    if (passDomain == currDomain) {
+      return Promise.resolve(true);
+    }
+    return Promise.reject(new SecurityError(
+      _("passff_domain_mismatch", [currDomain, passDomain]) + " ",
+      {cause: {code: "DomainMismatch"}},
+    ));
   }
 
   function protocolSecurityCheck(currURL, passURL) {
     let currProt = currURL.protocol;
-    let passProt = passURL.protocol;
     if (currProt == "https:") {
       // Storing an HTTP link is OK if the site redirects to HTTPS
       return Promise.resolve(true);
     }
 
     return Promise.reject(new SecurityError(
-             _("passff_http_curr_warning") + " "
-             + _("passff_override_antiphishing_confirmation")
-      ));
-  }
-
-  function isSubdomainInclusive(currDomainStr, passDomainStr) {
-    const currDomainParts = currDomainStr.split('.');
-    const passDomainLength = passDomainStr.split('.').length;
-    return currDomainParts.slice(-passDomainLength).join(".") == passDomain;
+      _("passff_http_curr_warning") + " ",
+      {cause: {code: "UnsafeCurrUrl", passURL}},
+    ));
   }
 
 /* #############################################################################
@@ -860,50 +855,20 @@ PassFF.Page = (function () {
             log.debug("fillInputs: Warning: no password inputs found!");
           }
         }
-        const url = window.location.href;
         return PassFF.Pass.getPasswordData(item)
           .then((passwordData) => {
             if (typeof passwordData === "undefined") return;
-            log.debug('fillInputs: Start auto-fill using', item.fullKey, andSubmit, passwordData.url);
-
-            if(isAutoFill && PassFF.Preferences.autoFillSubDomainCheck) {
-              let passDomain;
-              if(passwordData.url) {
-                try {
-                  passDomain = (new URL(passwordData.url)).host;
-                } catch(e) {
-                  log.debug("fillInputs: Cannot parse domain in password db", passwordData.url, e);
-                  return Promise.resolve();
-                }
-              } else {
-                passDomain = item.key;
-              }
-
-              let currDomain;
-              try {
-                currDomain = (new URL(url)).host;
-              } catch(e) {
-                log.debug("fillInputs: Cannot parse current URL", url, e);
-                return Promise.resolve();
-              }
-              log.debug("fillInputs: checking exact domain match for auto-fill", currDomain, passDomain);
-              if(!isSubdomainInclusive(currDomain, passDomain)) {
-                log.debug('fillInputs: Url not an inclusive subdomain of best fitting item: refusing to auto fill', currDomain, passDomain);
-                return Promise.resolve();
-              }
-            }
-
-            return securityChecks(passwordData.url, url)
+            log.debug('fillInputs: Start auto-fill using', item.fullKey, andSubmit);
+            return securityChecks(passwordData.url, window.location.href)
               .then((result) => {
-                if (result) {
-                  setInputs(inputElements, passwordData);
-                  if (andSubmit) {
-                    PassFF.Page.submit();
-                  } else {
-                    refocus();
-                  }
-                  return passwordData;
+                if (!result) return;
+                setInputs(inputElements, passwordData);
+                if (andSubmit) {
+                  PassFF.Page.submit();
+                } else {
+                  refocus();
                 }
+                return passwordData;
               });
           });
       }, true),

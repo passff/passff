@@ -115,17 +115,8 @@ PassFF.Pass = (function () {
      * public suffix and *not* matched *alone*. Same applies to very short (less
      * than 3 chars) and some very generic parts like "www"
      */
-    host = host.replace(/^\.+/, '').replace(/\.+$/, '');
-    let host_parts = host.split(/\.+/);
-    let suffix = (host_parts.length >= 2) ? host_parts[host_parts.length-1] : "";
-    if (/^[0-9]+$/.test(suffix)) {
-      // this is probably an IPv4 address (no suffix)
-      suffix = "";
-    }
-    PassFF.Preferences.recognisedSuffixes
-      .map((s) => s.trim())
-      .filter((s) => host.endsWith(s))
-      .forEach((s) => suffix = s);
+    host = sanitizeDomain(host);
+    let suffix = getDomainSuffix(host);
     do {
       // check a.b.c.d, then a.b.c, then a.b, ...
       let quality = host.split(/\.+/).length*100 + host.split(/\.+/).length;
