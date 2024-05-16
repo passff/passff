@@ -84,6 +84,13 @@ PassFF.Page = (function () {
       inputNames.push(placeholder);
     }
 
+    // there is actually no such thing as a "label" attribute, but aliexpress.com uses it
+    // https://github.com/passff/passff-host/issues/68
+    let label = input.getAttribute('label');
+    if (label) {
+      inputNames.push(label);
+    }
+
     let autocomplete = getAutocompleteAttr(input);
     if (autocomplete && ["on","off"].indexOf(autocomplete) === -1) {
       inputNames.push(autocomplete);
@@ -198,12 +205,28 @@ PassFF.Page = (function () {
   function writeValueWithEvents(input, value) {
     // don't fill if element is invisible
     if (isInvisible(input)) return;
-    input.value = value;
-    for (let action of ['focus', 'keydown', 'keyup', 'keypress',
-                        'input', 'change', 'blur']) {
-      input.dispatchEvent(createFakeEvent(action));
-      input.value = value;
+    let inputs = [input];
+    let values = [value];
+    if (input.maxLength == 1) {
+      inputs = Array.from(
+        document.getElementsByTagName('input')
+      ).filter(el => el.maxLength == 1);
+      if (inputs.length == value.length) {
+        values = value.split("");
+      } else {
+        inputs = [input];
+      }
     }
+    values.forEach((value, i) => {
+      input = inputs[i];
+      input.value = value;
+      for (let action of ['focus', 'keydown', 'keyup', 'keypress',
+                          'input', 'change', 'blur']) {
+        input.dispatchEvent(createFakeEvent(action));
+        input.value = value;
+      }
+    });
+
   }
 
   function annotateInputs(inputs) {
@@ -247,6 +270,18 @@ PassFF.Page = (function () {
   function setInputs(inputs, passwordData) {
     log.debug("Set inputs...");
     let otherNames = Object.keys(passwordData._other);
+
+    // If the number of OTP input fields agrees with the length of the OTP
+    // token, fill one digit from the token into each of the input fields.
+    let otp_inputs = inputs.filter((inp) => inp[1] == "otp");
+    let otp_filled = false;
+    if (otp_inputs.length == passwordData.otp?.length) {
+      otp_inputs.forEach((annotatedInput, i) => {
+        writeValueWithEvents(annotatedInput[0], passwordData.otp[i]);
+      })
+      otp_filled = true;
+    }
+
     inputs.forEach(annotatedInput => {
       let input = annotatedInput[0];
       let input_type = annotatedInput[1];
@@ -256,13 +291,24 @@ PassFF.Page = (function () {
         let inputNames = readInputNames(input);
         let matching = findIntersection(otherNames, inputNames);
         if (matching !== undefined) {
-          writeValueWithEvents(input, passwordData._other[matching]);
+          let value = passwordData._other[matching];
+          if (value == "PASSFF_FIELD_OTP") {
+            value = passwordData.otp;
+          } else if (value == "PASSFF_FIELD_LOGIN") {
+            value = passwordData.login;
+          } else if (value == "PASSFF_FIELD_PASSWORD") {
+            value = passwordData.password;
+          }
+          writeValueWithEvents(input, value);
           return;
         }
       }
       if (input_type != "") {
         let pd = passwordData[input_type];
-        if (pd != "PASSFF_OMIT_FIELD" && (input_type != "otp" || pd)) {
+        if (
+          pd != "PASSFF_OMIT_FIELD"
+          && (input_type != "otp" || pd && !otp_filled)
+        ) {
           writeValueWithEvents(input, pd);
         }
       }
@@ -562,7 +608,7 @@ PassFF.Page = (function () {
         var passURL = new URL(passItemURL);
       } catch(e) {
         return Promise.reject(new SecurityError(
-          _("passff_error_getting_url_pass", passItemURL) + " "
+          _("passff_error_getting_url_pass", passItemURL) + "```" + e.message + "```"
           + _("passff_override_antiphishing_confirmation")));
       }
 
@@ -790,7 +836,9 @@ PassFF.Page = (function () {
             if (!result) return;
             let inputs = [activeElement];
             if (activeElement.form) {
-              inputs = activeElement.form.getElementsByTagName('input');
+              inputs = Array.from(activeElement.form.elements).filter(
+                el => el.tagName == "INPUT"
+              );
             }
             inputs = annotateInputs(Array.from(inputs).filter(isVisible));
             setInputs(inputs, passwordData);
@@ -801,7 +849,10 @@ PassFF.Page = (function () {
     fillInputs: content_function("Page.fillInputs",
       function (item, andSubmit, isAutoFill) {
         refocus();
-        if (inputElements.filter(inp => inp[1] == "password").length === 0) {
+        if (
+          inputElements.filter(inp => inp[1] == "password" || inp[1] == "otp")
+            .length === 0
+        ) {
           if (inputElements.length == 0 || isAutoFill) {
             log.debug("fillInputs: No relevant login input elements recognized.");
             return Promise.resolve();

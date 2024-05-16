@@ -1,6 +1,16 @@
+html {
+    color-scheme: light dark;
+}
 
 html, body, div {
     margin: 0; padding: 0; width: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #23222b;
+        color: #fbfbfe;
+    }
 }
 
 h1 {
@@ -49,6 +59,11 @@ fieldset p.text {
     padding: 0;
 }
 
+fieldset p.text code {
+    background-color: #f0f0f0;
+    padding: 0.1em 0.2em;
+}
+
 fieldset p > label:first-child {
     display: block;
     margin: 0.8rem 0 0.3rem;
@@ -72,6 +87,13 @@ fieldset p > input[type=checkbox] ~ label:before {
     background-color: #fafafa;
     font-size: 1.3rem;
     color: #fafafa;
+}
+
+@media (prefers-color-scheme: dark) {
+    fieldset p > input[type=checkbox] ~ label:before {
+        background-color: #23222b;
+        color: #23222b;
+    }
 }
 
 fieldset p > input[type=checkbox] ~ label:hover:before {
@@ -100,6 +122,13 @@ fieldset p > input[type=radio] ~ label:before {
     background-color: #fafafa;
     font-size: 1.3rem;
     color: #fafafa;
+}
+
+@media (prefers-color-scheme: dark) {
+    fieldset p > input[type=radio] ~ label:before {
+        background-color: #23222b;
+        color: #23222b;
+    }
 }
 
 fieldset p > input[type=radio] ~ label:hover:before {

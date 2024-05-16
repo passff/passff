@@ -16,6 +16,10 @@
                 "light": "skin/icon-light.svg",
                 "dark": "skin/icon.svg",
                 "size": 16
+            }, {
+                "light": "skin/icon-light.svg",
+                "dark": "skin/icon.svg",
+                "size": 32
             }],
         "default_popup": "content/menu.html"
     },
@@ -76,7 +80,7 @@
         "icon.png"
     ],
 
-    "applications": {
+    "browser_specific_settings": {
         "gecko": {
             "id": "passff@invicem.pro",
             "strict_min_version": "60.0"

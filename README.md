@@ -87,7 +87,8 @@ credentials without password, but only login name.
 
 Lines besides the login and URL that match the format `<other_inputfield_name>: <value>` can be used to fill in input
 fields besides the login and password fields. The left hand side of the colon should match the input field's `name`,
-`id`, `autocomplete`, or `placeholder` attribute.
+`id`, `autocomplete`, or `placeholder` attribute. You can instruct PassFF to fill your login name, password, or
+OTP token, by setting `<value>` to one of `PASSFF_FIELD_LOGIN`, `PASSFF_FIELD_PASSWORD`, or `PASSFF_FIELD_OTP`.
 
 Examples
 ```
@@ -107,6 +108,8 @@ login: kevin
 url: example.com
 otpauth://totp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example
 pin: 1234
+loginkey: PASSFF_FIELD_OTP
+fancyinput: PASSFF_FIELD_LOGIN
 ```
 
 ##### File-structure format

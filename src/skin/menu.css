@@ -1,3 +1,7 @@
+html {
+  color-scheme: light dark;
+}
+
 html, body, div {
   margin: 0;
   padding: 0;
@@ -30,10 +34,12 @@ body#itemPicker {
   font-family: monospace;
 }
 
-.searchbar input:focus,
-.searchbar input:hover {
-  background-color: #fafafa;
-  color: #000;
+@media (prefers-color-scheme: light) {
+  .searchbar input:focus,
+  .searchbar input:hover {
+    background-color: #fafafa;
+    color: #000;
+  }
 }
 
 .searchbar input {
@@ -83,6 +89,20 @@ div.buttonbox button:after {
   background-color: #b6b6b3;
 }
 
+@media (prefers-color-scheme: dark) {
+  div.buttonbox button {
+    background-color: #aaa;
+  }
+
+  div.buttonbox button:hover {
+    background-color: #777;
+  }
+
+  div.buttonbox button:after {
+    background-color: #111;
+  }
+}
+
 div.buttonbox:hover button:after {
   height: 2.5rem;
   top: 0;
@@ -121,6 +141,12 @@ div.buttonbox button.reload {
   border-style: solid;
 }
 
+@media (prefers-color-scheme: dark) {
+  .results select {
+    border-color: #111;
+  }
+}
+
 .results select option {
   padding: 0.2rem;
 }
@@ -150,11 +176,11 @@ div.buttonbox button.reload {
 
 body.error > div.message,
 body.error > div#statusbar {
-    display: block;
+  display: block;
 }
 
 body.error > div {
-    display: none;
+  display: none;
 }
 
 .message {
@@ -185,4 +211,11 @@ body.error > div {
   background-color: #555;
   color: #fff;
   font-family: monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  #statusbar {
+    background-color: #333;
+    border-color: #111;
+  }
 }
