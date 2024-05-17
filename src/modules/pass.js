@@ -22,29 +22,39 @@ PassFF.Pass = (function () {
  * #############################################################################
  */
 
-  function setPassword(passwordData) {
+  function setLoginPasswordUrl(passwordData, item) {
+    let login;
+    for (let i = 0; i < PassFF.Preferences.loginFieldNames.length; i++) {
+      login = passwordData[PassFF.Preferences.loginFieldNames[i]];
+      if (login !== undefined) break;
+    }
+    let key_is_login = login === undefined;
+    passwordData.login = key_is_login ? item.key : login;
+
     let password;
     for (let i = 0; i < PassFF.Preferences.passwordFieldNames.length; i++) {
       password = passwordData[PassFF.Preferences.passwordFieldNames[i]];
       if (password) break;
     }
     passwordData.password = password;
-  }
 
-  function setLogin(passwordData, item) {
-    let login;
-    for (let i = 0; i < PassFF.Preferences.loginFieldNames.length; i++) {
-      login = passwordData[PassFF.Preferences.loginFieldNames[i]];
-      if (login !== undefined) break;
-    }
-    passwordData.login = (login === undefined) ? item.key : login;
-  }
-
-  function setUrl(passwordData) {
     let url;
     for (let i = 0; i < PassFF.Preferences.urlFieldNames.length; i++) {
       url = passwordData[PassFF.Preferences.urlFieldNames[i]];
       if (url) break;
+    }
+    if (url === undefined) {
+      url = item.key;
+      if (key_is_login) {
+        let key_parts = item.fullKey.split("/");
+        if (key_parts.length > 1) {
+          url = key_parts[key_parts.length - 2];
+        }
+      }
+    }
+    if (!(/^[a-z]+:\/\//.test(url))) {
+      // if there is no protocol specified, assume secure HTTP
+      url = `https://${url}`;
     }
     passwordData.url = url;
   }
@@ -570,7 +580,8 @@ PassFF.Pass = (function () {
     getPasswordData: async function (item, meta2leaf) {
       let result = {};
       meta2leaf = meta2leaf || false;
-      if (item.hasFields) { // hierarchical-style item
+      if (item.hasFields) {
+        // hierarchical-style item
         let results = [];
         for (let child of item.children.map(this.getItemById)) {
           if (child.isField) {
@@ -592,9 +603,7 @@ PassFF.Pass = (function () {
             result[child.key] = results[i].password;
           }
         }
-        setLogin(result, item);
-        setPassword(result);
-        setUrl(result);
+        setLoginPasswordUrl(result, item);
         setOther(result);
 
         if (!!otpauthkey) {
@@ -603,7 +612,8 @@ PassFF.Pass = (function () {
           result.otp = otp;
         }
         return result;
-      } else if (item.hasMeta && !meta2leaf) { // item with corresponding *.meta
+      } else if (item.hasMeta && !meta2leaf) {
+        // item with corresponding *.meta
         let promised_results = [Promise.resolve(null), Promise.resolve(null)];
         promised_results[0] = this.getPasswordData(item, true);
         let siblings = this.rootItems;
@@ -622,13 +632,12 @@ PassFF.Pass = (function () {
           if (!result.hasOwnProperty("url")) {
             result.url = item.key;
           }
-          setLogin(result, item);
-          setPassword(result);
-          setUrl(result);
+          setLoginPasswordUrl(result, item);
           setOther(result);
           return result;
         });
-      } else { // multiline-style item
+      } else {
+        // multiline-style item
         let key = item.fullKey;
         return getPassExecPromise(key)
           .then((executionResult) => {
@@ -660,9 +669,7 @@ PassFF.Pass = (function () {
                 result.login = lines[1];
             }
 
-            setLogin(result, item);
-            setPassword(result);
-            setUrl(result);
+            setLoginPasswordUrl(result, item);
             setOtpauth(result);
             setOther(result);
             setText(result, executionResult.stdout);

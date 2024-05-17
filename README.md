@@ -81,6 +81,24 @@ url: <the_url>
 <other_inputfield_name>: <inputfield_value>
 ```
 
+If there is no `url` field, but a `login` field, the URL is taken from the filename, assuming a secure protocol,
+e.g. `shopping/example.com` will have a default URL of `https://example.com`:
+
+```
+<the_password>
+login: <the_login>
+<other_inputfield_name>: <inputfield_value>
+```
+
+If there is neither a `url` nor a `login` field, the filename is used as username and the parent directory's
+name is used as URL, e.g. `example.com/janedoe` will have a default username of `janedoe` and a default URL
+of `https://example.com`:
+
+```
+<the_password>
+<other_inputfield_name>: <inputfield_value>
+```
+
 If your login credentials do not include any login name information (only a password), you can instruct PassFF to omit
 filling any login name by adding `login: PASSFF_OMIT_FIELD` to your pass entry. The same keyword can be used for
 credentials without password, but only login name.
