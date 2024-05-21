@@ -594,86 +594,114 @@ PassFF.Page = (function () {
  * #############################################################################
  */
 
-  class SecurityError extends Error {
-  }
-
-  function securityChecks(passItemURL, currTabURL) {
-    if (!PassFF.Preferences.autoFillDomainCheck) {
+  function securityChecks(passItemURL, currTabURL, isAutoFill) {
+    if (
+      (!isAutoFill && PassFF.Preferences.checkOnlyAuto) || (
+        PassFF.Preferences.checkProtocol == 0
+        && PassFF.Preferences.checkSubdomain == 0
+        && PassFF.Preferences.checkDomain == 0
+        && PassFF.Preferences.checkFullUrl == 0
+      )
+    ) {
       return Promise.resolve(true);
     }
 
-    return Promise.resolve(true)
+    return Promise.resolve()
     .then(() => {
-      try {
-        var passURL = new URL(passItemURL);
-      } catch (e) {
-        return Promise.reject(new SecurityError(
-          _("passff_error_getting_url_pass", passItemURL) + "```" + e.message + "```",
-          {cause: {code: "InvalidPassUrl"}},
-        ));
-      }
+      let checkResults = {
+        "err_message": null,
+        "curr_url": currTabURL,
+        "curr_url_valid": false,
+        "pass_url": passItemURL,
+        "pass_url_valid": false,
+        "protocol": false,
+        "fullurl": false,
+        "subdomain": false,
+        "domain": false,
+      };
 
       try {
         var currURL = new URL(currTabURL);
+        checkResults["curr_url_valid"] = true;
       } catch (e) {
-        return Promise.reject(new SecurityError(
-          _("passff_error_getting_url_curr", currTabURL) + " ",
-          {cause: {code: "InvalidCurrUrl"}},
-        ));
+        checkResults["err_message"] = e.message;
+        return checkResults;
       }
 
-      return domainSecurityCheck(passURL, currURL)
-        .then((result) => {
-          if (!result) return false;
-          return protocolSecurityCheck(currURL, passURL);
-        });
-    })
-    .catch((e) => {
-      if(e instanceof SecurityError) {
-        return PassFF.Page.confirm(
-          e.message + _("passff_override_antiphishing_confirmation")
-        ).then((result) => {
-          // Maybe the current protocol was unsafe because an unsafe URL is stored
-          if (!result && e.cause.code == "unsafeCurrUrl" && e.cause.passURL.protocol != "https:") {
-            PassFF.Page.notify(_("passff_http_pass_warning", e.cause.passURL.href));
-          }
-          return result;
-        });
+      try {
+        var passURL = new URL(passItemURL);
+        checkResults["pass_url_valid"] = true;
+      } catch (e) {
+        checkResults["err_message"] = e.message;
+        return checkResults;
+      }
+
+      if (currURL.protocol == "https:") {
+        checkResults["protocol"] = true;
+      }
+
+      if (passItemURL == currTabURL) {
+        checkResults["fullurl"] = true;
+        checkResults["subdomain"] = true;
+        checkResults["domain"] = true;
       } else {
-        log.error(e);
-        return Promise.resolve(false);
+        let passHost = passURL.hostname;
+        let currHost = currURL.hostname;
+        if (checkIsSubdomain(currHost, passHost)) {
+          checkResults["subdomain"] = true;
+          checkResults["domain"] = true;
+        } else {
+          let passDomain = getMainDomain(passHost);
+          let currDomain = getMainDomain(currHost);
+          checkResults["domain"] = (passDomain == currDomain);
+        }
       }
+
+      return checkResults;
+    })
+    .then((results) => {
+      let confirmation_required = false;
+      let confirmation_message = "";
+
+      if (!results["curr_url_valid"]) {
+        if (
+          PassFF.Preferences.checkProtocol == 2
+          || PassFF.Preferences.checkSubdomain == 2
+          || PassFF.Preferences.checkDomain == 2
+          || PassFF.Preferences.checkFullUrl == 2
+        ) {
+          return false;
+        }
+        confirmation_required = true;
+        confirmation_message += _("passff_checks_invalid_url_curr") + " ";
+      } else {
+        let pref = PassFF.Preferences.checkProtocol;
+        if (!results["protocol"] && pref > 0) {
+          confirmation_required = true;
+          confirmation_message += _("passff_checks_protocol") + " ";
+          if (pref == 2) return false;
+        }
+
+        let checkLevels = ["fullurl", "subdomain", "domain"];
+        let checkLevelPrefs = ["checkFullUrl", "checkSubdomain", "checkDomain"];
+        for (let i = 0; i < checkLevels.length; i++) {
+          let pref = PassFF.Preferences[checkLevelPrefs[i]];
+          if (!results[checkLevels[i]] && pref > 0) {
+            confirmation_required = true;
+            confirmation_message += _(`passff_checks_${checkLevels[i]}`) + " ";
+            if (pref == 2) return false;
+            break;
+          }
+        }
+      }
+
+      return confirmation_required ? PassFF.Page.confirm(
+        "**" + confirmation_message + "**\n"
+        + _("passff_checks_url_curr") + "```" + results["curr_url"] + "```"
+        + _("passff_checks_url_pass") + "```" + results["pass_url"] + "```"
+        + "**" + _("passff_checks_override_confirm") + "**"
+      ) : true;
     });
-  }
-
-  function domainSecurityCheck(passURL, currURL) {
-    let passHost = passURL.hostname;
-    let currHost = currURL.hostname;
-    if (passHost == currHost) {
-      return Promise.resolve(true);
-    }
-    let passDomain = getMainDomain(passHost);
-    let currDomain = getMainDomain(currHost);
-    if (passDomain == currDomain) {
-      return Promise.resolve(true);
-    }
-    return Promise.reject(new SecurityError(
-      _("passff_domain_mismatch", [currDomain, passDomain]) + " ",
-      {cause: {code: "DomainMismatch"}},
-    ));
-  }
-
-  function protocolSecurityCheck(currURL, passURL) {
-    let currProt = currURL.protocol;
-    if (currProt == "https:") {
-      // Storing an HTTP link is OK if the site redirects to HTTPS
-      return Promise.resolve(true);
-    }
-
-    return Promise.reject(new SecurityError(
-      _("passff_http_curr_warning") + " ",
-      {cause: {code: "UnsafeCurrUrl", passURL}},
-    ));
   }
 
 /* #############################################################################
@@ -826,7 +854,7 @@ PassFF.Page = (function () {
         log.debug("Fill active element", activeElement);
         if (activeElement.tagName !== "INPUT"
             || inputTypes.indexOf(activeElement.type) < 0) return;
-        return securityChecks(passwordData.url, window.location.href)
+        return securityChecks(passwordData.url, window.location.href, false)
           .then((result) => {
             if (!result) return;
             let inputs = [activeElement];
@@ -859,7 +887,7 @@ PassFF.Page = (function () {
           .then((passwordData) => {
             if (typeof passwordData === "undefined") return;
             log.debug('fillInputs: Start auto-fill using', item.fullKey, andSubmit);
-            return securityChecks(passwordData.url, window.location.href)
+            return securityChecks(passwordData.url, window.location.href, isAutoFill)
               .then((result) => {
                 if (!result) return;
                 setInputs(inputElements, passwordData);
