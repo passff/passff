@@ -11,6 +11,9 @@
   "passff_menu_copy_login": {
     "message": "Copier identifiant"
   },
+  "passff_menu_copy_otp": {
+    "message": "Copier jeton OTP"
+  },
   "passff_menu_fill": {
     "message": "Remplir"
   },
@@ -68,6 +71,9 @@
   "passff_prefs_tab_autofilling": {
     "message": "Remplissage automatique"
   },
+  "passff_prefs_tab_checks": {
+    "message": "Vérifications de sécurité"
+  },
   "passff_prefs_tab_inputs": {
     "message": "Entrées"
   },
@@ -86,6 +92,12 @@
   "passff_prefs_tab_dev": {
     "message": "Déverminage"
   },
+  "passff_prefs_tab_look": {
+    "message": "Présentation et style"
+  },
+  "passff_prefs_look_menu_width": {
+    "message": "Largeur du menu"
+  },
   "passff_prefs_mark_fillable": {
     "message": "Marquer les champs d'entrée remplissables de l'icône PassFF"
   },
@@ -103,6 +115,9 @@
   },
   "passff_prefs_tb_menu_shortcut_label": {
     "message": "Raccourcie clavier pour le menu de la barre d'outils"
+  },
+  "passff_prefs_shortcut_syntax_help": {
+    "message": "Exemples de raccourcis valides : `Ctrl+Shift+L`, `Ctrl+Alt+U`. Pour la syntaxe générale, veuillez vous référer à la [MDN web docs](https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/manifest.json/commands#shortcut_values)."
   },
   "passff_prefs_case_insensitive_search": {
     "message": "Recherche insensible à la casse"
@@ -128,6 +143,12 @@
   "passff_prefs_login_input_names_label": {
     "message": "Noms des champs d'entrée d'identifiant"
   },
+  "passff_prefs_otp_input_names_label": {
+    "message": "Noms des champs d'entrée OTP"
+  },
+  "passff_prefs_button_input_queries_label": {
+    "message": "Requêtes des boutons de soumission dans les formulaires, une par ligne"
+  },
   "passff_prefs_login_field_names_label": {
     "message": "Noms des champs d'identifiant"
   },
@@ -136,6 +157,15 @@
   },
   "passff_prefs_url_field_names_label": {
     "message": "Noms des champs d'URL"
+  },
+  "passff_prefs_index_meta_urls_label": {
+    "message": "Indexer les champs d'URL au démarrage. Cela permet de lire toutes les valeurs des champs d'URL dans la mémoire du navigateur et de les utiliser lorsque PassFF recherche des mots de passe (nécessite passff-host >=1.2.0)."
+  },
+  "passff_prefs_otpauth_field_names_label": {
+    "message": "Noms des champs d'OTP"
+  },
+  "passff_prefs_filter_path_regex_label": {
+    "message": "Regex pour cacher des éléments, un par ligne (teste le chemin d'accès complet)"
   },
   "passff_prefs_script_howto": {
     "message": "Voir le fichier passff.py pour changer les variables d'environnement de pass."
@@ -148,6 +178,30 @@
   },
   "passff_prefs_autofill_blacklist_label": {
     "message": "Désactiver le remplissage automatique si l'URL contient l'une de ces chaînes de caractères"
+  },
+  "passff_prefs_check_auto_label": {
+    "message": "Désactiver les contrôles de sécurité des URL lors du remplissage manuel"
+  },
+  "passff_prefs_check_action_ignore": {
+    "message": "Ignorer et continuer à remplir silencieusement"
+  },
+  "passff_prefs_check_action_ask": {
+    "message": "Avertir et demander confirmation"
+  },
+  "passff_prefs_check_action_enforce": {
+    "message": "Ne pas remplir"
+  },
+  "passff_prefs_check_protocol_label": {
+    "message": "Si la connexion actuelle n'est pas cryptée (pas de HTTPS)"
+  },
+  "passff_prefs_check_domain_label": {
+    "message": "Si le site et le nom d'hôte stocké ont un nom de domaine différent"
+  },
+  "passff_prefs_check_subdomain_label": {
+    "message": "Si le nom d'hôte n'est pas un sous-domaine du nom stocké"
+  },
+  "passff_prefs_check_fullurl_label": {
+    "message": "Si le site et l'URL stockée sont différents"
   },
   "passff_prefs_default_length_label": {
     "message": "Longueur par défaut d'un mot de passe généré"
@@ -244,5 +298,59 @@
   },
   "passff_no_entries_found": {
     "message": "Aucune entrée ne correspond à cette URL."
+  },
+  "passff_checks_url_curr": {
+    "message": "L'URL du site web actuel :"
+  },
+  "passff_checks_url_pass": {
+    "message": "L'URL stockée dans l'entrée de pass :"
+  },
+  "passff_checks_override_confirm": {
+    "message": "Voulez-vous quand même continuer ? Cela peut constituer un risque pour la sécurité."
+  },
+  "passff_checks_invalid_url_curr": {
+    "message": "Une erreur s'est produite lors de l'analyse de l'URL actuelle."
+  },
+  "passff_checks_invalid_url_pass": {
+    "message": "Une erreur s'est produite lors de l'analyse de l'URL de la base de données de pass."
+  },
+  "passff_checks_protocol": {
+    "message": "La page actuelle utilise un protocole non sécurisé qui pourrait compromettre votre mot de passe."
+  },
+  "passff_checks_domain": {
+    "message": "Le domaine de votre site actuel ne correspond pas à celui de la base de données de pass."
+  },
+  "passff_checks_subdomain": {
+    "message": "Le nom d'hôte de votre site actuel n'est pas un sous-domaine de celui de votre base de données de pass."
+  },
+  "passff_checks_fullurl": {
+    "message": "L'URL de votre site actuel ne correspond pas à celle de la base de données de pass."
+  },
+  "passff_error_otp_host_version": {
+    "message": "La prise en charge de l'OTP nécessite l'application PassFF host version 1.1.0 ou ultérieure. Veuillez suivre les [instructions d'installation officielles]($passffURL$).",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_error_grep_host_version": {
+    "message": "L'indexation des champs d'URL nécessite l'application PassFF host version 1.2.0 ou ultérieure. Veuillez suivre les [instructions d'installation officielles]($passffURL$).",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_error_script_failed": {
+    "message": "L'exécution du script a échoué: ```$errMsg$```",
+    "placeholders": {
+      "errMsg": {
+        "content": "$1",
+        "example": "gpg: cancelled by user"
+      }
+    }
   }
 }
