@@ -159,7 +159,7 @@
     "message": "URL field names"
   },
   "passff_prefs_index_meta_urls_label": {
-    "message": "Index URL fields on startup. This will read all URL field values into browser memory and allow them to be used when passff looks for passwords. (Requires passff-host >=1.2.0)"
+    "message": "Index URL fields on startup. This will read all URL field values into browser memory and allow them to be used when PassFF looks for passwords (requires passff-host >=1.2.0)."
   },
   "passff_prefs_otpauth_field_names_label": {
     "message": "OTP Auth field names"
@@ -180,7 +180,7 @@
     "message": "Don't auto fill if tab's URL contains one of the strings"
   },
   "passff_prefs_check_auto_label": {
-    "message": "Deactivate URL security checks when filling manually."
+    "message": "Deactivate URL security checks when filling manually"
   },
   "passff_prefs_check_action_ignore": {
     "message": "Ignore and silently continue filling"
