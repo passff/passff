@@ -915,7 +915,7 @@ PassFF.Page = (function () {
     notify: content_function("Page.notify", function (message) {
       let dialog = document.getElementById("passff_notification");
       if (!dialog) {
-        dialog = document.createElement("div");
+        dialog = document.createElement("dialog");
         dialog.id = "passff_notification";
         document.body.appendChild(dialog);
       }
@@ -926,9 +926,11 @@ PassFF.Page = (function () {
       dialog_text = dialog.querySelector("div p");
       dialog_text.textContent = message; // prevent HTML injection
       parse_markdown(dialog_text);
+      dialog.showModal();
       return new Promise(function (resolve, reject) {
         let button = dialog.querySelector("button");
         button.addEventListener("click", () => {
+          dialog.close();
           document.body.removeChild(dialog);
           resolve(true);
         });
@@ -938,7 +940,7 @@ PassFF.Page = (function () {
     confirm: content_function("Page.confirm", function (message) {
       let dialog = document.getElementById("passff_notification");
       if (!dialog) {
-        dialog = document.createElement("div");
+        dialog = document.createElement("dialog");
         dialog.id = "passff_notification";
         document.body.appendChild(dialog);
       }
@@ -949,14 +951,17 @@ PassFF.Page = (function () {
       dialog_text = dialog.querySelector("div p");
       dialog_text.textContent = message; // prevent HTML injection
       parse_markdown(dialog_text);
+      dialog.showModal();
       return new Promise(function (resolve, reject) {
         let button = dialog.querySelector("button:first-child");
         button.addEventListener("click", () => {
+          dialog.close();
           document.body.removeChild(dialog);
           resolve(true);
         });
         button = dialog.querySelector("button:last-child");
         button.addEventListener("click", () => {
+          dialog.close();
           document.body.removeChild(dialog);
           resolve(false);
         });

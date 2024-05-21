@@ -1,39 +1,28 @@
 
 #passff_notification {
-  all: initial;
   border: 0px none !important;
   border-radius: 0px !important;
   box-shadow: none !important;
-  display: block !important;
-  height: 100% !important;
-  left: 0px !important;
-  margin: 0px !important;
-  max-height: none !important;
-  max-width: none !important;
-  opacity: 1 !important;
   outline: 0px none currentcolor !important;
-  padding: 0px !important;
-  position: fixed !important;
-  top: 0px !important;
+  opacity: 1 !important;
   visibility: visible !important;
-  width: 100% !important;
   z-index: 2147483647 !important;
-  background-color: rgba(50,50,50,0.8) !important;
+}
+
+#passff_notification::backdrop {
+  background-color: rgba(50, 50, 50, 0.8) !important;
 }
 
 #passff_notification > div {
   all: initial;
-  position: absolute;
-  top: calc(40% - 7em);
-  left: calc(50% - 15em);
-  width: 34em;
-  height: 18em;
-  padding: 2.5em 1em 1em 7em;
+  display: block;
+  max-width: 44em;
+  padding: 0 0 0 5em;
   box-sizing: border-box;
   background-color: #fff;
   text-align: left;
   background-repeat: no-repeat;
-  background-position: 1.5em calc(50% - 2em);
+  background-position: 0 0;
   background-size: 4em 4em;
 }
 
@@ -61,22 +50,21 @@
 
 #passff_notification > div p code.block {
   display: block;
-  white-space: pre-line;
+  white-space: pre;
   padding: 0.5em;
   margin: 0.5em 0.5em 0 0;
   background-color: #f7f7f7;
   color: #000;
   overflow: auto;
-  height: 5em;
+  max-height: 5em;
 }
 
 #passff_notification > div > div {
   all: initial;
-  position: absolute;
-  right: 2em;
-  bottom: 1.5em;
+  display: block;
   padding: 0;
-  margin: 0;
+  margin: 1em 0 0 0;
+  text-align: right;
 }
 
 #passff_notification > div > div > button {
