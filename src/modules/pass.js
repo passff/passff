@@ -9,7 +9,6 @@ PassFF.Pass = (function () {
     */
 
   var allItems = [];
-  var rootItems = [];
   var contextItems = [];
   var metaUrls = null;
   var displayItem = null;
@@ -28,7 +27,7 @@ PassFF.Pass = (function () {
       login = passwordData[PassFF.Preferences.loginFieldNames[i]];
       if (login !== undefined) break;
     }
-    let key_is_login = login === undefined;
+    let key_is_login = typeof login === "undefined";
     passwordData.login = key_is_login ? item.key : login;
 
     let password;
@@ -43,7 +42,7 @@ PassFF.Pass = (function () {
       url = passwordData[PassFF.Preferences.urlFieldNames[i]];
       if (url) break;
     }
-    if (url === undefined) {
+    if (typeof url === "undefined") {
       url = item.key;
       if (key_is_login) {
         let key_parts = item.fullKey.split("/");
@@ -162,7 +161,7 @@ PassFF.Pass = (function () {
       return false;
     }
     const itemMetaUrls = metaUrls.get(item.fullKey);
-    if (itemMetaUrls === undefined || itemMetaUrls.length === 0) {
+    if (typeof itemMetaUrls === "undefined" || itemMetaUrls.length === 0) {
       return false;
     }
     for (let url of itemMetaUrls) {
@@ -283,27 +282,18 @@ PassFF.Pass = (function () {
     return [stderr_filtered, gpg_error_code];
   }
 
-  function keyFromTreeEntry(entry) {
-    return (
-      entry
-      .replace(/\\ /g, ' ')
-      .replace(/ -> .*/g, '')
-      .replace(/\.gpg$/, '')
-    );
-  }
-
-  function createItem(allItems, rootItems, parent, key, attributes) {
-    let item = {
+  function createItem(parent, key, attributes) {
+    const item = {
       id: allItems.length,
       key: key,
-      depth: (parent === null) ? 0 : parent.depth + 1,
-      parent: (parent === null) ? null : parent.id,
+      depth: parent ? parent.depth + 1 : -1,
+      parent: parent ? parent.id : null,
       isLeaf: null,
       isField: null,
       hasFields: null,
       isMeta: null,
       hasMeta: null,
-      fullKey: (parent === null) ? key : parent.fullKey + '/' + key,
+      fullKey: parent ? parent.fullKey + '/' + key : key,
       isHidden: null,
       isBroken: false,
       children: [],
@@ -311,28 +301,17 @@ PassFF.Pass = (function () {
     };
 
     allItems.push(item);
-    if (parent === null) {
-      rootItems.push(item);
-    } else {
+    if (parent !== null) {
       parent.children.push(item.id);
     }
 
     return item;
   }
 
-  function createSymlinkItem(allItems, rootItems, parent, treeEntry) {
-    let key = keyFromTreeEntry(treeEntry);
-
-    let match = /.* -> (.*)  \[[^\]]+\]/.exec(treeEntry);
-    if (!match) {
-      log.debug(`followSymlinkToDir: unable to parse link ${treeEntry}`);
-      return createItem(allItems, rootItems, parent, key, {isBroken: true});
-    }
-
-    let target = match[1];
+  function createSymlinkItem(parent, key, target) {
     if (target.startsWith("/")) {
-      log.debug(`followSymlinkToDir: only relative links are supported, skipping ${treeEntry}`);
-      return createItem(allItems, rootItems, parent, key, {isBroken: true});
+      log.debug("followSymlinkToDir: only relative links are supported, skipping", key, target);
+      return createItem(parent, key, {isBroken: true});
     }
 
     let target_item = parent;
@@ -340,45 +319,45 @@ PassFF.Pass = (function () {
       if (part == ".") {
         continue;
       } else if (part == "..") {
-        if (target_item === null) {
-          log.debug(`followSymlinkToDir: link points outside the pass dir ${treeEntry}`);
-          return createItem(allItems, rootItems, parent, key, {isBroken: true});
+        if (target_item.parent === null) {
+          log.debug("followSymlinkToDir: link points outside the pass dir", key, target);
+          return createItem(parent, key, {isBroken: true});
         }
-        target_item = (target_item.parent === null) ? null : allItems[target_item.parent];
+        target_item = PassFF.Pass.getItemById(target_item.parent);
       } else {
-        let target_siblings = (target_item === null) ? rootItems : target_item.children;
+        let target_siblings = target_item.children.map(PassFF.Pass.getItemById);
         target_siblings = target_siblings.filter(item => item.key == part);
         if (target_siblings.length != 1) {
-          log.debug(`followSymlinkToDir: skipping dead link ${treeEntry}`);
-          return createItem(allItems, rootItems, parent, key, {isBroken: true});
+          log.debug("followSymlinkToDir: skipping dead link", key, target);
+          return createItem(parent, key, {isBroken: true});
         }
         target_item = target_siblings[0];
       }
     }
 
-    return copyTree(allItems, rootItems, parent, key, target_item);
+    return copyTree(parent, key, target_item);
   }
 
-  function copyTree(allItems, rootItems, parent, key, target_item) {
-    let item = createItem(allItems, rootItems, parent, key);
+  function copyTree(parent, key, target_item) {
+    let item = createItem(parent, key);
     target_item.children.forEach(child => {
-      child = allItems[child];
+      child = PassFF.Pass.getItemById(child);
       if (child) {
-        copyTree(allItems, rootItems, item, child.key, child);
+        copyTree(item, child.key, child);
       }
     });
     return item;
   }
 
-  function rmTree(allItems, rootItems, item_id) {
-    let item = allItems[item_id];
+  function rmTree(item_id) {
+    let item = PassFF.Pass.getItemById(item_id);
     if (!item) return;
-
     allItems[item_id] = null;
-    let parChildren = (item.parent == null) ? rootItems : allItems[item.parent].children;
-    let child_no = parChildren.findIndex(c => c.id == item_id);
-    parChildren.splice(child_no, 1);
-    item.children.forEach(c => rmTree(allItems, rootItems, c));
+    if (item.parent !== null) {
+      const siblings = PassFF.Pass.getItemById(item.parent).children;
+      siblings.splice(siblings.indexOf(item_id), 1);
+    }
+    item.children.forEach(rmTree);
   }
 
 /* #############################################################################
@@ -399,10 +378,9 @@ PassFF.Pass = (function () {
             return;
           }
           allItems = items[0];
-          rootItems = items[1];
           if (PassFF.mode !== "background") {
-            contextItems = items[2];
-            metaUrls = items[3];
+            contextItems = items[1];
+            metaUrls = items[2];
           }
           if (PassFF.mode === "itemMonitor") {
             let passOutputEl = document.getElementsByTagName("pre")[0];
@@ -513,7 +491,7 @@ PassFF.Pass = (function () {
 // %%%%%%%%%%%%%%%%%%%%%%%%% Data retrieval %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     get rootItems() {
-      return rootItems;
+      return allItems[0].children.map(this.getItemById);
     },
 
     get contextItems() {
@@ -521,7 +499,7 @@ PassFF.Pass = (function () {
     },
 
     loadItems: background_function("Pass.loadItems", function (reload) {
-      if (!reload) return [allItems, rootItems, contextItems, metaUrls];
+      if (!reload) return [allItems, contextItems, metaUrls];
       return this.executePass([])
         .then((result) => {
           if (result.exitCode !== 0) {
@@ -531,7 +509,6 @@ PassFF.Pass = (function () {
 
           PassFF.Menu.state.error = false;
           allItems = [];
-          rootItems = [];
 
           let stdout = result.stdout;
           // replace utf8 box characters with traditional ascii tree
@@ -539,43 +516,41 @@ PassFF.Pass = (function () {
           //remove colors
           stdout = stdout.replace(/\x1B\[[^m]*m/g, '');
 
-          let lines = stdout.split('\n');
-          let re = /(.*[|`;])+-- (.*)/;
-          let curParent = null;
+          const re = /(.*[|`;])+-- (.*)/;
+          const re_link = /.* -> (.*)  \[([^\]]+)\]/;
 
-          lines.forEach(function (line) {
-            let match = re.exec(line);
+          let curParent = createItem(null, "");
+          stdout.split('\n').forEach(line => {
+            const match = re.exec(line);
             if (!match) return;
 
-            let curDepth = (match[1].replace('&middot;', '`').length - 1) / 4;
-            let key = keyFromTreeEntry(match[2]);
-
-            if (curDepth === 0) {
-              curParent = null;
-            } else {
-              while (curParent.depth >= curDepth) {
-                curParent = allItems[curParent.parent];
-              }
-            }
-
-            let item = (
-              // `tree` prints this if a link points to a directory that has been listed before
-              match[2].endsWith("  [recursive, not followed]")
-              ? createSymlinkItem(allItems, rootItems, curParent, match[2])
-              : createItem(allItems, rootItems, curParent, key)
+            const curDepth = (match[1].replace('&middot;', '`').length - 1) / 4;
+            const key = (
+              match[2]
+              .replace(/\\ /g, ' ')
+              .replace(/ -> .*/g, '')
+              .replace(/\.gpg$/, '')
             );
 
-            curParent = item;
+            while (curParent.depth >= curDepth) {
+              curParent = PassFF.Pass.getItemById(curParent.parent);
+            }
+
+            const match_link = re_link.exec(match[2]);
+            if (match_link && match_link[2] == "recursive, not followed") {
+              // output of `tree` if a link points to a directory that has been listed before
+              curParent = createSymlinkItem(curParent, key, match_link[1])
+            } else {
+              curParent = createItem(curParent, key);
+            }
           });
 
           var isInUseHiddenRegex = PassFF.Preferences.filterPathRegex.length != 0;
           var isHiddenRegex = new RegExp(PassFF.Preferences.filterPathRegex.join("|"), 'i');
 
           allItems.slice().reverse().forEach(item => {
-            let siblings = rootItems;
-            if (item.parent !== null) {
-              siblings = allItems[item.parent].children.map(c => allItems[c]);
-            }
+            let siblings = item.parent ? this.getItemById(item.parent).children : [];
+            siblings = siblings.map(this.getItemById);
             item.isMeta = (item.key.substr(-5) === ".meta") &&
               siblings.some(s => s.key + ".meta" === item.key);
             item.hasMeta = (!item.isMeta) &&
@@ -585,16 +560,14 @@ PassFF.Pass = (function () {
                                            || isPasswordField(item.key)
                                            || isUrlField(item.key)
                                            || isOtpauthField(item.key));
-            item.hasFields = item.children.some(c => allItems[c].isField);
+            item.hasFields = item.children.some(c => this.getItemById(c).isField);
             item.isHidden = isInUseHiddenRegex && isHiddenRegex.test(item.fullKey);
           });
 
-          allItems.filter(item => item.isBroken).forEach(
-            item => rmTree(allItems, rootItems, item.id)
-          );
+          allItems.filter(item => item.isBroken).forEach(item => rmTree(item.id));
 
           this.indexMetaUrls();
-          return [allItems, rootItems];
+          return [allItems];
         });
     }),
 
@@ -656,7 +629,7 @@ PassFF.Pass = (function () {
     loadContextItems: function (url) {
       contextItems = this.getUrlMatchingItems(url);
       if (contextItems.length === 0) {
-        contextItems = rootItems;
+        contextItems = this.rootItems;
       }
     },
 
@@ -690,20 +663,15 @@ PassFF.Pass = (function () {
         setOther(result);
 
         if (!!otpauthkey) {
-          let otp = await this.generateOtp(otpauthkey);
           log.debug('Generating OTP token');
-          result.otp = otp;
+          result.otp = await this.generateOtp(otpauthkey);
         }
         return result;
       } else if (item.hasMeta && !meta2leaf) {
         // item with corresponding *.meta
         let promised_results = [Promise.resolve(null), Promise.resolve(null)];
         promised_results[0] = this.getPasswordData(item, true);
-        let siblings = this.rootItems;
-        if (item.parent !== null) {
-          siblings = this.getItemById(item.parent).children;
-          siblings = siblings.map(this.getItemById);
-        }
+        let siblings = this.getItemById(item.parent).children.map(this.getItemById);
         promised_results[1] = siblings
           .filter(sib => item.key + ".meta" === sib.key)
           .map(this.getPasswordData)[0];
@@ -758,12 +726,8 @@ PassFF.Pass = (function () {
             setText(result, executionResult.stdout);
 
             if (result.otpauth) {
-              return this.generateOtp(key)
-                .then((otp) => {
-                  log.debug('Generating OTP token');
-                  result.otp = otp;
-                  return result;
-                });
+              log.debug('Generating OTP token');
+              result.otp = await this.generateOtp(key);
             }
 
             return result;
@@ -826,24 +790,45 @@ PassFF.Pass = (function () {
       return bestItem;
     },
 
-    isPasswordNameTaken: function (name) {
-      name = name.replace(/^\//, '');
-      for (let item of allItems) {
-        if (!item) continue;
-        if (item.fullKey === name) {
-          log.debug("Password name " + name + " already taken.");
-          return true;
-        }
-      }
-      return false;
-    },
-
     getItemById: function (id) {
       if (id === null || id >= allItems.length) {
         return null;
       } else {
         return allItems[id];
       }
+    },
+
+    getItemByFullKey: function (fullKey) {
+      for (const item of allItems) {
+        if (!item) continue;
+        if (item.fullKey === fullKey) {
+          return item;
+        }
+      }
+      return null;
+    },
+
+    getItemByRelKey: function (ref_item, relKey) {
+      let item = this.getItemById(ref_item.parent);
+      for (const part of relKey.split("/")) {
+        if (part == ".") {
+          continue;
+        } else if (part == "..") {
+          if (item.parent === null) {
+            log.debug(`getItemByRelKey: broken ref ${relKey} from ${ref_item.fullKey}`);
+            return null;
+          }
+          item = this.getItemById(item.parent);
+        } else {
+          let children = item.children.filter(c => this.getItemById(c).key == part);
+          if (children.length != 1) {
+            log.debug(`getItemByRelKey: broken ref ${relKey} from ${ref_item.fullKey}`);
+            return null;
+          }
+          item = this.getItemById(children[0]);
+        }
+      }
+      return item;
     },
 
 // %%%%%%%%%%%%%%%%%%%%%%%% Data manipulation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1031,7 +1016,8 @@ function handlePasswordGeneration() {
             errorsContainer.appendChild(errorLabel);
           });
         } else {
-          if (PassFF.Pass.isPasswordNameTaken(inputData.name)) {
+          if (PassFF.Pass.getItemByFullKey(inputData.name)) {
+            log.debug(`Password name ${inputData.name} already taken.`);
             let confirmation = window.confirm(
               _("inputs_overwrite_password_prompt")
             );

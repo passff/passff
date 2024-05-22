@@ -312,6 +312,7 @@ PassFF.Menu = (function () {
       if (label != '..' && !item.isLeaf) {
         label += '/';
       }
+      label = label.replace(/^\//, '');
       listElm.appendChild(
         createMenuItem(item, label, onListItemSelected, null, onEnter)
       );
