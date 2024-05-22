@@ -290,9 +290,11 @@ PassFF.Page = (function () {
         // one of name/id/labels of the input field has to match exactly!
         let inputNames = readInputNames(input);
         let matching = findIntersection(otherNames, inputNames);
-        if (matching !== undefined) {
+        if (typeof matching !== "undefined") {
           let value = passwordData._other[matching];
-          if (value == "PASSFF_FIELD_OTP") {
+          if (value == "PASSFF_OMIT_FIELD") {
+            return;
+          } else if (value == "PASSFF_FIELD_OTP") {
             value = passwordData.otp;
           } else if (value == "PASSFF_FIELD_LOGIN") {
             value = passwordData.login;

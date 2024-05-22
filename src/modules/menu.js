@@ -400,14 +400,14 @@ PassFF.Menu = (function () {
  */
 
   function getDataKey(node) {
-    while (node && node.dataKey === undefined) {
+    while (node && typeof node.dataKey === "undefined") {
       node = node.parentNode;
     }
     return node ? node.dataKey : null;
   }
 
   function getItem(node) {
-    while (node && node.item === undefined) {
+    while (node && typeof node.item === "undefined") {
       node = node.parentNode;
     }
     return node ? node.item : null;

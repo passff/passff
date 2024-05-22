@@ -101,8 +101,7 @@ of `https://example.com`:
 
 If your login credentials do not include any login name information (only a password), you can instruct PassFF to omit
 filling any login name by adding `login: PASSFF_OMIT_FIELD` to your pass entry. The same keyword can be used for
-credentials without password, but only login name.
-
+credentials without password, but only login name, or to prevent PassFF from filling specific (other) input fields.
 
 Use symbolic links in your password store directory if the data is identical across pass entries. When you do, make sure
 to use relative (instead of absolute) links since PassFF cannot resolve paths beyond the password store directory.
@@ -120,6 +119,8 @@ Lines besides the login and URL that match the format `<other_inputfield_name>: 
 fields besides the login and password fields. The left hand side of the colon should match the input field's `name`,
 `id`, `autocomplete`, or `placeholder` attribute. You can instruct PassFF to fill your login name, password, or
 OTP token, by setting `<value>` to one of `PASSFF_FIELD_LOGIN`, `PASSFF_FIELD_PASSWORD`, or `PASSFF_FIELD_OTP`.
+Alternatively, you can instruct PassFF explicitly not to fill the specified input field by using the
+keyword `PASSFF_OMIT_FIELD`.
 
 Examples
 ```

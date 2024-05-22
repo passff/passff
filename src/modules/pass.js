@@ -25,7 +25,7 @@ PassFF.Pass = (function () {
     let login;
     for (let i = 0; i < PassFF.Preferences.loginFieldNames.length; i++) {
       login = passwordData[PassFF.Preferences.loginFieldNames[i]];
-      if (login !== undefined) break;
+      if (typeof login !== "undefined") break;
     }
     let key_is_login = typeof login === "undefined";
     passwordData.login = key_is_login ? item.key : login;
