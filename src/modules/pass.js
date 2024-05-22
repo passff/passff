@@ -189,7 +189,7 @@ PassFF.Pass = (function () {
   }
 
   function getItemQuality(item, urlStr) {
-    if (item.isField || (!item.isLeaf && !item.hasFields)) {
+    if (!item || item.isField || (!item.isLeaf && !item.hasFields)) {
       return {item: null,  quality: -1};
     }
     let url = new URL(urlStr);
@@ -281,6 +281,104 @@ PassFF.Pass = (function () {
     )).join("\n");
 
     return [stderr_filtered, gpg_error_code];
+  }
+
+  function keyFromTreeEntry(entry) {
+    return (
+      entry
+      .replace(/\\ /g, ' ')
+      .replace(/ -> .*/g, '')
+      .replace(/\.gpg$/, '')
+    );
+  }
+
+  function createItem(allItems, rootItems, parent, key, attributes) {
+    let item = {
+      id: allItems.length,
+      key: key,
+      depth: (parent === null) ? 0 : parent.depth + 1,
+      parent: (parent === null) ? null : parent.id,
+      isLeaf: null,
+      isField: null,
+      hasFields: null,
+      isMeta: null,
+      hasMeta: null,
+      fullKey: (parent === null) ? key : parent.fullKey + '/' + key,
+      isHidden: null,
+      isBroken: false,
+      children: [],
+      ...attributes,
+    };
+
+    allItems.push(item);
+    if (parent === null) {
+      rootItems.push(item);
+    } else {
+      parent.children.push(item.id);
+    }
+
+    return item;
+  }
+
+  function createSymlinkItem(allItems, rootItems, parent, treeEntry) {
+    let key = keyFromTreeEntry(treeEntry);
+
+    let match = /.* -> (.*)  \[[^\]]+\]/.exec(treeEntry);
+    if (!match) {
+      log.debug(`followSymlinkToDir: unable to parse link ${treeEntry}`);
+      return createItem(allItems, rootItems, parent, key, {isBroken: true});
+    }
+
+    let target = match[1];
+    if (target.startsWith("/")) {
+      log.debug(`followSymlinkToDir: only relative links are supported, skipping ${treeEntry}`);
+      return createItem(allItems, rootItems, parent, key, {isBroken: true});
+    }
+
+    let target_item = parent;
+    for (let part of target.split("/")) {
+      if (part == ".") {
+        continue;
+      } else if (part == "..") {
+        if (target_item === null) {
+          log.debug(`followSymlinkToDir: link points outside the pass dir ${treeEntry}`);
+          return createItem(allItems, rootItems, parent, key, {isBroken: true});
+        }
+        target_item = (target_item.parent === null) ? null : allItems[target_item.parent];
+      } else {
+        let target_siblings = (target_item === null) ? rootItems : target_item.children;
+        target_siblings = target_siblings.filter(item => item.key == part);
+        if (target_siblings.length != 1) {
+          log.debug(`followSymlinkToDir: skipping dead link ${treeEntry}`);
+          return createItem(allItems, rootItems, parent, key, {isBroken: true});
+        }
+        target_item = target_siblings[0];
+      }
+    }
+
+    return copyTree(allItems, rootItems, parent, key, target_item);
+  }
+
+  function copyTree(allItems, rootItems, parent, key, target_item) {
+    let item = createItem(allItems, rootItems, parent, key);
+    target_item.children.forEach(child => {
+      child = allItems[child];
+      if (child) {
+        copyTree(allItems, rootItems, item, child.key, child);
+      }
+    });
+    return item;
+  }
+
+  function rmTree(allItems, rootItems, item_id) {
+    let item = allItems[item_id];
+    if (!item) return;
+
+    allItems[item_id] = null;
+    let parChildren = (item.parent == null) ? rootItems : allItems[item.parent].children;
+    let child_no = parChildren.findIndex(c => c.id == item_id);
+    parChildren.splice(child_no, 1);
+    item.children.forEach(c => rmTree(allItems, rootItems, c));
   }
 
 /* #############################################################################
@@ -444,15 +542,13 @@ PassFF.Pass = (function () {
           let lines = stdout.split('\n');
           let re = /(.*[|`;])+-- (.*)/;
           let curParent = null;
-          let item = null;
 
           lines.forEach(function (line) {
             let match = re.exec(line);
             if (!match) return;
 
             let curDepth = (match[1].replace('&middot;', '`').length - 1) / 4;
-            let key = match[2].replace(/\\ /g, ' ').replace(/ -> .*/g, '');
-            key = key.replace(/\.gpg$/, '');
+            let key = keyFromTreeEntry(match[2]);
 
             if (curDepth === 0) {
               curParent = null;
@@ -462,31 +558,14 @@ PassFF.Pass = (function () {
               }
             }
 
-            item = {
-              id: allItems.length,
-              key: key,
-              depth: curDepth,
-              parent: (curDepth === 0) ? null : curParent.id,
-              isLeaf: null,
-              isField: null,
-              hasFields: null,
-              isMeta: null,
-              hasMeta: null,
-              fullKey: (curDepth === 0) ? key : curParent.fullKey + '/' + key,
-              isHidden: null,
-              children: []
-            };
-
-            if (curParent !== null) {
-              curParent.children.push(item.id);
-            }
+            let item = (
+              // `tree` prints this if a link points to a directory that has been listed before
+              match[2].endsWith("  [recursive, not followed]")
+              ? createSymlinkItem(allItems, rootItems, curParent, match[2])
+              : createItem(allItems, rootItems, curParent, key)
+            );
 
             curParent = item;
-            allItems.push(item);
-
-            if (item.depth === 0) {
-              rootItems.push(item);
-            }
           });
 
           var isInUseHiddenRegex = PassFF.Preferences.filterPathRegex.length != 0;
@@ -509,6 +588,10 @@ PassFF.Pass = (function () {
             item.hasFields = item.children.some(c => allItems[c].isField);
             item.isHidden = isInUseHiddenRegex && isHiddenRegex.test(item.fullKey);
           });
+
+          allItems.filter(item => item.isBroken).forEach(
+            item => rmTree(allItems, rootItems, item.id)
+          );
 
           this.indexMetaUrls();
           return [allItems, rootItems];
@@ -692,7 +775,7 @@ PassFF.Pass = (function () {
 
     getMatchingItems: function (search, limit) {
       return allItems
-        .filter(i => (i.isLeaf && !i.isField || i.hasFields))
+        .filter(i => i && (i.isLeaf && !i.isField || i.hasFields))
         .map(i => Object({
           "item": i,
           "similarity": stringSimilarity(
@@ -746,6 +829,7 @@ PassFF.Pass = (function () {
     isPasswordNameTaken: function (name) {
       name = name.replace(/^\//, '');
       for (let item of allItems) {
+        if (!item) continue;
         if (item.fullKey === name) {
           log.debug("Password name " + name + " already taken.");
           return true;
