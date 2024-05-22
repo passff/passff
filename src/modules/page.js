@@ -337,9 +337,17 @@ PassFF.Page = (function () {
     return e.clientX > leftLimit;
   }
 
+  function setIconBackgroundStyle(input, icon_url) {
+    input.style.backgroundRepeat = "no-repeat";
+    input.style.backgroundAttachment = "scroll";
+    input.style.backgroundSize = "16px 16px";
+    input.style.backgroundPosition = "calc(100% - 4px) 50%";
+    input.style.backgroundImage = `url('${icon_url}')`;
+  }
+
   function onIconHover(e) {
     if (isMouseOverIcon(e)) {
-      e.target.style.backgroundImage = "url('" + passff_icon + "')";
+      setIconBackgroundStyle(e.target, passff_icon);
       e.target.style.cssText += "cursor: pointer !important;";
 
       /* Set autocomplete attribute to "off", so Firefox' autofill list won't
@@ -366,11 +374,7 @@ PassFF.Page = (function () {
     if (typeof input.passff_injected !== "undefined") return;
     log.debug("Inject icon", input.id || input.name);
     input.passff_injected = true;
-    input.style.backgroundRepeat = "no-repeat";
-    input.style.backgroundAttachment = "scroll";
-    input.style.backgroundSize = "16px 16px";
-    input.style.backgroundPosition = "calc(100% - 4px) 50%";
-    input.style.backgroundImage = "url('" + passff_icon_light + "')";
+    setIconBackgroundStyle(input, passff_icon_light);
     input.addEventListener("mouseout", (e) => {
       if (e.target !== popup_target) resetIcon(e.target);
     });
