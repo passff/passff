@@ -633,9 +633,11 @@ PassFF.Pass = (function () {
       }
     },
 
-    getPasswordData: async function (item, meta2leaf) {
+    getPasswordData: async function (item, meta2leaf, recursionHist) {
       let result = {};
       meta2leaf = meta2leaf || false;
+      recursionHist = recursionHist || [];
+      recursionHist = [...recursionHist, item.id];
       if (item.hasFields) {
         // hierarchical-style item
         let results = [];
@@ -691,7 +693,7 @@ PassFF.Pass = (function () {
         // multiline-style item
         let key = item.fullKey;
         return getPassExecPromise(key)
-          .then((executionResult) => {
+          .then(async (executionResult) => {
             if (executionResult.exitCode !== 0) return;
 
             let lines = executionResult.stdout.split('\n');
@@ -718,6 +720,43 @@ PassFF.Pass = (function () {
 
             if (noFields && lines.length > 1 && lines[1] != "") {
                 result.login = lines[1];
+            }
+
+            for (const [fieldName, value] of Object.entries(result)) {
+              const match = / *-> *(.*)/.exec(value);
+              if (!match) continue;
+              const target_path = match[1];
+              const target_item = (
+                target_path.startsWith("/")
+                ? this.getItemByFullKey(target_path)
+                : this.getItemByRelKey(item, target_path)
+              );
+              if (target_item === null) {
+                log.debug(
+                  `getPasswordData: pass entry ${target_path} referenced from`
+                  + ` field ${fieldName} in ${item.fullKey} does not exist`
+                );
+                result[fieldName] = `BROKEN_PASS_REF_MISS: ${value}`;
+              } else if (recursionHist.indexOf(target_item.id) >= 0) {
+                log.debug(
+                  `getPasswordData: recursion loop for ${target_path} referenced from`
+                  + ` field ${fieldName} in ${item.fullKey}`
+                );
+                result[fieldName] = `BROKEN_PASS_REF_LOOP: ${value}`;
+              } else {
+                const target_data = await PassFF.Pass.getPasswordData(
+                  target_item, meta2leaf, recursionHist,
+                );
+                if (!target_data.hasOwnProperty(fieldName)) {
+                  log.debug(
+                    `getPasswordData: missing field ${fieldName} in ${target_item.fullKey},`
+                    + ` referenced from ${item.fullKey}`
+                  );
+                  result[fieldName] = `BROKEN_PASS_REF_FIELD: ${value}`;
+                } else {
+                  result[fieldName] = target_data[fieldName];
+                }
+              }
             }
 
             setLoginPasswordUrl(result, item);
