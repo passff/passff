@@ -268,7 +268,7 @@ PassFF.Page = (function () {
  */
 
   function setInputs(inputs, passwordData) {
-    log.debug("Set inputs...");
+    log.debug("setInputs:", inputs);
     let otherNames = Object.keys(passwordData._other);
 
     // If the number of OTP input fields agrees with the length of the OTP
@@ -636,11 +636,19 @@ PassFF.Page = (function () {
         return checkResults;
       }
 
-      try {
-        var passURL = new URL(passItemURL);
-        checkResults["pass_url_valid"] = true;
-      } catch (e) {
-        checkResults["err_message"] = e.message;
+      let err_message;
+      let passURL = [];
+      for (const url of passItemURL) {
+        try {
+          passURL.push(new URL(url));
+          checkResults["pass_url_valid"] = true;
+        } catch (e) {
+          err_message = e.message;
+        }
+      }
+
+      if (passURL.length == 0) {
+        checkResults["err_message"] = err_message;
         return checkResults;
       }
 
@@ -648,20 +656,20 @@ PassFF.Page = (function () {
         checkResults["protocol"] = true;
       }
 
-      if (passItemURL == currTabURL) {
+      if (passURL.some(url => url.href == currURL.href)) {
         checkResults["fullurl"] = true;
         checkResults["subdomain"] = true;
         checkResults["domain"] = true;
       } else {
-        let passHost = passURL.hostname;
         let currHost = currURL.hostname;
-        if (checkIsSubdomain(currHost, passHost)) {
+        let passHosts = passURL.map(url => url.hostname);
+        if (passHosts.some(host => checkIsSubdomain(currHost, host))) {
           checkResults["subdomain"] = true;
           checkResults["domain"] = true;
         } else {
-          let passDomain = getMainDomain(passHost);
           let currDomain = getMainDomain(currHost);
-          checkResults["domain"] = (passDomain == currDomain);
+          let passDomains = passHosts.map(getMainDomain);
+          checkResults["domain"] = passDomains.some(domain => domain == currDomain);
         }
       }
 
@@ -706,7 +714,7 @@ PassFF.Page = (function () {
       return confirmation_required ? PassFF.Page.confirm(
         "**" + confirmation_message + "**\n"
         + _("passff_checks_url_curr") + "```" + results["curr_url"] + "```"
-        + _("passff_checks_url_pass") + "```" + results["pass_url"] + "```"
+        + _("passff_checks_url_pass") + "```" + results["pass_url"].join("\n") + "```"
         + "**" + _("passff_checks_override_confirm") + "**"
       ) : true;
     });
@@ -792,9 +800,16 @@ PassFF.Page = (function () {
         return PassFF.Pass.getPasswordData(item)
           .then((passwordData) => {
             if (typeof passwordData === "undefined") return null;
-            log.debug('Go to item', item.fullKey, newTab, autoFill, submit);
-            let url = passwordData.url || item.key;
-            if (!url.startsWith('http')) url = 'http://' + url;
+            log.debug('goToItemUrl:', item.fullKey, newTab, autoFill, submit);
+            let url = passwordData.url[0];
+            for (let i = 0; i < passwordData.url.length; i++) {
+              try {
+                url = (new URL(passwordData.url[i])).href;
+              } catch (e) {
+                continue;
+              }
+            }
+            log.debug(`goToItemUrl: using URL ${url}`);
             return promised_tab
               .then((tab) => {
                 let tab_url = tab.url.replace(/^https?:\/+/,"").replace(/\/+$/,"");

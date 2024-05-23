@@ -21,57 +21,70 @@ PassFF.Pass = (function () {
  * #############################################################################
  */
 
-  function setLoginPasswordUrl(passwordData, item) {
-    let login;
+  function setLoginPasswordUrls(passwordData, item) {
+    let logins = [];
     for (let i = 0; i < PassFF.Preferences.loginFieldNames.length; i++) {
-      login = passwordData[PassFF.Preferences.loginFieldNames[i]];
-      if (typeof login !== "undefined") break;
+      const login = passwordData[PassFF.Preferences.loginFieldNames[i]];
+      if (typeof login !== "undefined") {
+        logins.push(...login);
+      }
     }
-    let key_is_login = typeof login === "undefined";
-    passwordData.login = key_is_login ? item.key : login;
+    let key_is_login = logins.length == 0;
+    passwordData.login = key_is_login ? item.key : logins[0];
 
-    let password;
+    let passwords = [];
     for (let i = 0; i < PassFF.Preferences.passwordFieldNames.length; i++) {
-      password = passwordData[PassFF.Preferences.passwordFieldNames[i]];
-      if (password) break;
+      const password = passwordData[PassFF.Preferences.passwordFieldNames[i]];
+      if (password) {
+        passwords.push(...password);
+      }
     }
-    passwordData.password = password;
+    passwordData.password = passwords[0];
 
-    let url;
+
+    let urls = [];
     for (let i = 0; i < PassFF.Preferences.urlFieldNames.length; i++) {
-      url = passwordData[PassFF.Preferences.urlFieldNames[i]];
-      if (url) break;
+      const url = passwordData[PassFF.Preferences.urlFieldNames[i]];
+      if (url) {
+        urls.push(...url);
+      }
     }
-    if (typeof url === "undefined") {
-      url = item.key;
+    if (urls.length == 0) {
+      let url = item.key;
       if (key_is_login) {
         let key_parts = item.fullKey.split("/");
         if (key_parts.length > 1) {
           url = key_parts[key_parts.length - 2];
         }
       }
+      urls.push(url)
     }
-    if (!(/^[a-z]+:\/\//.test(url))) {
-      // if there is no protocol specified, assume secure HTTP
-      url = `https://${url}`;
+    for (let i = 0; i < urls.length; i++) {
+      if (!(/^[a-z]+:\/\//.test(urls[i]))) {
+        // if there is no protocol specified, assume secure HTTP
+        urls[i] = `https://${urls[i]}`;
+      }
     }
-    passwordData.url = url;
+    passwordData.url = urls;
   }
 
-  function setOtpauth(passwordData) {
-    let otpauth;
+  async function setOtp(passwordData, item) {
+    let otpauth = false;
     for (let i = 0; i < PassFF.Preferences.otpauthFieldNames.length; i++) {
       otpauth = passwordData[PassFF.Preferences.otpauthFieldNames[i]];
       if (otpauth) break;
     }
-    passwordData.otpauth = !!otpauth;
+    if (!otpauth) return;
+
+    log.debug('setOtp: Generating OTP token');
+    passwordData.otp = await PassFF.Pass.generateOtp(item.fullKey);
   }
 
   function setOther(passwordData) {
     let other = {};
     Object.keys(passwordData)
       .filter(isOtherField)
-      .forEach((key) => { other[key] = passwordData[key]; });
+      .forEach(fieldName => { other[fieldName] = passwordData[fieldName]; });
     passwordData._other = other;
   }
 
@@ -360,6 +373,41 @@ PassFF.Pass = (function () {
     item.children.forEach(rmTree);
   }
 
+  async function getLinkedFieldData(item, fieldName, target_path, recursionHist) {
+    recursionHist = recursionHist || [];
+    const target_item = (
+      target_path.startsWith("/")
+      ? PassFF.Pass.getItemByFullKey(target_path)
+      : PassFF.Pass.getItemByRelKey(item, target_path)
+    );
+    if (target_item === null) {
+      log.debug(
+        `getLinkedFieldData: pass entry ${target_path} referenced from`
+        + ` field ${fieldName} in ${item.fullKey} does not exist`
+      );
+      return `BROKEN_PASS_REF_MISS: -> ${target_path}`;
+    } else if (recursionHist.indexOf(target_item.id) >= 0) {
+      log.debug(
+        `getLinkedFieldData: recursion loop for ${target_path} referenced from`
+        + ` field ${fieldName} in ${item.fullKey}`
+      );
+      return `BROKEN_PASS_REF_LOOP: -> ${target_path}`;
+    } else {
+      const target_data = await PassFF.Pass.getPasswordData(
+        target_item, false, recursionHist,
+      );
+      if (!target_data.hasOwnProperty(fieldName)) {
+        log.debug(
+          `getLinkedFieldData: missing field ${fieldName} in ${target_item.fullKey},`
+          + ` referenced from ${item.fullKey}`
+        );
+        return `BROKEN_PASS_REF_FIELD: -> ${target_path}`;
+      } else {
+        return target_data[fieldName];
+      }
+    }
+  }
+
 /* #############################################################################
  * #############################################################################
  *  Main interface
@@ -594,9 +642,10 @@ PassFF.Pass = (function () {
           let urls = [];
 
           // build RegExp for detecting metaTag lines
-          let metaTagURLPart = PassFF.Preferences.urlFieldNames.join('|');
-          metaTagURLPart = metaTagURLPart || "host|url";  // fallback
-          let metaTagRegexp = new RegExp("^("+metaTagURLPart+"):",'i');
+          let metaTagRegexp = new RegExp(
+            `^(${PassFF.Preferences.urlFieldNames.join("|")}):`, "i"
+          );
+          let urlRegExp = new RegExp("^https?://.*");
 
           for (let line of stdout.split("\n")) {
             if (!metaTagRegexp.test(line)) {
@@ -611,15 +660,21 @@ PassFF.Pass = (function () {
             } else {
               //current line is an url matching the last found fullKey
               //'host:' or 'url:" needs to be stripped
-              let url = line.replace(metaTagRegexp, "").trim();
+              let url = (
+                urlRegExp.test(line) ? line.trim() : line.replace(metaTagRegexp, "")
+              ).trim();
+              if (!urlRegExp.test(url)) {
+                url = `https://${url}`;
+              }
               urls.push(url);
             }
           }
           if (urls.length > 0) {
             metaUrls.set(fullKey, urls);
           }
-          log.debug(`Finished indexing meta urls, found ${metaUrls.size} `
-            + `entries that include urls`);
+          log.debug(
+            `Finished indexing meta urls, found ${metaUrls.size} entries that include urls`
+          );
           browser.tabs.query({}).then((tabs) => {
             tabs.forEach((t) => browser.tabs.sendMessage(t.id, "refresh"));
           });
@@ -640,32 +695,23 @@ PassFF.Pass = (function () {
       recursionHist = [...recursionHist, item.id];
       if (item.hasFields) {
         // hierarchical-style item
-        let results = [];
-        for (let child of item.children.map(this.getItemById)) {
-          if (child.isField) {
-            let data = await this.getPasswordData(child);
-            if (typeof data === "undefined") return;
-            results.push(data);
-          } else {
-            results.push(null);
-          }
-        }
-        if (typeof results[0] === "undefined") return;
         let result = {};
         let otpauthkey;
-        for (let i = 0; i < item.children.length; i++) {
-          let child = this.getItemById(item.children[i]);
+        let childFields = item.children.map(this.getItemById).filter(c => c.isField);
+        for (const child of childFields) {
+          const data = await this.getPasswordData(child);
+          if (typeof data === "undefined") return;
           if (isOtpauthField(child.key)) {
             otpauthkey = child.fullKey;
-          } else if (child.isField) {
-            result[child.key] = results[i].password;
+          } else {
+            result[child.key] = [data.password];
           }
         }
-        setLoginPasswordUrl(result, item);
+        if (Object.keys(result).length == 0) return;
+        setLoginPasswordUrls(result, item);
         setOther(result);
-
         if (!!otpauthkey) {
-          log.debug('Generating OTP token');
+          log.debug('getPasswordData: Generating OTP token');
           result.otp = await this.generateOtp(otpauthkey);
         }
         return result;
@@ -679,95 +725,83 @@ PassFF.Pass = (function () {
           .map(this.getPasswordData)[0];
         return Promise.all(promised_results).then((results) => {
           if (typeof results[0] === "undefined") return;
-          let result = Object.assign({}, results[0], results[1]);
-          result.password = results[0].password;
-          result.login = results[1].password;
-          if (!result.hasOwnProperty("url")) {
-            result.url = item.key;
+          const entries = [
+            ...Object.entries(results[0]),
+            ...Object.entries(results[1]),
+          ];
+          let result = {
+            password: [results[0].password],
+            login: [results[1].password],
+          };
+          for (const [fieldName, value] of entries) {
+            if (fieldName === "password") continue;
+            if (!result.hasOwnProperty(fieldName)) {
+              result[fieldName] = [];
+            }
+            result[fieldName].push(...(typeof value === "string" ? [value] : value));
           }
-          setLoginPasswordUrl(result, item);
+          setLoginPasswordUrls(result, item);
           setOther(result);
           return result;
         });
       } else {
         // multiline-style item
-        let key = item.fullKey;
-        return getPassExecPromise(key)
+        return getPassExecPromise(item.fullKey)
           .then(async (executionResult) => {
             if (executionResult.exitCode !== 0) return;
 
             let lines = executionResult.stdout.split('\n');
-            result.password = lines[0];
+            result.password = [lines[0]];
 
-            let noFields = true;
             for (let i = 1; i < lines.length; i++) {
-              let line = lines[i];
+              const line = lines[i];
+              const isUrl = /^https?:\/\/.*/.test(line);
               let splitPos = line.indexOf(':');
-              let splitLen = 1;
-              if (splitPos >= 0) {
+              if (i == 1 && splitPos == -1) {
+                // default interpretation of second line is 'login' field
+                // this does not support login names containing a colon!
+                result.login = [line];
+              } else if (i == 2 && (splitPos == -1 || isUrl)) {
+                // default interpretation of third line is 'url' field
+                // does not support urls without 'http' and containing a colon (e.g. 127.0.0.1:80)
+                result.url = [line];
+              } else if (splitPos >= 0) {
                 // support attribute names that contain a colon (but no space)
+                let splitLen = 1;
                 let splitPos2 = line.indexOf(': ');
                 if (splitPos2 >= 0) {
                   splitPos = splitPos2;
                   splitLen = 2;
                 }
-                let attributeName = line.substring(0, splitPos).toLowerCase();
-                let attributeValue = line.substring(splitPos + splitLen);
-                result[attributeName] = attributeValue.trim();
-                noFields = false;
+                const fieldName = line.substring(0, splitPos).toLowerCase();
+                const value = line.substring(splitPos + splitLen);
+                if (!result.hasOwnProperty(fieldName)) {
+                  result[fieldName] = [];
+                }
+                result[fieldName].push(value.trim());
               }
             }
 
-            if (noFields && lines.length > 1 && lines[1] != "") {
-                result.login = lines[1];
-            }
-
-            for (const [fieldName, value] of Object.entries(result)) {
-              const match = / *-> *(.*)/.exec(value);
-              if (!match) continue;
-              const target_path = match[1];
-              const target_item = (
-                target_path.startsWith("/")
-                ? this.getItemByFullKey(target_path)
-                : this.getItemByRelKey(item, target_path)
-              );
-              if (target_item === null) {
-                log.debug(
-                  `getPasswordData: pass entry ${target_path} referenced from`
-                  + ` field ${fieldName} in ${item.fullKey} does not exist`
-                );
-                result[fieldName] = `BROKEN_PASS_REF_MISS: ${value}`;
-              } else if (recursionHist.indexOf(target_item.id) >= 0) {
-                log.debug(
-                  `getPasswordData: recursion loop for ${target_path} referenced from`
-                  + ` field ${fieldName} in ${item.fullKey}`
-                );
-                result[fieldName] = `BROKEN_PASS_REF_LOOP: ${value}`;
-              } else {
-                const target_data = await PassFF.Pass.getPasswordData(
-                  target_item, meta2leaf, recursionHist,
-                );
-                if (!target_data.hasOwnProperty(fieldName)) {
-                  log.debug(
-                    `getPasswordData: missing field ${fieldName} in ${target_item.fullKey},`
-                    + ` referenced from ${item.fullKey}`
-                  );
-                  result[fieldName] = `BROKEN_PASS_REF_FIELD: ${value}`;
+            for (const [fieldName, values] of Object.entries(result)) {
+              let linkedValues = [];
+              for (const value of values) {
+                const match = / *-> *(.*)/.exec(value);
+                if (!match) {
+                  linkedValues.push(value);
                 } else {
-                  result[fieldName] = target_data[fieldName];
+                  const lValue = await getLinkedFieldData(
+                    item, fieldName, match[1], recursionHist,
+                  );
+                  linkedValues.push(...(typeof lValue === "string" ? [lValue] : lValue));
                 }
               }
+              result[fieldName] = linkedValues;
             }
 
-            setLoginPasswordUrl(result, item);
-            setOtpauth(result);
+            setLoginPasswordUrls(result, item);
+            await setOtp(result, item);
             setOther(result);
             setText(result, executionResult.stdout);
-
-            if (result.otpauth) {
-              log.debug('Generating OTP token');
-              result.otp = await this.generateOtp(key);
-            }
 
             return result;
           });
