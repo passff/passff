@@ -9,8 +9,8 @@ var PassFF = (function () {
     * This code requires `util.js`, `preferences.js` and `pass.js`.
     */
 
-  var init_promise = null;
-  var activeWindow = null;
+  let init_promise = null;
+  let activeWindow = null;
 
 /* #############################################################################
  * #############################################################################

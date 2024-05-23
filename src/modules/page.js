@@ -6,15 +6,15 @@ PassFF.Page = (function () {
     * Manipulates and interacts with web pages opened by the user.
     */
 
-  var doc = document;
-  var inputElements = [];
-  var loginInputTypes = ['text', 'email', 'tel'];
-  var otpInputTypes = ['text', 'number', 'password', 'tel'];
-  var tab_init_pending = [];
-  var matchItems = [];
-  var bestFitItem = null;
-  var goToAutoFillPending = null;
-  var lastActiveElement = null;
+  let doc = document;
+  let inputElements = [];
+  let loginInputTypes = ['text', 'email', 'tel'];
+  let otpInputTypes = ['text', 'number', 'password', 'tel'];
+  let tab_init_pending = [];
+  let matchItems = [];
+  let bestFitItem = null;
+  let goToAutoFillPending = null;
+  let lastActiveElement = null;
 
 /* #############################################################################
  * #############################################################################
@@ -291,7 +291,8 @@ PassFF.Page = (function () {
         let inputNames = readInputNames(input);
         let matching = findIntersection(otherNames, inputNames);
         if (typeof matching !== "undefined") {
-          let value = passwordData._other[matching];
+          const values = passwordData._other[matching];
+          let value = values[values.length - 1];
           if (value == "PASSFF_OMIT_FIELD") {
             return;
           } else if (value == "PASSFF_FIELD_OTP") {
@@ -523,7 +524,7 @@ PassFF.Page = (function () {
  * #############################################################################
  */
 
-  var submittedTabs = {
+  let submittedTabs = {
     _tabs: [],
     get: function (tab) {
       let val = this._tabs.find((val) => {
@@ -580,7 +581,7 @@ PassFF.Page = (function () {
     matchItems = PassFF.Pass.getUrlMatchingItems(url);
     bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
 
-    var obs = new MutationObserver(onNodeAdded);
+    let obs = new MutationObserver(onNodeAdded);
     obs.observe(document, { attributes: true, childList: true, subtree: true });
     onNodeAdded();
 
@@ -626,8 +627,9 @@ PassFF.Page = (function () {
         "domain": false,
       };
 
+      let currURL;
       try {
-        var currURL = new URL(currTabURL);
+        currURL = new URL(currTabURL);
         checkResults["curr_url_valid"] = true;
       } catch (e) {
         checkResults["err_message"] = e.message;
@@ -734,7 +736,7 @@ PassFF.Page = (function () {
           document.addEventListener('keydown', function (evt) {
             if (shortcut.commandLetter !== evt.key.toLowerCase()) return;
 
-            for (var modifier in shortcut.expectedModifierState) {
+            for (let modifier of Object.keys(shortcut.expectedModifierState)) {
               if (shortcut.expectedModifierState[modifier] !==
                   evt.getModifierState(modifier)) {
                 return;

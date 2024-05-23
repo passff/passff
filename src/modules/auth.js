@@ -6,7 +6,7 @@ PassFF.Auth = (function () {
     * This controller comes into play when HTTP authentication is required.
     */
 
-  var currentAuths = [];
+  let currentAuths = [];
 
   function getAuthById(requestId) {
     return currentAuths.find(a => a.requestId === requestId) || null;

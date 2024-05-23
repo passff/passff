@@ -8,12 +8,12 @@ PassFF.Pass = (function () {
     * keeps track of the items matching the current context/url.
     */
 
-  var allItems = [];
-  var contextItems = [];
-  var metaUrls = null;
-  var displayItem = null;
-  var pendingRequests = {};
-  var addPasswordContext = '/';
+  let allItems = [];
+  let contextItems = [];
+  let metaUrls = null;
+  let displayItem = null;
+  let pendingRequests = {};
+  let addPasswordContext = '/';
 
 /* #############################################################################
  * #############################################################################
@@ -545,8 +545,8 @@ PassFF.Pass = (function () {
             }
           });
 
-          var isInUseHiddenRegex = PassFF.Preferences.filterPathRegex.length != 0;
-          var isHiddenRegex = new RegExp(PassFF.Preferences.filterPathRegex.join("|"), 'i');
+          let isInUseHiddenRegex = PassFF.Preferences.filterPathRegex.length != 0;
+          let isHiddenRegex = new RegExp(PassFF.Preferences.filterPathRegex.join("|"), 'i');
 
           allItems.slice().reverse().forEach(item => {
             let siblings = item.parent ? this.getItemById(item.parent).children : [];
@@ -911,7 +911,7 @@ PassFF.Pass = (function () {
                 if (result.exitCode !== 0) {
                   return false;
                 }
-                var pass = result.stdout.split("\n")[0];
+                let pass = result.stdout.split("\n")[0];
                 return this.addNewPassword(name, pass, additionalInfo)
               });
           } else {
@@ -964,7 +964,7 @@ PassFF.Pass = (function () {
 
     getDisplayItem: background_function("Pass.getDisplayItem", () => {
       // make sure passwordData can only be requested once
-      var item = displayItem;
+      let item = displayItem;
       displayItem = null;
       return item;
     }),
@@ -1106,7 +1106,7 @@ function handlePasswordGeneration() {
     isPresent('name', _("errors_name_is_required")),
   ];
 
-  var onAddPassword = makePasswordAdder(
+  let onAddPassword = makePasswordAdder(
     addValidations,
     'add-errors-container',
     function () {
@@ -1123,7 +1123,7 @@ function handlePasswordGeneration() {
     }
   );
 
-  var onGeneratePassword = makePasswordAdder(
+  let onGeneratePassword = makePasswordAdder(
     genValidations,
     'gen-errors-container',
     function () {

@@ -15,7 +15,7 @@ PassFF.Preferences = (function () {
    * ###########################################################################
    */
 
-  var ui_i18n_init = false;
+  let ui_i18n_init = false;
   function init_ui() {
     let pref_str_change_cb = function (key, isInt) {
       return function (evt) {
@@ -62,14 +62,14 @@ PassFF.Preferences = (function () {
    * ###########################################################################
    */
 
-  var prefParams = {
+  let prefParams = {
     passwordInputNames    : 'passwd,password,pass',
     loginInputNames       : 'login,user,mail,email,tel,username,opt_login,log,usr_name',
     otpInputNames         : 'otp,code,otc,user[otp_attempt],one-time-password',
     buttonInputQueries    : 'button:not([type=reset])\ninput[type=submit]\ninput[type=button]\n[role=button]',
     loginFieldNames       : 'login,user,username,id',
     passwordFieldNames    : 'passwd,password,pass',
-    urlFieldNames         : 'url,http',
+    urlFieldNames         : 'url,http,https',
     indexMetaUrls         : false,
     otpauthFieldNames     : 'otpauth,otp',
     autoFill              : false,
@@ -101,7 +101,7 @@ PassFF.Preferences = (function () {
     lookMenuWidth         : '28rem',
   };
 
-  var listParams = {
+  const listParams = {
     'passwordInputNames'  : ',',
     'loginInputNames'     : ',',
     'otpInputNames'       : ',',
@@ -115,7 +115,7 @@ PassFF.Preferences = (function () {
     'filterPathRegex'     : '\n',
   };
 
-  var lowerCaseParams = [
+  const lowerCaseParams = [
     'passwordInputNames',
     'loginInputNames',
     'otpInputNames',
@@ -133,7 +133,7 @@ PassFF.Preferences = (function () {
  * #############################################################################
  */
 
-  var prefObj = {
+  let prefObj = {
     init: function () {
       let changes = {};
       return browser.storage.local.get(Object.keys(prefParams))
@@ -155,7 +155,7 @@ PassFF.Preferences = (function () {
         .then(() => {
           browser.storage.onChanged.addListener((changes, areaName) => {
             if (areaName !== "local") return;
-            for (var item of Object.keys(changes)) {
+            for (let item of Object.keys(changes)) {
               prefParams[item] = changes[item].newValue;
               if (item == "handleHttpAuth" && PassFF.mode === "background") {
                 PassFF.Auth.init();

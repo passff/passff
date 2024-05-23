@@ -75,7 +75,7 @@ function parse_markdown(obj) {
 
 var log = {
   generateArguments: function (args) {
-    var argsArray = Array.from(args);
+    let argsArray = Array.from(args);
     argsArray.unshift('[PassFF.' + PassFF.mode + ']');
     return argsArray;
   }

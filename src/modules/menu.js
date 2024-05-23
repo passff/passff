@@ -13,7 +13,7 @@ PassFF.Menu = (function () {
    * ###########################################################################
    */
 
-  var menuState = {
+  let menuState = {
     search_val: '',
     items: null,
     error: false,
