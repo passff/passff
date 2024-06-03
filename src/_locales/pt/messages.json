@@ -90,7 +90,10 @@
     "message": "Aparência"
   },
   "passff_prefs_look_menu_width": {
-    "message": "Largura do menu"
+    "message": "Largura do menu da barra de ferramentas"
+  },
+  "passff_prefs_look_popup_width": {
+    "message": "Largura do formulário popup"
   },
   "passff_prefs_mark_fillable": {
     "message": "Mostrar ícone do PassFF em campos de senhas"

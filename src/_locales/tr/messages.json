@@ -90,7 +90,10 @@
     "message": "Görünüm"
   },
   "passff_prefs_look_menu_width": {
-    "message": "Menü genişliği"
+    "message": "Araç çubuğu menüsünün genişliği"
+  },
+  "passff_prefs_look_popup_width": {
+    "message": "Form açılır penceresinin genişliği"
   },
   "passff_prefs_mark_fillable": {
     "message": "Doldurulabilir girdi alanlarını PassFF simgesiyle işaretle"

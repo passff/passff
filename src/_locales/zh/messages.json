@@ -90,7 +90,10 @@
     "message": "外观和样式"
   },
   "passff_prefs_look_menu_width": {
-    "message": "工具栏宽度"
+    "message": "工具栏菜单宽度"
+  },
+  "passff_prefs_look_popup_width": {
+    "message": "表格弹出窗口的宽度"
   },
   "passff_prefs_mark_fillable": {
     "message": "使用 PassFF 图标标记可填充的输入字段"

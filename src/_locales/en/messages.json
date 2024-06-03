@@ -96,7 +96,10 @@
     "message": "Look and style"
   },
   "passff_prefs_look_menu_width": {
-    "message": "Menu width"
+    "message": "Toolbar menu width"
+  },
+  "passff_prefs_look_popup_width": {
+    "message": "Form popup width"
   },
   "passff_prefs_mark_fillable": {
     "message": "Mark fillable input fields with the PassFF icon"

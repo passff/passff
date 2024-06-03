@@ -96,7 +96,10 @@
     "message": "Aussehen und Stil"
   },
   "passff_prefs_look_menu_width": {
-    "message": "Menü-Breite"
+    "message": "Breite des Toolbar-Menüs"
+  },
+  "passff_prefs_look_popup_width": {
+    "message": "Breite des Formular-Popups"
   },
   "passff_prefs_mark_fillable": {
     "message": "Automatisch ausfüllbare Felder mit Icon markieren"

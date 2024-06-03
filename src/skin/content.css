@@ -83,11 +83,10 @@
   background-color: #ccc !important;
 }
 
-.passff_popup_menu {
+.passff_popup_frame {
   all: initial;
   position: absolute;
   border: 0;
   z-index: 1000;
-  width: 19em;
   height: 10em;
 }

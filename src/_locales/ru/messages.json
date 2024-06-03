@@ -80,6 +80,15 @@
   "passff_prefs_tab_dev": {
     "message": "Отладка"
   },
+  "passff_prefs_tab_look": {
+    "message": "Внешний вид и стиль"
+  },
+  "passff_prefs_look_menu_width": {
+    "message": "Ширина меню панели инструментов"
+  },
+  "passff_prefs_look_popup_width": {
+    "message": "Ширина всплывающего окна формы"
+  },
   "passff_prefs_mark_fillable": {
     "message": "Отметить поля, которые можно заполнить, иконкой PassFF"
   },

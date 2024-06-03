@@ -99,6 +99,7 @@ PassFF.Preferences = (function () {
     recognisedSuffixes    : 'co.uk,org.uk,me.uk,co.jp,com.au',
     filterPathRegex       : 'notes\nattributes\nattachments',
     lookMenuWidth         : '28rem',
+    lookPopupWidth        : '25rem',
   };
 
   const listParams = {

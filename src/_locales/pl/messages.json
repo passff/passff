@@ -80,6 +80,15 @@
   "passff_prefs_tab_dev": {
     "message": "Debugowanie i rozwój"
   },
+  "passff_prefs_tab_look": {
+    "message": "Wygląd i styl"
+  },
+  "passff_prefs_look_menu_width": {
+    "message": "Szerokość menu paska narzędzi"
+  },
+  "passff_prefs_look_popup_width": {
+    "message": "Szerokość wyskakującego okienka formularza"
+  },
   "passff_prefs_mark_fillable": {
     "message": "Oznacz pola tekstowe ikoną PassFF"
   },

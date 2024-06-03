@@ -96,7 +96,10 @@
     "message": "Présentation et style"
   },
   "passff_prefs_look_menu_width": {
-    "message": "Largeur du menu"
+    "message": "Largeur du menu de la barre d'outils"
+  },
+  "passff_prefs_look_popup_width": {
+    "message": "Largeur de la fenêtre contextuelle"
   },
   "passff_prefs_mark_fillable": {
     "message": "Marquer les champs d'entrée remplissables de l'icône PassFF"

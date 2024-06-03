@@ -389,16 +389,17 @@ PassFF.Page = (function () {
 
 // %%%%%%%%%%%%%%% Implementation of input field popup %%%%%%%%%%%%%%%%%%%%%%%%%
 
-  let popup_menu = null;
+  let popup_frame = null;
   let popup_target = null;
 
   function resetPopup(target) {
-    // return true if resetted popup_menu belonged to target
+    // return true if resetted popup_frame belonged to target
     let result = (target === popup_target);
     if (popup_target !== null) resetIcon(popup_target);
     if (result) popup_target = null;
-    if (popup_menu === null) setupPopup();
-    popup_menu.style.display = "none";
+    if (popup_frame === null) setupPopup();
+    popup_frame.style.display = "none";
+    popup_frame.style.width = PassFF.Preferences.lookPopupWidth;
     return result;
   }
 
@@ -406,36 +407,36 @@ PassFF.Page = (function () {
     if (!PassFF.Preferences.markFillable) return;
 
     // Remove old instances of the popup menu
-    let old = document.querySelector(".passff_popup_menu");
+    let old = document.querySelector(".passff_popup_frame");
     if (old) old.parentNode.removeChild(old);
 
     // Setup new instance
-    popup_menu = document.createElement("iframe");
-    popup_menu.setAttribute("src",
+    popup_frame = document.createElement("iframe");
+    popup_frame.setAttribute("src",
       browser.runtime.getURL("content/content-popup.html"));
-    popup_menu.classList.add("passff_popup_menu");
-    popup_menu.addEventListener("load", function () {
-      let doc = popup_menu.contentDocument;
-      let popup_div = doc.getElementsByTagName("div")[0];
+    popup_frame.classList.add("passff_popup_frame");
+    popup_frame.addEventListener("load", function () {
+      let doc = popup_frame.contentDocument;
+      let popup_menu = doc.querySelector(".passff_popup_menu");
+      let popup_div = doc.querySelector(".passff_popup_menu > div");
       if (matchItems.length === 0) {
         let alert_el = doc.createElement("div");
         alert_el.classList.add("alert");
         alert_el.textContent = _('passff_no_entries_found');
-        popup_div.innerHTML = "";
-        popup_div.appendChild(alert_el);
+        popup_menu.innerHTML = "";
+        popup_menu.appendChild(alert_el);
       }
       matchItems.filter(i => i.isLeaf || i.hasFields).forEach(item => {
         let entry = document.createElement("div");
         entry.classList.add("passff_entry");
         entry.passff_item = item;
         entry.innerHTML = `
-          <div><!-- display: table-row -->
-            <div><button class="passff_key"><span></span></button></div>
-            <div><button class="passff_fill passff_button"></button></div>
-            <div><button class="passff_submit passff_button"></button></div>
-          </div>
+          <!-- display: table-row -->
+          <div><button class="passff_key"><span></span></button></div>
+          <div><button class="passff_fill passff_button"></button></div>
+          <div><button class="passff_submit passff_button"></button></div>
         `;
-         let button = entry.querySelector(".passff_key span");
+        let button = entry.querySelector(".passff_key span");
         button.textContent = item.fullKey;
         button.parentNode.title = item.fullKey;
         button.parentNode.addEventListener("click", function (e) {
@@ -451,8 +452,8 @@ PassFF.Page = (function () {
         popup_div.appendChild(entry);
       });
     }, true);
-    popup_menu.style.display = "none";
-    document.body.appendChild(popup_menu);
+    popup_frame.style.display = "none";
+    document.body.appendChild(popup_frame);
   }
 
   function openPopup(target) {
@@ -468,19 +469,19 @@ PassFF.Page = (function () {
 
     // position popup relative to input field
     let rect = target.getBoundingClientRect();
-    let popup_width = window.getComputedStyle(popup_menu).width;
-    popup_width = parseInt(popup_width.substring(0,popup_width.length-2), 10);
+    let popup_width = window.getComputedStyle(popup_frame).width;
+    popup_width = parseInt(popup_width.substring(0, popup_width.length-2), 10);
     let scrollright = window.scrollX - popup_width;
-    popup_menu.style.top      = (window.scrollY + rect.bottom + 1) + "px";
-    popup_menu.style.left     = (scrollright + rect.right - 2) + "px";
-    popup_menu.style.display  = "block";
+    popup_frame.style.top      = (window.scrollY + rect.bottom + 1) + "px";
+    popup_frame.style.left     = (scrollright + rect.right - 2) + "px";
+    popup_frame.style.display  = "block";
 
     // get the largest z-index value and position ourselves above it
     let z = Math.max(1, ...[...document.querySelectorAll('body *')]
       .filter(e => ["static",""].indexOf(e) === -1)
       .map(e => parseInt(window.getComputedStyle(e).zIndex, 10))
       .filter(e => e>0));
-    popup_menu.style.zIndex = "" + z;
+    popup_frame.style.zIndex = "" + z;
   }
 
   function getPopupEntryItem(target) {

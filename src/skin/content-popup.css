@@ -28,35 +28,40 @@ body {
 }
 
 .passff_popup_menu *:hover {
-  all: initial;
   font-size: 13px;
   font-family: sans-serif;
 }
 
-.passff_popup_menu div.alert {
+.passff_popup_menu > div {
+  display: table;
+  width: 100%;
+}
+
+.passff_popup_menu > div.alert {
+  display: block;
   padding: 1em;
 }
 
 .passff_popup_menu div.passff_entry {
-  display: table;
-  width: 100%;
-  border-bottom: 1px solid #b6b6b3;
+  display: table-row;
 }
 
-.passff_popup_menu div.passff_entry:last-child {
+.passff_popup_menu div.passff_entry:last-child > div {
   border-bottom: 0;
 }
 
 .passff_popup_menu div.passff_entry > div {
-  display: table-row;
+  display: table-cell;
+  border-bottom: 1px solid #b6b6b3;
 }
 
-.passff_popup_menu div.passff_entry > div > div {
-  display: table-cell;
+.passff_popup_menu div.passff_entry > div:first-child {
+  width: 100%;
 }
 
 .passff_popup_menu button,
 .passff_popup_menu button:hover {
+  cursor: pointer;
   position:relative;
   display: block;
   width: 100%;
@@ -67,6 +72,7 @@ body {
   background-color: #f0f0f0;
   color: #000;
   outline: none;
+  box-sizing: border-box;
 }
 
 .passff_popup_menu button:hover {
@@ -94,11 +100,11 @@ body {
 }
 
 .passff_popup_menu button.passff_key {
-  width: 19em;
   overflow: hidden;
 }
 
 .passff_popup_menu button.passff_key span {
+  cursor: pointer;
   display: block;
   float: right;
   white-space: nowrap;
@@ -110,5 +116,5 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 16px 16px;
-  width: 16px;
+  min-width: 32px;
 }
