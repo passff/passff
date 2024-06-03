@@ -594,77 +594,114 @@ PassFF.Page = (function () {
  * #############################################################################
  */
 
-  function securityChecks(passItemURL, currTabURL) {
-    if (!PassFF.Preferences.autoFillDomainCheck) {
+  function securityChecks(passItemURL, currTabURL, isAutoFill) {
+    if (
+      (!isAutoFill && PassFF.Preferences.checkOnlyAuto) || (
+        PassFF.Preferences.checkProtocol == 0
+        && PassFF.Preferences.checkSubdomain == 0
+        && PassFF.Preferences.checkDomain == 0
+        && PassFF.Preferences.checkFullUrl == 0
+      )
+    ) {
       return Promise.resolve(true);
     }
 
-    try {
-      var passURL = new URL(passItemURL);
-    } catch(e) {
-      return PassFF.Page.confirm(
-        _("passff_error_getting_url_pass", passItemURL) + "```" + e.message + "```"
-        + _("passff_override_antiphishing_confirmation"));
-    }
+    return Promise.resolve()
+    .then(() => {
+      let checkResults = {
+        "err_message": null,
+        "curr_url": currTabURL,
+        "curr_url_valid": false,
+        "pass_url": passItemURL,
+        "pass_url_valid": false,
+        "protocol": false,
+        "fullurl": false,
+        "subdomain": false,
+        "domain": false,
+      };
 
-    try {
-      var currURL = new URL(currTabURL);
-    } catch(e) {
-      return PassFF.Page.confirm(
-        _("passff_error_getting_url_curr", currTabURL) + " "
-        + _("passff_override_antiphishing_confirmation"));
-    }
+      try {
+        var currURL = new URL(currTabURL);
+        checkResults["curr_url_valid"] = true;
+      } catch (e) {
+        checkResults["err_message"] = e.message;
+        return checkResults;
+      }
 
-    return domainSecurityCheck(passURL, currURL)
-      .then((result) => {
-        if (!result) return false;
-        return protocolSecurityCheck(currURL, passURL);
-      });
-  }
+      try {
+        var passURL = new URL(passItemURL);
+        checkResults["pass_url_valid"] = true;
+      } catch (e) {
+        checkResults["err_message"] = e.message;
+        return checkResults;
+      }
 
-  function domainSecurityCheck(passURL, currURL) {
-    /*
-    Instead of requiring that the entire hostname match, which would lead to
-    example.com and login.example.com being considered different, only the
-    domains must match. However, identifying the domain is difficult because of
-    top-level-domains like .co.uk that have multiple dots in them, unlike the
-    more conventional single-dot TLDs like .com.
-    Resources on Identifying Domain:
-    https://stackoverflow.com/questions/10210058/get-the-parent-document-domain-without-subdomains
-    https://stackoverflow.com/questions/399250/going-where-php-parse-url-doesnt-parsing-only-the-domain
-    https://publicsuffix.org/
-    While not ideal, the current solution is to assume a single-dot TLD and
-    therefore match everything after the second-to-last dot. This is a security
-    risk on two-dot TLDs, as only the TLD (e.g. co.uk) will be matched.
-    */
-    let passDomain = passURL.hostname.split(".").slice(-2).join(".");
-    let currDomain = currURL.hostname.split(".").slice(-2).join(".");
-    if (passDomain != currDomain) {
-      return PassFF.Page.confirm(
-        _("passff_domain_mismatch", [currDomain, passDomain]) + " "
-        + _("passff_override_antiphishing_confirmation"));
-    }
-    return Promise.resolve(true);
-  }
+      if (currURL.protocol == "https:") {
+        checkResults["protocol"] = true;
+      }
 
-  function protocolSecurityCheck(currURL, passURL) {
-    let currProt = currURL.protocol;
-    let passProt = passURL.protocol;
-    if (currProt == "https:") {
-      // Storing an HTTP link is OK if the site redirects to HTTPS
-      return Promise.resolve(true);
-    }
-
-    return PassFF.Page.confirm(
-             _("passff_http_curr_warning") + " "
-             + _("passff_override_antiphishing_confirmation")
-      ).then((result) => {
-        // Maybe the current protocol was unsafe because an unsafe URL is stored
-        if (!result && passProt != "https:") {
-          PassFF.Page.notify(_("passff_http_pass_warning", passURL.href));
+      if (passItemURL == currTabURL) {
+        checkResults["fullurl"] = true;
+        checkResults["subdomain"] = true;
+        checkResults["domain"] = true;
+      } else {
+        let passHost = passURL.hostname;
+        let currHost = currURL.hostname;
+        if (checkIsSubdomain(currHost, passHost)) {
+          checkResults["subdomain"] = true;
+          checkResults["domain"] = true;
+        } else {
+          let passDomain = getMainDomain(passHost);
+          let currDomain = getMainDomain(currHost);
+          checkResults["domain"] = (passDomain == currDomain);
         }
-        return result;
-      });
+      }
+
+      return checkResults;
+    })
+    .then((results) => {
+      let confirmation_required = false;
+      let confirmation_message = "";
+
+      if (!results["curr_url_valid"]) {
+        if (
+          PassFF.Preferences.checkProtocol == 2
+          || PassFF.Preferences.checkSubdomain == 2
+          || PassFF.Preferences.checkDomain == 2
+          || PassFF.Preferences.checkFullUrl == 2
+        ) {
+          return false;
+        }
+        confirmation_required = true;
+        confirmation_message += _("passff_checks_invalid_url_curr") + " ";
+      } else {
+        let pref = PassFF.Preferences.checkProtocol;
+        if (!results["protocol"] && pref > 0) {
+          confirmation_required = true;
+          confirmation_message += _("passff_checks_protocol") + " ";
+          if (pref == 2) return false;
+        }
+
+        let checkLevels = ["fullurl", "subdomain", "domain"];
+        let checkLevelPrefs = ["checkFullUrl", "checkSubdomain", "checkDomain"];
+        for (let i = 0; i < checkLevels.length; i++) {
+          let pref = PassFF.Preferences[checkLevelPrefs[i]];
+          if (!results[checkLevels[i]] && pref > 0) {
+            confirmation_required = true;
+            confirmation_message += _(`passff_checks_${checkLevels[i]}`) + " ";
+            if (pref == 2) return false;
+            break;
+          }
+        }
+      }
+
+      return confirmation_required ? PassFF.Page.confirm(
+        "**" + confirmation_message + "**\n"
+        + _("passff_checks_url_curr") + "```" + results["curr_url"] + "```"
+        + _("passff_checks_url_pass") + "```" + results["pass_url"] + "```"
+        + "**" + _("passff_checks_override_confirm") + "**"
+      ) : true;
+    });
   }
 
 /* #############################################################################
@@ -817,7 +854,7 @@ PassFF.Page = (function () {
         log.debug("Fill active element", activeElement);
         if (activeElement.tagName !== "INPUT"
             || inputTypes.indexOf(activeElement.type) < 0) return;
-        return securityChecks(passwordData.url, window.location.href)
+        return securityChecks(passwordData.url, window.location.href, false)
           .then((result) => {
             if (!result) return;
             let inputs = [activeElement];
@@ -833,13 +870,13 @@ PassFF.Page = (function () {
     ),
 
     fillInputs: content_function("Page.fillInputs",
-      function (item, andSubmit, cautious) {
+      function (item, andSubmit, isAutoFill) {
         refocus();
         if (
           inputElements.filter(inp => inp[1] == "password" || inp[1] == "otp")
             .length === 0
         ) {
-          if (inputElements.length == 0 || cautious) {
+          if (inputElements.length == 0 || isAutoFill) {
             log.debug("fillInputs: No relevant login input elements recognized.");
             return Promise.resolve();
           } else {
@@ -849,8 +886,8 @@ PassFF.Page = (function () {
         return PassFF.Pass.getPasswordData(item)
           .then((passwordData) => {
             if (typeof passwordData === "undefined") return;
-            log.debug('Start auto-fill using', item.fullKey, andSubmit);
-            return securityChecks(passwordData.url, window.location.href)
+            log.debug('fillInputs: Start auto-fill using', item.fullKey, andSubmit);
+            return securityChecks(passwordData.url, window.location.href, isAutoFill)
               .then((result) => {
                 if (!result) return;
                 setInputs(inputElements, passwordData);
@@ -906,7 +943,7 @@ PassFF.Page = (function () {
     notify: content_function("Page.notify", function (message) {
       let dialog = document.getElementById("passff_notification");
       if (!dialog) {
-        dialog = document.createElement("div");
+        dialog = document.createElement("dialog");
         dialog.id = "passff_notification";
         document.body.appendChild(dialog);
       }
@@ -917,9 +954,11 @@ PassFF.Page = (function () {
       dialog_text = dialog.querySelector("div p");
       dialog_text.textContent = message; // prevent HTML injection
       parse_markdown(dialog_text);
+      dialog.showModal();
       return new Promise(function (resolve, reject) {
         let button = dialog.querySelector("button");
         button.addEventListener("click", () => {
+          dialog.close();
           document.body.removeChild(dialog);
           resolve(true);
         });
@@ -929,7 +968,7 @@ PassFF.Page = (function () {
     confirm: content_function("Page.confirm", function (message) {
       let dialog = document.getElementById("passff_notification");
       if (!dialog) {
-        dialog = document.createElement("div");
+        dialog = document.createElement("dialog");
         dialog.id = "passff_notification";
         document.body.appendChild(dialog);
       }
@@ -940,14 +979,17 @@ PassFF.Page = (function () {
       dialog_text = dialog.querySelector("div p");
       dialog_text.textContent = message; // prevent HTML injection
       parse_markdown(dialog_text);
+      dialog.showModal();
       return new Promise(function (resolve, reject) {
         let button = dialog.querySelector("button:first-child");
         button.addEventListener("click", () => {
+          dialog.close();
           document.body.removeChild(dialog);
           resolve(true);
         });
         button = dialog.querySelector("button:last-child");
         button.addEventListener("click", () => {
+          dialog.close();
           document.body.removeChild(dialog);
           resolve(false);
         });

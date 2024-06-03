@@ -26,6 +26,12 @@
   "passff_menu_goto_fill_and_submit": {
     "message": "Ansurfen, ausfüllen und absenden"
   },
+  "passff_menu_goto_fill_new_tab": {
+    "message": "Ansurfen, ausfüllen (in neuem Tab)"
+  },
+  "passff_menu_goto_fill_and_submit_new_tab": {
+    "message": "Ansurfen, ausfüllen und absenden (in neuem Tab)"
+  },
   "passff_menu_goto": {
     "message": "Ansurfen"
   },
@@ -65,6 +71,9 @@
   "passff_prefs_tab_autofilling": {
     "message": "Automatisches Ausfüllen von Formularen"
   },
+  "passff_prefs_tab_checks": {
+    "message": "Sicherheits-Checks"
+  },
   "passff_prefs_tab_inputs": {
     "message": "Eingabefelder"
   },
@@ -82,6 +91,12 @@
   },
   "passff_prefs_tab_dev": {
     "message": "Fehlersuche"
+  },
+  "passff_prefs_tab_look": {
+    "message": "Aussehen und Stil"
+  },
+  "passff_prefs_look_menu_width": {
+    "message": "Menü-Breite"
   },
   "passff_prefs_mark_fillable": {
     "message": "Automatisch ausfüllbare Felder mit Icon markieren"
@@ -128,6 +143,12 @@
   "passff_prefs_login_input_names_label": {
     "message": "Namen für 'Login'-Eingabefelder"
   },
+  "passff_prefs_otp_input_names_label": {
+    "message": "Namen für 'OTP'-Eingabefelder"
+  },
+  "passff_prefs_button_input_queries_label": {
+    "message": "'Formular senden'-Knopf-Queries, eine pro Zeile"
+  },
   "passff_prefs_login_field_names_label": {
     "message": "Login Datensatznamen"
   },
@@ -135,7 +156,16 @@
     "message": "Passwort Datensatznamen"
   },
   "passff_prefs_url_field_names_label": {
-    "message": "URL  Datensatznamen"
+    "message": "URL Datensatznamen"
+  },
+  "passff_prefs_index_meta_urls_label": {
+    "message": "Alle gespeicherte URLs beim Starten indizieren. Dabei werden alle URLs in den Browser-Speicher geladen und von PassFF für die Suche nach pass-Einträgen benutzt (benötigt passff-host >=1.2.0)."
+  },
+  "passff_prefs_otpauth_field_names_label": {
+    "message": "OTP Datensatznamen"
+  },
+  "passff_prefs_filter_path_regex_label": {
+    "message": "Reguläre Ausdrücke, um Einträge zu verstecken, einer pro Zeile (bezieht sich jeweils auf den ganzen Pfad)"
   },
   "passff_prefs_script_howto": {
     "message": "Änderungen bitte direkt in der passff.py vornehmen!"
@@ -148,6 +178,30 @@
   },
   "passff_prefs_autofill_blacklist_label": {
     "message": "Nicht auto-ausfüllen, falls URL diese enthält"
+  },
+  "passff_prefs_check_auto_label": {
+    "message": "Deaktiviere Checks beim manuellen Ausfüllen"
+  },
+  "passff_prefs_check_action_ignore": {
+    "message": "Ignorieren und trotzdem ausfüllen"
+  },
+  "passff_prefs_check_action_ask": {
+    "message": "Warnen und Zustimmung erfragen"
+  },
+  "passff_prefs_check_action_enforce": {
+    "message": "Nicht ausfüllen"
+  },
+  "passff_prefs_check_protocol_label": {
+    "message": "Falls die aktuelle Verbindung nicht verschlüsselt ist (kein HTTPS)"
+  },
+  "passff_prefs_check_domain_label": {
+    "message": "Falls die aktuelle und die gespeicherte URL unterschiedliche Domains haben"
+  },
+  "passff_prefs_check_subdomain_label": {
+    "message": "Falls die aktuelle Seite keine Subdomain der gespeicherten ist"
+  },
+  "passff_prefs_check_fullurl_label": {
+    "message": "Falls die aktuelle URL von der gespeicherten abweicht"
   },
   "passff_prefs_default_length_label": {
     "message": "Standard Passwortlänge"
@@ -244,5 +298,59 @@
   },
   "passff_no_entries_found": {
     "message": "Keine passenden Einträge für diese URL."
+  },
+  "passff_checks_url_curr": {
+    "message": "Die URL der aktuellen Webseite:"
+  },
+  "passff_checks_url_pass": {
+    "message": "Die im pass-Eintrag gespeicherte URL:"
+  },
+  "passff_checks_override_confirm": {
+    "message": "Wollen Sie trotzdem fortfahren? Das kann ein Sicherheitsrisiko darstellen."
+  },
+  "passff_checks_invalid_url_curr": {
+    "message": "Es gab einen Fehler beim Parsen der aktuellen URL."
+  },
+  "passff_checks_invalid_url_pass": {
+    "message": "Es gab einen Fehler beim Parsen der gespeicherten URL."
+  },
+  "passff_checks_protocol": {
+    "message": "Die aktuelle Verbindung nutzt ein unsicheres Protokoll, das Unbefugten Zugriff auf Ihr Passwort geben könnte."
+  },
+  "passff_checks_domain": {
+    "message": "Die Domain der aktuellen Webseite stimmt nicht mit der gespeicherten überein."
+  },
+  "passff_checks_subdomain": {
+    "message": "Die aktuelle Webseite ist keine Subdomain der gespeicherten."
+  },
+  "passff_checks_fullurl": {
+    "message": "Die URL der aktuellen Webseite stimmt nicht mit der gespeicherten überein."
+  },
+  "passff_error_otp_host_version": {
+    "message": "Unterstützung für OTP erfordert die PassFF Host-App-Version 1.1.0 oder neuer. Bitte folgen Sie den [offiziellen Installationsanweisungen]($passffURL$).",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_error_grep_host_version": {
+    "message": "Die Indizierung von Meta-URLs erfordert die PassFF Host-App-Version 1.2.0 oder neuer. Bitte folgen Sie den [offiziellen Installationsanweisungen]($passffURL$).",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_error_script_failed": {
+    "message": "Script execution failed: ```$errMsg$```",
+    "placeholders": {
+      "errMsg": {
+        "content": "$1",
+        "example": "gpg: cancelled by user"
+      }
+    }
   }
 }

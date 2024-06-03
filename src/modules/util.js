@@ -28,7 +28,12 @@ function parse_markdown(obj) {
       a.textContent = p1;
       return a;
     }],
-    [/```([\s\S]+)```/, function (match, p1) {
+    [/\*\*([^\*]+)\*\*/, function (match, p1) {
+      let c = document.createElement("b");
+      c.textContent = p1;
+      return c;
+    }],
+    [/```([^`]+)```/, function (match, p1) {
       let c = document.createElement("code");
       c.classList.add("block");
       c.textContent = p1;
@@ -279,3 +284,53 @@ const semver = (function semver() {
   let publicAPI = { gt, gte, eq };
   return publicAPI;
 })();
+
+/* #############################################################################
+ * #############################################################################
+ *  URL handling
+ * #############################################################################
+ */
+
+function sanitizeDomain(domain) {
+  // remove leading or trailing dots from hostname
+  return domain.replace(/^\.+/, '').replace(/\.+$/, '');
+}
+
+function getDomainSuffix(domain) {
+  // get the domain suffix without the leading dot
+  domain = sanitizeDomain(domain);
+  let domain_parts = domain.split(/\.+/);
+  let suffix = (domain_parts.length >= 2) ? domain_parts[domain_parts.length - 1] : "";
+  if (/^[0-9]+$/.test(suffix)) {
+    // this is probably an IPv4 address (no suffix)
+    suffix = "";
+  }
+  PassFF.Preferences.recognisedSuffixes
+    .map((s) => s.trim())
+    .filter((s) => domain.endsWith(s))
+    .forEach((s) => suffix = s);
+  return suffix;
+}
+
+function getMainDomain(domain) {
+  // truncate subdomain parts from hostname, but keep suffix
+  domain = sanitizeDomain(domain);
+  let suffix = getDomainSuffix(domain);
+  let prefix = (suffix.length == 0) ? domain : domain.substr(0, domain.length - suffix.length - 1)
+  let parts = prefix.split(".");
+  return parts[parts.length - 1] + "." + suffix;
+}
+
+function checkIsSubdomain(domain1, domain2) {
+  // check if domain1 is equal to or a subdomain of domain2
+  domain1 = sanitizeDomain(domain1);
+  domain2 = sanitizeDomain(domain2);
+  return domain1 == domain2 || domain1.endsWith("." + domain2);
+}
+
+function checkDomainsHaveSameMain(domain1, domain2) {
+  domain1 = sanitizeDomain(domain1);
+  domain2 = sanitizeDomain(domain2);
+  let main1 = getMainDomain(domain1);
+  return checkIsSubdomain(domain2, main1);
+}
