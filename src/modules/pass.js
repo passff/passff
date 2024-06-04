@@ -503,6 +503,10 @@ PassFF.Pass = (function () {
                 // "decryption failed: Operation cancelled"
                 log.debug('Script execution ok, operation cancelled by user.');
                 result.stderr = "gpg: Operation cancelled";
+              } else if (result.gpgErrorCode == 11) {
+                // "decryption failed: No secret key"
+                log.debug('Script execution ok, wrong passphrase provided by user.');
+                result.stderr = "gpg: No secret key";
               } else {
                 log.warn(
                   'Script execution failed',
