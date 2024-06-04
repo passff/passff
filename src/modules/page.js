@@ -7,6 +7,7 @@ PassFF.Page = (function () {
     */
 
   let doc = document;
+  let tabContainer = null;
   let inputElements = [];
   let loginInputTypes = ['text', 'email', 'tel'];
   let otpInputTypes = ['text', 'number', 'password', 'tel'];
@@ -583,7 +584,7 @@ PassFF.Page = (function () {
   function init_tab(tab) {
     return new Promise((resolve, reject) => {
       let onFinally = function () {
-        log.debug("Tab init done", tab.id, tab.url);
+        log.debug("init_tab: done", tab.id, tab.url, tab.cookieStoreId);
         resolve(tab);
       };
       /*
@@ -598,10 +599,14 @@ PassFF.Page = (function () {
     });
   }
 
-  function onWindowLoad() {
+  function resetMatchItems() {
     let url = window.location.href;
-    matchItems = PassFF.Pass.getUrlMatchingItems(url);
-    bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
+    matchItems = PassFF.Pass.getUrlMatchingItems(url, tabContainer);
+    bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url, tabContainer);
+  }
+
+  function onWindowLoad() {
+    resetMatchItems();
 
     let obs = new MutationObserver(onNodeAdded);
     obs.observe(document, { attributes: true, childList: true, subtree: true });
@@ -750,14 +755,19 @@ PassFF.Page = (function () {
 
   return {
     init: function () {
-      if (document.readyState === 'complete') onWindowLoad();
-      else window.addEventListener("load", onWindowLoad);
+      return PassFF.Page.getTabContainer()
+        .then((name) => {
+          tabContainer = name;
 
-      /*
-        Allow our browser command to bypass the usual dom event mapping, so that
-        the keyboard shortcut still works, even  when a password field is focused.
-      */
-      return PassFF.Preferences.getKeyboardShortcut()
+          if (document.readyState === 'complete') onWindowLoad();
+          else window.addEventListener("load", onWindowLoad);
+
+          /*
+            Allow our browser command to bypass the usual DOM event mapping, so that
+            the keyboard shortcut still works, even when a password field is focused.
+          */
+          return PassFF.Preferences.getKeyboardShortcut();
+        })
         .then((shortcut) => {
           /*
             Attach a DOM-level event handler for our command key, so it works
@@ -807,9 +817,7 @@ PassFF.Page = (function () {
     }),
 
     refresh: content_function("Page.refresh", function () {
-      let url = window.location.href;
-      matchItems = PassFF.Pass.getUrlMatchingItems(url);
-      bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url);
+      resetMatchItems();
       setupPopup();
     }),
 
@@ -1052,5 +1060,9 @@ PassFF.Page = (function () {
       }
       return [input.type, input.name ? input.name : input.id];
     }),
+
+    getTabContainer: background_function("Page.getTabContainer", function (sender) {
+      return getTabContainer(sender.tab);
+    }, true),
   };
 })();

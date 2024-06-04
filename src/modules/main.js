@@ -83,11 +83,11 @@ var PassFF = (function () {
         .then(() => {
           if (PassFF.mode === "content") return PassFF.Page.refresh();
         });
-    } else if (["background","content"].indexOf(PassFF.mode) >= 0) {
+    } else if (["background", "content"].indexOf(PassFF.mode) >= 0) {
       log.debug("Message", request.action, "received in", PassFF.mode);
       let fname = fun_name(request.action);
       let args = request.params;
-      if(request.useSender === true) {
+      if (request.useSender === true) {
         args.unshift(sender);
       }
       let result = fname[0][fname[1]].apply(fname[0], args);
@@ -116,13 +116,16 @@ var PassFF = (function () {
         url = PassFF.Menu.state['itemPickerTarget'];
       }
 
-      PassFF.Pass.loadContextItems(url);
-      if (PassFF.Preferences.contextMenu) {
-        setupContextMenu();
-      } else {
-        chrome.contextMenus.removeAll();
-      }
-      PassFF.Menu.onContextChanged();
+      return getTabContainer(tab)
+        .then((containerName) => {
+          PassFF.Pass.loadContextItems(url, containerName);
+          if (PassFF.Preferences.contextMenu) {
+            setupContextMenu();
+          } else {
+            chrome.contextMenus.removeAll();
+          }
+          PassFF.Menu.onContextChanged();
+        });
     }
   }
 

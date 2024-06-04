@@ -26,13 +26,15 @@
 
     "permissions": [
         "<all_urls>",
-        "tabs",
-        "storage",
-        "nativeMessaging",
         "clipboardWrite",
         "contextMenus",
+        "contextualIdentities",
+        "nativeMessaging",
+        "storage",
+        "tabs",
         "webRequest",
         "webRequestBlocking"
+
     ],
 
     "options_ui": {

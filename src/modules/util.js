@@ -103,8 +103,30 @@ var log = {
  */
 
 function getActiveTab() {
-  return browser.tabs.query({active: true, currentWindow: true})
-         .then((tabs) => { return tabs[0]; });
+  return (
+    browser.tabs
+    .query({active: true, currentWindow: true})
+    .then((tabs) => { return tabs[0]; })
+  );
+}
+
+function getTabContainer(tb) {
+  return Promise.resolve()
+    .then(() => {
+      if (typeof browser.contextualIdentities !== "undefined") {
+        return browser.contextualIdentities.query({})
+      } else {
+        log.debug("getTabContainer: browser.contextualIdentities not available");
+        return [];
+      }
+    })
+    .then((identities) => {
+      let name = null;
+      Array.from(identities)
+      .filter(i => i.cookieStoreId == tb.cookieStoreId)
+      .forEach(i => { name = i.name; });
+      return name;
+    });
 }
 
 function waitTabComplete(tb) {
@@ -168,7 +190,7 @@ function content_function(name, fun, provideTab) {
       if (!provideTab) {
         args.unshift(null);
       }
-      args.splice(1,0,name);
+      args.splice(1, 0, name);
       return content_exec.apply(null, args);
     } else {
       return fun.apply(fun_name(name)[0], arguments);

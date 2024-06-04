@@ -204,7 +204,7 @@ PassFF.Pass = (function () {
       .filter((part) => (item.fullKey.search(part) >= 0)).length;
   }
 
-  function getItemQuality(item, urlStr) {
+  function getItemQuality(item, urlStr, containerName) {
     if (!item || item.isField || (!item.isLeaf && !item.hasFields)) {
       return {item: null,  quality: -1};
     }
@@ -219,6 +219,10 @@ PassFF.Pass = (function () {
     quality += pathMatchQuality(item, url.pathname);
     quality *= 100;
     quality += queryMatchQuality(item, url.search);
+    quality *= 10;
+    if (!!containerName && item.fullKey.indexOf(containerName) >= 0) {
+      quality += 1;
+    }
     return { item: item, quality: quality };
   }
 
@@ -689,8 +693,8 @@ PassFF.Pass = (function () {
         });
     }),
 
-    loadContextItems: function (url) {
-      contextItems = this.getUrlMatchingItems(url);
+    loadContextItems: function (url, containerName) {
+      contextItems = this.getUrlMatchingItems(url, containerName);
       if (contextItems.length === 0) {
         contextItems = this.rootItems;
       }
@@ -832,19 +836,19 @@ PassFF.Pass = (function () {
         .map(i => i.item);
     },
 
-    getUrlMatchingItems: function (urlStr) {
+    getUrlMatchingItems: function (urlStr, containerName) {
       let url = new URL(urlStr);
       let matchingItems = allItems
-        .map(i => getItemQuality(i, urlStr))
+        .map(i => getItemQuality(i, urlStr, containerName))
         .filter(i => (i.quality >= 0))
         .sort((i1, i2) => (i2.quality - i1.quality))
         .map(i => i.item)
         .filter(i => !i.isHidden);
-      log.debug(matchingItems.length, 'matches for', urlStr);
+      log.debug(matchingItems.length, 'matches for', urlStr, 'in container', containerName);
       return matchingItems;
     },
 
-    findBestFitItem: function (items, urlStr) {
+    findBestFitItem: function (items, urlStr, containerName) {
       let url = new URL(urlStr);
 
       if (items.length === 0) {
@@ -859,7 +863,7 @@ PassFF.Pass = (function () {
           return;
         }
 
-        let curQuality = getItemQuality(curItem, urlStr);
+        let curQuality = getItemQuality(curItem, urlStr, containerName);
 
         if (curQuality.quality > bestQuality && curItem.key.length > bestItem.key.length) {
           bestItem = curItem;
@@ -867,7 +871,7 @@ PassFF.Pass = (function () {
         }
       });
 
-      log.debug('Best fit item', bestItem.fullKey, "for", urlStr);
+      log.debug('Best fit item', bestItem.fullKey, "for", urlStr, "in container", containerName);
       return bestItem;
     },
 
