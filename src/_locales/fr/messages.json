@@ -239,6 +239,9 @@
   "passff_prefs_match_dirname_label": {
     "message": "Comparez uniquement le répertoire et non le nom de l'entrée."
   },
+  "passff_prefs_match_domain_label": {
+    "message": "Ne proposer que les entrées qui contiennent le nom de domaine."
+  },
   "passff_prefs_match_suffixes_label": {
     "message": "Suffixes de domaine à traiter comme des TLD"
   },

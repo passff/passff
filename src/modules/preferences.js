@@ -98,6 +98,7 @@ PassFF.Preferences = (function () {
     tbMenuShortcut        : '',
     indexMetaUrls         : false,
     matchDirnameOnly      : false,
+    enforceDomainMatch    : false,
     recognisedSuffixes    : 'co.uk,org.uk,me.uk,co.jp,com.au',
     filterPathRegex       : 'notes\nattributes\nattachments',
     lookMenuWidth         : '28rem',

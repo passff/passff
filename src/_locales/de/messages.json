@@ -239,6 +239,9 @@
   "passff_prefs_match_dirname_label": {
     "message": "Nur den Verzeichnisnamen, nicht den Namen des Eintrags vergleichen"
   },
+  "passff_prefs_match_domain_label": {
+    "message": "Nur Einträge vorschlagen, die die Domain enthalten."
+  },
   "passff_prefs_match_suffixes_label": {
     "message": "Domain-Endungen, die wie Top-Level-Domains behandelt werden"
   },

@@ -838,7 +838,13 @@ PassFF.Pass = (function () {
 
     getUrlMatchingItems: function (urlStr, containerName) {
       let url = new URL(urlStr);
+      let domainRegex = ci_search_regex(getMainDomain(url.host));
       let matchingItems = allItems
+        .filter(item => {
+          if (!PassFF.Preferences.enforceDomainMatch) return true;
+          if (item.fullKey.search(domainRegex) >= 0) return true;
+          return regexSearchMetaUrls(item, domainRegex);
+        })
         .map(i => getItemQuality(i, urlStr, containerName))
         .filter(i => (i.quality >= 0))
         .sort((i1, i2) => (i2.quality - i1.quality))
