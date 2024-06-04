@@ -52,9 +52,17 @@ PassFF.Page = (function () {
   }
 
   function getSubmitButton(form) {
-    let buttonQueries = PassFF.Preferences.buttonInputQueries;
-    let buttons = form.querySelectorAll(buttonQueries.join(","));
-    buttons = Array.from(buttons).filter(isVisible);
+    let buttonQuery = PassFF.Preferences.buttonInputQueries.join(",");
+    let buttons = (
+      Array.from(
+        form.querySelectorAll(buttonQuery)
+      )
+      .concat(
+        Array.from(form.elements)
+        .filter(el => el.matches(buttonQuery))
+      )
+      .filter(isVisible)
+    );
     let submitButtonPredicates = [
       // explicit submit type
       (button) => button.getAttribute("type") === "submit",
@@ -945,7 +953,7 @@ PassFF.Page = (function () {
       if (submitBtn) {
         submitBtn.click();
       } else {
-        form.submit();
+        form.requestSubmit();
       }
       return true;
     }, true),
