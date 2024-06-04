@@ -107,6 +107,9 @@
   "passff_prefs_mark_fillable": {
     "message": "Marquer les champs d'entrée remplissables de l'icône PassFF"
   },
+  "passff_prefs_mark_fillable_blacklist_label": {
+    "message": "Ne pas marquer si l'URL contient l'une de ces chaînes de caractères (séparées par des virgules)"
+  },
   "passff_prefs_context_menu": {
     "message": "Add item to context menu for filling fillable input fields"
   },
@@ -180,7 +183,7 @@
     "message": "Valider automatiquement les formulaires d'identification"
   },
   "passff_prefs_autofill_blacklist_label": {
-    "message": "Désactiver le remplissage automatique si l'URL contient l'une de ces chaînes de caractères"
+    "message": "Désactiver le remplissage automatique si l'URL contient l'une de ces chaînes de caractères (séparées par des virgules)"
   },
   "passff_prefs_check_auto_label": {
     "message": "Désactiver les contrôles de sécurité des URL lors du remplissage manuel"

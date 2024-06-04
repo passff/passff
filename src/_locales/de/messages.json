@@ -107,6 +107,9 @@
   "passff_prefs_mark_fillable": {
     "message": "Automatisch ausfüllbare Felder mit Icon markieren"
   },
+  "passff_prefs_mark_fillable_blacklist_label": {
+    "message": "Nicht mit Icon markieren, falls URL folgendes enthält (komma-separierte Liste)"
+  },
   "passff_prefs_context_menu": {
     "message": "Erstelle einen Eintrag im Kontextmenü für das Ausfüllen ausfüllbarer Felder"
   },
@@ -180,7 +183,7 @@
     "message": "Versuche, Loginseiten automatisch abzusenden."
   },
   "passff_prefs_autofill_blacklist_label": {
-    "message": "Nicht auto-ausfüllen, falls URL diese enthält"
+    "message": "Nicht auto-ausfüllen, falls URL folgendes enthält (komma-separierte Liste)"
   },
   "passff_prefs_check_auto_label": {
     "message": "Deaktiviere Checks beim manuellen Ausfüllen"

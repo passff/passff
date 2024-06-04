@@ -89,6 +89,7 @@ PassFF.Preferences = (function () {
     preferInsert          : 0,
     showNewPassButton     : true,
     markFillable          : true,
+    markFillableBlacklist : '',
     contextMenu           : true,
     submitFillable        : true,
     directoriesFirst      : false,
@@ -104,17 +105,18 @@ PassFF.Preferences = (function () {
   };
 
   const listParams = {
-    'passwordInputNames'  : ',',
-    'loginInputNames'     : ',',
-    'otpInputNames'       : ',',
-    'buttonInputQueries'  : '\n',
-    'loginFieldNames'     : ',',
-    'passwordFieldNames'  : ',',
-    'urlFieldNames'       : ',',
-    'otpauthFieldNames'   : ',',
-    'autoFillBlacklist'   : ',',
-    'recognisedSuffixes'  : ',',
-    'filterPathRegex'     : '\n',
+    'passwordInputNames'     : ',',
+    'loginInputNames'        : ',',
+    'otpInputNames'          : ',',
+    'buttonInputQueries'     : '\n',
+    'loginFieldNames'        : ',',
+    'passwordFieldNames'     : ',',
+    'urlFieldNames'          : ',',
+    'otpauthFieldNames'      : ',',
+    'autoFillBlacklist'      : ',',
+    'markFillableBlacklist'  : ',',
+    'recognisedSuffixes'     : ',',
+    'filterPathRegex'        : '\n',
   };
 
   const lowerCaseParams = [

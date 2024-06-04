@@ -269,8 +269,16 @@ PassFF.Page = (function () {
         Array.from(document.getElementsByTagName('select'))
       ).filter(isVisible));
     if (PassFF.Preferences.markFillable) {
-      inputElements.filter(inp => inp[1] != "")
-        .forEach(inp => injectIcon(inp[0]));
+      let url = window.location.href;
+      let url_in_blacklist = (
+        PassFF.Preferences.markFillableBlacklist
+        .findIndex((str) => { return url.indexOf(str) >= 0; })
+      );
+      if (url_in_blacklist == -1) {
+        inputElements
+          .filter(inp => inp[1] != "")
+          .forEach(inp => injectIcon(inp[0]));
+      }
     }
   }
 
@@ -867,8 +875,10 @@ PassFF.Page = (function () {
       if (!PassFF.Preferences.autoFill) return;
 
       let url = window.location.href;
-      let url_in_blacklist = PassFF.Preferences.autoFillBlacklist
-                        .findIndex((str) => { return url.indexOf(str) >= 0; });
+      let url_in_blacklist = (
+        PassFF.Preferences.autoFillBlacklist
+        .findIndex((str) => { return url.indexOf(str) >= 0; })
+      );
       if (url_in_blacklist >= 0) return;
 
       log.info('Start pref-auto-fill');

@@ -107,6 +107,9 @@
   "passff_prefs_mark_fillable": {
     "message": "Mark fillable input fields with the PassFF icon"
   },
+  "passff_prefs_mark_fillable_blacklist_label": {
+    "message": "Don't mark fillable if URL contains one of the strings (comma-separated)"
+  },
   "passff_prefs_context_menu": {
     "message": "Add item to context menu for filling fillable input fields"
   },
@@ -180,7 +183,7 @@
     "message": "Try to auto submit page login forms"
   },
   "passff_prefs_autofill_blacklist_label": {
-    "message": "Don't auto fill if tab's URL contains one of the strings"
+    "message": "Don't auto fill if tab's URL contains one of the strings (comma-separated)"
   },
   "passff_prefs_check_auto_label": {
     "message": "Deactivate URL security checks when filling manually"
