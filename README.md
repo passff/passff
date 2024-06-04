@@ -3,7 +3,7 @@ passff
 
 [![Join the chat at https://gitter.im/jvenant/passff](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jvenant/passff?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** management extension for **Mozilla Firefox**. [Pending Chrome port](https://github.com/passff/passff/issues/105)
+**[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** management extension for **Mozilla Firefox**.
 
 **Official signed version can be found on the [Mozilla add-on page](https://addons.mozilla.org/firefox/addon/passff)**
 
