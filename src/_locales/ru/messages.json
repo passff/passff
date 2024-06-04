@@ -170,7 +170,7 @@
   "passff_prefs_show_status": {
     "message": "Показывать строку состояния в панели инструментов"
   },
-  "passff_prefs_recognised_suffixes": {
+  "passff_prefs_match_suffixes_label": {
     "message": "Domain suffixes to treat like TLDs"
   },
   "passff_newpassword_window_title": {

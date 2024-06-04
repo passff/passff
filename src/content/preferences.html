@@ -76,8 +76,22 @@
               <option value="7">passff_menu_copy_login</option>
               <option value="8">passff_menu_display</option>
             </select>
+          </p>
+        </fieldset>
+      </div>
+
+      <div class="tab">
+        <input type="radio" name="tab_radio" id="tab_match">
+        <label for="tab_match">passff_prefs_tab_match</label>
+        <fieldset>
+          <p>
+            <input type="checkbox" id="pref_indexMetaUrls" />
+            <label for="pref_indexMetaUrls">passff_prefs_match_index_urls_label</label>
           </p><p>
-            <label>passff_prefs_recognised_suffixes</label>
+            <input type="checkbox" id="pref_matchDirnameOnly" />
+            <label>passff_prefs_match_dirname_label</label>
+          </p><p>
+            <label>passff_prefs_match_suffixes_label</label>
             <input type="text" id="pref_recognisedSuffixes" value="" />
           </p>
         </fieldset>
@@ -183,9 +197,6 @@
           </p><p>
             <label>passff_prefs_url_field_names_label</label>
             <input type="text" id="pref_urlFieldNames" value="" />
-          </p><p>
-            <input type="checkbox" id="pref_indexMetaUrls" />
-            <label for="pref_indexMetaUrls">passff_prefs_index_meta_urls_label</label>
           </p><p>
             <label>passff_prefs_otpauth_field_names_label</label>
             <input type="text" id="pref_otpauthFieldNames" value="" />

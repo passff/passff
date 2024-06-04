@@ -143,9 +143,6 @@
   "passff_prefs_url_field_names_label": {
     "message": "Nazwy rubryk z URL"
   },
-  "passff_prefs_index_meta_urls_label": {
-    "message": "Indeksuj rubryki URL po starcie. Ta funkcja odczytuje wszystkie rubryki z URL do pamięci przeglądarki i używa ich przy wyszukowaniu haseł. (Wymaga passff-host >=1.2.0)"
-  },
   "passff_prefs_otpauth_field_names_label": {
     "message": "Nazwy rubryk z hasłami jednorazowymi (OTP)"
   },
@@ -185,7 +182,10 @@
   "passff_prefs_show_status": {
     "message": "Pokaż pasek statusu w menu paska narzędziowego"
   },
-  "passff_prefs_recognised_suffixes": {
+  "passff_prefs_match_index_urls_label": {
+    "message": "Indeksuj rubryki URL po starcie. Ta funkcja odczytuje wszystkie rubryki z URL do pamięci przeglądarki i używa ich przy wyszukowaniu haseł. (Wymaga passff-host ≥1.2.0)"
+  },
+  "passff_prefs_match_suffixes_label": {
     "message": "Przyrostki nazw domen, które powinny być traktowane jako domeny najwyższego poziomu"
   },
   "passff_newpassword_window_title": {

@@ -87,7 +87,10 @@
     "message": "Ajout de mots de passe"
   },
   "passff_prefs_tab_browsing": {
-    "message": "Browsing and searching the password store"
+    "message": "Navigation et recherche dans le magasin de mots de passe"
+  },
+  "passff_prefs_tab_match": {
+    "message": "Correspondance entre les entrées et l'URL du site web actuel"
   },
   "passff_prefs_tab_dev": {
     "message": "Déverminage"
@@ -161,9 +164,6 @@
   "passff_prefs_url_field_names_label": {
     "message": "Noms des champs d'URL"
   },
-  "passff_prefs_index_meta_urls_label": {
-    "message": "Indexer les champs d'URL au démarrage. Cela permet de lire toutes les valeurs des champs d'URL dans la mémoire du navigateur et de les utiliser lorsque PassFF recherche des mots de passe (nécessite passff-host >=1.2.0)."
-  },
   "passff_prefs_otpauth_field_names_label": {
     "message": "Noms des champs d'OTP"
   },
@@ -230,8 +230,14 @@
   "passff_prefs_show_status": {
     "message": "Afficher une barre de statut dans le menu de la barre d'outils"
   },
-  "passff_prefs_recognised_suffixes": {
-    "message": "Domain suffixes to treat like TLDs"
+  "passff_prefs_match_index_urls_label": {
+    "message": "Indexer les champs d'URL au démarrage. Cela permet de lire toutes les valeurs des champs d'URL dans la mémoire du navigateur et de les utiliser lorsque PassFF recherche des mots de passe (nécessite passff-host ≥ 1.2.0)."
+  },
+  "passff_prefs_match_dirname_label": {
+    "message": "Comparez uniquement le répertoire et non le nom de l'entrée."
+  },
+  "passff_prefs_match_suffixes_label": {
+    "message": "Suffixes de domaine à traiter comme des TLD"
   },
   "passff_newpassword_window_title": {
     "message": "Nouveau mot de passe"

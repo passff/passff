@@ -137,11 +137,15 @@ PassFF.Pass = (function () {
      * public suffix and *not* matched *alone*. Same applies to very short (less
      * than 3 chars) and some very generic parts like "www"
      */
+    let fullKey = item.fullKey;
+    if (PassFF.Preferences.matchDirnameOnly) {
+      fullKey = PassFF.Pass.getItemById(item.parent).fullKey;
+    }
     host = sanitizeDomain(host);
     let suffix = getDomainSuffix(host);
     do {
       // check a.b.c.d, then a.b.c, then a.b, ...
-      let quality = host.split(/\.+/).length*100 + host.split(/\.+/).length;
+      let quality = host.split(/\.+/).length * 100 + host.split(/\.+/).length;
       let subhost = host;
       do {
         // check a.b.c.d, then b.c.d, then c.d, ...
@@ -149,7 +153,7 @@ PassFF.Pass = (function () {
             || host_part_blacklist.indexOf(subhost) >= 0) break;
 
         let regex = ci_search_regex(subhost);
-        if (item.fullKey.search(regex) >= 0
+        if (fullKey.search(regex) >= 0
             || regexSearchMetaUrls(item, regex)) {
           return quality;
         }

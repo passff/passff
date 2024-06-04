@@ -152,9 +152,6 @@
   "passff_prefs_url_field_names_label": {
     "message": "URL 字段名称"
   },
-  "passff_prefs_index_meta_urls_label": {
-    "message": "在启动时索引 URL。将读取所有URL字段值到浏览器内存中，并允许它们在PassFF查找密码时使用（需要 passff-host >= 1.2.0）"
-  },
   "passff_prefs_otpauth_field_names_label": {
     "message": "OTP (两部验证) 字段名称"
   },
@@ -197,7 +194,10 @@
   "passff_prefs_show_status": {
     "message": "在工具栏中显示状态栏"
   },
-  "passff_prefs_recognised_suffixes": {
+  "passff_prefs_match_index_urls_label": {
+    "message": "在启动时索引 URL。将读取所有URL字段值到浏览器内存中，并允许它们在PassFF查找密码时使用（需要 passff-host ≥ 1.2.0）"
+  },
+  "passff_prefs_match_suffixes_label": {
     "message": "定义其他顶级域名后缀"
   },
   "passff_newpassword_window_title": {

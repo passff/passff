@@ -152,9 +152,6 @@
   "passff_prefs_url_field_names_label": {
     "message": "URL alanı adları"
   },
-  "passff_prefs_index_meta_urls_label": {
-    "message": "Başlangıçta URL alanlarını dizinle. Bu, tüm URL alanı değerlerini tarayıcı belleğine okuyacak ve passff parolaları aradığında bunların kullanılmasını sağlayacaktır. (passff-host >=1.2.0 gerektirir)"
-  },
   "passff_prefs_otpauth_field_names_label": {
     "message": "OTP yetkilendirme alanı adları"
   },
@@ -197,7 +194,10 @@
   "passff_prefs_show_status": {
     "message": "Araç çubuğu menüsünde bir durum çubuğu göster"
   },
-  "passff_prefs_recognised_suffixes": {
+  "passff_prefs_match_index_urls_label": {
+    "message": "Başlangıçta URL alanlarını dizinle. Bu, tüm URL alanı değerlerini tarayıcı belleğine okuyacak ve passff parolaları aradığında bunların kullanılmasını sağlayacaktır. (passff-host ≥1.2.0 gerektirir)"
+  },
+  "passff_prefs_match_suffixes_label": {
     "message": "En üst düzey etki alanları gibi davranılacak etki alanı son ekleri"
   },
   "passff_newpassword_window_title": {

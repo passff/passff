@@ -89,6 +89,9 @@
   "passff_prefs_tab_browsing": {
     "message": "Browsing and searching the password store"
   },
+  "passff_prefs_tab_match": {
+    "message": "Matching entries to the current website's URL"
+  },
   "passff_prefs_tab_dev": {
     "message": "Debugging and Development"
   },
@@ -161,9 +164,6 @@
   "passff_prefs_url_field_names_label": {
     "message": "URL field names"
   },
-  "passff_prefs_index_meta_urls_label": {
-    "message": "Index URL fields on startup. This will read all URL field values into browser memory and allow them to be used when PassFF looks for passwords (requires passff-host >=1.2.0)."
-  },
   "passff_prefs_otpauth_field_names_label": {
     "message": "OTP Auth field names"
   },
@@ -230,7 +230,13 @@
   "passff_prefs_show_status": {
     "message": "Show a status bar in the toolbar menu"
   },
-  "passff_prefs_recognised_suffixes": {
+  "passff_prefs_match_index_urls_label": {
+    "message": "Index URL fields on startup. This will read all URL field values into browser memory and allow them to be used when PassFF looks for passwords (requires passff-host ≥1.2.0)."
+  },
+  "passff_prefs_match_dirname_label": {
+    "message": "Compare only the directory, and not the entry name."
+  },
+  "passff_prefs_match_suffixes_label": {
     "message": "Domain suffixes to treat like TLDs"
   },
   "passff_newpassword_window_title": {

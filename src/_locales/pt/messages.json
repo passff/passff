@@ -152,9 +152,6 @@
   "passff_prefs_url_field_names_label": {
     "message": "Campos para URL"
   },
-  "passff_prefs_index_meta_urls_label": {
-    "message": "Indexar os campos de URL na abertura do navegador, colocando todos os campos na memória e permitindo seu uso sempre que o PassFF buscar por senhas. (Requere passff-host >=1.2.0)"
-  },
   "passff_prefs_otpauth_field_names_label": {
     "message": "Campos para OTP Auth"
   },
@@ -197,7 +194,10 @@
   "passff_prefs_show_status": {
     "message": "Mostrar uma barra de status no menu da barra de ferramentas"
   },
-  "passff_prefs_recognised_suffixes": {
+  "passff_prefs_match_index_urls_label": {
+    "message": "Indexar os campos de URL na abertura do navegador, colocando todos os campos na memória e permitindo seu uso sempre que o PassFF buscar por senhas. (Requere passff-host ≥1.2.0)"
+  },
+  "passff_prefs_match_suffixes_label": {
     "message": "Sufixos de domínios"
   },
   "passff_newpassword_window_title": {
