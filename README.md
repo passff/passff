@@ -23,14 +23,14 @@ You can choose to automatically fill and submit login forms if a matching passwo
 This extension requires **[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** to be installed and set up with a password repository. Make sure you can execute `pass show some-password-name` in a terminal before continuing.
 
 ##### Host application
-For the extension to communicate with your system's `pass` script, you need to install what's called the host application from [the official GitHub repository](https://github.com/passff/passff-host).
+For the extension to communicate with your system's `pass` script, you need to install what's called the host application from [the official git repository](https://codeberg.org/PassFF/passff-host).
 The host application allows the extension to communicate with `pass` on your system.
 
 ##### PassFF extension
 Install the current release of PassFF for your browser:
   - [Firefox](https://addons.mozilla.org/firefox/addon/passff)
 
-Previous releases are available for download as XPI files from [our releases page](https://github.com/passff/passff/releases). However, this is strongly discouraged for security reasons!
+Previous releases are available for download as XPI files from [our releases page](https://codeberg.org/PassFF/passff/releases). However, this is strongly discouraged for security reasons!
 
 ##### A graphical *pinentry* program
 This program prompts you for your passphrase. One is probably already installed.
@@ -126,7 +126,7 @@ Examples
 ```
 nu8kzeo2Aese
 login: bob
-url: https://github.com/login
+url: https://codeberg.org/login
 ```
 
 ```
@@ -222,7 +222,7 @@ Some of them are described below:
   - Preferred new password method ("generate" or "insert")
 
 ##### Host application preferences
-If you use a customized `pass` installation: environment variables, customized repository path or extensions, you may have to [configure the host application accordingly](https://github.com/passff/passff-host#preferences).
+If you use a customized `pass` installation: environment variables, customized repository path or extensions, you may have to [configure the host application accordingly](https://codeberg.org/PassFF/passff-host#preferences).
 
 ### Usage
 Once installed, you should have a new icon in your toolbar. Click the icon to browse your password repository or search using a **fuzzy matching** algorithm.
@@ -254,7 +254,7 @@ In order to add a password in your repository, select the 'plus' (+) icon in the
 ### Issues
 If you're having problems, the most common causes are misconfigured preferences or an incorrect installation of the host application. You can get more information by [debugging the extension](docs/CONTRIBUTING.md).
 
-First, [make sure the host application is installed correctly](https://github.com/passff/passff-host).
+First, [make sure the host application is installed correctly](https://codeberg.org/PassFF/passff-host).
 
 Configure the script's execution parameters appropriately in the host app `passff.py`: E.g., set `COMMAND` to the path to the `pass` binary (if installed with homebrew, the default location is `/usr/local/bin/pass`). With those settings in place, the extension should be able to find your passwords.
 
@@ -279,13 +279,13 @@ Possible solutions:
     - See https://wiki.archlinux.org/index.php/GnuPG#pinentry
 
 Related issues:
- * [No dialog opening up on Arch Linux](https://github.com/passff/passff/issues/330)
- * [Decryption failed on MacOS](https://github.com/passff/passff/issues/325)
- * [Script execution failed on CentOS](https://github.com/passff/passff/issues/367)
+ * [No dialog opening up on Arch Linux](https://codeberg.org/PassFF/passff/issues/330)
+ * [Decryption failed on MacOS](https://codeberg.org/PassFF/passff/issues/325)
+ * [Script execution failed on CentOS](https://codeberg.org/PassFF/passff/issues/367)
 
 ##### The icon/toolbar menu suggests no or the wrong entries
 
-See the section [Improve Suggestions](https://github.com/passff/passff#improve-suggestions) above.
+See the section [Improve Suggestions](https://codeberg.org/PassFF/passff#improve-suggestions) above.
 
 ### Contributing
 
@@ -303,6 +303,6 @@ Development and improvements
  * [Johan Venant](https://github.com/jvenant)
  * [Tobias Umbach](https://github.com/sometoby)
  * [Lenz Weber](https://github.com/phryneas)
- * [Thomas Vogt](https://github.com/tuxor1337)
+ * [Thomas Vogt](https://codeberg.org/tuxor1337)
 
 Russian translation : [Grigorii Horos](https://github.com/horosgrisa)

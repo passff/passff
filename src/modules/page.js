@@ -95,7 +95,7 @@ PassFF.Page = (function () {
     }
 
     // there is actually no such thing as a "label" attribute, but aliexpress.com uses it
-    // https://github.com/passff/passff-host/issues/68
+    // https://codeberg.org/PassFF/passff-host/issues/68
     let label = input.getAttribute('label');
     if (label) {
       inputNames.push(label);

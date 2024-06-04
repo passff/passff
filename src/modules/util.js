@@ -1,8 +1,8 @@
 /* jshint node: true */
 'use strict';
 
-const PASSFF_URL_GIT = "https://github.com/passff/passff";
-const PASSFF_URL_GIT_HOST = "https://github.com/passff/passff-host";
+const PASSFF_URL_GIT = "https://codeberg.org/PassFF/passff";
+const PASSFF_URL_GIT_HOST = "https://codeberg.org/PassFF/passff-host";
 const PASSFF_URL_INSTALLATION = PASSFF_URL_GIT + "#installation";
 
 /* #############################################################################
@@ -247,7 +247,7 @@ function fun_name(name) {
  * This implementation has been inspired by npm's semver.
  *
  * For in-depth explanations,
- * See https://github.com/passff/passff/pull/342
+ * See https://codeberg.org/PassFF/passff/pull/342
  */
 
 const semver = (function semver() {
