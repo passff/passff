@@ -281,6 +281,11 @@ PassFF.Menu = (function () {
     } else {
       createContextualMenu();
     }
+
+    let listElm = document.getElementById('passff-entries-list');
+    if (listElm.firstChild) {
+      listElm.firstChild.selected = true;
+    }
   }
 
   function createItemsMenuList(items, cleanMenu) {

@@ -10,6 +10,7 @@ PassFF.Page = (function () {
   let inputElements = [];
   let loginInputTypes = ['text', 'email', 'tel'];
   let otpInputTypes = ['text', 'number', 'password', 'tel'];
+  let pwInputTypes = ['password', 'text'];
   let tab_init_pending = [];
   let matchItems = [];
   let bestFitItem = null;
@@ -101,7 +102,7 @@ PassFF.Page = (function () {
       inputNames = inputNames.concat(Array.from(input.labels, l => l.innerText));
     }
 
-    if (["email","tel"].indexOf(input.type) >= 0) {
+    if (["email", "tel"].indexOf(input.type) >= 0) {
       inputNames.push(input.type);
     }
 
@@ -142,12 +143,16 @@ PassFF.Page = (function () {
   }
 
   function ratePasswordInput(input) {
-    if (input.type === 'password') {
-      return 100;
-    } else if (input.type === 'text') {
-      return rateInputNames(input, PassFF.Preferences.passwordInputNames);
+    if (pwInputTypes.indexOf(input.type) < 0) {
+      return 0;
+    } else {
+      let rt = rateInputNames(input, PassFF.Preferences.passwordInputNames);
+      if (input.type === 'password' && rt < 10) {
+        // just not as good as having a name or id matching an OTP input name exactly
+        return 19;
+      }
+      return rt;
     }
-    return 0;
   }
 
   function rateLoginInput(input) {
