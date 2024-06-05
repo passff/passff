@@ -86,8 +86,16 @@ PassFF.Menu = (function () {
 
 // %%%%%%%%%%%%%%%%%%%%% Search bar key events %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+  function onSearchFocus(event) {
+    let listElm = document.getElementById('passff-entries-list');
+    if (listElm.options.length > 0) {
+      log.debug('onSearchFocus: select first child');
+      listElm.selectedIndex = 0;
+    }
+  }
+
   function onSearchKeydown(event) {
-    log.debug('Search keydown', event.keyCode);
+    log.debug('onSearchKeydown:', event.keyCode);
 
     if (event.ctrlKey || event.altKey) {
       return false;
@@ -106,15 +114,12 @@ PassFF.Menu = (function () {
     if (event.keyCode == 40 || event.keyCode == 13 || event.keyCode == 39) {
       /* DOWN ARROW, RETURN, RIGHT ARROW */
       let listElm = document.getElementById('passff-entries-list');
-
-      if (listElm.firstChild) {
-        log.debug('Select first child');
-        listElm.firstChild.selected = true;
-        if (event.keyCode != 39) {
-          listElm.focus();
+      if (event.keyCode != 39 && listElm.options.length > 0) {
+        if (event.keyCode == 40 && listElm.options.length > 1) {
+          listElm.selectedIndex = 1;
         }
+        listElm.focus();
       }
-
       event.stopPropagation();
     }
     keyPressManagement(event);
@@ -123,7 +128,7 @@ PassFF.Menu = (function () {
   }
 
   function onSearchKeyup(event) {
-    log.debug('Search keyup', event);
+    log.debug('onSearchKeyup:', event);
 
     if (event.keyCode <= 46 && event.keyCode != 8) {
       /* non-alphanumeric and not BACKSPACE */
@@ -147,7 +152,7 @@ PassFF.Menu = (function () {
 // %%%%%%%%%%%%%%%%%%%%% Selection controlling %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   function onListItemkeydown(event) {
-    log.debug('List item keydown', event.keyCode);
+    log.debug('onListItemkeydown:', event.keyCode);
     keyPressManagement(event);
   }
 
@@ -188,16 +193,19 @@ PassFF.Menu = (function () {
       !event.shiftKey
       && event.key != 'Control'
       && event.keyCode != 40
-      && (event.keyCode != 38 || listElm.selectedIndex === 0)
+      && (event.keyCode != 38 || listElm.selectedIndex <= 1)
     ) {
       /* NOT: SHIFT, CTRL, DOWN ARROW, UP ARROW */
+      if (event.keyCode == 38 && listElm.selectedIndex == 1) {
+        listElm.selectedIndex = 0;
+      }
       document.getElementById('passff-search-box').focus();
     }
   }
 
   function onListItemSelected(event) {
     let itemId = getItem(event.target);
-    log.debug("List item", itemId, "selected");
+    log.debug("onListItemSelected:", itemId);
 
     if (itemId !== null) {
       createMenuList(itemId);
@@ -209,12 +217,12 @@ PassFF.Menu = (function () {
 // %%%%%%%%%%%%%%%%%%% Button bar button commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   function onContextButtonCommand(event) {
-    log.debug('Context button command');
+    log.debug('onContextButtonCommand');
     createContextualMenu();
   }
 
   function onRootButtonCommand(event) {
-    log.debug('Root button command');
+    log.debug('onRootButtonCommand');
     menuState['items'] = PassFF.Pass.rootItems;
     let searchInput = document.getElementById('passff-search-box');
     searchInput.value = "";
@@ -223,20 +231,20 @@ PassFF.Menu = (function () {
   }
 
   function onRefreshButtonCommand(event) {
-    log.debug('Refresh button command');
+    log.debug('onRefreshButtonCommand');
     let messages = document.getElementsByClassName('message');
     Array.from(messages).forEach((el) => { el.parentNode.removeChild(el); });
     PassFF.refresh_all().then(createContextualMenu);
   }
 
   function onPrefButtonCommand(event) {
-    log.debug('Preferences button command');
+    log.debug('onPrefButtonCommand');
     browser.runtime.openOptionsPage();
     window.close();
   }
 
   function onNewPassButtonCommand(event) {
-    log.debug('New password button command');
+    log.debug('onNewPassButtonCommand');
     PassFF.Pass.newPasswordUI(menuState['items']);
     window.close();
   }
@@ -248,7 +256,7 @@ PassFF.Menu = (function () {
  */
 
   function createContextualMenu() {
-    log.debug("Create contextual menu");
+    log.debug("createContextualMenu");
     let searchInput = document.getElementById('passff-search-box');
     searchInput.value = "";
     searchInput.focus();
@@ -273,7 +281,7 @@ PassFF.Menu = (function () {
         PassFF.Menu.backupState(menuState);
       }
     }
-    log.debug("Create menu list", menuState['items']);
+    log.debug("createMenuList:", menuState['items']);
     if (menuState['items'] instanceof Array) {
       createItemsMenuList(menuState['items'], cleanMenu);
     } else if (menuState['items'] !== null)  {
@@ -290,7 +298,7 @@ PassFF.Menu = (function () {
 
   function createItemsMenuList(items, cleanMenu) {
     if (typeof cleanMenu === "undefined") cleanMenu = true;
-    log.debug("Create children menu list", items, cleanMenu);
+    log.debug("createItemsMenuList:", items, cleanMenu);
 
     if (PassFF.Preferences.directoriesFirst) {
       let dirs = items.filter(item => !item.isLeaf);
@@ -326,7 +334,7 @@ PassFF.Menu = (function () {
 
   function createItemMenuList(itemId) {
     let item = PassFF.Pass.getItemById(itemId);
-    log.debug("Create item menu", item.fullKey);
+    log.debug("createItemMenuList:", item.fullKey);
 
     if (PassFF.mode === "itemPicker" && (item.hasFields || item.isLeaf)) {
       PassFF.Menu.onPickItem(item.id);
@@ -351,7 +359,7 @@ PassFF.Menu = (function () {
   function createLeafMenuList(item) {
     clearMenuList();
 
-    log.debug('Create leaf menu list', item.fullKey);
+    log.debug('createLeafMenuList:', item.fullKey);
     let listElm = document.getElementById('passff-entries-list');
 
     [ ['passff_menu_fill', PassFF.Menu.onAutoFillMenuClick],
@@ -441,6 +449,7 @@ PassFF.Menu = (function () {
       'placeholder',
       _('passff_toolbar_search_placeholder'));
     searchBox.addEventListener('click', function (e) { e.target.select(); });
+    searchBox.addEventListener('focus', onSearchFocus);
     searchBox.addEventListener('keydown', onSearchKeydown);
     searchBox.addEventListener('keyup', onSearchKeyup);
 
