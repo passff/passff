@@ -158,9 +158,13 @@ div.buttonbox button.reload {
   color: #fff;
 }
 
-.results select option:hover {
+.results select option:hover:not(:checked) {
   background-color: #f0f0f0;
   color: #000;
+}
+
+.results select option:hover:checked {
+  filter: brightness(110%);
 }
 
 #clipboard-field-container,
