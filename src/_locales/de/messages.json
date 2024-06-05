@@ -209,6 +209,15 @@
   "passff_prefs_check_fullurl_label": {
     "message": "Falls die aktuelle URL von der gespeicherten abweicht"
   },
+  "passff_prefs_prefill_login_default_label": {
+    "message": "Login-Feld mit dem folgenden Standardwert vorausfüllen"
+  },
+  "passff_prefs_prefill_login_tab_label": {
+    "message": "Login-Feld mit einem Wert aus dem aktiven Tab vorausfüllen (falls möglich)"
+  },
+  "passff_prefs_prefill_url_label": {
+    "message": "URL-Feld mit der URL des aktiven Tabs vorausfüllen"
+  },
   "passff_prefs_default_length_label": {
     "message": "Standard Passwortlänge"
   },

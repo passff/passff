@@ -1061,6 +1061,14 @@ PassFF.Page = (function () {
       return [input.type, input.name ? input.name : input.id];
     }),
 
+    readLoginInput: content_function("Page.readLoginInput", function () {
+      let login = "";
+      inputElements
+        .filter(inp => inp[1] == "login" && inp[0].value != "")
+        .forEach(inp => { login = inp[0].value; });
+      return login;
+    }),
+
     getTabContainer: background_function("Page.getTabContainer", function (sender) {
       return getTabContainer(sender.tab);
     }, true),

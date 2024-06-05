@@ -209,6 +209,15 @@
   "passff_prefs_check_fullurl_label": {
     "message": "If the site and the stored URL are different"
   },
+  "passff_prefs_prefill_login_default_label": {
+    "message": "Prefill the login name field with this value"
+  },
+  "passff_prefs_prefill_login_tab_label": {
+    "message": "Prefill the login name from the active tab if possible"
+  },
+  "passff_prefs_prefill_url_label": {
+    "message": "Prefill the URL from the active tab"
+  },
   "passff_prefs_default_length_label": {
     "message": "Default password length"
   },

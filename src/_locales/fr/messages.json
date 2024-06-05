@@ -209,6 +209,15 @@
   "passff_prefs_check_fullurl_label": {
     "message": "Si le site et l'URL stockée sont différents"
   },
+  "passff_prefs_prefill_login_default_label": {
+    "message": "Pré-remplir le champ d'identifiant avec cette valeur"
+  },
+  "passff_prefs_prefill_login_tab_label": {
+    "message": "Pré-remplir le champ d'identifiant de l'onglet actif si possible"
+  },
+  "passff_prefs_prefill_url_label": {
+    "message": "Pré-remplir l'URL de l'onglet actif"
+  },
   "passff_prefs_default_length_label": {
     "message": "Longueur par défaut d'un mot de passe généré"
   },

@@ -1028,21 +1028,39 @@ PassFF.Pass = (function () {
  */
 
     newPasswordUI: background_function("Pass.newPasswordUI", (context) => {
-      addPasswordContext = '/';
-      if (context instanceof Array && context.length > 0) {
-        context = context[0];
-      }
-      if (context) addPasswordContext += context.fullKey;
-      addPasswordContext = addPasswordContext.replace(/\/[^\/]*$/, '/');
-      return browser.windows.create({
-        'url': browser.runtime.getURL('/content/passwordGenerator.html'),
-        'width': 640,
-        'height': 481,
-        'type': 'popup'
-      })
-      .then((win) => {
-        setTimeout(() => browser.windows.update(win.id, { height: 480 }), 100);
-      });
+      let activeTab = null;
+      return getActiveTab()
+        .then((tab) => {
+          activeTab = tab;
+          return PassFF.Page.readLoginInput();
+        })
+        .then((tabLogin) => {
+          let url = new URL(activeTab.url);
+          addPasswordContext = {"fullKey": "/"};
+          if (context instanceof Array && context.length > 0) {
+            context = context[0];
+          }
+          if (context) {
+            addPasswordContext["fullKey"] = context.fullKey;
+          }
+          addPasswordContext["fullKey"] = addPasswordContext["fullKey"].replace(/\/[^\/]*$/, '/');
+          addPasswordContext["fullKey"] += url.host;
+          addPasswordContext["tabUrl"] = activeTab.url;
+          addPasswordContext["tabLogin"] = (
+            (PassFF.Preferences.prefillLoginTab && tabLogin != "")
+            ? tabLogin
+            : PassFF.Preferences.prefillLoginDefault
+          );
+          return browser.windows.create({
+            'url': browser.runtime.getURL('/content/passwordGenerator.html'),
+            'width': 640,
+            'height': 481,
+            'type': 'popup',
+          })
+        })
+        .then((win) => {
+          setTimeout(() => browser.windows.update(win.id, { height: 480 }), 100);
+        });
     }),
 
     getAddPasswordContext: background_function("Pass.getAddPasswordContext",
@@ -1088,117 +1106,113 @@ function handlePasswordGeneration() {
     }
   }
 
-  function makePasswordAdder(validations,
-                             errorsContainerId,
-                             getInput,
-                             addPassword) {
-    return function () {
-      try {
-        let inputData = getInput(),
-            errorsContainer = document.getElementById(errorsContainerId),
-            errors = validateInput(validations, inputData);
+  function onAddPassword() {
+    let errorsContainer = document.getElementById("add-password-errors");
+    let generate = document.getElementById("add-password-mode-gen").checked;
+    let validations = [
+      isPresent('name', _("errors_name_is_required")),
+    ];
+    let inputData = {
+      "name": document.getElementById('add-password-name').value,
+      "additionalInfo": document.getElementById('add-password-info').value,
+    }
+    if (generate) {
+      inputData["length"] = document.getElementById('add-password-gen-length').value;
+      inputData["includeSymbols"] = document.getElementById('add-password-gen-symbols').checked;
+    } else {
+      validations.push(
+        isPresent('name', _("errors_name_is_required")),
+        isPresent('password', _("errors_password_is_required")),
+        matches('password', 'passwordConfirmation', _("errors_password_confirmation_mismatch")),
+      );
+      inputData["password"] = document.getElementById('add-password-ins').value;
+      inputData["passwordConfirmation"] = (
+        document.getElementById('add-password-ins-confirmation').value
+      );
+    }
 
-        emptyElement(errorsContainer);
-
-        if (errors.length > 0) {
-          errors.forEach(function (errorMsg) {
-            let errorLabel = document.createElement('p');
-            errorLabel.textContent = errorMsg;
-            errorsContainer.appendChild(errorLabel);
-          });
-        } else {
-          if (PassFF.Pass.getItemByFullKey(inputData.name)) {
-            log.debug(`Password name ${inputData.name} already taken.`);
-            let confirmation = window.confirm(
-              _("inputs_overwrite_password_prompt")
-            );
-            if (!confirmation) {
-              return;
-            }
+    try {
+      let errors = validateInput(validations, inputData);
+      emptyElement(errorsContainer);
+      if (errors.length > 0) {
+        errors.forEach(function (errorMsg) {
+          let errorLabel = document.createElement('p');
+          errorLabel.textContent = errorMsg;
+          errorsContainer.appendChild(errorLabel);
+        });
+      } else {
+        if (PassFF.Pass.getItemByFullKey(inputData.name)) {
+          log.debug(`Password name ${inputData.name} already taken.`);
+          let confirmation = window.confirm(
+            _("inputs_overwrite_password_prompt")
+          );
+          if (!confirmation) {
+            return;
           }
-          addPassword(inputData)
-            .then((result) => {
-              if (result) {
-                PassFF.refresh_all();
-                browser.windows.getCurrent().then((win) => {
-                  browser.windows.remove(win.id);
-                });
-              } else if (result === false) {
-                window.alert(
-                  _("errors_pass_execution_failed") + ":\n" + JSON.stringify(result)
-                );
-              }
-            });
         }
-      } catch (e) {
-        window.alert(
-          _("errors_unexpected_error") + ":\n" + e.name + ' ' + e.message
-        );
+
+        let addPasswordPromise = null;
+        if (generate) {
+          addPasswordPromise = PassFF.Pass.generateNewPassword(
+            inputData.name,
+            inputData.length,
+            inputData.includeSymbols,
+            inputData.additionalInfo,
+          );
+        } else {
+          addPasswordPromise = PassFF.Pass.addNewPassword(
+            inputData.name,
+            inputData.password,
+            inputData.additionalInfo,
+          );
+        }
+
+        addPasswordPromise
+          .then((result) => {
+            if (result) {
+              PassFF.refresh_all();
+              browser.windows.getCurrent().then((win) => {
+                browser.windows.remove(win.id);
+              });
+            } else if (result === false) {
+              window.alert(
+                _("errors_pass_execution_failed") + ":\n" + JSON.stringify(result)
+              );
+            }
+          });
       }
-    };
+    } catch (e) {
+      window.alert(
+        _("errors_unexpected_error") + ":\n" + e.name + ' ' + e.message
+      );
+    }
   }
 
   document.querySelectorAll("label,p.text,option,button").forEach(function (el) {
       el.textContent = _(el.textContent);
   });
 
-  document.getElementById("gen-password-length").value = PassFF.Preferences.defaultPasswordLength;
-  document.getElementById("gen-include-symbols").checked = PassFF.Preferences.defaultIncludeSymbols;
+  document.getElementById("add-password-gen-length").value = PassFF.Preferences.defaultPasswordLength;
+  document.getElementById("add-password-gen-symbols").checked = PassFF.Preferences.defaultIncludeSymbols;
   if (0 === PassFF.Preferences.preferInsert) {
-      document.getElementById("tab0").setAttribute("checked", true);
+      document.getElementById("add-password-mode-gen").setAttribute("checked", true);
   }
 
-  let addValidations = [
-    isPresent('name', _("errors_name_is_required")),
-    isPresent('password', _("errors_password_is_required")),
-    matches('password', 'passwordConfirmation', _("errors_password_confirmation_mismatch")),
-  ];
-
-  let genValidations = [
-    isPresent('name', _("errors_name_is_required")),
-  ];
-
-  let onAddPassword = makePasswordAdder(
-    addValidations,
-    'add-errors-container',
-    function () {
-      return {
-        name                 : document.getElementById('add-password-name').value,
-        password             : document.getElementById('add-password').value,
-        passwordConfirmation : document.getElementById('add-password-confirmation').value,
-        additionalInfo       : document.getElementById('add-additional-info-insert').value,
-      };
-    },
-    function (inputData) {
-      return PassFF.Pass.addNewPassword(
-        inputData.name, inputData.password, inputData.additionalInfo);
-    }
-  );
-
-  let onGeneratePassword = makePasswordAdder(
-    genValidations,
-    'gen-errors-container',
-    function () {
-      return {
-        name           : document.getElementById('gen-password-name').value,
-        length         : document.getElementById('gen-password-length').value,
-        includeSymbols : document.getElementById('gen-include-symbols').checked,
-        additionalInfo : document.getElementById('add-additional-info-generate').value,
-      };
-    },
-    function (inputData) {
-      return PassFF.Pass.generateNewPassword(
-        inputData.name, inputData.length, inputData.includeSymbols, inputData.additionalInfo);
-    }
-  );
-
-  let saveButton = document.getElementById("save-button");
+  let saveButton = document.getElementById("add-password-button");
   saveButton.addEventListener('click', onAddPassword);
-  let genSaveButton = document.getElementById("gen-save-button");
-  genSaveButton.addEventListener('click', onGeneratePassword);
 
-  PassFF.Pass.getAddPasswordContext().then((path) => {
-    document.getElementById('add-password-name').value = path;
-    document.getElementById('gen-password-name').value = path;
+  PassFF.Pass.getAddPasswordContext().then((context) => {
+    document.getElementById('add-password-name').value = context["fullKey"];
+    let addtlInfo = [];
+    if (context["tabLogin"] != "") {
+      addtlInfo.push(`${PassFF.Preferences.loginFieldNames[0]}: ${context["tabLogin"]}`);
+    }
+    if (PassFF.Preferences.prefillUrl) {
+      let url = new URL(context["tabUrl"]);
+      if (url.protocol !== "about:") {
+        addtlInfo.push(`${PassFF.Preferences.urlFieldNames[0]}: ${context["tabUrl"]}`);
+      }
+    }
+    document.getElementById('add-password-info').value = addtlInfo.join("\n");
   });
 }
