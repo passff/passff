@@ -459,8 +459,9 @@ PassFF.Page = (function () {
           <div><button class="passff_submit passff_button"></button></div>
         `;
         let button = entry.querySelector(".passff_key span");
-        button.textContent = item.fullKey;
-        button.parentNode.title = item.fullKey;
+        let fullKey = item.fullKey.replace(/^\//, "")
+        button.textContent = fullKey;
+        button.parentNode.title = fullKey;
         button.parentNode.addEventListener("click", function (e) {
           if (PassFF.Preferences.submitFillable) return onPopupSubmitClick(e);
           return onPopupFillClick(e);
