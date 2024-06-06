@@ -645,7 +645,7 @@ PassFF.Pass = (function () {
         .then((result) => {
           PassFF.Menu.state.indexingMetaUrls = false;
           let stdout = result.stdout;
-          //remove escape codes
+          // remove escape codes
           stdout = stdout.replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, "");
 
           let lines = stdout.split("\n");
@@ -661,17 +661,18 @@ PassFF.Pass = (function () {
 
           for (let line of stdout.split("\n")) {
             if (!metaTagRegexp.test(line)) {
-              //reached next fullKey in output
+              // reached next fullKey in output
               if (urls.length > 0) {
                 metaUrls.set(fullKey, urls);
               }
 
-              //current line ends with a colon which we need to strip
-              fullKey = line.substring(0, line.length - 1);
+              // current line ends with a colon which we need to strip
+              // add leading slash for compatibility with our naming scheme
+              fullKey = "/" + line.substring(0, line.length - 1);
               urls = [];
             } else {
-              //current line is an url matching the last found fullKey
-              //'host:' or 'url:" needs to be stripped
+              // current line is an url matching the last found fullKey
+              // 'host:' or 'url:" needs to be stripped
               let url = (
                 urlRegExp.test(line) ? line.trim() : line.replace(metaTagRegexp, "")
               ).trim();
