@@ -762,7 +762,7 @@ PassFF.Pass = (function () {
           .then(async (executionResult) => {
             if (executionResult.exitCode !== 0) return;
 
-            let lines = executionResult.stdout.split('\n');
+            let lines = executionResult.stdout.trim().split('\n');
             result.password = [lines[0]];
 
             for (let i = 1; i < lines.length; i++) {
