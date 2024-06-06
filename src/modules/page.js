@@ -664,6 +664,10 @@ PassFF.Page = (function () {
         return checkResults;
       }
 
+      if (currURL.protocol == "https:") {
+        checkResults["protocol"] = true;
+      }
+
       let err_message;
       let passURL = [];
       for (const url of passItemURL) {
@@ -678,10 +682,6 @@ PassFF.Page = (function () {
       if (passURL.length == 0) {
         checkResults["err_message"] = err_message;
         return checkResults;
-      }
-
-      if (currURL.protocol == "https:") {
-        checkResults["protocol"] = true;
       }
 
       if (passURL.some(url => url.href == currURL.href)) {

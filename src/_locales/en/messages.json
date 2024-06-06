@@ -339,7 +339,7 @@
     "message": "There was an error parsing the URL from the password database."
   },
   "passff_checks_protocol": {
-    "message": "The current page uses an insecure protocol that could compromize your password."
+    "message": "The current page uses an insecure protocol that could compromise your password."
   },
   "passff_checks_domain": {
     "message": "The domain of your current site does not match the one in your pass database."
