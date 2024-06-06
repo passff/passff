@@ -770,11 +770,11 @@ PassFF.Pass = (function () {
               const line = lines[i];
               const isUrl = /^https?:\/\/.*/.test(line);
               let splitPos = line.indexOf(':');
-              if (i == 1 && splitPos == -1) {
+              if (i == 1 && splitPos == -1 && line != "") {
                 // default interpretation of second line is 'login' field
                 // this does not support login names containing a colon!
                 result.login = [line];
-              } else if (i == 2 && (splitPos == -1 || isUrl)) {
+              } else if (i == 2 && (line != "" && splitPos == -1 || isUrl)) {
                 // default interpretation of third line is 'url' field
                 // does not support urls without 'http' and containing a colon (e.g. 127.0.0.1:80)
                 result.url = [line];

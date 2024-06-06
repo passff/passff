@@ -63,13 +63,14 @@ url: <the_url>
 
 You can change or configure additional names for the `login` and `url` fields in preferences.
 
-If there are no colons (`:`) on any of the lines, and there are at least 2 lines, then the first two lines are assumed
-to contain the password and login name respectively:
+If there are no colons (`:`) on the second or third line, they are assumed to contain the username
+and URL respectively (unless those lines are left empty):
 
 ```
 <the_password>
 <the_login>
-<ignored_content>
+<the_url>
+<more_content>
 ```
 
 If there is only a single line, or none of the provided fields matches a login field name, the username is taken from
