@@ -309,7 +309,7 @@ PassFF.Menu = (function () {
     if (cleanMenu) clearMenuList();
     let listElm = document.getElementById('passff-entries-list');
     items.forEach(function (item) {
-      if (item.isField) return;
+      if (item.isField || item.isMeta) return;
       let onEnter = null;
       if (item.isLeaf || item.hasFields) {
         onEnter = function (event) {

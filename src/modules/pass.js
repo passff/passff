@@ -341,39 +341,39 @@ PassFF.Pass = (function () {
     return item;
   }
 
-  function createSymlinkItem(parent, key, target) {
-    if (target.startsWith("/")) {
-      log.debug("followSymlinkToDir: only relative links are supported, skipping", key, target);
+  function createSymlinkItem(parent, key, targetPath) {
+    if (targetPath.startsWith("/")) {
+      log.debug("followSymlinkToDir: only relative links are supported, skipping", key, targetPath);
       return createItem(parent, key, {isBroken: true});
     }
 
-    let target_item = parent;
-    for (let part of target.split("/")) {
+    let targetItem = parent;
+    for (let part of targetPath.split("/")) {
       if (part == ".") {
         continue;
       } else if (part == "..") {
-        if (target_item.parent === null) {
-          log.debug("followSymlinkToDir: link points outside the pass dir", key, target);
+        if (targetItem.parent === null) {
+          log.debug("followSymlinkToDir: link points outside the pass dir", key, targetPath);
           return createItem(parent, key, {isBroken: true});
         }
-        target_item = PassFF.Pass.getItemById(target_item.parent);
+        targetItem = PassFF.Pass.getItemById(targetItem.parent);
       } else {
-        let target_siblings = target_item.children.map(PassFF.Pass.getItemById);
-        target_siblings = target_siblings.filter(item => item.key == part);
-        if (target_siblings.length != 1) {
-          log.debug("followSymlinkToDir: skipping dead link", key, target);
+        let targetSiblings = targetItem.children.map(PassFF.Pass.getItemById);
+        targetSiblings = targetSiblings.filter(item => item.key == part);
+        if (targetSiblings.length != 1) {
+          log.debug("followSymlinkToDir: skipping dead link", key, targetPath);
           return createItem(parent, key, {isBroken: true});
         }
-        target_item = target_siblings[0];
+        targetItem = targetSiblings[0];
       }
     }
 
-    return copyTree(parent, key, target_item);
+    return copyTree(parent, key, targetItem);
   }
 
-  function copyTree(parent, key, target_item) {
+  function copyTree(parent, key, targetItem) {
     let item = createItem(parent, key);
-    target_item.children.forEach(child => {
+    targetItem.children.forEach(child => {
       child = PassFF.Pass.getItemById(child);
       if (child) {
         copyTree(item, child.key, child);
@@ -393,37 +393,35 @@ PassFF.Pass = (function () {
     item.children.forEach(rmTree);
   }
 
-  async function getLinkedFieldData(item, fieldName, target_path, recursionHist) {
+  async function getLinkedFieldData(item, fieldName, targetPath, recursionHist) {
     recursionHist = recursionHist || [];
-    const target_item = (
-      target_path.startsWith("/")
-      ? PassFF.Pass.getItemByFullKey(target_path)
-      : PassFF.Pass.getItemByRelKey(item, target_path)
+    const targetItem = (
+      targetPath.startsWith("/")
+      ? PassFF.Pass.getItemByFullKey(targetPath)
+      : PassFF.Pass.getItemByRelKey(item, targetPath)
     );
-    if (target_item === null) {
+    if (targetItem === null) {
       log.debug(
-        `getLinkedFieldData: pass entry ${target_path} referenced from`
+        `getLinkedFieldData: pass entry ${targetPath} referenced from`
         + ` field ${fieldName} in ${item.fullKey} does not exist`
       );
-      return `BROKEN_PASS_REF_MISS: -> ${target_path}`;
-    } else if (recursionHist.indexOf(target_item.id) >= 0) {
+      return `BROKEN_PASS_REF_MISS: -> ${targetPath}`;
+    } else if (recursionHist.indexOf(targetItem.id) >= 0) {
       log.debug(
-        `getLinkedFieldData: recursion loop for ${target_path} referenced from`
+        `getLinkedFieldData: recursion loop for ${targetPath} referenced from`
         + ` field ${fieldName} in ${item.fullKey}`
       );
-      return `BROKEN_PASS_REF_LOOP: -> ${target_path}`;
+      return `BROKEN_PASS_REF_LOOP: -> ${targetPath}`;
     } else {
-      const target_data = await PassFF.Pass.getPasswordData(
-        target_item, false, recursionHist,
-      );
-      if (!target_data.hasOwnProperty(fieldName)) {
+      const targetData = await PassFF.Pass.getPasswordData(targetItem, recursionHist);
+      if (!targetData.hasOwnProperty(fieldName)) {
         log.debug(
-          `getLinkedFieldData: missing field ${fieldName} in ${target_item.fullKey},`
+          `getLinkedFieldData: missing field ${fieldName} in ${targetItem.fullKey},`
           + ` referenced from ${item.fullKey}`
         );
-        return `BROKEN_PASS_REF_FIELD: -> ${target_path}`;
+        return `BROKEN_PASS_REF_FIELD: -> ${targetPath}`;
       } else {
-        return target_data[fieldName];
+        return targetData[fieldName];
       }
     }
   }
@@ -462,7 +460,7 @@ PassFF.Pass = (function () {
                     let otherData = passwordData['fullText'];
                     let sep = otherData.indexOf("\n");
                     passOutputEl.textContent = passwordData['password'];
-                    restOutputEl.textContent = otherData.substring(sep+1);
+                    restOutputEl.textContent = otherData.substring(sep + 1);
                 } else {
                     passOutputEl.textContent = passwordData['password'];
                     restOutputEl.textContent = "login: " + passwordData['login']
@@ -477,6 +475,7 @@ PassFF.Pass = (function () {
 
     executePass: background_function("Pass.executePass",
       function (args) {
+        log.debug("executePass:", args[0]);
         let command = "ls";
         if (args.length > 0) {
           if (["insert",
@@ -713,9 +712,8 @@ PassFF.Pass = (function () {
       }
     },
 
-    getPasswordData: async function (item, meta2leaf, recursionHist) {
+    getPasswordData: async function (item, recursionHist) {
       let result = {};
-      meta2leaf = meta2leaf || false;
       recursionHist = recursionHist || [];
       recursionHist = [...recursionHist, item.id];
       if (item.hasFields) {
@@ -740,93 +738,77 @@ PassFF.Pass = (function () {
           result.otp = await this.generateOtp(otpauthkey);
         }
         return result;
-      } else if (item.hasMeta && !meta2leaf) {
-        // item with corresponding *.meta
-        let promised_results = [Promise.resolve(null), Promise.resolve(null)];
-        promised_results[0] = this.getPasswordData(item, true);
-        let siblings = this.getItemById(item.parent).children.map(this.getItemById);
-        promised_results[1] = siblings
-          .filter(sib => item.key + ".meta" === sib.key)
-          .map(this.getPasswordData)[0];
-        return Promise.all(promised_results).then((results) => {
-          if (typeof results[0] === "undefined") return;
-          const entries = [
-            ...Object.entries(results[0]),
-            ...Object.entries(results[1]),
-          ];
-          let result = {
-            password: [results[0].password],
-            login: [results[1].password],
-          };
-          for (const [fieldName, value] of entries) {
-            if (fieldName === "password") continue;
+      } else {
+        // multiline-style item
+        let executionResult = await getPassExecPromise(item.fullKey);
+        if (executionResult.exitCode !== 0) return;
+
+        let stdout = executionResult.stdout;
+        if (item.hasMeta) {
+          // item with corresponding *.meta
+          const metaItem = (
+            this
+            .getItemById(item.parent)
+            .children
+            .map(this.getItemById)
+            .filter(sib => item.key + ".meta" === sib.key)[0]
+          );
+          executionResult = await getPassExecPromise(metaItem.fullKey);
+          if (executionResult.exitCode !== 0) return;
+          stdout += executionResult.stdout;
+        }
+
+        let lines = stdout.trimRight().split('\n');
+        result.password = [lines[0]];
+
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i];
+          result[`PASSFF_LINE_${i + 1}`] = [line.trim()];
+
+          const isUrl = i == 2 && /^https?:\/\/.*/.test(line);
+          let splitPos = line.indexOf(':');
+          if (splitPos >= 0 && !isUrl) {
+            result[`PASSFF_LINE_${i + 1}`] = [];
+
+            // support attribute names that contain a colon (but no space)
+            let splitLen = 1;
+            let splitPos2 = line.indexOf(': ');
+            if (splitPos2 >= 0) {
+              splitPos = splitPos2;
+              splitLen = 2;
+            }
+
+            const fieldName = line.substring(0, splitPos).toLowerCase();
+            const value = line.substring(splitPos + splitLen);
             if (!result.hasOwnProperty(fieldName)) {
               result[fieldName] = [];
             }
-            result[fieldName].push(...(typeof value === "string" ? [value] : value));
+            result[fieldName].push(value.trim());
           }
-          setLoginPasswordUrls(result, item);
-          setOther(result);
-          return result;
-        });
-      } else {
-        // multiline-style item
-        return getPassExecPromise(item.fullKey)
-          .then(async (executionResult) => {
-            if (executionResult.exitCode !== 0) return;
+        }
 
-            let lines = executionResult.stdout.trim().split('\n');
-            result.password = [lines[0]];
-
-            for (let i = 1; i < lines.length; i++) {
-              const line = lines[i];
-              result[`PASSFF_LINE_${i + 1}`] = [line.trim()];
-
-              const isUrl = i == 2 && /^https?:\/\/.*/.test(line);
-              let splitPos = line.indexOf(':');
-              if (splitPos >= 0 && !isUrl) {
-                result[`PASSFF_LINE_${i + 1}`] = [];
-
-                // support attribute names that contain a colon (but no space)
-                let splitLen = 1;
-                let splitPos2 = line.indexOf(': ');
-                if (splitPos2 >= 0) {
-                  splitPos = splitPos2;
-                  splitLen = 2;
-                }
-
-                const fieldName = line.substring(0, splitPos).toLowerCase();
-                const value = line.substring(splitPos + splitLen);
-                if (!result.hasOwnProperty(fieldName)) {
-                  result[fieldName] = [];
-                }
-                result[fieldName].push(value.trim());
-              }
+        for (const [fieldName, values] of Object.entries(result)) {
+          let linkedValues = [];
+          for (const value of values) {
+            const match = / *-> *(.*)/.exec(value);
+            if (!match) {
+              linkedValues.push(value);
+            } else {
+              const lValue = await getLinkedFieldData(
+                item, fieldName, match[1], recursionHist,
+              );
+              linkedValues.push(...(typeof lValue === "string" ? [lValue] : lValue));
             }
+          }
+          result[fieldName] = linkedValues;
+        }
 
-            for (const [fieldName, values] of Object.entries(result)) {
-              let linkedValues = [];
-              for (const value of values) {
-                const match = / *-> *(.*)/.exec(value);
-                if (!match) {
-                  linkedValues.push(value);
-                } else {
-                  const lValue = await getLinkedFieldData(
-                    item, fieldName, match[1], recursionHist,
-                  );
-                  linkedValues.push(...(typeof lValue === "string" ? [lValue] : lValue));
-                }
-              }
-              result[fieldName] = linkedValues;
-            }
+        setLoginPasswordUrls(result, item);
+        await setOtp(result, item);
+        setOther(result);
+        setText(result, stdout);
 
-            setLoginPasswordUrls(result, item);
-            await setOtp(result, item);
-            setOther(result);
-            setText(result, executionResult.stdout);
-
-            return result;
-          });
+        return result;
       }
     },
 

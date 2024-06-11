@@ -132,6 +132,12 @@ OTP token, by setting `<value>` to one of `PASSFF_FIELD_LOGIN`, `PASSFF_FIELD_PA
 Alternatively, you can instruct PassFF explicitly not to fill the specified input field by using the
 keyword `PASSFF_OMIT_FIELD`.
 
+Optionally, you can store your username, the URL, and additional (less sensitive) meta-data separate
+from the password. For example, you can create the two entries `shopping/example.com`
+and `shopping/example.com.meta`. Whenever you select `shopping/example.com` in PassFF, it will
+automatically append the contents of the corresponding entry with `.meta` extension before parsing
+the multi-line format specified in this section.
+
 #### Examples
 
 ```
