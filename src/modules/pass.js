@@ -40,19 +40,15 @@ PassFF.Pass = (function () {
       .map(values => [].concat(...values))
     );
 
-    passwordData.password = passwords[0];
-
     let loginSrc = "field";
     if (logins.length == 0) {
       if (passwordData["PASSFF_LINE_2"].length > 0) {
         loginSrc = "line2";
-        passwordData.login = passwordData["PASSFF_LINE_2"][0];
+        logins.push(passwordData["PASSFF_LINE_2"][0]);
       } else {
         loginSrc = "key";
-        passwordData.login = item.key;
+        logins.push(item.key);
       }
-    } else {
-      passwordData.login = logins[0];
     }
 
     if (urls.length == 0) {
@@ -70,6 +66,12 @@ PassFF.Pass = (function () {
       }
       urls.push(url)
     }
+
+    // if multiple logins/passwords are specified only use the first
+    passwordData.login = logins[0];
+    passwordData.password = passwords[0];
+
+    // the `url` property is a list of all specified URLs
     // if there is no protocol specified, assume secure HTTP
     passwordData.url = urls.map(url => /^[a-z]+:\/\//.test(url) ? url : `https://${url}`);
   }
