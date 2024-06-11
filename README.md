@@ -217,22 +217,6 @@ into the name of the entry for `http://example.com:2000/`:
 ### Extension preferences
 
 Accessible from the gear button in the toolbar menu, preferences let you fine-tune the behaviour of PassFF.
-Some of them are described below:
-
-- Inputs (A comma separated list of input names. Input field names in a web page *containing* one of those values will be filled with the corresponding value.)
-  - Passwords input names
-  - Login input names
-  - OTP input names
-- Fields (A comma separated list of field names. The first matching field in the password data or in the store tree will be used as the corresponding value.)
-  - Login field names
-  - Password field names
-  - URL field names
-  - OTP Auth field names
-  - Regex for hiding items (tests the full path to the item)
-- Adding Passwords
-  - The default length for generating passwords
-  - Whether or not to include special characters in generated passwords by default
-  - Preferred new password method ("generate" or "insert")
 
 ### Host application preferences
 

@@ -143,8 +143,11 @@
   "passff_prefs_inputs_description": {
     "message": "Inputs are used by PassFF to find fillable input fields in web pages. Optionally, PassFF marks them with a menu to fill them."
   },
+  "passff_prefs_input_names_description": {
+    "message": "Each of the preferences below is a comma-separated list of input names. Input fields in a web page whose names **contain** one of those will be filled with the corresponding value by PassFF."
+  },
   "passff_prefs_fields_description": {
-    "message": "Fields are used to find data inside your password repository. PassFF looks login, password and URL up in the password file. If it's a directory, PassFF looks them up in the files of this directory."
+    "message": "Fields are used to find data inside your password repository. PassFF looks for login, password, URL and OTP key URI in the password file. If it's a directory, PassFF looks them up in the files of this directory. Each of the preferences below is a comma-separated list of field names."
   },
   "passff_prefs_password_input_names_label": {
     "message": "Password input names"
@@ -168,10 +171,10 @@
     "message": "URL field names"
   },
   "passff_prefs_otpauth_field_names_label": {
-    "message": "OTP Auth field names"
+    "message": "OTP key URI field names"
   },
   "passff_prefs_filter_path_regex_label": {
-    "message": "Regex for hiding items, one per line (tests full path)"
+    "message": "Hide items whose path matches at least one of the following regular expressions (one per line)"
   },
   "passff_prefs_script_howto": {
     "message": "See passff.py for changing the environment variables of pass."
@@ -219,19 +222,19 @@
     "message": "Prefill the URL from the active tab"
   },
   "passff_prefs_default_length_label": {
-    "message": "Default password length"
+    "message": "Default length of generated passwords"
   },
   "passff_prefs_default_include_symbols_label": {
-    "message": "Include at least one special character in the password by default"
+    "message": "Include at least one special character in generated passwords by default"
   },
   "passff_prefs_preferred_new_method_label": {
-    "message": "Preferred new method"
+    "message": "Preferred method when adding new passwords"
   },
   "passff_prefs_prefer_generate": {
-    "message": "Generate"
+    "message": "Randomly generate"
   },
   "passff_prefs_prefer_insert": {
-    "message": "Insert"
+    "message": "Manually insert"
   },
   "passff_prefs_show_new_password_button": {
     "message": "Show 'New Password' button in the toolbar menu"

@@ -143,8 +143,11 @@
   "passff_prefs_inputs_description": {
     "message": "Diese Bezeichner werden von PassFF benutzt, um befüllbare Eingabefelder auf Webseiten zu finden. Optional platziert PassFF in jedem gefundenen Eingabefeld eine Menü-Schaltfläche."
   },
+  "passff_prefs_input_names_description": {
+    "message": "Jede der Einstellungen unten ist eine komma-separierte Liste von Eingafeld-Namen. Eingabefelder auf Webseiten, deren Bezeichner einen dieser Namen **enthalten**, werden von PassFF mit dem entsprechenden Wert ausgefüllt."
+  },
   "passff_prefs_fields_description": {
-    "message": "Felder werden genutzt, um Daten in deinem Passwort-Repository zu finden. PassFF versucht, den 'login', 'passwort' oder 'url' Wert (entsprechend der Standard-Syntax) oder einen passenden Datensatznamen in den Passwortdaten zu finden."
+    "message": "Felder werden genutzt, um Daten in deinem Passwort-Repository zu finden. PassFF versucht, den Login-, Passwort-, URL- oder OTP-Wert (entsprechend der Standard-Syntax) oder einen passenden Datensatznamen in den Passwortdaten zu finden. Jede der Einstellungen unten ist eine komma-separierte Liste von Datensatznamen."
   },
   "passff_prefs_password_input_names_label": {
     "message": "Namen für 'Passwort'-Eingabefelder"
@@ -159,19 +162,19 @@
     "message": "'Formular senden'-Knopf-Queries, eine pro Zeile"
   },
   "passff_prefs_login_field_names_label": {
-    "message": "Login Datensatznamen"
+    "message": "Login-Datensatznamen"
   },
   "passff_prefs_password_field_names_label": {
-    "message": "Passwort Datensatznamen"
+    "message": "Passwort-Datensatznamen"
   },
   "passff_prefs_url_field_names_label": {
-    "message": "URL Datensatznamen"
+    "message": "URL-Datensatznamen"
   },
   "passff_prefs_otpauth_field_names_label": {
-    "message": "OTP Datensatznamen"
+    "message": "OTP-Datensatznamen"
   },
   "passff_prefs_filter_path_regex_label": {
-    "message": "Reguläre Ausdrücke, um Einträge zu verstecken, einer pro Zeile (bezieht sich jeweils auf den ganzen Pfad)"
+    "message": "Einträge verstecken, deren Pfad zu einem der folgenden regulären Ausdrücke passt (einer pro Zeile)"
   },
   "passff_prefs_script_howto": {
     "message": "Änderungen bitte direkt in der passff.py vornehmen!"
@@ -219,19 +222,19 @@
     "message": "URL-Feld mit der URL des aktiven Tabs vorausfüllen"
   },
   "passff_prefs_default_length_label": {
-    "message": "Standard Passwortlänge"
+    "message": "Standardlänge für generierte Passwörter"
   },
   "passff_prefs_default_include_symbols_label": {
-    "message": "Symbole standardmäßig verwenden"
+    "message": "Standardmäßig Symbole in generierten Passwörtern verwenden"
   },
   "passff_prefs_preferred_new_method_label": {
-    "message": "Bevorzugte Methode"
+    "message": "Bevorzugte Methode zur Erstellung von Passwörtern"
   },
   "passff_prefs_prefer_generate": {
-    "message": "Generieren"
+    "message": "Zufällig generieren"
   },
   "passff_prefs_prefer_insert": {
-    "message": "Eintragen"
+    "message": "Manuell eintragen"
   },
   "passff_prefs_show_new_password_button": {
     "message": "Zeige 'Password hinzufügen' Schaltfläche im Menü"
