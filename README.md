@@ -291,7 +291,7 @@ Configure the script's execution parameters appropriately in the host app `passf
     * [Decryption failed on MacOS](https://codeberg.org/PassFF/passff/issues/325)
     * [Script execution failed on CentOS](https://codeberg.org/PassFF/passff/issues/367)
 - **The icon/toolbar menu suggests no or the wrong entries**
-  - See the section [Improve Suggestions](https://codeberg.org/PassFF/passff#improve-suggestions) above.
+  - See the section [Improve suggestions (contextual entries)](https://codeberg.org/PassFF/passff#improve-suggestions-contextual-entries) above.
 
 ## Contributing
 
