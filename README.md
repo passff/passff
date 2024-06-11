@@ -180,7 +180,7 @@ The file structure approach does not support custom input fields.
 
 Note that the file structure format is recognized and assumed by PassFF whenever a file name matches a reserved field name such as `user`, `url`, `password` or `login`. This might cause unexpected behavior in cases where there is a file in [multi-line format](#multi-line-format) whose name happens to be a reserved field name.
 
-### Improve Suggestions
+### Improve suggestions (contextual entries)
 
 Unless you activate the preference "Index URL fields on startup", the auto-suggestions in the menus are based on matches of the current web page's URL against the *names* of password store entries. In the following, you find an explanation how you can improve matching quality by adapting the names and paths of your password store entries.
 
@@ -188,9 +188,13 @@ Generally speaking, the match quality is best if the exact hostname as well as a
 
 For the URL `https://bugs.gentoo.org/index.cgi?GoAheadAndLogIn=1`, best match quality is reached if your password store entry contains the strings `bugs.gentoo.org`, `index` and `GoAheadAndLogIn` in arbitrary order, but for it to be ranked in the matching process at all, it's enough for it to contain the strings `bugs` or `gentoo`.
 
-*Example (Only one entry per hostname):* If you don't have multiple credentials for one hostname in your password store, you get the best results from naming the entries after the exact hostname. In this scenario, if you name an entry `/some/arbitrary/path/bugs.gentoo.org`, it will always rank highest on `https://bugs.gentoo.org/index.cgi?GoAheadAndLogIn=1`.
+#### Example with only one entry per hostname
 
-*Example (More than one entry per hostname):* If you happen to have several credentials for one hostname, you could name a directory in your password store after the hostname and list the different credentials inside that directory. Suppose you have different credentials for each of the following URLs:
+If you don't have multiple credentials for one hostname in your password store, you get the best results from naming the entries after the exact hostname. In this scenario, if you name an entry `/some/arbitrary/path/bugs.gentoo.org`, it will always rank highest on `https://bugs.gentoo.org/index.cgi?GoAheadAndLogIn=1`.
+
+#### Examples with more than one entry per hostname
+
+If you happen to have several credentials for one hostname, you could name a directory in your password store after the hostname and list the different credentials inside that directory. Suppose you have different credentials for each of the following URLs:
 ```
 https://my.example.com/cloud
 https://my.example.com/blog?login
