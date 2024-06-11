@@ -275,33 +275,23 @@ Configure the script's execution parameters appropriately in the host app `passf
 ## Troubleshooting
 
 - **I use an old version of Firefox and I experience weird behaviour**
-
-PassFF is developed for the [latest version of **Firefox**](https://en.wikipedia.org/wiki/Firefox_version_history#Current_and_future_releases).
-PassFF should also work on previous versions above Firefox 50, which introduced [*native messaging*](https://blog.mozilla.org/addons/2016/08/25/webextensions-in-firefox-50/) for WebExtensions.
-However, HTTP authentication is available from Firefox 54 onwards.
-
-- **I get a window saying: *gpg: decryption failed: No secret key***
-- **Nothing happens when I click on a password and select an action**
-- **PassFF does not prompt me for the passphrase**
-- **PassFF works but only intermittently**
-
-It may be a problem with your pin-entry program, while your gpg-agent sometimes caches your passphrase.
-
-Possible solutions:
-  - [Install a graphical pinentry program](#A-graphical-pinentry-program)
-  - Configure GnuPG to call your pinentry program
-    - Add the line `pinentry-program /path/to/your/pinentry` to `~/.gnupg/gpg-agent.conf`
-    - You may need to create this file.
-    - See https://wiki.archlinux.org/index.php/GnuPG#pinentry
-
-Related issues:
- * [No dialog opening up on Arch Linux](https://codeberg.org/PassFF/passff/issues/330)
- * [Decryption failed on MacOS](https://codeberg.org/PassFF/passff/issues/325)
- * [Script execution failed on CentOS](https://codeberg.org/PassFF/passff/issues/367)
-
+  - PassFF is developed for the [latest version of **Firefox**](https://en.wikipedia.org/wiki/Firefox_version_history#Current_and_future_releases). PassFF should also work on previous versions above Firefox 50, which introduced [*native messaging*](https://blog.mozilla.org/addons/2016/08/25/webextensions-in-firefox-50/) for WebExtensions. However, HTTP authentication is available from Firefox 54 onwards.
+- **I get a window saying: *gpg: decryption failed: No secret key***<br>
+  **Nothing happens when I click on a password and select an action**<br>
+  **PassFF does not prompt me for the passphrase**<br>
+  **PassFF works but only intermittently**
+  - It may be a problem with your pin-entry program, while your gpg-agent sometimes caches your passphrase. Possible solutions:
+    - [Install a graphical pinentry program](#A-graphical-pinentry-program)
+    - Configure GnuPG to call your pinentry program
+      - Add the line `pinentry-program /path/to/your/pinentry` to `~/.gnupg/gpg-agent.conf`
+      - You may need to create this file.
+      - See https://wiki.archlinux.org/index.php/GnuPG#pinentry
+  - Related issues:
+    * [No dialog opening up on Arch Linux](https://codeberg.org/PassFF/passff/issues/330)
+    * [Decryption failed on MacOS](https://codeberg.org/PassFF/passff/issues/325)
+    * [Script execution failed on CentOS](https://codeberg.org/PassFF/passff/issues/367)
 - **The icon/toolbar menu suggests no or the wrong entries**
-
-See the section [Improve Suggestions](https://codeberg.org/PassFF/passff#improve-suggestions) above.
+  - See the section [Improve Suggestions](https://codeberg.org/PassFF/passff#improve-suggestions) above.
 
 ## Contributing
 
