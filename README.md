@@ -9,30 +9,36 @@ passff
 
 ![passff](https://user-images.githubusercontent.com/1518387/33810636-8c95df16-de07-11e7-8857-283e7300ecff.png)
 
-### Overview
+## Overview
+
 This extension will allow you to access your **[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** repository directly from your web browser.
 
 You can choose to automatically fill and submit login forms if a matching password entry is found.
 
-### Browser compatibility
+## Browser compatibility
+
 * Firefox 50+ (or 54 for [full support](#i-use-an-old-version-of-firefox-and-i-have-weird-behaviours))
 
-### Installation
+## Installation
 
-##### zx2c4 pass repository
+### zx2c4 pass repository
+
 This extension requires **[zx2c4 pass](http://www.zx2c4.com/projects/password-store/)** to be installed and set up with a password repository. Make sure you can execute `pass show some-password-name` in a terminal before continuing.
 
-##### Host application
+### Host application
+
 For the extension to communicate with your system's `pass` script, you need to install what's called the host application from [the official git repository](https://codeberg.org/PassFF/passff-host).
 The host application allows the extension to communicate with `pass` on your system.
 
-##### PassFF extension
+### PassFF extension
+
 Install the current release of PassFF for your browser:
   - [Firefox](https://addons.mozilla.org/firefox/addon/passff)
 
 Previous releases are available for download as XPI files from [our releases page](https://codeberg.org/PassFF/passff/releases). However, this is strongly discouraged for security reasons!
 
-##### A graphical *pinentry* program
+### A graphical *pinentry* program
+
 This program prompts you for your passphrase. One is probably already installed.
 If PassFF does not work, install one of these programs:
   - For Ubuntu/Debian: `pinentry-gtk` or `pinentry-qt` or `pinentry-fltk`
@@ -43,15 +49,18 @@ If that does not work for you, you may have to configure GnuPG to use the right 
 
 Note: Since the host app runs non-interactively, **a console *pinentry* such as `pinentry-ncurses` is useless** and may render PassFF unusable if this is the default pinentry.
 
-##### One-time-password (OTP) Authentication
+### One-time-password (OTP) Authentication
+
 PassFF can generate tokens to fill OTP input fields if the [pass-otp](https://github.com/tadfisher/pass-otp) extension is installed and the key URI is configured in the password file.
 
-### Password formats
+## Password formats
+
 To make the most of the extension, you should format your password files according to our expected formats.
 
 If you only want the extension to fill out passwords, you don't need any special format for your password files. But if you follow our formats, the extension can also visit the website's URL and fill out the username and other input fields for you.
 
-##### Multi-line format
+### Multi-line format
+
 This is the *preferred organizational scheme used by the author* of [pass](https://www.passwordstore.org/).
 
 ```
@@ -123,7 +132,8 @@ OTP token, by setting `<value>` to one of `PASSFF_FIELD_LOGIN`, `PASSFF_FIELD_PA
 Alternatively, you can instruct PassFF explicitly not to fill the specified input field by using the
 keyword `PASSFF_OMIT_FIELD`.
 
-Examples
+#### Examples
+
 ```
 nu8kzeo2Aese
 login: bob
@@ -145,7 +155,8 @@ loginkey: PASSFF_FIELD_OTP
 fancyinput: PASSFF_FIELD_LOGIN
 ```
 
-##### File-structure format
+### File-structure format
+
 Alternatively, you can organize your login information with file structure. For example, if you have this file structure:
 * www
   * supersite.com
@@ -163,7 +174,7 @@ The file structure approach does not support custom input fields.
 
 Note that the file structure format is recognized and assumed by PassFF whenever a file name matches a reserved field name such as `user`, `url`, `password` or `login`. This might cause unexpected behavior in cases where there is a file in [multi-line format](#multi-line-format) whose name happens to be a reserved field name.
 
-##### Improve Suggestions
+### Improve Suggestions
 
 Unless you activate the preference "Index URL fields on startup", the auto-suggestions in the menus are based on matches of the current web page's URL against the *names* of password store entries. In the following, you find an explanation how you can improve matching quality by adapting the names and paths of your password store entries.
 
@@ -201,9 +212,10 @@ into the name of the entry for `http://example.com:2000/`:
 /business/cloud/example.com/port2000
 ```
 
-### Configuration and preferences
+## Configuration and preferences
 
-##### Extension preferences
+### Extension preferences
+
 Accessible from the gear button in the toolbar menu, preferences let you fine-tune the behaviour of PassFF.
 Some of them are described below:
 
@@ -222,13 +234,16 @@ Some of them are described below:
   - Whether or not to include special characters in generated passwords by default
   - Preferred new password method ("generate" or "insert")
 
-##### Host application preferences
+### Host application preferences
+
 If you use a customized `pass` installation: environment variables, customized repository path or extensions, you may have to [configure the host application accordingly](https://codeberg.org/PassFF/passff-host#preferences).
 
-### Usage
+## Usage
+
 Once installed, you should have a new icon in your toolbar. Click the icon to browse your password repository or search using a **fuzzy matching** algorithm.
 
-##### Keyboard shortcuts
+### Keyboard shortcuts
+
 The default shortcut to open the menu is <kbd>ctrl</kbd>+<kbd>y</kbd>.
 
 With the menu open, you can press <kbd>enter</kbd> to execute one of the following commands, according to your preferences:
@@ -237,39 +252,45 @@ With the menu open, you can press <kbd>enter</kbd> to execute one of the followi
 - Fill and submit
 - Fill
 
-##### Input menu
+### Input menu
+
 PassFF can *mark fillable input fields with the PassFF icon*. It adds an icon in the fields that PassFF can automatically fill. The icon is clickable and pops up a menu to select the password.
 PassFF fills the input fields and optionally submit depending on your preferences. You can always override this behavior by clicking the pencil (Fill) or the paper plane (Fill & Submit).
 
 This feature can be disabled in the preferences.
 
-#### Contextual menu
+### Contextual menu
+
 In *any* input field, fillable or not, you can access a contextual menu (right-click) in order to:
   - Add the input field's name in the *Login input names* for (auto)filling,
   - Add the input field's name in the *OTP input names* for (auto)filling,
   - Select a password to fill the input fields.
 
-#### Adding new passwords
+### Adding new passwords
+
 In order to add a password in your repository, select the 'plus' (+) icon in the toolbar menu.
 
-### Issues
+## Issues
+
 If you're having problems, the most common causes are misconfigured preferences or an incorrect installation of the host application. You can get more information by [debugging the extension](docs/CONTRIBUTING.md).
 
 First, [make sure the host application is installed correctly](https://codeberg.org/PassFF/passff-host).
 
 Configure the script's execution parameters appropriately in the host app `passff.py`: E.g., set `COMMAND` to the path to the `pass` binary (if installed with homebrew, the default location is `/usr/local/bin/pass`). With those settings in place, the extension should be able to find your passwords.
 
-### Troubleshooting
+## Troubleshooting
 
-##### I use an old version of Firefox and I have weird behaviours
-PassFF is developed for the [last version of **Firefox**](https://en.wikipedia.org/wiki/Firefox_version_history#Current_and_future_releases).
+- **I use an old version of Firefox and I experience weird behaviour**
+
+PassFF is developed for the [latest version of **Firefox**](https://en.wikipedia.org/wiki/Firefox_version_history#Current_and_future_releases).
 PassFF should also work on previous versions above Firefox 50, which introduced [*native messaging*](https://blog.mozilla.org/addons/2016/08/25/webextensions-in-firefox-50/) for WebExtensions.
 However, HTTP authentication is available from Firefox 54 onwards.
 
-##### I get a window saying: *gpg: decryption failed: No secret key*
-##### Nothing happens when I click on a password and select an action
-##### PassFF does not prompt me for the passphrase
-##### PassFF works but only intermittently
+- **I get a window saying: *gpg: decryption failed: No secret key***
+- **Nothing happens when I click on a password and select an action**
+- **PassFF does not prompt me for the passphrase**
+- **PassFF works but only intermittently**
+
 It may be a problem with your pin-entry program, while your gpg-agent sometimes caches your passphrase.
 
 Possible solutions:
@@ -284,22 +305,26 @@ Related issues:
  * [Decryption failed on MacOS](https://codeberg.org/PassFF/passff/issues/325)
  * [Script execution failed on CentOS](https://codeberg.org/PassFF/passff/issues/367)
 
-##### The icon/toolbar menu suggests no or the wrong entries
+- **The icon/toolbar menu suggests no or the wrong entries**
 
 See the section [Improve Suggestions](https://codeberg.org/PassFF/passff#improve-suggestions) above.
 
-### Contributing
+## Contributing
 
-##### Is the documentation too obscure?
+### Is the documentation too obscure?
+
 Open a new issue. We will gratefully clarify the doc.
 
-##### Would you like to translate PassFF?
+### Would you like to translate PassFF?
+
 Open a new issue to tell us about it, or make a pull request.
 
-##### Would you like to code?
+### Would you like to code?
+
 See [CONTRIBUTING](docs/CONTRIBUTING.md).
 
-### Thanks
+## Thanks
+
 Development and improvements
  * [Johan Venant](https://github.com/jvenant)
  * [Tobias Umbach](https://github.com/sometoby)
