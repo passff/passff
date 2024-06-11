@@ -22,50 +22,56 @@ PassFF.Pass = (function () {
  */
 
   function setLoginPasswordUrls(passwordData, item) {
-    let logins = [];
-    for (let i = 0; i < PassFF.Preferences.loginFieldNames.length; i++) {
-      const login = passwordData[PassFF.Preferences.loginFieldNames[i]];
-      if (typeof login !== "undefined") {
-        logins.push(...login);
-      }
-    }
-    let key_is_login = logins.length == 0;
-    passwordData.login = key_is_login ? item.key : logins[0];
+    (
+      // lines 2 and 3 have a special meaning for the login and URL fields
+      [2, 3]
+      .map(lineno => `PASSFF_LINE_${lineno}`)
+      .filter(key => !passwordData.hasOwnProperty(key))
+      .forEach(key => { passwordData[key] = []; })
+    );
 
-    let passwords = [];
-    for (let i = 0; i < PassFF.Preferences.passwordFieldNames.length; i++) {
-      const password = passwordData[PassFF.Preferences.passwordFieldNames[i]];
-      if (password) {
-        passwords.push(...password);
-      }
-    }
+    let [logins, passwords, urls] = (
+      ["login", "password", "url"]
+      .map(key => (
+        PassFF.Preferences[`${key}FieldNames`]
+        .filter(name => passwordData.hasOwnProperty(name))
+        .map(name => passwordData[name])
+      ))
+      .map(values => [].concat(...values))
+    );
+
     passwordData.password = passwords[0];
 
-
-    let urls = [];
-    for (let i = 0; i < PassFF.Preferences.urlFieldNames.length; i++) {
-      const url = passwordData[PassFF.Preferences.urlFieldNames[i]];
-      if (url) {
-        urls.push(...url);
+    let loginSrc = "field";
+    if (logins.length == 0) {
+      if (passwordData["PASSFF_LINE_2"].length > 0) {
+        loginSrc = "line2";
+        passwordData.login = passwordData["PASSFF_LINE_2"][0];
+      } else {
+        loginSrc = "key";
+        passwordData.login = item.key;
       }
+    } else {
+      passwordData.login = logins[0];
     }
+
     if (urls.length == 0) {
       let url = item.key;
-      if (key_is_login) {
-        let key_parts = item.fullKey.split("/");
-        if (key_parts.length > 1) {
-          url = key_parts[key_parts.length - 2];
+      if (
+        passwordData["PASSFF_LINE_3"].length > 0
+        && passwordData["PASSFF_LINE_3"][0] != ""
+      ) {
+        url = passwordData["PASSFF_LINE_3"][0];
+      } else if (loginSrc == "key") {
+        let keyParts = item.fullKey.split("/");
+        if (keyParts.length > 2) {
+          url = keyParts.at(-2);
         }
       }
       urls.push(url)
     }
-    for (let i = 0; i < urls.length; i++) {
-      if (!(/^[a-z]+:\/\//.test(urls[i]))) {
-        // if there is no protocol specified, assume secure HTTP
-        urls[i] = `https://${urls[i]}`;
-      }
-    }
-    passwordData.url = urls;
+    // if there is no protocol specified, assume secure HTTP
+    passwordData.url = urls.map(url => /^[a-z]+:\/\//.test(url) ? url : `https://${url}`);
   }
 
   async function setOtp(passwordData, item) {
@@ -113,7 +119,13 @@ PassFF.Pass = (function () {
   }
 
   function isOtherField(name) {
-    return !(isLoginField(name) || isPasswordField(name) || isUrlField(name) || isOtpauthField(name));
+    return !(
+      name.startsWith("PASSFF_")
+      || isLoginField(name)
+      || isPasswordField(name)
+      || isUrlField(name)
+      || isOtpauthField(name)
+    );
   }
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%% Data analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -768,17 +780,13 @@ PassFF.Pass = (function () {
 
             for (let i = 1; i < lines.length; i++) {
               const line = lines[i];
-              const isUrl = /^https?:\/\/.*/.test(line);
+              result[`PASSFF_LINE_${i + 1}`] = [line.trim()];
+
+              const isUrl = i == 2 && /^https?:\/\/.*/.test(line);
               let splitPos = line.indexOf(':');
-              if (i == 1 && splitPos == -1 && line != "") {
-                // default interpretation of second line is 'login' field
-                // this does not support login names containing a colon!
-                result.login = [line];
-              } else if (i == 2 && (line != "" && splitPos == -1 || isUrl)) {
-                // default interpretation of third line is 'url' field
-                // does not support urls without 'http' and containing a colon (e.g. 127.0.0.1:80)
-                result.url = [line];
-              } else if (splitPos >= 0) {
+              if (splitPos >= 0 && !isUrl) {
+                result[`PASSFF_LINE_${i + 1}`] = [];
+
                 // support attribute names that contain a colon (but no space)
                 let splitLen = 1;
                 let splitPos2 = line.indexOf(': ');
@@ -786,6 +794,7 @@ PassFF.Pass = (function () {
                   splitPos = splitPos2;
                   splitLen = 2;
                 }
+
                 const fieldName = line.substring(0, splitPos).toLowerCase();
                 const value = line.substring(splitPos + splitLen);
                 if (!result.hasOwnProperty(fieldName)) {
