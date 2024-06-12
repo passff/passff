@@ -724,17 +724,35 @@ PassFF.Page = (function () {
           confirmation_required = true;
           confirmation_message += _("passff_checks_protocol") + " ";
           if (pref == 2) return false;
+        } else if (
+          PassFF.Preferences.checkSubdomain == 0
+          && PassFF.Preferences.checkDomain == 0
+          && PassFF.Preferences.checkFullUrl == 0
+        ) {
+          return true;
         }
 
-        let checkLevels = ["fullurl", "subdomain", "domain"];
-        let checkLevelPrefs = ["checkFullUrl", "checkSubdomain", "checkDomain"];
-        for (let i = 0; i < checkLevels.length; i++) {
-          let pref = PassFF.Preferences[checkLevelPrefs[i]];
-          if (!results[checkLevels[i]] && pref > 0) {
-            confirmation_required = true;
-            confirmation_message += _(`passff_checks_${checkLevels[i]}`) + " ";
-            if (pref == 2) return false;
-            break;
+        if (!results["pass_url_valid"]) {
+          if (
+            PassFF.Preferences.checkSubdomain == 2
+            || PassFF.Preferences.checkDomain == 2
+            || PassFF.Preferences.checkFullUrl == 2
+          ) {
+            return false;
+          }
+          confirmation_required = true;
+          confirmation_message += _("passff_checks_invalid_url_pass") + " ";
+        } else {
+          let checkLevels = ["fullurl", "subdomain", "domain"];
+          let checkLevelPrefs = ["checkFullUrl", "checkSubdomain", "checkDomain"];
+          for (let i = 0; i < checkLevels.length; i++) {
+            let pref = PassFF.Preferences[checkLevelPrefs[i]];
+            if (!results[checkLevels[i]] && pref > 0) {
+              confirmation_required = true;
+              confirmation_message += _(`passff_checks_${checkLevels[i]}`) + " ";
+              if (pref == 2) return false;
+              break;
+            }
           }
         }
       }
