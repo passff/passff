@@ -330,7 +330,7 @@
     "message": "Die URL der aktuellen Webseite:"
   },
   "passff_checks_url_pass": {
-    "message": "Die im pass-Eintrag gespeicherte URL:"
+    "message": "Die im pass-Eintrag gespeicherte URL (oder URLs):"
   },
   "passff_checks_override_confirm": {
     "message": "Wollen Sie trotzdem fortfahren? Das kann ein Sicherheitsrisiko darstellen."

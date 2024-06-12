@@ -21,6 +21,21 @@ PassFF.Pass = (function () {
  * #############################################################################
  */
 
+  function prefixHttpsIfNeeded(urlStr) {
+    // if there is no protocol specified, assume secure HTTP
+    return /^[a-z]+:\/\//.test(urlStr) ? urlStr : `https://${urlStr}`;
+  }
+
+  function isUrlValid(urlStr) {
+    urlStr = prefixHttpsIfNeeded(urlStr);
+    try {
+      new URL(urlStr);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   function setLoginPasswordUrls(passwordData, item) {
     (
       // lines 2 and 3 have a special meaning for the login and URL fields
@@ -51,20 +66,22 @@ PassFF.Pass = (function () {
       }
     }
 
-    if (urls.length == 0) {
-      let url = item.key;
-      if (
-        passwordData["PASSFF_LINE_3"].length > 0
-        && passwordData["PASSFF_LINE_3"][0] != ""
-      ) {
-        url = passwordData["PASSFF_LINE_3"][0];
-      } else if (loginSrc == "key") {
-        let keyParts = item.fullKey.split("/");
-        if (keyParts.length > 2) {
-          url = keyParts.at(-2);
-        }
+    let validUrls = urls.filter(isUrlValid);
+    if (validUrls.length == 0) {
+      const line3Data = passwordData["PASSFF_LINE_3"];
+      const keyParts = item.fullKey.split("/");
+      const urlCandidates = [
+        line3Data.length == 0 ? "" : line3Data[0],
+        loginSrc == "key" ? "" : item.key,
+        keyParts.at(-2),
+      ].filter(url => url != "");
+      validUrls = urlCandidates.filter(isUrlValid);
+      if (validUrls.length > 0) {
+        urls.push(validUrls[0]);
+      } else if (urls.length == 0) {
+        // make sure that we keep at least one URL, even if it is invalid
+        urls.push(urlCandidates[0]);
       }
-      urls.push(url)
     }
 
     // if multiple logins/passwords are specified only use the first
@@ -72,8 +89,7 @@ PassFF.Pass = (function () {
     passwordData.password = passwords[0];
 
     // the `url` property is a list of all specified URLs
-    // if there is no protocol specified, assume secure HTTP
-    passwordData.url = urls.map(url => /^[a-z]+:\/\//.test(url) ? url : `https://${url}`);
+    passwordData.url = urls.map(prefixHttpsIfNeeded);
   }
 
   async function setOtp(passwordData, item) {
