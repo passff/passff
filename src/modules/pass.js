@@ -148,12 +148,12 @@ function isOtherField(name) {
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%% Data analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-let host_part_blacklist = ["www", "login", "accounts", "edu", "blog"];
-let regex_regex = /[-\/\\^$*+?.()|[\]{}]/g;
+let hostPartBlacklist = ["www", "login", "accounts", "edu", "blog"];
+let regexRegex = /[-\/\\^$*+?.()|[\]{}]/g;
 
-function ci_search_regex(str) {
+function ciSearchRegex(str) {
   // case insensitive RegExp for use with String.search(...)
-  return new RegExp(str.replace(regex_regex, "\\$&"), "i");
+  return new RegExp(str.replace(regexRegex, "\\$&"), "i");
 }
 
 function hostMatchQuality(item, host) {
@@ -182,11 +182,11 @@ function hostMatchQuality(item, host) {
       if (
         subhost.length < 3 ||
         subhost == suffix ||
-        host_part_blacklist.indexOf(subhost) >= 0
+        hostPartBlacklist.indexOf(subhost) >= 0
       )
         break;
 
-      let regex = ci_search_regex(subhost);
+      let regex = ciSearchRegex(subhost);
       if (fullKey.search(regex) >= 0 || regexSearchMetaUrls(item, regex)) {
         return quality;
       }
@@ -228,7 +228,7 @@ function pathMatchQuality(item, path) {
   return parts
     .map((part) => part.replace(/\.(html|php|jsp|cgi|asp)$/, ""))
     .filter((part) => part.length > 2)
-    .map(ci_search_regex)
+    .map(ciSearchRegex)
     .filter((part) => item.fullKey.search(part) >= 0).length;
 }
 
@@ -237,7 +237,7 @@ function queryMatchQuality(item, query) {
   let parts = query.split(/[&=]+/);
   return parts
     .filter((part) => part.length > 1)
-    .map(ci_search_regex)
+    .map(ciSearchRegex)
     .filter((part) => item.fullKey.search(part) >= 0).length;
 }
 
@@ -313,25 +313,25 @@ function getGpgCodesFromStderr(stderr) {
 
   // extract GPG error codes from status and debug messages
   // https://github.com/gpg/libgpg-error/blob/master/src/err-codes.h.in
-  let gpg_error_code = 0;
+  let gpgErrorCode = 0;
   messages.forEach((msg) => {
     if (msg.startsWith("gpg: DBG:")) {
       let m = /chan_\d+ (?:<-|->) ERR (\d+)/.exec(msg);
       if (m !== null) {
-        gpg_error_code = parseInt(m[1]) & 0xffff;
+        gpgErrorCode = parseInt(m[1]) & 0xffff;
       }
     } else if (msg.startsWith("[GNUPG:]")) {
       let m = /ERROR pkdecrypt_failed (\d+)/.exec(msg);
       if (m !== null) {
-        gpg_error_code = parseInt(m[1]) & 0xffff;
+        gpgErrorCode = parseInt(m[1]) & 0xffff;
       } else if (msg.search("NO_SECKEY") >= 0) {
-        gpg_error_code = 17;
+        gpgErrorCode = 17;
       }
     }
   });
 
   // filter out debug and status outputs
-  let stderr_filtered = messages
+  let stderrFiltered = messages
     .filter(
       (msg) =>
         /\[GNUPG:\] (BEGIN|END)_DECRYPTION/.test(msg) ||
@@ -339,7 +339,7 @@ function getGpgCodesFromStderr(stderr) {
     )
     .join("\n");
 
-  return [stderr_filtered, gpg_error_code];
+  return [stderrFiltered, gpgErrorCode];
 }
 
 function createItem(parent, key, attributes) {
@@ -417,13 +417,13 @@ function copyTree(parent, key, targetItem) {
   return item;
 }
 
-function rmTree(item_id) {
-  let item = PassFF.Pass.getItemById(item_id);
+function rmTree(itemId) {
+  let item = PassFF.Pass.getItemById(itemId);
   if (!item) return;
-  allItems[item_id] = null;
+  allItems[itemId] = null;
   if (item.parent !== null) {
     const siblings = PassFF.Pass.getItemById(item.parent).children;
-    siblings.splice(siblings.indexOf(item_id), 1);
+    siblings.splice(siblings.indexOf(itemId), 1);
   }
   item.children.forEach(rmTree);
 }
@@ -644,7 +644,7 @@ export default {
       stdout = stdout.replace(/\x1B\[[^m]*m/g, "");
 
       const re = /(.*[|`;])+-- (.*)/;
-      const re_link = /.* -> (.*)  \[([^\]]+)\]/;
+      const reLink = /.* -> (.*)  \[([^\]]+)\]/;
 
       let curParent = createItem(null, "");
       stdout.split("\n").forEach((line) => {
@@ -661,10 +661,10 @@ export default {
           curParent = PassFF.Pass.getItemById(curParent.parent);
         }
 
-        const match_link = re_link.exec(match[2]);
-        if (match_link && match_link[2] == "recursive, not followed") {
+        const matchLink = reLink.exec(match[2]);
+        if (matchLink && matchLink[2] == "recursive, not followed") {
           // output of `tree` if a link points to a directory that has been listed before
-          curParent = createSymlinkItem(curParent, key, match_link[1]);
+          curParent = createSymlinkItem(curParent, key, matchLink[1]);
         } else {
           curParent = createItem(curParent, key);
         }
@@ -911,7 +911,7 @@ export default {
 
   getUrlMatchingItems: function (urlStr, containerName) {
     let url = new URL(urlStr);
-    let domainRegex = ci_search_regex(util.getMainDomain(url.host));
+    let domainRegex = ciSearchRegex(util.getMainDomain(url.host));
     let matchingItems = allItems
       .filter((item) => {
         if (!PassFF.Preferences.enforceDomainMatch) return true;
@@ -988,15 +988,15 @@ export default {
     return null;
   },
 
-  getItemByRelKey: function (ref_item, relKey) {
-    let item = this.getItemById(ref_item.parent);
+  getItemByRelKey: function (refItem, relKey) {
+    let item = this.getItemById(refItem.parent);
     for (const part of relKey.split("/")) {
       if (part == ".") {
         continue;
       } else if (part == "..") {
         if (item.parent === null) {
           log.debug(
-            `getItemByRelKey: broken ref ${relKey} from ${ref_item.fullKey}`,
+            `getItemByRelKey: broken ref ${relKey} from ${refItem.fullKey}`,
           );
           return null;
         }
@@ -1007,7 +1007,7 @@ export default {
         );
         if (children.length != 1) {
           log.debug(
-            `getItemByRelKey: broken ref ${relKey} from ${ref_item.fullKey}`,
+            `getItemByRelKey: broken ref ${relKey} from ${refItem.fullKey}`,
           );
           return null;
         }
@@ -1171,8 +1171,8 @@ export default {
 };
 
 function handlePasswordGeneration() {
-  function _p(msg_id) {
-    return _("passff_newpassword_" + msg_id);
+  function _p(msgId) {
+    return _("passff_newpassword_" + msgId);
   }
 
   function isPresent(field, errorMsg) {
@@ -1276,7 +1276,7 @@ function handlePasswordGeneration() {
 
         addPasswordPromise.then((result) => {
           if (result) {
-            PassFF.refresh_all();
+            PassFF.refreshAll();
             browser.windows.getCurrent().then((win) => {
               browser.windows.remove(win.id);
             });

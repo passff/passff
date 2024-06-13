@@ -68,23 +68,23 @@ export function parseMarkdown(obj) {
   ];
   while (str.length > 0) {
     let matches = patterns.map((p) => str.match(p[0]));
-    let [i_match, match_start] = matches
+    let [iMatch, matchStart] = matches
       .map((m, i) => [i, m === null ? -1 : m.index])
       .filter((m) => m[1] >= 0)
       .reduce(
         (acc, val) => (val[1] < acc[1] ? val : acc),
         [-1, str.length + 1],
       );
-    let match_end = str.length;
-    if (i_match >= 0) {
-      let match = matches[i_match];
-      match_end = match_start + match[0].length;
-      obj.appendChild(document.createTextNode(str.substring(0, match_start)));
-      obj.appendChild(patterns[i_match][1](...match));
+    let matchEnd = str.length;
+    if (iMatch >= 0) {
+      let match = matches[iMatch];
+      matchEnd = matchStart + match[0].length;
+      obj.appendChild(document.createTextNode(str.substring(0, matchStart)));
+      obj.appendChild(patterns[iMatch][1](...match));
     } else {
       obj.appendChild(document.createTextNode(str));
     }
-    str = str.substring(match_end);
+    str = str.substring(matchEnd);
   }
 }
 
@@ -155,9 +155,9 @@ export function getTabContainer(tb) {
 }
 
 export function waitTabComplete(tb) {
-  let promised_tab = Promise.resolve(tb);
-  if (typeof tb === "undefined") promised_tab = getActiveTab();
-  return promised_tab.then((tab) => {
+  let promisedTab = Promise.resolve(tb);
+  if (typeof tb === "undefined") promisedTab = getActiveTab();
+  return promisedTab.then((tab) => {
     return new Promise((resolve, reject) => {
       if (tab.status === "complete") return resolve(tab);
       browser.tabs.onUpdated.addListener(function _f(_0, _1, evtTab) {
@@ -227,12 +227,12 @@ export function contentFunction(name, fun, provideTab) {
 }
 
 function contentExec(targetTab, action) {
-  let promised_tab = Promise.resolve(targetTab);
+  let promisedTab = Promise.resolve(targetTab);
   let args = Array.from(arguments).slice(2);
   if (!targetTab) {
-    promised_tab = getActiveTab();
+    promisedTab = getActiveTab();
   }
-  return promised_tab
+  return promisedTab
     .then((tab) => {
       log.debug("Awaiting tab init for", action);
       return PassFF.Page.initTab(tab).then(function () {
@@ -346,9 +346,9 @@ export function sanitizeDomain(domain) {
 export function getDomainSuffix(domain) {
   // get the domain suffix without the leading dot
   domain = sanitizeDomain(domain);
-  let domain_parts = domain.split(/\.+/);
+  let domainParts = domain.split(/\.+/);
   let suffix =
-    domain_parts.length >= 2 ? domain_parts[domain_parts.length - 1] : "";
+    domainParts.length >= 2 ? domainParts[domainParts.length - 1] : "";
   if (/^[0-9]+$/.test(suffix)) {
     // this is probably an IPv4 address (no suffix)
     suffix = "";

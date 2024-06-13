@@ -12,7 +12,7 @@ let inputElements = [];
 let loginInputTypes = ["text", "email", "tel"];
 let otpInputTypes = ["text", "number", "password", "tel"];
 let pwInputTypes = ["password", "text"];
-let tab_init_pending = [];
+let tabInitPending = [];
 let matchItems = [];
 let bestFitItem = null;
 let goToAutoFillPending = null;
@@ -247,22 +247,22 @@ function writeValueWithEvents(input, value) {
 
 function annotateInputs(inputs) {
   return inputs.map((input) => {
-    let rt_login = rateLoginInput(input);
-    let rt_pw = ratePasswordInput(input);
-    let rt_otp = rateOtpInput(input);
-    let input_type = "";
-    if (rt_otp > rt_login) {
-      if (rt_otp > rt_pw) {
-        input_type = "otp";
+    let rtLogin = rateLoginInput(input);
+    let rtPassword = ratePasswordInput(input);
+    let rtOtp = rateOtpInput(input);
+    let inputType = "";
+    if (rtOtp > rtLogin) {
+      if (rtOtp > rtPassword) {
+        inputType = "otp";
       } else {
-        input_type = "password";
+        inputType = "password";
       }
-    } else if (rt_pw > rt_login) {
-      input_type = "password";
-    } else if (rt_login > 0) {
-      input_type = "login";
+    } else if (rtPassword > rtLogin) {
+      inputType = "password";
+    } else if (rtLogin > 0) {
+      inputType = "login";
     }
-    return [input, input_type];
+    return [input, inputType];
   });
 }
 
@@ -274,12 +274,12 @@ function onNodeAdded() {
   );
   if (PassFF.Preferences.markFillable) {
     let url = window.location.href;
-    let url_in_blacklist = PassFF.Preferences.markFillableBlacklist.findIndex(
+    let urlInBlacklist = PassFF.Preferences.markFillableBlacklist.findIndex(
       (str) => {
         return url.indexOf(str) >= 0;
       },
     );
-    if (url_in_blacklist == -1) {
+    if (urlInBlacklist == -1) {
       inputElements
         .filter((inp) => inp[1] != "")
         .forEach((inp) => injectIcon(inp[0]));
@@ -299,18 +299,18 @@ function setInputs(inputs, passwordData) {
 
   // If the number of OTP input fields agrees with the length of the OTP
   // token, fill one digit from the token into each of the input fields.
-  let otp_inputs = inputs.filter((inp) => inp[1] == "otp");
-  let otp_filled = false;
-  if (otp_inputs.length == passwordData.otp?.length) {
-    otp_inputs.forEach((annotatedInput, i) => {
+  let otpInputs = inputs.filter((inp) => inp[1] == "otp");
+  let otpFilled = false;
+  if (otpInputs.length == passwordData.otp?.length) {
+    otpInputs.forEach((annotatedInput, i) => {
       writeValueWithEvents(annotatedInput[0], passwordData.otp[i]);
     });
-    otp_filled = true;
+    otpFilled = true;
   }
 
   inputs.forEach((annotatedInput) => {
     let input = annotatedInput[0];
-    let input_type = annotatedInput[1];
+    let inputType = annotatedInput[1];
     if (otherNames.length > 0) {
       // Other data is checked before default input types, but
       // one of name/id/labels of the input field has to match exactly!
@@ -332,11 +332,11 @@ function setInputs(inputs, passwordData) {
         return;
       }
     }
-    if (input_type != "") {
-      let pd = passwordData[input_type];
+    if (inputType != "") {
+      let pd = passwordData[inputType];
       if (
         pd != "PASSFF_OMIT_FIELD" &&
-        (input_type != "otp" || (pd && !otp_filled))
+        (inputType != "otp" || (pd && !otpFilled))
       ) {
         writeValueWithEvents(input, pd);
       }
@@ -346,35 +346,28 @@ function setInputs(inputs, passwordData) {
 
 // %%%%%%%%%%%%%%% Implementation of input field marker %%%%%%%%%%%%%%%%%%%%%%%%
 
-let passff_icon = browser.runtime.getURL("/skin/icon.svg");
-let passff_icon_light = browser.runtime.getURL("/skin/icon-light.svg");
-
-/* The following two icons have been taken from
- *  https://github.com/encharm/Font-Awesome-SVG-PNG (MIT-License)
- * which provides PNG/SVG versions for Font Awesome icons:
- *  http://fontawesome.io/ (License: SIL OFL 1.1)
- */
-let paper_plane_16 = browser.runtime.getURL("/skin/paper-plane.svg");
-let pencil_square_16 = browser.runtime.getURL("/skin/pencil-square.svg");
+function getPassffIcon(light) {
+  return browser.runtime.getURL(`/skin/icon${!!light ? "-light" : ""}.svg`);
+}
 
 function isMouseOverIcon(e) {
-  if (typeof e.target.passff_injected === "undefined") return false;
+  if (typeof e.target.passffInjected === "undefined") return false;
   let bcrect = e.target.getBoundingClientRect();
   let leftLimit = bcrect.left + bcrect.width - 22;
   return e.clientX > leftLimit;
 }
 
-function setIconBackgroundStyle(input, icon_url) {
+function setIconBackgroundStyle(input, iconUrl) {
   input.style.backgroundRepeat = "no-repeat";
   input.style.backgroundAttachment = "scroll";
   input.style.backgroundSize = "16px 16px";
   input.style.backgroundPosition = "calc(100% - 4px) 50%";
-  input.style.backgroundImage = `url('${icon_url}')`;
+  input.style.backgroundImage = `url('${iconUrl}')`;
 }
 
 function onIconHover(e) {
   if (isMouseOverIcon(e)) {
-    setIconBackgroundStyle(e.target, passff_icon);
+    setIconBackgroundStyle(e.target, getPassffIcon());
     e.target.style.cssText += "cursor: pointer !important;";
 
     /* Set autocomplete attribute to "off", so Firefox' autofill list won't
@@ -390,7 +383,7 @@ function onIconHover(e) {
 
     return;
   }
-  if (e.target !== popup_target) resetIcon(e.target);
+  if (e.target !== popupTarget) resetIcon(e.target);
   e.target.style.cursor = "auto";
   if (e.target.hasAttribute("passff-autocomplete"))
     e.target.setAttribute(
@@ -404,34 +397,34 @@ function onIconClick(e) {
 }
 
 function injectIcon(input) {
-  if (typeof input.passff_injected !== "undefined") return;
+  if (typeof input.passffInjected !== "undefined") return;
   log.debug("Inject icon", input.id || input.name);
-  input.passff_injected = true;
-  setIconBackgroundStyle(input, passff_icon_light);
+  input.passffInjected = true;
+  setIconBackgroundStyle(input, getPassffIcon(true));
   input.addEventListener("mouseout", (e) => {
-    if (e.target !== popup_target) resetIcon(e.target);
+    if (e.target !== popupTarget) resetIcon(e.target);
   });
   input.addEventListener("mousemove", onIconHover);
   input.addEventListener("click", onIconClick);
 }
 
 function resetIcon(input) {
-  input.style.backgroundImage = "url('" + passff_icon_light + "')";
+  input.style.backgroundImage = "url('" + getPassffIcon(true) + "')";
 }
 
 // %%%%%%%%%%%%%%% Implementation of input field popup %%%%%%%%%%%%%%%%%%%%%%%%%
 
-let popup_frame = null;
-let popup_target = null;
+let popupFrame = null;
+let popupTarget = null;
 
 function resetPopup(target) {
-  // return true if resetted popup_frame belonged to target
-  let result = target === popup_target;
-  if (popup_target !== null) resetIcon(popup_target);
-  if (result) popup_target = null;
-  if (popup_frame === null) setupPopup();
-  popup_frame.style.display = "none";
-  popup_frame.style.width = PassFF.Preferences.lookPopupWidth;
+  // return true if resetted popupFrame belonged to target
+  let result = target === popupTarget;
+  if (popupTarget !== null) resetIcon(popupTarget);
+  if (result) popupTarget = null;
+  if (popupFrame === null) setupPopup();
+  popupFrame.style.display = "none";
+  popupFrame.style.width = PassFF.Preferences.lookPopupWidth;
   return result;
 }
 
@@ -443,31 +436,40 @@ function setupPopup() {
   if (old) old.parentNode.removeChild(old);
 
   // Setup new instance
-  popup_frame = document.createElement("iframe");
-  popup_frame.setAttribute(
+  popupFrame = document.createElement("iframe");
+  popupFrame.setAttribute(
     "src",
     browser.runtime.getURL("content/content-popup.html"),
   );
-  popup_frame.classList.add("passff_popup_frame");
-  popup_frame.addEventListener(
+  popupFrame.classList.add("passff_popup_frame");
+  popupFrame.addEventListener(
     "load",
     function () {
-      let doc = popup_frame.contentDocument;
-      let popup_menu = doc.querySelector(".passff_popup_menu");
-      let popup_div = doc.querySelector(".passff_popup_menu > div");
+      let doc = popupFrame.contentDocument;
+      let popupMenu = doc.querySelector(".passff_popup_menu");
+      let popupDiv = doc.querySelector(".passff_popup_menu > div");
+
+      /* The following two icons have been taken from
+       *  https://github.com/encharm/Font-Awesome-SVG-PNG (MIT-License)
+       * which provides PNG/SVG versions for Font Awesome icons:
+       *  http://fontawesome.io/ (License: SIL OFL 1.1)
+       */
+      let paperPlane16 = browser.runtime.getURL("/skin/paper-plane.svg");
+      let pencilSquare16 = browser.runtime.getURL("/skin/pencil-square.svg");
+
       if (matchItems.length === 0) {
-        let alert_el = doc.createElement("div");
-        alert_el.classList.add("alert");
-        alert_el.textContent = _("passff_no_entries_found");
-        popup_menu.innerHTML = "";
-        popup_menu.appendChild(alert_el);
+        let alertEl = doc.createElement("div");
+        alertEl.classList.add("alert");
+        alertEl.textContent = _("passff_no_entries_found");
+        popupMenu.innerHTML = "";
+        popupMenu.appendChild(alertEl);
       }
       matchItems
         .filter((i) => i.isLeaf || i.hasFields)
         .forEach((item) => {
           let entry = document.createElement("div");
           entry.classList.add("passff_entry");
-          entry.passff_item = item;
+          entry.passffItem = item;
           entry.innerHTML = `
         <!-- display: table-row -->
         <div><button class="passff_key"><span></span></button></div>
@@ -483,23 +485,23 @@ function setupPopup() {
             return onPopupFillClick(e);
           });
           button = entry.querySelector(".passff_fill");
-          button.style.backgroundImage = "url('" + pencil_square_16 + "')";
+          button.style.backgroundImage = "url('" + pencilSquare16 + "')";
           button.addEventListener("click", onPopupFillClick);
           button = entry.querySelector(".passff_submit");
-          button.style.backgroundImage = "url('" + paper_plane_16 + "')";
+          button.style.backgroundImage = "url('" + paperPlane16 + "')";
           button.addEventListener("click", onPopupSubmitClick);
-          popup_div.appendChild(entry);
+          popupDiv.appendChild(entry);
         });
     },
     true,
   );
-  popup_frame.style.display = "none";
-  document.body.appendChild(popup_frame);
+  popupFrame.style.display = "none";
+  document.body.appendChild(popupFrame);
 }
 
 function openPopup(target) {
   if (resetPopup(target)) return;
-  popup_target = target;
+  popupTarget = target;
 
   // remove this popup when user clicks somewhere else on the page
   document.addEventListener("click", function f(e) {
@@ -510,12 +512,12 @@ function openPopup(target) {
 
   // position popup relative to input field
   let rect = target.getBoundingClientRect();
-  let popup_width = window.getComputedStyle(popup_frame).width;
-  popup_width = parseInt(popup_width.substring(0, popup_width.length - 2), 10);
-  let scrollright = window.scrollX - popup_width;
-  popup_frame.style.top = window.scrollY + rect.bottom + 1 + "px";
-  popup_frame.style.left = scrollright + rect.right - 2 + "px";
-  popup_frame.style.display = "block";
+  let popupWidth = window.getComputedStyle(popupFrame).width;
+  popupWidth = parseInt(popupWidth.substring(0, popupWidth.length - 2), 10);
+  let scrollright = window.scrollX - popupWidth;
+  popupFrame.style.top = window.scrollY + rect.bottom + 1 + "px";
+  popupFrame.style.left = scrollright + rect.right - 2 + "px";
+  popupFrame.style.display = "block";
 
   // get the largest z-index value and position ourselves above it
   let z = Math.max(
@@ -525,7 +527,7 @@ function openPopup(target) {
       .map((e) => parseInt(window.getComputedStyle(e).zIndex, 10))
       .filter((e) => e > 0),
   );
-  popup_frame.style.zIndex = "" + z;
+  popupFrame.style.zIndex = "" + z;
 }
 
 function getPopupEntryItem(target) {
@@ -534,13 +536,13 @@ function getPopupEntryItem(target) {
     entry = entry.parentElement;
   }
   if (!entry) return null;
-  return entry.passff_item;
+  return entry.passffItem;
 }
 
 function onPopupFillClick(e) {
   let item = getPopupEntryItem(e.target);
-  popup_target.focus();
-  resetPopup(popup_target);
+  popupTarget.focus();
+  resetPopup(popupTarget);
   PassFF.Pass.getPasswordData(item).then((passwordData) => {
     if (typeof passwordData === "undefined") return;
     PassFF.Page.fillActiveElement(passwordData);
@@ -549,16 +551,16 @@ function onPopupFillClick(e) {
 
 function onPopupSubmitClick(e) {
   let item = getPopupEntryItem(e.target);
-  popup_target.focus();
-  let form_doc = popup_target.form;
-  resetPopup(popup_target);
+  popupTarget.focus();
+  let formDoc = popupTarget.form;
+  resetPopup(popupTarget);
   PassFF.Pass.getPasswordData(item)
     .then((passwordData) => {
       if (typeof passwordData === "undefined") return;
       return PassFF.Page.fillActiveElement(passwordData);
     })
     .then(() => {
-      PassFF.Page.submit(form_doc);
+      PassFF.Page.submit(formDoc);
     });
 }
 
@@ -664,11 +666,11 @@ function securityChecks(passItemURL, currTabURL, isAutoFill) {
   return Promise.resolve()
     .then(() => {
       let checkResults = {
-        err_message: null,
-        curr_url: currTabURL,
-        curr_url_valid: false,
-        pass_url: passItemURL,
-        pass_url_valid: false,
+        errMessage: null,
+        currUrl: currTabURL,
+        currUrlValid: false,
+        passUrl: passItemURL,
+        passUrlValid: false,
         protocol: false,
         fullurl: false,
         subdomain: false,
@@ -678,9 +680,9 @@ function securityChecks(passItemURL, currTabURL, isAutoFill) {
       let currURL;
       try {
         currURL = new URL(currTabURL);
-        checkResults["curr_url_valid"] = true;
+        checkResults["currUrlValid"] = true;
       } catch (e) {
-        checkResults["err_message"] = e.message;
+        checkResults["errMessage"] = e.message;
         return checkResults;
       }
 
@@ -688,19 +690,19 @@ function securityChecks(passItemURL, currTabURL, isAutoFill) {
         checkResults["protocol"] = true;
       }
 
-      let err_message;
+      let errMessage;
       let passURL = [];
       for (const url of passItemURL) {
         try {
           passURL.push(new URL(url));
-          checkResults["pass_url_valid"] = true;
+          checkResults["passUrlValid"] = true;
         } catch (e) {
-          err_message = e.message;
+          errMessage = e.message;
         }
       }
 
       if (passURL.length == 0) {
-        checkResults["err_message"] = err_message;
+        checkResults["errMessage"] = errMessage;
         return checkResults;
       }
 
@@ -726,10 +728,10 @@ function securityChecks(passItemURL, currTabURL, isAutoFill) {
       return checkResults;
     })
     .then((results) => {
-      let confirmation_required = false;
-      let confirmation_message = "";
+      let confirmationRequired = false;
+      let confirmationMessage = "";
 
-      if (!results["curr_url_valid"]) {
+      if (!results["currUrlValid"]) {
         if (
           PassFF.Preferences.checkProtocol == 2 ||
           PassFF.Preferences.checkSubdomain == 2 ||
@@ -738,13 +740,13 @@ function securityChecks(passItemURL, currTabURL, isAutoFill) {
         ) {
           return false;
         }
-        confirmation_required = true;
-        confirmation_message += _("passff_checks_invalid_url_curr") + " ";
+        confirmationRequired = true;
+        confirmationMessage += _("passff_checks_invalid_url_curr") + " ";
       } else {
         let pref = PassFF.Preferences.checkProtocol;
         if (!results["protocol"] && pref > 0) {
-          confirmation_required = true;
-          confirmation_message += _("passff_checks_protocol") + " ";
+          confirmationRequired = true;
+          confirmationMessage += _("passff_checks_protocol") + " ";
           if (pref == 2) return false;
         } else if (
           PassFF.Preferences.checkSubdomain == 0 &&
@@ -754,7 +756,7 @@ function securityChecks(passItemURL, currTabURL, isAutoFill) {
           return true;
         }
 
-        if (!results["pass_url_valid"]) {
+        if (!results["passUrlValid"]) {
           if (
             PassFF.Preferences.checkSubdomain == 2 ||
             PassFF.Preferences.checkDomain == 2 ||
@@ -762,8 +764,8 @@ function securityChecks(passItemURL, currTabURL, isAutoFill) {
           ) {
             return false;
           }
-          confirmation_required = true;
-          confirmation_message += _("passff_checks_invalid_url_pass") + " ";
+          confirmationRequired = true;
+          confirmationMessage += _("passff_checks_invalid_url_pass") + " ";
         } else {
           let checkLevels = ["fullurl", "subdomain", "domain"];
           let checkLevelPrefs = [
@@ -774,9 +776,8 @@ function securityChecks(passItemURL, currTabURL, isAutoFill) {
           for (let i = 0; i < checkLevels.length; i++) {
             let pref = PassFF.Preferences[checkLevelPrefs[i]];
             if (!results[checkLevels[i]] && pref > 0) {
-              confirmation_required = true;
-              confirmation_message +=
-                _(`passff_checks_${checkLevels[i]}`) + " ";
+              confirmationRequired = true;
+              confirmationMessage += _(`passff_checks_${checkLevels[i]}`) + " ";
               if (pref == 2) return false;
               break;
             }
@@ -784,18 +785,18 @@ function securityChecks(passItemURL, currTabURL, isAutoFill) {
         }
       }
 
-      return confirmation_required
+      return confirmationRequired
         ? PassFF.Page.confirm(
             "**" +
-              confirmation_message +
+              confirmationMessage +
               "**\n" +
               _("passff_checks_url_curr") +
               "```" +
-              results["curr_url"] +
+              results["currUrl"] +
               "```" +
               _("passff_checks_url_pass") +
               "```" +
-              results["pass_url"].join("\n") +
+              results["passUrl"].join("\n") +
               "```" +
               "**" +
               _("passff_checks_override_confirm") +
@@ -863,19 +864,19 @@ export default {
       We keep track of which tabs have already been initialized to avoid
       unnecessary calls to `browser.tabs.executeScript()`.
     */
-    let pending_id = tab_init_pending.findIndex(function (t) {
+    let pendingId = tabInitPending.findIndex(function (t) {
       return t.id == tab.id;
     });
-    if (pending_id >= 0) {
-      return tab_init_pending[pending_id].promise;
+    if (pendingId >= 0) {
+      return tabInitPending[pendingId].promise;
     } else {
-      pending_id = tab_init_pending.length;
+      pendingId = tabInitPending.length;
       log.debug("Awaiting tab init...", tab.id, tab.url);
-      let pending_promise = initTab(tab);
-      tab_init_pending.push({ id: tab.id, promise: pending_promise });
-      return pending_promise.then((ready_tab) => {
-        tab_init_pending.splice(pending_id, 1);
-        return ready_tab;
+      let pendingPromise = initTab(tab);
+      tabInitPending.push({ id: tab.id, promise: pendingPromise });
+      return pendingPromise.then((readyTab) => {
+        tabInitPending.splice(pendingId, 1);
+        return readyTab;
       });
     }
   }),
@@ -891,7 +892,7 @@ export default {
     "Page.goToItemUrl",
     function (item, newTab, autoFill, submit) {
       if (!item) return Promise.resolve();
-      let promised_tab = newTab ? browser.tabs.create({}) : util.getActiveTab();
+      let promisedTab = newTab ? browser.tabs.create({}) : util.getActiveTab();
       return PassFF.Pass.getPasswordData(item)
         .then((passwordData) => {
           if (typeof passwordData === "undefined") return null;
@@ -905,12 +906,10 @@ export default {
             }
           }
           log.debug(`goToItemUrl: using URL ${url}`);
-          return promised_tab.then((tab) => {
-            let tab_url = tab.url
-              .replace(/^https?:\/+/, "")
-              .replace(/\/+$/, "");
-            let test_url = url.replace(/^https?:\/+/, "").replace(/\/+$/, "");
-            if (tab_url === test_url) {
+          return promisedTab.then((tab) => {
+            let tabUrl = tab.url.replace(/^https?:\/+/, "").replace(/\/+$/, "");
+            let testUrl = url.replace(/^https?:\/+/, "").replace(/\/+$/, "");
+            if (tabUrl === testUrl) {
               if (autoFill) PassFF.Page.fillInputs(tab, item, submit);
               return null;
             } else {
@@ -953,12 +952,12 @@ export default {
     if (!PassFF.Preferences.autoFill) return;
 
     let url = window.location.href;
-    let url_in_blacklist = PassFF.Preferences.autoFillBlacklist.findIndex(
+    let urlInBlacklist = PassFF.Preferences.autoFillBlacklist.findIndex(
       (str) => {
         return url.indexOf(str) >= 0;
       },
     );
-    if (url_in_blacklist >= 0) return;
+    if (urlInBlacklist >= 0) return;
 
     log.debug("Start pref-auto-fill");
     if (bestFitItem) {
@@ -1093,11 +1092,11 @@ export default {
     }
     dialog.innerHTML = "<div><p></p><div><button>OK</button></div></div>";
     let div = dialog.querySelector("div");
-    div.style.backgroundImage = "url('" + passff_icon + "')";
-    let dialog_text = null;
-    dialog_text = dialog.querySelector("div p");
-    dialog_text.textContent = message; // prevent HTML injection
-    util.parseMarkdown(dialog_text);
+    div.style.backgroundImage = "url('" + getPassffIcon() + "')";
+    let dialogText = null;
+    dialogText = dialog.querySelector("div p");
+    dialogText.textContent = message; // prevent HTML injection
+    util.parseMarkdown(dialogText);
     dialog.showModal();
     return new Promise(function (resolve, reject) {
       let button = dialog.querySelector("button");
@@ -1119,11 +1118,11 @@ export default {
     dialog.innerHTML =
       "<div><p></p><div><button>OK</button> <button>Cancel</button></div></div>";
     let div = dialog.querySelector("div");
-    div.style.backgroundImage = "url('" + passff_icon + "')";
-    let dialog_text = null;
-    dialog_text = dialog.querySelector("div p");
-    dialog_text.textContent = message; // prevent HTML injection
-    util.parseMarkdown(dialog_text);
+    div.style.backgroundImage = "url('" + getPassffIcon() + "')";
+    let dialogText = null;
+    dialogText = dialog.querySelector("div p");
+    dialogText.textContent = message; // prevent HTML injection
+    util.parseMarkdown(dialogText);
     dialog.showModal();
     return new Promise(function (resolve, reject) {
       let button = dialog.querySelector("button:first-child");

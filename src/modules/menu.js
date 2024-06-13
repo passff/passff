@@ -14,7 +14,7 @@ import PassFF from "./main.js";
  */
 
 let menuState = {
-  search_val: "",
+  searchValue: "",
   items: null,
   error: false,
   lastResult: null,
@@ -67,10 +67,10 @@ function restoreFromState(stateObj) {
       .getCurrent()
       .then((win) => PassFF.Auth.getAuthForPopup(win.id))
       .then((auth) => {
-        let data_box = document.querySelector(".itemPickerTarget");
-        let url_info = `${auth.requestUrl} (${auth.realm})`;
-        data_box.textContent = url_info;
-        data_box.title = url_info;
+        let dataBox = document.querySelector(".itemPickerTarget");
+        let urlInfo = `${auth.requestUrl} (${auth.realm})`;
+        dataBox.textContent = urlInfo;
+        dataBox.title = urlInfo;
         menuState["auth"] = auth;
         if (!auth.contextItems.length) {
           menuState["items"] = PassFF.Pass.rootItems;
@@ -81,7 +81,7 @@ function restoreFromState(stateObj) {
         searchInput.focus();
       });
   } else {
-    searchInput.value = menuState["search_val"];
+    searchInput.value = menuState["searchValue"];
     createMenuList();
     searchInput.focus();
   }
@@ -153,7 +153,7 @@ function onSearchKeyup(event) {
     return false;
   }
 
-  menuState["search_val"] = event.target.value;
+  menuState["searchValue"] = event.target.value;
   createMenuList(PassFF.Pass.getMatchingItems(event.target.value, 6));
 }
 
@@ -245,7 +245,7 @@ function onRefreshButtonCommand(event) {
   Array.from(messages).forEach((el) => {
     el.parentNode.removeChild(el);
   });
-  PassFF.refresh_all().then(createContextualMenu);
+  PassFF.refreshAll().then(createContextualMenu);
 }
 
 function onPrefButtonCommand(event) {
@@ -450,7 +450,7 @@ function getItem(node) {
  * #############################################################################
  */
 
-function init_ui() {
+function initUi() {
   let errorBoxMsgs = document.querySelectorAll("div.message.error p");
   Array.from(errorBoxMsgs).forEach(function (p) {
     p.textContent = _(p.textContent, [util.PASSFF_URL_INSTALLATION]);
@@ -509,19 +509,19 @@ function init_ui() {
   } else if (PassFF.mode === "itemPicker") {
     window.onresize = function onresize() {
       // Rescale select box to fit window's height
-      let data_box = document.querySelector(".itemPickerTarget");
-      let data_height = data_box.offsetHeight;
-      let bar_height = document.querySelector("div.searchbar").offsetHeight;
-      let buttonbox_height =
+      let dataBox = document.querySelector(".itemPickerTarget");
+      let dataHeight = dataBox.offsetHeight;
+      let barHeight = document.querySelector("div.searchbar").offsetHeight;
+      let buttonBoxHeight =
         document.querySelector("div.buttonbox").offsetHeight;
       let statusbar = document.querySelector("#statusbar");
-      let status_height = statusbar ? statusbar.offsetHeight : 0;
+      let statusHeight = statusbar ? statusbar.offsetHeight : 0;
       document.getElementById("passff-entries-list").style.height =
         window.innerHeight -
-        data_height -
-        bar_height -
-        buttonbox_height -
-        status_height +
+        dataHeight -
+        barHeight -
+        buttonBoxHeight -
+        statusHeight +
         "px";
     };
     onresize();
@@ -536,13 +536,13 @@ function init_ui() {
 
 export default {
   init: function () {
-    init_ui();
+    initUi();
     return PassFF.Menu.getLastState().then(restoreFromState);
   },
 
   onContextChanged: function (url) {
     menuState["items"] = PassFF.Pass.contextItems;
-    menuState["search_val"] = "";
+    menuState["searchValue"] = "";
   },
 
   // %%%%%%%%%%%%%%%%%%%%%% Menu state manipulation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

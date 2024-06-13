@@ -15,9 +15,9 @@ import PassFF from "./main.js";
  * ###########################################################################
  */
 
-let ui_i18n_init = false;
-function init_ui() {
-  let pref_str_change_cb = function (key, isInt) {
+let uiI18nInit = false;
+function initUi() {
+  let prefStrChangeCb = function (key, isInt) {
     return function (evt) {
       let val = evt.target.value;
       if (isInt) val = parseInt(val, 10);
@@ -25,18 +25,18 @@ function init_ui() {
     };
   };
 
-  let pref_bool_change_cb = function (key) {
+  let prefBoolChangeCb = function (key) {
     return function (evt) {
       PassFF.Preferences[key] = evt.target.checked;
     };
   };
 
-  if (!ui_i18n_init) {
+  if (!uiI18nInit) {
     document.querySelectorAll("h1,label,p.text,option").forEach(function (el) {
       el.textContent = _(el.textContent.trim());
       util.parseMarkdown(el);
     });
-    ui_i18n_init = true;
+    uiI18nInit = true;
   }
 
   for (let [key, val] of Object.entries(prefParams)) {
@@ -47,13 +47,13 @@ function init_ui() {
       (el.tagName == "INPUT" && el.type == "text")
     ) {
       el.value = val;
-      el.addEventListener("change", pref_str_change_cb(key));
+      el.addEventListener("change", prefStrChangeCb(key));
     } else if (el.tagName == "INPUT" && el.type == "checkbox") {
       el.checked = val;
-      el.addEventListener("change", pref_bool_change_cb(key));
+      el.addEventListener("change", prefBoolChangeCb(key));
     } else if (el.tagName == "SELECT") {
       el.value = val;
-      el.addEventListener("change", pref_str_change_cb(key, true));
+      el.addEventListener("change", prefStrChangeCb(key, true));
     }
   }
 }
@@ -182,7 +182,7 @@ let prefObj = {
         });
 
         if (PassFF.mode === "preferences") {
-          init_ui();
+          initUi();
         }
       });
   },
@@ -211,7 +211,7 @@ let prefObj = {
     } else {
       PassFF.Preferences.loginInputNames = names;
     }
-    PassFF.refresh_all();
+    PassFF.refreshAll();
   },
 
   // %%%%%%%%%%%%%%%%%%%%%% Get/set keyboard shortcut %%%%%%%%%%%%%%%%%%%%%%%%%%%%

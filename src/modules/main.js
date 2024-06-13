@@ -23,8 +23,8 @@ let activeWindow = null;
 function onContextMenuClick(info, tab) {
   if (info.menuItemId == "login-add") {
     PassFF.Page.getActiveInput().then(function (info) {
-      let input_type = info[0] == "password" ? "password" : "login";
-      PassFF.Preferences.addInputName(input_type, info[1]);
+      let inputType = info[0] == "password" ? "password" : "login";
+      PassFF.Preferences.addInputName(inputType, info[1]);
     });
   } else if (info.menuItemId == "otp-add") {
     PassFF.Page.getActiveInput().then(function (info) {
@@ -197,7 +197,7 @@ let PassFF = {
       }));
   },
 
-  refresh_all: util.backgroundFunction("refresh_all", function () {
+  refreshAll: util.backgroundFunction("refreshAll", function () {
     return PassFF.Preferences.init()
       .then(() => PassFF.Pass.init())
       .then(() => onTabActivated())
