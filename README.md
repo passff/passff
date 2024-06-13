@@ -17,7 +17,7 @@ You can choose to automatically fill and submit login forms if a matching passwo
 
 ## Browser compatibility
 
-* Firefox 50+ (or 54 for [full support](#i-use-an-old-version-of-firefox-and-i-have-weird-behaviours))
+* Firefox 50+ (or 54 for [full support](#troubleshooting))
 
 ## Installation
 
@@ -281,7 +281,7 @@ Configure the script's execution parameters appropriately in the host app `passf
   **PassFF does not prompt me for the passphrase**<br>
   **PassFF works but only intermittently**
   - It may be a problem with your pin-entry program, while your gpg-agent sometimes caches your passphrase. Possible solutions:
-    - [Install a graphical pinentry program](#A-graphical-pinentry-program)
+    - [Install a graphical pinentry program](#a-graphical-pinentry-program)
     - Configure GnuPG to call your pinentry program
       - Add the line `pinentry-program /path/to/your/pinentry` to `~/.gnupg/gpg-agent.conf`
       - You may need to create this file.
