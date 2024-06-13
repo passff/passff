@@ -1,77 +1,82 @@
 {
-    "manifest_version": 2,
-    "name": "PassFF",
-    "version": "_VERSIONHOLDER_",
-    "description": "Integrates your zx2c4 password store into Firefox",
-    "default_locale": "en",
+  "manifest_version": 2,
+  "name": "PassFF",
+  "version": "_VERSIONHOLDER_",
+  "description": "Integrates your zx2c4 password store into Firefox",
+  "default_locale": "en",
 
-    "icons": {
-        "128": "icon.png"
-    },
+  "icons": {
+    "128": "icon.png"
+  },
 
-    "browser_action": {
-        "browser_style": false,
-        "default_icon": "skin/icon.svg",
-        "theme_icons": [{
-                "light": "skin/icon-light.svg",
-                "dark": "skin/icon.svg",
-                "size": 16
-            }, {
-                "light": "skin/icon-light.svg",
-                "dark": "skin/icon.svg",
-                "size": 32
-            }],
-        "default_popup": "content/menu.html"
-    },
-
-    "permissions": [
-        "<all_urls>",
-        "clipboardWrite",
-        "contextMenus",
-        "contextualIdentities",
-        "nativeMessaging",
-        "storage",
-        "tabs",
-        "webRequest",
-        "webRequestBlocking"
+  "browser_action": {
+    "browser_style": false,
+    "default_icon": "skin/icon.svg",
+    "theme_icons": [
+      {
+        "light": "skin/icon-light.svg",
+        "dark": "skin/icon.svg",
+        "size": 16
+      },
+      {
+        "light": "skin/icon-light.svg",
+        "dark": "skin/icon.svg",
+        "size": 32
+      }
     ],
+    "default_popup": "content/menu.html"
+  },
 
-    "options_ui": {
-        "page": "content/preferences.html"
-    },
+  "permissions": [
+    "<all_urls>",
+    "clipboardWrite",
+    "contextMenus",
+    "contextualIdentities",
+    "nativeMessaging",
+    "storage",
+    "tabs",
+    "webRequest",
+    "webRequestBlocking"
+  ],
 
-    "background": {
-        "scripts": ["modules/main.js"],
-        "type": "module"
-    },
+  "options_ui": {
+    "page": "content/preferences.html"
+  },
 
-    "content_scripts": [{
-        "matches": ["<all_urls>"],
-        "run_at": "document_start",
-        "js": ["content_script.js"],
-        "css": ["skin/content.css"],
-        "all_frames": true
-    }],
+  "background": {
+    "scripts": ["modules/main.js"],
+    "type": "module"
+  },
 
-    "commands": {
-        "_execute_browser_action": {
-            "suggested_key": {
-                "default": "Ctrl+Y"
-            }
-        }
-    },
-
-    "web_accessible_resources": [
-        "skin/paper-plane.svg",
-        "skin/pencil-square.svg",
-        "skin/icon-light.svg",
-        "icon.png"
-    ],
-
-    "browser_specific_settings": {
-        "gecko": {
-            "id": "passff@invicem.pro",
-            "strict_min_version": "60.0"
-        }
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "run_at": "document_start",
+      "js": ["content_script.js"],
+      "css": ["skin/content.css"],
+      "all_frames": true
     }
+  ],
+
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Y"
+      }
+    }
+  },
+
+  "web_accessible_resources": [
+    "skin/paper-plane.svg",
+    "skin/pencil-square.svg",
+    "skin/icon-light.svg",
+    "icon.png"
+  ],
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "passff@invicem.pro",
+      "strict_min_version": "60.0"
+    }
+  }
 }

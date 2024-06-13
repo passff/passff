@@ -2,7 +2,7 @@
  * This module provides universal helper functions for PassFF.
  */
 
-import PassFF from "./main.js"
+import PassFF from "./main.js";
 
 export const PASSFF_URL_GIT = "https://codeberg.org/PassFF/passff";
 export const PASSFF_URL_GIT_HOST = "https://codeberg.org/PassFF/passff-host";
@@ -25,38 +25,56 @@ export function parseMarkdown(obj) {
   let str = obj.innerHTML;
   obj.innerHTML = "";
   let patterns = [
-    [/\[([^\]]+)\]\(([^\}\)]+)\)/, function (match, p1, p2) {
-      let a = document.createElement("a");
-      a.setAttribute("href", p2);
-      a.textContent = p1;
-      return a;
-    }],
-    [/\*\*([^\*]+)\*\*/, function (match, p1) {
-      let c = document.createElement("b");
-      c.textContent = p1;
-      return c;
-    }],
-    [/```([^`]+)```/, function (match, p1) {
-      let c = document.createElement("code");
-      c.classList.add("block");
-      c.textContent = p1;
-      return c;
-    }],
-    [/`([^`]+)`/, function (match, p1) {
-      let c = document.createElement("code");
-      c.textContent = p1;
-      return c;
-    }],
-    [/\n/, function (match) {
-      return document.createElement("br");
-    }],
+    [
+      /\[([^\]]+)\]\(([^\}\)]+)\)/,
+      function (match, p1, p2) {
+        let a = document.createElement("a");
+        a.setAttribute("href", p2);
+        a.textContent = p1;
+        return a;
+      },
+    ],
+    [
+      /\*\*([^\*]+)\*\*/,
+      function (match, p1) {
+        let c = document.createElement("b");
+        c.textContent = p1;
+        return c;
+      },
+    ],
+    [
+      /```([^`]+)```/,
+      function (match, p1) {
+        let c = document.createElement("code");
+        c.classList.add("block");
+        c.textContent = p1;
+        return c;
+      },
+    ],
+    [
+      /`([^`]+)`/,
+      function (match, p1) {
+        let c = document.createElement("code");
+        c.textContent = p1;
+        return c;
+      },
+    ],
+    [
+      /\n/,
+      function (match) {
+        return document.createElement("br");
+      },
+    ],
   ];
   while (str.length > 0) {
-    let matches = patterns.map(p => str.match(p[0]));
+    let matches = patterns.map((p) => str.match(p[0]));
     let [i_match, match_start] = matches
-      .map((m, i) => [i, (m === null) ? -1 : m.index])
-      .filter(m => m[1] >= 0)
-      .reduce((acc, val) => (val[1] < acc[1]) ? val : acc, [-1, str.length + 1]);
+      .map((m, i) => [i, m === null ? -1 : m.index])
+      .filter((m) => m[1] >= 0)
+      .reduce(
+        (acc, val) => (val[1] < acc[1] ? val : acc),
+        [-1, str.length + 1],
+      );
     let match_end = str.length;
     if (i_match >= 0) {
       let match = matches[i_match];
@@ -80,10 +98,10 @@ export let log = {
   generateArguments: function (args, preInit) {
     let argsArray = Array.from(args);
     argsArray.unshift(
-      `[PassFF.${PassFF.mode}${preInit ? " (not initialized)" : ""}]`
+      `[PassFF.${PassFF.mode}${preInit ? " (not initialized)" : ""}]`,
     );
     return argsArray;
-  }
+  },
 };
 
 (function () {
@@ -94,8 +112,8 @@ export let log = {
     }
   }
   log.debug = logPrototype.bind(console.debug);
-  log.info  = logPrototype.bind(console.info);
-  log.warn  = logPrototype.bind(console.warn);
+  log.info = logPrototype.bind(console.info);
+  log.warn = logPrototype.bind(console.warn);
   log.error = logPrototype.bind(console.error);
 })();
 
@@ -106,28 +124,32 @@ export let log = {
  */
 
 export function getActiveTab() {
-  return (
-    browser.tabs
-    .query({active: true, currentWindow: true})
-    .then((tabs) => { return tabs[0]; })
-  );
+  return browser.tabs
+    .query({ active: true, currentWindow: true })
+    .then((tabs) => {
+      return tabs[0];
+    });
 }
 
 export function getTabContainer(tb) {
   return Promise.resolve()
     .then(() => {
       if (typeof browser.contextualIdentities !== "undefined") {
-        return browser.contextualIdentities.query({})
+        return browser.contextualIdentities.query({});
       } else {
-        log.debug("getTabContainer: browser.contextualIdentities not available");
+        log.debug(
+          "getTabContainer: browser.contextualIdentities not available",
+        );
         return [];
       }
     })
     .then((identities) => {
       let name = null;
       Array.from(identities)
-      .filter(i => i.cookieStoreId == tb.cookieStoreId)
-      .forEach(i => { name = i.name; });
+        .filter((i) => i.cookieStoreId == tb.cookieStoreId)
+        .forEach((i) => {
+          name = i.name;
+        });
       return name;
     });
 }
@@ -139,7 +161,7 @@ export function waitTabComplete(tb) {
     return new Promise((resolve, reject) => {
       if (tab.status === "complete") return resolve(tab);
       browser.tabs.onUpdated.addListener(function _f(_0, _1, evtTab) {
-        if (evtTab.id = tab.id && evtTab.status === "complete") {
+        if ((evtTab.id = tab.id && evtTab.status === "complete")) {
           browser.tabs.onUpdated.removeListener(_f);
           resolve(evtTab);
         }
@@ -171,19 +193,22 @@ export function backgroundFunction(name, fun, useSender) {
 }
 
 function backgroundExec(action, useSender) {
-  return browser.runtime.sendMessage({
-    action: action,
-    params: Array.from(arguments).slice(2),
-    useSender: useSender
-  }).then((msg) => {
-    if (msg) {
-      return msg.response;
-    } else {
-      return null;
-    }
-  }).catch((error) => {
-    log.error("backgroundExec: runtime port has crashed", action, error);
-  });
+  return browser.runtime
+    .sendMessage({
+      action: action,
+      params: Array.from(arguments).slice(2),
+      useSender: useSender,
+    })
+    .then((msg) => {
+      if (msg) {
+        return msg.response;
+      } else {
+        return null;
+      }
+    })
+    .catch((error) => {
+      log.error("backgroundExec: runtime port has crashed", action, error);
+    });
 }
 
 export function contentFunction(name, fun, provideTab) {
@@ -210,15 +235,14 @@ function contentExec(targetTab, action) {
   return promised_tab
     .then((tab) => {
       log.debug("Awaiting tab init for", action);
-      return PassFF.Page.initTab(tab)
-        .then(function () {
-          log.debug("Executing", action, "in content script");
-          return browser.tabs.sendMessage(tab.id, {
-            action: action,
-            params: args,
-            useSender: false
-          });
+      return PassFF.Page.initTab(tab).then(function () {
+        log.debug("Executing", action, "in content script");
+        return browser.tabs.sendMessage(tab.id, {
+          action: action,
+          params: args,
+          useSender: false,
         });
+      });
     })
     .then((msg) => {
       if (msg) {
@@ -226,7 +250,8 @@ function contentExec(targetTab, action) {
       } else {
         return null;
       }
-    }).catch((error) => {
+    })
+    .catch((error) => {
       log.error("contentExec: content script port has crashed", action, error);
     });
 }
@@ -254,7 +279,6 @@ export function getFunctionFromStr(name) {
  */
 
 export const semver = (function semver() {
-
   /**
    * Takes a version string as input and parses it.
    * Returns the major, minor and patch identifiers of the version as integers.
@@ -267,7 +291,7 @@ export const semver = (function semver() {
     const reg = String.raw`^${id}\.${id}(?:\.${id})?${ext}$`;
     const m = version.trim().match(reg);
 
-    if (!m) throw new TypeError('Invalid Version: ' + version);
+    if (!m) throw new TypeError("Invalid Version: " + version);
 
     return {
       major: +m[1] || 0,
@@ -285,25 +309,23 @@ export const semver = (function semver() {
    * Notice the symmetry in the relations.
    * Last but not least, we can sort versions using Array#sort(comparator).
    */
-  function comparator(v1,v2) {
+  function comparator(v1, v2) {
     v1 = parser(v1);
     v2 = parser(v2);
 
-    return (v1.major - v2.major ||
-            v1.minor - v2.minor ||
-            v1.patch - v2.patch);
+    return v1.major - v2.major || v1.minor - v2.minor || v1.patch - v2.patch;
   }
 
   function gt(v1, v2) {
-    return comparator(v1,v2) > 0;
+    return comparator(v1, v2) > 0;
   }
 
   function gte(v1, v2) {
-    return comparator(v1,v2) >= 0;
+    return comparator(v1, v2) >= 0;
   }
 
   function eq(v1, v2) {
-    return comparator(v1,v2) == 0;
+    return comparator(v1, v2) == 0;
   }
 
   let publicAPI = { gt, gte, eq };
@@ -318,14 +340,15 @@ export const semver = (function semver() {
 
 export function sanitizeDomain(domain) {
   // remove leading or trailing dots from hostname
-  return domain.replace(/^\.+/, '').replace(/\.+$/, '');
+  return domain.replace(/^\.+/, "").replace(/\.+$/, "");
 }
 
 export function getDomainSuffix(domain) {
   // get the domain suffix without the leading dot
   domain = sanitizeDomain(domain);
   let domain_parts = domain.split(/\.+/);
-  let suffix = (domain_parts.length >= 2) ? domain_parts[domain_parts.length - 1] : "";
+  let suffix =
+    domain_parts.length >= 2 ? domain_parts[domain_parts.length - 1] : "";
   if (/^[0-9]+$/.test(suffix)) {
     // this is probably an IPv4 address (no suffix)
     suffix = "";
@@ -333,7 +356,7 @@ export function getDomainSuffix(domain) {
   PassFF.Preferences.recognisedSuffixes
     .map((s) => s.trim())
     .filter((s) => domain.endsWith(s))
-    .forEach((s) => suffix = s);
+    .forEach((s) => (suffix = s));
   return suffix;
 }
 
@@ -341,7 +364,10 @@ export function getMainDomain(domain) {
   // truncate subdomain parts from hostname, but keep suffix
   domain = sanitizeDomain(domain);
   let suffix = getDomainSuffix(domain);
-  let prefix = (suffix.length == 0) ? domain : domain.substr(0, domain.length - suffix.length - 1)
+  let prefix =
+    suffix.length == 0
+      ? domain
+      : domain.substr(0, domain.length - suffix.length - 1);
   let parts = prefix.split(".");
   return parts[parts.length - 1] + "." + suffix;
 }

@@ -275,18 +275,18 @@
   "passff_error_getting_url_pass": {
     "message": "Houve um erro ao interpretar a URL \"$passURL$\" contida no arquivo de senha.",
     "placeholders": {
-      "passURL" : {
-        "content" : "$1",
-        "example" : "URLMalFormatada.com"
+      "passURL": {
+        "content": "$1",
+        "example": "URLMalFormatada.com"
       }
     }
   },
   "passff_error_getting_url_curr": {
     "message": "Houve um erro ao interpretar a URL atual \"$currURl$\"",
     "placeholders": {
-      "currURL" : {
-        "content" : "$1",
-        "example" : "URLMalFormatada.com"
+      "currURL": {
+        "content": "$1",
+        "example": "URLMalFormatada.com"
       }
     }
   },
@@ -320,12 +320,12 @@
   "passff_domain_mismatch": {
     "message": "O domínio do site atual ($currDomain$) é distinto daquele presente no arquivo de senha ($passDomain$).",
     "placeholders": {
-      "currDomain" : {
-        "content" : "$1",
-        "example" : "dominioDePhishing.com"
+      "currDomain": {
+        "content": "$1",
+        "example": "dominioDePhishing.com"
       },
       "passDomain": {
-        "content" : "$2",
+        "content": "$2",
         "example": "siteLegitimo.com"
       }
     }
@@ -334,8 +334,8 @@
     "message": "A URL contida no arquivo de senha ($passItemURL$) utiliza um protocolo inseguro. Sugere-se alterar o começo da URL para https:.",
     "placeholders": {
       "passItemURL": {
-        "content" : "$1",
-        "example" : "http://www.example.com"
+        "content": "$1",
+        "example": "http://www.example.com"
       }
     }
   },

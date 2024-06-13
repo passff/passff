@@ -1,19 +1,19 @@
 /**
-  * This module provides access to the preferences of PassFF and handles
-  * the user interface of the preferences page.
-  *
-  * You can change or read preferences by accessing `PassFF.Preferences[key]`.
-  */
+ * This module provides access to the preferences of PassFF and handles
+ * the user interface of the preferences page.
+ *
+ * You can change or read preferences by accessing `PassFF.Preferences[key]`.
+ */
 
-import * as util from "./util.js"
-import { _, log } from "./util.js"
-import PassFF from "./main.js"
+import * as util from "./util.js";
+import { _, log } from "./util.js";
+import PassFF from "./main.js";
 
 /* ###########################################################################
-  * ###########################################################################
-  *  Helper for preferences page UI
-  * ###########################################################################
-  */
+ * ###########################################################################
+ *  Helper for preferences page UI
+ * ###########################################################################
+ */
 
 let ui_i18n_init = false;
 function init_ui() {
@@ -32,18 +32,20 @@ function init_ui() {
   };
 
   if (!ui_i18n_init) {
-    document.querySelectorAll("h1,label,p.text,option")
-      .forEach(function (el) {
-        el.textContent = _(el.textContent);
-        util.parseMarkdown(el);
-      });
+    document.querySelectorAll("h1,label,p.text,option").forEach(function (el) {
+      el.textContent = _(el.textContent.trim());
+      util.parseMarkdown(el);
+    });
     ui_i18n_init = true;
   }
 
   for (let [key, val] of Object.entries(prefParams)) {
     let el = document.getElementById("pref_" + key);
     if (el === null) continue;
-    if (el.tagName == "TEXTAREA" || el.tagName == "INPUT" && el.type == "text") {
+    if (
+      el.tagName == "TEXTAREA" ||
+      (el.tagName == "INPUT" && el.type == "text")
+    ) {
       el.value = val;
       el.addEventListener("change", pref_str_change_cb(key));
     } else if (el.tagName == "INPUT" && el.type == "checkbox") {
@@ -57,82 +59,83 @@ function init_ui() {
 }
 
 /* ###########################################################################
-  * ###########################################################################
-  *  Default preferences
-  * ###########################################################################
-  */
+ * ###########################################################################
+ *  Default preferences
+ * ###########################################################################
+ */
 
 let prefParams = {
-  passwordInputNames    : 'passwd,password,pass',
-  loginInputNames       : 'login,user,mail,email,tel,username,opt_login,log,usr_name',
-  otpInputNames         : 'otp,code,otc,user[otp_attempt],one-time-password',
-  buttonInputQueries    : 'button:not([type=reset])\ninput[type=submit]\ninput[type=button]\n[role=button]',
-  loginFieldNames       : 'login,user,username,id',
-  passwordFieldNames    : 'passwd,password,pass',
-  urlFieldNames         : 'url,http,https',
-  otpauthFieldNames     : 'otpauth,otp',
-  autoFill              : false,
-  autoSubmit            : false,
-  autoFillBlacklist     : '',
-  checkOnlyAuto         : false,
-  checkProtocol         : 1,
-  checkDomain           : 1,
-  checkSubdomain        : 0,
-  checkFullUrl          : 0,
-  caseInsensitiveSearch : true,
-  handleHttpAuth        : true,
-  enterBehavior         : 0,
-  shiftEnterBehavior    : 4,
-  ctrlEnterBehavior     : 3,
-  prefillLoginTab       : false,
-  prefillLoginDefault   : "",
-  prefillUrl            : false,
-  defaultPasswordLength : 16,
-  defaultIncludeSymbols : true,
-  preferInsert          : 0,
-  showNewPassButton     : true,
-  markFillable          : true,
-  markFillableBlacklist : '',
-  contextMenu           : true,
-  submitFillable        : true,
-  directoriesFirst      : false,
-  enableLogging         : false,
-  showStatus            : true,
-  tbMenuShortcut        : '',
-  indexMetaUrls         : false,
-  matchDirnameOnly      : false,
-  enforceDomainMatch    : false,
-  recognisedSuffixes    : 'co.uk,org.uk,me.uk,co.jp,com.au',
-  filterPathRegex       : 'notes\nattributes\nattachments',
-  lookMenuWidth         : '28rem',
-  lookPopupWidth        : '25rem',
+  passwordInputNames: "passwd,password,pass",
+  loginInputNames: "login,user,mail,email,tel,username,opt_login,log,usr_name",
+  otpInputNames: "otp,code,otc,user[otp_attempt],one-time-password",
+  buttonInputQueries:
+    "button:not([type=reset])\ninput[type=submit]\ninput[type=button]\n[role=button]",
+  loginFieldNames: "login,user,username,id",
+  passwordFieldNames: "passwd,password,pass",
+  urlFieldNames: "url,http,https",
+  otpauthFieldNames: "otpauth,otp",
+  autoFill: false,
+  autoSubmit: false,
+  autoFillBlacklist: "",
+  checkOnlyAuto: false,
+  checkProtocol: 1,
+  checkDomain: 1,
+  checkSubdomain: 0,
+  checkFullUrl: 0,
+  caseInsensitiveSearch: true,
+  handleHttpAuth: true,
+  enterBehavior: 0,
+  shiftEnterBehavior: 4,
+  ctrlEnterBehavior: 3,
+  prefillLoginTab: false,
+  prefillLoginDefault: "",
+  prefillUrl: false,
+  defaultPasswordLength: 16,
+  defaultIncludeSymbols: true,
+  preferInsert: 0,
+  showNewPassButton: true,
+  markFillable: true,
+  markFillableBlacklist: "",
+  contextMenu: true,
+  submitFillable: true,
+  directoriesFirst: false,
+  enableLogging: false,
+  showStatus: true,
+  tbMenuShortcut: "",
+  indexMetaUrls: false,
+  matchDirnameOnly: false,
+  enforceDomainMatch: false,
+  recognisedSuffixes: "co.uk,org.uk,me.uk,co.jp,com.au",
+  filterPathRegex: "notes\nattributes\nattachments",
+  lookMenuWidth: "28rem",
+  lookPopupWidth: "25rem",
 };
 
 const listParams = {
-  'passwordInputNames'     : ',',
-  'loginInputNames'        : ',',
-  'otpInputNames'          : ',',
-  'buttonInputQueries'     : '\n',
-  'loginFieldNames'        : ',',
-  'passwordFieldNames'     : ',',
-  'urlFieldNames'          : ',',
-  'otpauthFieldNames'      : ',',
-  'autoFillBlacklist'      : ',',
-  'markFillableBlacklist'  : ',',
-  'recognisedSuffixes'     : ',',
-  'filterPathRegex'        : '\n',
+  passwordInputNames: ",",
+  loginInputNames: ",",
+  otpInputNames: ",",
+  buttonInputQueries: "\n",
+  loginFieldNames: ",",
+  passwordFieldNames: ",",
+  urlFieldNames: ",",
+  otpauthFieldNames: ",",
+  autoFillBlacklist: ",",
+  markFillableBlacklist: ",",
+  recognisedSuffixes: ",",
+  filterPathRegex: "\n",
 };
 
 const lowerCaseParams = [
-  'passwordInputNames',
-  'loginInputNames',
-  'otpInputNames',
-  'buttonInputQueries',
-  'loginFieldNames',
-  'passwordFieldNames',
-  'urlFieldNames',
-  'otpauthFieldNames',
-  'autoFillBlacklist'
+  "passwordInputNames",
+  "loginInputNames",
+  "otpInputNames",
+  "buttonInputQueries",
+  "loginFieldNames",
+  "passwordFieldNames",
+  "urlFieldNames",
+  "otpauthFieldNames",
+  "autoFillBlacklist",
 ];
 
 /* #############################################################################
@@ -146,10 +149,11 @@ let prefObj = {
 
   init: function () {
     let changes = {};
-    return browser.storage.local.get(Object.keys(prefParams))
+    return browser.storage.local
+      .get(Object.keys(prefParams))
       .then((res) => {
         for (let [key, val] of Object.entries(prefParams)) {
-          if (typeof res[key] === 'undefined') {
+          if (typeof res[key] === "undefined") {
             changes[key] = val;
           } else {
             prefParams[key] = res[key];
@@ -158,8 +162,8 @@ let prefObj = {
         return PassFF.Preferences.getBrowserCommand();
       })
       .then((command) => {
-        prefParams['tbMenuShortcut'] = command.shortcut;
-        changes['tbMenuShortcut'] = command.shortcut;
+        prefParams["tbMenuShortcut"] = command.shortcut;
+        changes["tbMenuShortcut"] = command.shortcut;
         return browser.storage.local.set(changes);
       })
       .then(() => {
@@ -183,7 +187,7 @@ let prefObj = {
       });
   },
 
-// %%%%%%%%%%%%% Add identifier to the list of known login inputs %%%%%%%%%%%%%%
+  // %%%%%%%%%%%%% Add identifier to the list of known login inputs %%%%%%%%%%%%%%
 
   addInputName: function (type, name) {
     let names = PassFF.Preferences.loginInputNames;
@@ -210,34 +214,34 @@ let prefObj = {
     PassFF.refresh_all();
   },
 
-// %%%%%%%%%%%%%%%%%%%%%% Get/set keyboard shortcut %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  // %%%%%%%%%%%%%%%%%%%%%% Get/set keyboard shortcut %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  getKeyboardShortcut: util.backgroundFunction("Preferences.getKeyboardShortcut",
+  getKeyboardShortcut: util.backgroundFunction(
+    "Preferences.getKeyboardShortcut",
     function () {
-      return PassFF.Preferences.getBrowserCommand()
-        .then((command) => {
-          let shortcut = null;
-          if (command) {
-            shortcut = {
-              commandLetter: '',
-              expectedModifierState: {
-                  'Alt': false,
-                  'Meta': false,
-                  'Control': false,
-                  'Shift': false
-              }
-            };
+      return PassFF.Preferences.getBrowserCommand().then((command) => {
+        let shortcut = null;
+        if (command) {
+          shortcut = {
+            commandLetter: "",
+            expectedModifierState: {
+              Alt: false,
+              Meta: false,
+              Control: false,
+              Shift: false,
+            },
+          };
 
-            // Mapping between modifier names in manifest.json and DOM KeyboardEvent.
-            let commandModifiers = {
-              'ctrl': browser.runtime.PlatformOs == 'mac' ? 'Meta' : 'Control',
-              'macctrl': 'Control',
-              'command': 'Meta',
-              'alt': 'Alt',
-              'shift': 'Shift'
-            };
+          // Mapping between modifier names in manifest.json and DOM KeyboardEvent.
+          let commandModifiers = {
+            ctrl: browser.runtime.PlatformOs == "mac" ? "Meta" : "Control",
+            macctrl: "Control",
+            command: "Meta",
+            alt: "Alt",
+            shift: "Shift",
+          };
 
-            command.shortcut
+          command.shortcut
             .split(/\s*\+\s*/)
             .map((part) => part.toLowerCase())
             .forEach((part) => {
@@ -247,48 +251,51 @@ let prefObj = {
                 shortcut.commandLetter = part;
               }
             });
-          }
-          return shortcut;
-        });
-    }
+        }
+        return shortcut;
+      });
+    },
   ),
 
-  getBrowserCommand: util.backgroundFunction("Preferences.getBrowserCommand",
+  getBrowserCommand: util.backgroundFunction(
+    "Preferences.getBrowserCommand",
     function () {
-      let name = '_execute_browser_action';
-      return browser.commands.getAll()
-        .then((commands) => {
-          let command = { "name": name, "shortcut": '' };
-          commands.forEach((c) => {
-            if (name == c.name && c.shortcut) {
-              command.shortcut = c.shortcut;
-            }
-          });
-          return command;
+      let name = "_execute_browser_action";
+      return browser.commands.getAll().then((commands) => {
+        let command = { name: name, shortcut: "" };
+        commands.forEach((c) => {
+          if (name == c.name && c.shortcut) {
+            command.shortcut = c.shortcut;
+          }
         });
-    }
+        return command;
+      });
+    },
   ),
 };
 
 function normalizeBrowserShortcut(shortcut) {
   let camelCaseParts = {};
   [
-    "MacCtrl", "PageUp", "PageDown", "MediaNextTrack", "MediaPlayPause",
-    "MediaPrevTrack", "MediaStop",
+    "MacCtrl",
+    "PageUp",
+    "PageDown",
+    "MediaNextTrack",
+    "MediaPlayPause",
+    "MediaPrevTrack",
+    "MediaStop",
   ].forEach((part) => {
-    camelCaseParts[part.toLowerCase()] = part
+    camelCaseParts[part.toLowerCase()] = part;
   });
-  return (
-    shortcut
+  return shortcut
     .split(/\s*\+\s*/)
     .map((part) => part.toLowerCase())
-    .map((part) => (
+    .map((part) =>
       camelCaseParts.hasOwnProperty(part)
-      ? camelCaseParts[part]
-      : part[0].toUpperCase() + part.slice(1)
-      ))
-    .join("+")
-  );
+        ? camelCaseParts[part]
+        : part[0].toUpperCase() + part.slice(1),
+    )
+    .join("+");
 }
 
 function updateBrowserCommand() {
@@ -331,10 +338,11 @@ export default new Proxy(prefObj, {
     }
 
     if (listParams.hasOwnProperty(key)) {
-      value = value.split(listParams[key])
-        .filter((entry) => { return entry.length > 0; });
+      value = value.split(listParams[key]).filter((entry) => {
+        return entry.length > 0;
+      });
     }
 
     return value;
-  }
+  },
 });

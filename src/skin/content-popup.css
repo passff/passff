@@ -1,9 +1,8 @@
-
 body {
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    overflow: hidden;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  overflow: hidden;
 }
 
 .passff_popup_menu {
@@ -63,7 +62,7 @@ body {
 .passff_popup_menu button,
 .passff_popup_menu button:hover {
   cursor: pointer;
-  position:relative;
+  position: relative;
   display: block;
   width: 100%;
   height: 2.2em;
@@ -81,7 +80,7 @@ body {
 }
 
 .passff_popup_menu button:after {
-  content: '';
+  content: "";
   display: block;
   position: absolute;
   top: 0.2em;

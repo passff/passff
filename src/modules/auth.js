@@ -1,35 +1,35 @@
 /**
-  * This controller comes into play when HTTP authentication is required.
-  */
+ * This controller comes into play when HTTP authentication is required.
+ */
 
-import * as util from "./util.js"
-import { _, log } from "./util.js"
-import PassFF from "./main.js"
+import * as util from "./util.js";
+import { _, log } from "./util.js";
+import PassFF from "./main.js";
 
 let currentAuths = [];
 
 function getAuthById(requestId) {
-  return currentAuths.find(a => a.requestId === requestId) || null;
+  return currentAuths.find((a) => a.requestId === requestId) || null;
 }
 
 // Find a currentAuth for the current realm at the root URI as per [0]
 // [0] https://datatracker.ietf.org/doc/html/rfc7235#section-2.2
 function getAuthByRootUriAndRealm(rootUri, realm) {
-  return currentAuths.find(a => (
-    a.rootUri === rootUri && a.realm === realm
-  )) || null;
+  return (
+    currentAuths.find((a) => a.rootUri === rootUri && a.realm === realm) || null
+  );
 }
 
 // Get the root URI (scheme + authority [0]) from a URL
 // [0] https://datatracker.ietf.org/doc/html/rfc3986#section-3.2
 function getRootUri(url) {
-  return url.replace(/^(.*?\/\/[^\/?#]*).*$/,"$1");
+  return url.replace(/^(.*?\/\/[^\/?#]*).*$/, "$1");
 }
 
 function cancelAuth(auth) {
   if (!auth) return;
   log.debug("Cancelling auth", auth.requestId);
-  if (typeof auth.resolve === 'function') {
+  if (typeof auth.resolve === "function") {
     auth.resolve({ cancel: false });
   }
   closePopup(auth);
@@ -53,8 +53,13 @@ function onAuthRequired(details) {
     let rootUri = getRootUri(details.url);
     auth = getAuthByRootUriAndRealm(rootUri, details.realm);
     if (auth && auth.resolveItem == null) {
-      log.debug("Auth window already showing for realm", details.realm,
-                "from root", rootUri, "; skipping popup");
+      log.debug(
+        "Auth window already showing for realm",
+        details.realm,
+        "from root",
+        rootUri,
+        "; skipping popup",
+      );
       return auth.promise;
     }
     auth = {
@@ -82,14 +87,20 @@ function onAuthRequired(details) {
     PassFF.Page.goToAutoFillPending()
       .then(function (pending) {
         if (pending !== null) {
-          log.debug("Handle pending auto fill", pending.item.fullKey,
-                    "as HTTP auth", auth.requestId);
+          log.debug(
+            "Handle pending auto fill",
+            pending.item.fullKey,
+            "as HTTP auth",
+            auth.requestId,
+          );
           auth.resolveItem = pending.item;
           PassFF.Page.resolveGoToAutoFillPending(false);
         }
         if (PassFF.Preferences.autoFill && PassFF.Preferences.autoSubmit) {
-          let bestFitItem = PassFF.Pass.findBestFitItem(auth.contextItems,
-                                                        auth.requestUrl);
+          let bestFitItem = PassFF.Pass.findBestFitItem(
+            auth.contextItems,
+            auth.requestUrl,
+          );
           auth.resolveItem = bestFitItem;
         }
 
@@ -97,18 +108,22 @@ function onAuthRequired(details) {
         // This is crucial when we have a HTTP->HTTPS redirect after the first
         // attempt (which triggers a second auth request with same id).
         if (auth.resolveItem !== null && auth.resolveAttempts < 2) {
-          log.debug("Automatically resolving auth", auth.requestId,
-                    "using", auth.resolveItem.fullKey);
+          log.debug(
+            "Automatically resolving auth",
+            auth.requestId,
+            "using",
+            auth.resolveItem.fullKey,
+          );
           PassFF.Auth.resolve(auth.resolveItem, auth.requestId);
           return;
         }
 
         log.debug("Open HTTP auth dialog");
         return browser.windows.create({
-          'url': browser.runtime.getURL('/content/itemPicker.html'),
-          'width': 450,
-          'height': 281,
-          'type': 'popup',
+          url: browser.runtime.getURL("/content/itemPicker.html"),
+          width: 450,
+          height: 281,
+          type: "popup",
         });
       })
       .then((win) => {
@@ -135,9 +150,11 @@ export default {
     log.debug("Init auth module");
     if (browser.webRequest.onAuthRequired) {
       browser.webRequest.onAuthRequired.removeListener(onAuthRequired);
-      if(PassFF.Preferences.handleHttpAuth) {
+      if (PassFF.Preferences.handleHttpAuth) {
         browser.webRequest.onAuthRequired.addListener(
-          onAuthRequired, { urls: ["<all_urls>"] }, ["blocking"]
+          onAuthRequired,
+          { urls: ["<all_urls>"] },
+          ["blocking"],
         );
       }
     } else {
@@ -145,10 +162,13 @@ export default {
     }
   },
 
-  getAuthForPopup: util.backgroundFunction("Auth.getAuthForPopup", function (popupId) {
-    let auth = currentAuths.filter(a => a.popupId === popupId);
-    return (!auth.length) ? null : { ...auth[0], promise: null };
-  }),
+  getAuthForPopup: util.backgroundFunction(
+    "Auth.getAuthForPopup",
+    function (popupId) {
+      let auth = currentAuths.filter((a) => a.popupId === popupId);
+      return !auth.length ? null : { ...auth[0], promise: null };
+    },
+  ),
 
   resolve: util.backgroundFunction("Auth.resolve", function (item, requestId) {
     let auth = getAuthById(requestId);
@@ -157,23 +177,27 @@ export default {
       return false;
     }
     log.debug("Get pass data for HTTP auth", auth.requestId);
-    return PassFF.Pass.getPasswordData(item)
-      .then((passwordData) => {
-        if (typeof passwordData === "undefined") {
-          /* User has probably cancelled the GPG decryption */
-          return false;
-        }
-        log.debug("Resolve HTTP auth", auth.requestId,
-                  "using", item.fullKey, auth.resolveAttempts);
-        auth.resolveItem = item;
-        auth.resolveAttempts += 1;
-        auth.resolve({
-          authCredentials: {
-            username: passwordData.login,
-            password: passwordData.password
-          }
-        });
-        closePopup(auth);
+    return PassFF.Pass.getPasswordData(item).then((passwordData) => {
+      if (typeof passwordData === "undefined") {
+        /* User has probably cancelled the GPG decryption */
+        return false;
+      }
+      log.debug(
+        "Resolve HTTP auth",
+        auth.requestId,
+        "using",
+        item.fullKey,
+        auth.resolveAttempts,
+      );
+      auth.resolveItem = item;
+      auth.resolveAttempts += 1;
+      auth.resolve({
+        authCredentials: {
+          username: passwordData.login,
+          password: passwordData.password,
+        },
       });
-  })
+      closePopup(auth);
+    });
+  }),
 };

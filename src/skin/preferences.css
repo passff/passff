@@ -1,158 +1,163 @@
 html {
-    color-scheme: light dark;
+  color-scheme: light dark;
 }
 
-html, body, div {
-    margin: 0; padding: 0; width: 100%;
+html,
+body,
+div {
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
 
 @media (prefers-color-scheme: dark) {
-    body {
-        background-color: #23222b;
-        color: #fbfbfe;
-    }
+  body {
+    background-color: #23222b;
+    color: #fbfbfe;
+  }
 }
 
 h1 {
-    font-size: 1.7rem;
-    font-weight: normal;
+  font-size: 1.7rem;
+  font-weight: normal;
 }
 
 div.tabbox {
-    min-width: 400px;
+  min-width: 400px;
 }
 
 div.tab {
-    margin: 0 0 1.5rem;
+  margin: 0 0 1.5rem;
 }
 
 div.tab:first-of-type > label {
-    border-top: 0;
+  border-top: 0;
 }
 
 div.tab > label {
-    display: block;
-    padding: 0.2rem 0 0;
-    margin: 0 0 -0.7rem;
-    border-top: 1px #ccc solid;
-    line-height: 200%;
-    font-weight: bold;
-    font-size: 1.2rem;
+  display: block;
+  padding: 0.2rem 0 0;
+  margin: 0 0 -0.7rem;
+  border-top: 1px #ccc solid;
+  line-height: 200%;
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
-div.tab > input[type=radio] {
-    display: none;
+div.tab > input[type="radio"] {
+  display: none;
 }
 
 fieldset {
-    width: 99.3%;
-    padding: 0; margin: 0;
-    border: 0;
+  width: 99.3%;
+  padding: 0;
+  margin: 0;
+  border: 0;
 }
 
 fieldset p {
-    clear: both;
-    padding: 0; margin: 1.5rem 0;
+  clear: both;
+  padding: 0;
+  margin: 1.5rem 0;
 }
 
 fieldset p.text {
-    padding: 0;
+  padding: 0;
 }
 
 fieldset p.text code {
-    background-color: #f0f0f0;
-    padding: 0.1em 0.2em;
+  background-color: #f0f0f0;
+  padding: 0.1em 0.2em;
 }
 
 fieldset p > label:first-child {
-    display: block;
-    margin: 0.8rem 0 0.3rem;
+  display: block;
+  margin: 0.8rem 0 0.3rem;
 }
 
-fieldset p > input[type=checkbox] {
-    display: none;
+fieldset p > input[type="checkbox"] {
+  display: none;
 }
 
-fieldset p > input[type=checkbox] ~ label:before {
-    content: "✓";
-    display: inline-block;
-    padding: 0;
-    text-align: center;
-    margin: 0 0.5em 0 0;
-    width: 1.15em;
-    height: 1.15em;
-    line-height: 1.15em;
-    border: 1px solid #ccc;
-    border-radius: 2px;
-    background-color: #fafafa;
-    font-size: 1.3rem;
-    color: #fafafa;
-}
-
-@media (prefers-color-scheme: dark) {
-    fieldset p > input[type=checkbox] ~ label:before {
-        background-color: #23222b;
-        color: #23222b;
-    }
-}
-
-fieldset p > input[type=checkbox] ~ label:hover:before {
-    border-color: #2292d0;
-}
-
-fieldset p > input[type=checkbox]:checked ~ label:before {
-    color: #2292d0;
-}
-
-fieldset p > input[type=radio] {
-    display: none;
-}
-
-fieldset p > input[type=radio] ~ label:before {
-    content: "●";
-    display: inline-block;
-    padding: 0;
-    text-align: center;
-    margin: 0 0.5em 0 0;
-    width: 0.8em;
-    height: 0.8em;
-    line-height: 0.8em;
-    border: 1px solid #ccc;
-    border-radius: 0.5em;
-    background-color: #fafafa;
-    font-size: 1.3rem;
-    color: #fafafa;
+fieldset p > input[type="checkbox"] ~ label:before {
+  content: "✓";
+  display: inline-block;
+  padding: 0;
+  text-align: center;
+  margin: 0 0.5em 0 0;
+  width: 1.15em;
+  height: 1.15em;
+  line-height: 1.15em;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  background-color: #fafafa;
+  font-size: 1.3rem;
+  color: #fafafa;
 }
 
 @media (prefers-color-scheme: dark) {
-    fieldset p > input[type=radio] ~ label:before {
-        background-color: #23222b;
-        color: #23222b;
-    }
+  fieldset p > input[type="checkbox"] ~ label:before {
+    background-color: #23222b;
+    color: #23222b;
+  }
 }
 
-fieldset p > input[type=radio] ~ label:hover:before {
-    border-color: #2292d0;
+fieldset p > input[type="checkbox"] ~ label:hover:before {
+  border-color: #2292d0;
 }
 
-fieldset p > input[type=radio]:checked + label:before {
-    color: #2292d0;
+fieldset p > input[type="checkbox"]:checked ~ label:before {
+  color: #2292d0;
 }
 
-fieldset p > input[type=radio] ~ label ~ label {
-    margin-left: 1em;
+fieldset p > input[type="radio"] {
+  display: none;
 }
 
-fieldset p > input[type=text],
-fieldset p > input[type=password],
+fieldset p > input[type="radio"] ~ label:before {
+  content: "●";
+  display: inline-block;
+  padding: 0;
+  text-align: center;
+  margin: 0 0.5em 0 0;
+  width: 0.8em;
+  height: 0.8em;
+  line-height: 0.8em;
+  border: 1px solid #ccc;
+  border-radius: 0.5em;
+  background-color: #fafafa;
+  font-size: 1.3rem;
+  color: #fafafa;
+}
+
+@media (prefers-color-scheme: dark) {
+  fieldset p > input[type="radio"] ~ label:before {
+    background-color: #23222b;
+    color: #23222b;
+  }
+}
+
+fieldset p > input[type="radio"] ~ label:hover:before {
+  border-color: #2292d0;
+}
+
+fieldset p > input[type="radio"]:checked + label:before {
+  color: #2292d0;
+}
+
+fieldset p > input[type="radio"] ~ label ~ label {
+  margin-left: 1em;
+}
+
+fieldset p > input[type="text"],
+fieldset p > input[type="password"],
 fieldset p > textarea {
-    width: 90%;
-    border: 1px #ccc solid;
-    padding: 0.3rem 0.2rem;
-    border-radius: 2px;
+  width: 90%;
+  border: 1px #ccc solid;
+  padding: 0.3rem 0.2rem;
+  border-radius: 2px;
 }
 
 fieldset p > textarea {
-    height: 7rem;
+  height: 7rem;
 }
-

@@ -275,18 +275,18 @@
   "passff_error_getting_url_pass": {
     "message": "URL ($passURL$) parola veri tabanından ayrıştırılırken bir hata oluştu.",
     "placeholders": {
-      "passURL" : {
-        "content" : "$1",
-        "example" : "badlyFormattedURL.com"
+      "passURL": {
+        "content": "$1",
+        "example": "badlyFormattedURL.com"
       }
     }
   },
   "passff_error_getting_url_curr": {
     "message": "Geçerli URL ($currURL$) ayrıştırılırken bir hata oluştu.",
     "placeholders": {
-      "currURL" : {
-        "content" : "$1",
-        "example" : "badlyFormattedURL.com"
+      "currURL": {
+        "content": "$1",
+        "example": "badlyFormattedURL.com"
       }
     }
   },
@@ -320,12 +320,12 @@
   "passff_domain_mismatch": {
     "message": "Geçerli sitenizin etki alanı ($currDomain$) pass veri tabanınızdakiyle ($passDomain$) eşleşmiyor.",
     "placeholders": {
-      "currDomain" : {
-        "content" : "$1",
-        "example" : "phishingDomain.com"
+      "currDomain": {
+        "content": "$1",
+        "example": "phishingDomain.com"
       },
       "passDomain": {
-        "content" : "$2",
+        "content": "$2",
         "example": "realDomain.com"
       }
     }
@@ -334,8 +334,8 @@
     "message": "Parola veri tabanınızdaki ($passItemURL$) URL güvenli olmayan bir protokol kullanıyor. URL'yi 'https:' ile başlayacak şekilde değiştirmeniz tavsiye edilir.",
     "placeholders": {
       "passItemURL": {
-        "content" : "$1",
-        "example" : "http://www.example.com"
+        "content": "$1",
+        "example": "http://www.example.com"
       }
     }
   },

@@ -263,18 +263,18 @@
   "passff_error_getting_url_pass": {
     "message": "Wystąpił błąd przy próbie odczytania adresu URL ($passURL$) z bazy danych.",
     "placeholders": {
-      "passURL" : {
-        "content" : "$1",
-        "example" : "badlyFormattedURL.com"
+      "passURL": {
+        "content": "$1",
+        "example": "badlyFormattedURL.com"
       }
     }
   },
   "passff_error_getting_url_curr": {
     "message": "Wystąpił błąd przy próbie odczytania obecnego adresu URL ($currURL$).",
     "placeholders": {
-      "currURL" : {
-        "content" : "$1",
-        "example" : "badlyFormattedURL.com"
+      "currURL": {
+        "content": "$1",
+        "example": "badlyFormattedURL.com"
       }
     }
   },
@@ -308,12 +308,12 @@
   "passff_domain_mismatch": {
     "message": "Domena na której jesteś ($currDomain$) różni się od tej w bazie danych ($passDomain$).",
     "placeholders": {
-      "currDomain" : {
-        "content" : "$1",
-        "example" : "phishingDomain.com"
+      "currDomain": {
+        "content": "$1",
+        "example": "phishingDomain.com"
       },
       "passDomain": {
-        "content" : "$2",
+        "content": "$2",
         "example": "realDomain.com"
       }
     }
@@ -322,8 +322,8 @@
     "message": "Adres URL w bazie danych ($passItemURL$) używa nieszyfrowanego protokołu. Zalecamy zmianę adresu na zaczynający się od 'https:'.",
     "placeholders": {
       "passItemURL": {
-        "content" : "$1",
-        "example" : "http://www.example.com"
+        "content": "$1",
+        "example": "http://www.example.com"
       }
     }
   },

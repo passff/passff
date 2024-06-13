@@ -1,5 +1,4 @@
-passff
-======
+# passff
 
 [![Join the chat at https://gitter.im/jvenant/passff](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jvenant/passff?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -17,7 +16,7 @@ You can choose to automatically fill and submit login forms if a matching passwo
 
 ## Browser compatibility
 
-* Firefox 50+ (or 54 for [full support](#troubleshooting))
+- Firefox 50+ (or 54 for [full support](#troubleshooting))
 
 ## Installation
 
@@ -33,21 +32,23 @@ The host application allows the extension to communicate with `pass` on your sys
 ### PassFF extension
 
 Install the current release of PassFF for your browser:
-  - [Firefox](https://addons.mozilla.org/firefox/addon/passff)
+
+- [Firefox](https://addons.mozilla.org/firefox/addon/passff)
 
 Previous releases are available for download as XPI files from [our releases page](https://codeberg.org/PassFF/passff/releases). However, this is strongly discouraged for security reasons!
 
-### A graphical *pinentry* program
+### A graphical _pinentry_ program
 
 This program prompts you for your passphrase. One is probably already installed.
 If PassFF does not work, install one of these programs:
-  - For Ubuntu/Debian: `pinentry-gtk` or `pinentry-qt` or `pinentry-fltk`
-  - For CentOS/RHEL: `pinentry-qt4` or `pinentry-qt`
-  - For MacOS: `pinentry-mac`
+
+- For Ubuntu/Debian: `pinentry-gtk` or `pinentry-qt` or `pinentry-fltk`
+- For CentOS/RHEL: `pinentry-qt4` or `pinentry-qt`
+- For MacOS: `pinentry-mac`
 
 If that does not work for you, you may have to configure GnuPG to use the right pinentry program. See the [Troubleshooting](#troubleshooting) section.
 
-Note: Since the host app runs non-interactively, **a console *pinentry* such as `pinentry-ncurses` is useless** and may render PassFF unusable if this is the default pinentry.
+Note: Since the host app runs non-interactively, **a console _pinentry_ such as `pinentry-ncurses` is useless** and may render PassFF unusable if this is the default pinentry.
 
 ### One-time-password (OTP) Authentication
 
@@ -61,7 +62,7 @@ If you only want the extension to fill out passwords, you don't need any special
 
 ### Multi-line format
 
-This is the *preferred organizational scheme used by the author* of [pass](https://www.passwordstore.org/).
+This is the _preferred organizational scheme used by the author_ of [pass](https://www.passwordstore.org/).
 
 ```
 <the_password>
@@ -164,17 +165,19 @@ fancyinput: PASSFF_FIELD_LOGIN
 ### File-structure format
 
 Alternatively, you can organize your login information with file structure. For example, if you have this file structure:
-* www
-  * supersite.com
-    * login
-    * password
-    * url
-    * totp
-  * mysite.com
+
+- www
+  - supersite.com
+    - login
+    - password
+    - url
+    - totp
+  - mysite.com
 
 PassFF will
-* get the login from the "login", the url from the "url" and the password from the "password" file under supersite.com
-* get the login from the "login" field inside the mysite.com entry for mysite.com (see [format above](#multi-line-format))
+
+- get the login from the "login", the url from the "url" and the password from the "password" file under supersite.com
+- get the login from the "login" field inside the mysite.com entry for mysite.com (see [format above](#multi-line-format))
 
 The file structure approach does not support custom input fields.
 
@@ -182,7 +185,7 @@ Note that the file structure format is recognized and assumed by PassFF whenever
 
 ### Improve suggestions (contextual entries)
 
-Unless you activate the preference "Index URL fields on startup", the auto-suggestions in the menus are based on matches of the current web page's URL against the *names* of password store entries. In the following, you find an explanation how you can improve matching quality by adapting the names and paths of your password store entries.
+Unless you activate the preference "Index URL fields on startup", the auto-suggestions in the menus are based on matches of the current web page's URL against the _names_ of password store entries. In the following, you find an explanation how you can improve matching quality by adapting the names and paths of your password store entries.
 
 Generally speaking, the match quality is best if the exact hostname as well as all alphanumeric parts of the URL's path appear exactly in your entry's name. An entry is excluded from the matching if no part of the hostname is contained in its name. Matching (parts of) the hostname is more important than matching parts from the rest of the URL.
 
@@ -195,18 +198,23 @@ If you don't have multiple credentials for one hostname in your password store, 
 #### Examples with more than one entry per hostname
 
 If you happen to have several credentials for one hostname, you could name a directory in your password store after the hostname and list the different credentials inside that directory. Suppose you have different credentials for each of the following URLs:
+
 ```
 https://my.example.com/cloud
 https://my.example.com/blog?login
 https://my.example.com/blog?admin
 ```
+
 You could store them in your password store as
+
 ```
 /some/path/my.example.com/cloud
 /some/path/my.example.com/blog-login
 /some/path/my.example.com/blog-admin
 ```
+
 However, the following will work equally well:
+
 ```
 /business/cloud/my.example.com
 /personal/my.example.com-blog-login
@@ -216,6 +224,7 @@ However, the following will work equally well:
 For the rare case where you need several entries for one hostname but with different ports (e.g. if you have different
 entries for `http://example.com:2000/` and `http://example.com/`), you might want to include the port number `2000`
 into the name of the entry for `http://example.com:2000/`:
+
 ```
 /business/cloud/example.com:2000
 /business/cloud/example.com-2000
@@ -241,6 +250,7 @@ Once installed, you should have a new icon in your toolbar. Click the icon to br
 The default shortcut to open the menu is <kbd>ctrl</kbd>+<kbd>y</kbd>.
 
 With the menu open, you can press <kbd>enter</kbd> to execute one of the following commands, according to your preferences:
+
 - Goto, fill and submit
 - Goto and fill
 - Fill and submit
@@ -248,17 +258,18 @@ With the menu open, you can press <kbd>enter</kbd> to execute one of the followi
 
 ### Input menu
 
-PassFF can *mark fillable input fields with the PassFF icon*. It adds an icon in the fields that PassFF can automatically fill. The icon is clickable and pops up a menu to select the password.
+PassFF can _mark fillable input fields with the PassFF icon_. It adds an icon in the fields that PassFF can automatically fill. The icon is clickable and pops up a menu to select the password.
 PassFF fills the input fields and optionally submit depending on your preferences. You can always override this behavior by clicking the pencil (Fill) or the paper plane (Fill & Submit).
 
 This feature can be disabled in the preferences.
 
 ### Contextual menu
 
-In *any* input field, fillable or not, you can access a contextual menu (right-click) in order to:
-  - Add the input field's name in the *Login input names* for (auto)filling,
-  - Add the input field's name in the *OTP input names* for (auto)filling,
-  - Select a password to fill the input fields.
+In _any_ input field, fillable or not, you can access a contextual menu (right-click) in order to:
+
+- Add the input field's name in the _Login input names_ for (auto)filling,
+- Add the input field's name in the _OTP input names_ for (auto)filling,
+- Select a password to fill the input fields.
 
 ### Adding new passwords
 
@@ -275,8 +286,8 @@ Configure the script's execution parameters appropriately in the host app `passf
 ## Troubleshooting
 
 - **I use an old version of Firefox and I experience weird behaviour**
-  - PassFF is developed for the [latest version of **Firefox**](https://en.wikipedia.org/wiki/Firefox_version_history#Current_and_future_releases). PassFF should also work on previous versions above Firefox 50, which introduced [*native messaging*](https://blog.mozilla.org/addons/2016/08/25/webextensions-in-firefox-50/) for WebExtensions. However, HTTP authentication is available from Firefox 54 onwards.
-- **I get a window saying: *gpg: decryption failed: No secret key***<br>
+  - PassFF is developed for the [latest version of **Firefox**](https://en.wikipedia.org/wiki/Firefox_version_history#Current_and_future_releases). PassFF should also work on previous versions above Firefox 50, which introduced [_native messaging_](https://blog.mozilla.org/addons/2016/08/25/webextensions-in-firefox-50/) for WebExtensions. However, HTTP authentication is available from Firefox 54 onwards.
+- **I get a window saying: _gpg: decryption failed: No secret key_**<br>
   **Nothing happens when I click on a password and select an action**<br>
   **PassFF does not prompt me for the passphrase**<br>
   **PassFF works but only intermittently**
@@ -287,9 +298,9 @@ Configure the script's execution parameters appropriately in the host app `passf
       - You may need to create this file.
       - See https://wiki.archlinux.org/index.php/GnuPG#pinentry
   - Related issues:
-    * [No dialog opening up on Arch Linux](https://codeberg.org/PassFF/passff/issues/330)
-    * [Decryption failed on MacOS](https://codeberg.org/PassFF/passff/issues/325)
-    * [Script execution failed on CentOS](https://codeberg.org/PassFF/passff/issues/367)
+    - [No dialog opening up on Arch Linux](https://codeberg.org/PassFF/passff/issues/330)
+    - [Decryption failed on MacOS](https://codeberg.org/PassFF/passff/issues/325)
+    - [Script execution failed on CentOS](https://codeberg.org/PassFF/passff/issues/367)
 - **The icon/toolbar menu suggests no or the wrong entries**
   - See the section [Improve suggestions (contextual entries)](https://codeberg.org/PassFF/passff#improve-suggestions-contextual-entries) above.
 
@@ -310,9 +321,10 @@ See [CONTRIBUTING](docs/CONTRIBUTING.md).
 ## Thanks
 
 Development and improvements
- * [Johan Venant](https://github.com/jvenant)
- * [Tobias Umbach](https://github.com/sometoby)
- * [Lenz Weber](https://github.com/phryneas)
- * [Thomas Vogt](https://codeberg.org/tuxor1337)
+
+- [Johan Venant](https://github.com/jvenant)
+- [Tobias Umbach](https://github.com/sometoby)
+- [Lenz Weber](https://github.com/phryneas)
+- [Thomas Vogt](https://codeberg.org/tuxor1337)
 
 Russian translation : [Grigorii Horos](https://github.com/horosgrisa)

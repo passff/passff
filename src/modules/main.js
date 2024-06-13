@@ -1,15 +1,15 @@
 /**
-  * The main controller that initiates submodules depending on the
-  * current context (e.g., background script or content script)
-  */
+ * The main controller that initiates submodules depending on the
+ * current context (e.g., background script or content script)
+ */
 
-import * as util from "./util.js"
-import { _, log } from "./util.js"
-import Auth from "./auth.js"
-import Menu from "./menu.js"
-import Page from "./page.js"
-import Pass from "./pass.js"
-import Preferences from "./preferences.js"
+import * as util from "./util.js";
+import { _, log } from "./util.js";
+import Auth from "./auth.js";
+import Menu from "./menu.js";
+import Page from "./page.js";
+import Pass from "./pass.js";
+import Preferences from "./preferences.js";
 
 let initPromise = null;
 let activeWindow = null;
@@ -22,24 +22,21 @@ let activeWindow = null;
 
 function onContextMenuClick(info, tab) {
   if (info.menuItemId == "login-add") {
-    PassFF.Page.getActiveInput()
-      .then(function (info) {
-        let input_type = (info[0] == "password") ? "password" : "login";
-        PassFF.Preferences.addInputName(input_type, info[1]);
-      });
+    PassFF.Page.getActiveInput().then(function (info) {
+      let input_type = info[0] == "password" ? "password" : "login";
+      PassFF.Preferences.addInputName(input_type, info[1]);
+    });
   } else if (info.menuItemId == "otp-add") {
-    PassFF.Page.getActiveInput()
-      .then(function (info) {
-        PassFF.Preferences.addInputName("otp", info[1]);
-      });
+    PassFF.Page.getActiveInput().then(function (info) {
+      PassFF.Preferences.addInputName("otp", info[1]);
+    });
   } else {
     let itemId = parseInt(info.menuItemId.split("-")[1], 10);
     let item = PassFF.Pass.getItemById(itemId);
-    PassFF.Pass.getPasswordData(item)
-      .then((passwordData) => {
-        if (typeof passwordData === "undefined") return;
-        PassFF.Page.fillActiveElement(passwordData);
-      });
+    PassFF.Pass.getPasswordData(item).then((passwordData) => {
+      if (typeof passwordData === "undefined") return;
+      PassFF.Page.fillActiveElement(passwordData);
+    });
   }
 }
 
@@ -48,25 +45,28 @@ function setupContextMenu() {
   chrome.contextMenus.create({
     id: "login-add",
     title: "Add login input name",
-    contexts: ["editable"]
+    contexts: ["editable"],
   });
   chrome.contextMenus.create({
     id: "otp-add",
     title: "Add otp input name",
-    contexts: ["editable"]
+    contexts: ["editable"],
   });
   chrome.contextMenus.create({
     id: "sep",
     type: "separator",
-    contexts: ["editable"]
+    contexts: ["editable"],
   });
   PassFF.Pass.contextItems
-    .filter((i) => { return i.isLeaf; })
-    .slice(0,3).forEach((i) => {
+    .filter((i) => {
+      return i.isLeaf;
+    })
+    .slice(0, 3)
+    .forEach((i) => {
       chrome.contextMenus.create({
-        id: "login-"+i.id,
+        id: "login-" + i.id,
         title: i.fullKey,
-        contexts: ["editable"]
+        contexts: ["editable"],
       });
     });
 }
@@ -93,8 +93,9 @@ function onMessage(request, sender) {
       args.unshift(sender);
     }
     let result = fobj[fname].apply(fobj, args);
-    return Promise.resolve(result)
-      .then((response) => { return { response: response }; });
+    return Promise.resolve(result).then((response) => {
+      return { response: response };
+    });
   }
 }
 
@@ -114,26 +115,26 @@ function onTabUpdated(tabId, changeInfo, tab) {
 
   if (tab.active && tab.windowId == activeWindow) {
     let url = tab.url;
-    if (typeof PassFF.Menu.state['itemPickerTarget'] !== "undefined") {
-      url = PassFF.Menu.state['itemPickerTarget'];
+    if (typeof PassFF.Menu.state["itemPickerTarget"] !== "undefined") {
+      url = PassFF.Menu.state["itemPickerTarget"];
     }
 
-    return util.getTabContainer(tab)
-      .then((containerName) => {
-        PassFF.Pass.loadContextItems(url, containerName);
-        if (PassFF.Preferences.contextMenu) {
-          setupContextMenu();
-        } else {
-          chrome.contextMenus.removeAll();
-        }
-        PassFF.Menu.onContextChanged();
-      });
+    return util.getTabContainer(tab).then((containerName) => {
+      PassFF.Pass.loadContextItems(url, containerName);
+      if (PassFF.Preferences.contextMenu) {
+        setupContextMenu();
+      } else {
+        chrome.contextMenus.removeAll();
+      }
+      PassFF.Menu.onContextChanged();
+    });
   }
 }
 
 function onTabActivated() {
-  return util.getActiveTab()
-    .then((tab) => { return onTabUpdated(tab.id, null, tab); });
+  return util.getActiveTab().then((tab) => {
+    return onTabUpdated(tab.id, null, tab);
+  });
 }
 
 function onWindowFocus(windowId) {
@@ -171,8 +172,10 @@ let PassFF = {
     }
 
     browser.runtime.onMessage.addListener(onMessage);
-    return initPromise = PassFF.Preferences.init()
-      .then(() => { return PassFF.Pass.init(); })
+    return (initPromise = PassFF.Preferences.init()
+      .then(() => {
+        return PassFF.Pass.init();
+      })
       .then(() => {
         switch (PassFF.mode) {
           case "content":
@@ -191,7 +194,7 @@ let PassFF = {
             return onTabActivated();
             break;
         }
-      });
+      }));
   },
 
   refresh_all: util.backgroundFunction("refresh_all", function () {
@@ -201,11 +204,11 @@ let PassFF = {
       .then(() => browser.runtime.sendMessage("refresh"))
       .then(() => browser.tabs.query({}))
       .then((tabs) => {
-          tabs.forEach((t) => browser.tabs.sendMessage(t.id, "refresh"));
+        tabs.forEach((t) => browser.tabs.sendMessage(t.id, "refresh"));
       });
-  })
+  }),
 };
 
-window.addEventListener('load', PassFF.init);
+window.addEventListener("load", PassFF.init);
 
 export default PassFF;

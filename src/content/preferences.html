@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -9,7 +9,12 @@
     <h1>passff_prefs_headline</h1>
     <div class="tabbox">
       <div class="tab">
-        <input type="radio" name="tab_radio" id="tab_general" checked="checked">
+        <input
+          type="radio"
+          name="tab_radio"
+          id="tab_general"
+          checked="checked"
+        />
         <label for="tab_general">passff_prefs_tab_general</label>
         <fieldset>
           <p>
@@ -19,55 +24,71 @@
           <p class="text">passff_prefs_shortcut_syntax_help</p>
           <p>
             <input type="checkbox" id="pref_handleHttpAuth" />
-            <label for="pref_handleHttpAuth">passff_prefs_handle_http_auth</label>
+            <label for="pref_handleHttpAuth"
+              >passff_prefs_handle_http_auth</label
+            >
           </p>
         </fieldset>
       </div>
 
       <div class="tab">
-        <input type="radio" name="tab_radio" id="tab_browsing">
+        <input type="radio" name="tab_radio" id="tab_browsing" />
         <label for="tab_browsing">passff_prefs_tab_browsing</label>
         <fieldset>
           <p>
             <input type="checkbox" id="pref_directoriesFirst" />
-            <label for="pref_directoriesFirst">passff_prefs_directories_first</label>
-          </p><p>
+            <label for="pref_directoriesFirst"
+              >passff_prefs_directories_first</label
+            >
+          </p>
+          <p>
             <input type="checkbox" id="pref_caseInsensitiveSearch" />
-            <label for="pref_caseInsensitiveSearch">passff_prefs_case_insensitive_search</label>
-          </p><p>
+            <label for="pref_caseInsensitiveSearch"
+              >passff_prefs_case_insensitive_search</label
+            >
+          </p>
+          <p>
             <label>passff_prefs_enter_behavior</label>
             <select id="pref_enterBehavior">
               <option value="0">passff_menu_goto_fill_and_submit</option>
               <option value="1">passff_menu_goto_fill</option>
               <option value="2">passff_menu_fill_and_submit</option>
               <option value="3">passff_menu_fill</option>
-              <option value="4">passff_menu_goto_fill_and_submit_new_tab</option>
+              <option value="4">
+                passff_menu_goto_fill_and_submit_new_tab
+              </option>
               <option value="5">passff_menu_goto_fill_new_tab</option>
               <option value="6">passff_menu_copy_password</option>
               <option value="7">passff_menu_copy_login</option>
               <option value="8">passff_menu_display</option>
             </select>
-          </p><p>
+          </p>
+          <p>
             <label>passff_prefs_shift_enter_behavior</label>
             <select id="pref_shiftEnterBehavior">
               <option value="0">passff_menu_goto_fill_and_submit</option>
               <option value="1">passff_menu_goto_fill</option>
               <option value="2">passff_menu_fill_and_submit</option>
               <option value="3">passff_menu_fill</option>
-              <option value="4">passff_menu_goto_fill_and_submit_new_tab</option>
+              <option value="4">
+                passff_menu_goto_fill_and_submit_new_tab
+              </option>
               <option value="5">passff_menu_goto_fill_new_tab</option>
               <option value="6">passff_menu_copy_password</option>
               <option value="7">passff_menu_copy_login</option>
               <option value="8">passff_menu_display</option>
             </select>
-          </p><p>
+          </p>
+          <p>
             <label>passff_prefs_ctrl_enter_behavior</label>
             <select id="pref_ctrlEnterBehavior">
               <option value="0">passff_menu_goto_fill_and_submit</option>
               <option value="1">passff_menu_goto_fill</option>
               <option value="2">passff_menu_fill_and_submit</option>
               <option value="3">passff_menu_fill</option>
-              <option value="4">passff_menu_goto_fill_and_submit_new_tab</option>
+              <option value="4">
+                passff_menu_goto_fill_and_submit_new_tab
+              </option>
               <option value="5">passff_menu_goto_fill_new_tab</option>
               <option value="6">passff_menu_copy_password</option>
               <option value="7">passff_menu_copy_login</option>
@@ -78,19 +99,28 @@
       </div>
 
       <div class="tab">
-        <input type="radio" name="tab_radio" id="tab_match">
+        <input type="radio" name="tab_radio" id="tab_match" />
         <label for="tab_match">passff_prefs_tab_match</label>
         <fieldset>
           <p>
             <input type="checkbox" id="pref_indexMetaUrls" />
-            <label for="pref_indexMetaUrls">passff_prefs_match_index_urls_label</label>
-          </p><p>
+            <label for="pref_indexMetaUrls"
+              >passff_prefs_match_index_urls_label</label
+            >
+          </p>
+          <p>
             <input type="checkbox" id="pref_matchDirnameOnly" />
-            <label for="pref_matchDirnameOnly">passff_prefs_match_dirname_label</label>
-          </p><p>
+            <label for="pref_matchDirnameOnly"
+              >passff_prefs_match_dirname_label</label
+            >
+          </p>
+          <p>
             <input type="checkbox" id="pref_enforceDomainMatch" />
-            <label for="pref_enforceDomainMatch">passff_prefs_match_domain_label</label>
-          </p><p>
+            <label for="pref_enforceDomainMatch"
+              >passff_prefs_match_domain_label</label
+            >
+          </p>
+          <p>
             <label>passff_prefs_match_suffixes_label</label>
             <input type="text" id="pref_recognisedSuffixes" value="" />
           </p>
@@ -98,16 +128,18 @@
       </div>
 
       <div class="tab">
-        <input type="radio" name="tab_radio" id="tab_autofilling">
+        <input type="radio" name="tab_radio" id="tab_autofilling" />
         <label for="tab_autofilling">passff_prefs_tab_autofilling</label>
         <fieldset>
           <p>
             <input type="checkbox" id="pref_autoFill" />
             <label for="pref_autoFill">passff_prefs_auto_fill_label</label>
-          </p><p>
+          </p>
+          <p>
             <input type="checkbox" id="pref_autoSubmit" />
             <label for="pref_autoSubmit">passff_prefs_auto_submit_label</label>
-          </p><p>
+          </p>
+          <p>
             <label>passff_prefs_autofill_blacklist_label</label>
             <input type="text" id="pref_autoFillBlacklist" value="" />
           </p>
@@ -115,34 +147,40 @@
       </div>
 
       <div class="tab">
-        <input type="radio" name="tab_radio" id="tab_checks">
+        <input type="radio" name="tab_radio" id="tab_checks" />
         <label for="tab_autofilling">passff_prefs_tab_checks</label>
         <fieldset>
           <p>
             <input type="checkbox" id="pref_checkOnlyAuto" />
-            <label for="pref_checkOnlyAuto">passff_prefs_check_auto_label</label>
-          </p><p>
+            <label for="pref_checkOnlyAuto"
+              >passff_prefs_check_auto_label</label
+            >
+          </p>
+          <p>
             <label>passff_prefs_check_protocol_label</label>
             <select id="pref_checkProtocol">
               <option value="0">passff_prefs_check_action_ignore</option>
               <option value="1">passff_prefs_check_action_ask</option>
               <option value="1">passff_prefs_check_action_enforce</option>
             </select>
-          </p><p>
+          </p>
+          <p>
             <label>passff_prefs_check_domain_label</label>
             <select id="pref_checkDomain">
               <option value="0">passff_prefs_check_action_ignore</option>
               <option value="1">passff_prefs_check_action_ask</option>
               <option value="1">passff_prefs_check_action_enforce</option>
             </select>
-          </p><p>
+          </p>
+          <p>
             <label>passff_prefs_check_subdomain_label</label>
             <select id="pref_checkSubdomain">
               <option value="0">passff_prefs_check_action_ignore</option>
               <option value="1">passff_prefs_check_action_ask</option>
               <option value="1">passff_prefs_check_action_enforce</option>
             </select>
-          </p><p>
+          </p>
+          <p>
             <label>passff_prefs_check_fullurl_label</label>
             <select id="pref_checkFullUrl">
               <option value="0">passff_prefs_check_action_ignore</option>
@@ -154,34 +192,42 @@
       </div>
 
       <div class="tab">
-        <input type="radio" name="tab_radio" id="tab_inputs">
+        <input type="radio" name="tab_radio" id="tab_inputs" />
         <label for="tab_inputs">passff_prefs_tab_inputs</label>
         <fieldset>
           <p class="text">passff_prefs_inputs_description</p>
           <p>
             <input type="checkbox" id="pref_markFillable" />
             <label for="pref_markFillable">passff_prefs_mark_fillable</label>
-          </p><p>
+          </p>
+          <p>
             <label>passff_prefs_mark_fillable_blacklist_label</label>
             <input type="text" id="pref_markFillableBlacklist" value="" />
-          </p><p>
+          </p>
+          <p>
             <input type="checkbox" id="pref_contextMenu" />
             <label for="pref_contextMenu">passff_prefs_context_menu</label>
-          </p><p>
+          </p>
+          <p>
             <input type="checkbox" id="pref_submitFillable" />
-            <label for="pref_submitFillable">passff_prefs_submit_fillable</label>
+            <label for="pref_submitFillable"
+              >passff_prefs_submit_fillable</label
+            >
           </p>
           <p class="text">passff_prefs_input_names_description</p>
           <p>
             <label>passff_prefs_password_input_names_label</label>
             <input type="text" id="pref_passwordInputNames" value="" />
-          </p><p>
+          </p>
+          <p>
             <label>passff_prefs_login_input_names_label</label>
             <input type="text" id="pref_loginInputNames" value="" />
-          </p><p>
+          </p>
+          <p>
             <label>passff_prefs_otp_input_names_label</label>
             <input type="text" id="pref_otpInputNames" value="" />
-          </p><p>
+          </p>
+          <p>
             <label>passff_prefs_button_input_queries_label</label>
             <textarea type="text" id="pref_buttonInputQueries"></textarea>
           </p>
@@ -189,23 +235,27 @@
       </div>
 
       <div class="tab">
-        <input type="radio" name="tab_radio" id="tab_fields">
+        <input type="radio" name="tab_radio" id="tab_fields" />
         <label for="tab_fields">passff_prefs_tab_fields</label>
         <fieldset>
           <p class="text">passff_prefs_fields_description</p>
           <p>
             <label>passff_prefs_password_field_names_label</label>
             <input type="text" id="pref_passwordFieldNames" value="" />
-          </p><p>
+          </p>
+          <p>
             <label>passff_prefs_login_field_names_label</label>
             <input type="text" id="pref_loginFieldNames" value="" />
-          </p><p>
+          </p>
+          <p>
             <label>passff_prefs_url_field_names_label</label>
             <input type="text" id="pref_urlFieldNames" value="" />
-          </p><p>
+          </p>
+          <p>
             <label>passff_prefs_otpauth_field_names_label</label>
             <input type="text" id="pref_otpauthFieldNames" value="" />
-          </p><p>
+          </p>
+          <p>
             <label>passff_prefs_filter_path_regex_label</label>
             <textarea id="pref_filterPathRegex"></textarea>
           </p>
@@ -213,7 +263,7 @@
       </div>
 
       <div class="tab">
-        <input type="radio" name="tab_radio" id="tab_script">
+        <input type="radio" name="tab_radio" id="tab_script" />
         <label for="tab_script">passff_prefs_tab_script</label>
         <fieldset>
           <p>
@@ -223,53 +273,68 @@
       </div>
 
       <div class="tab">
-        <input type="radio" name="tab_radio" id="tab_adding">
+        <input type="radio" name="tab_radio" id="tab_adding" />
         <label for="tab_adding">passff_prefs_tab_adding</label>
         <fieldset>
           <p>
             <input type="checkbox" id="pref_showNewPassButton" />
-            <label for="pref_showNewPassButton">passff_prefs_show_new_password_button</label>
-          </p><p>
+            <label for="pref_showNewPassButton"
+              >passff_prefs_show_new_password_button</label
+            >
+          </p>
+          <p>
             <label>passff_prefs_default_length_label</label>
             <input type="text" id="pref_defaultPasswordLength" value="" />
-          </p><p>
+          </p>
+          <p>
             <input type="checkbox" id="pref_defaultIncludeSymbols" />
-            <label for="pref_defaultIncludeSymbols">passff_prefs_default_include_symbols_label</label>
-          </p><p>
+            <label for="pref_defaultIncludeSymbols"
+              >passff_prefs_default_include_symbols_label</label
+            >
+          </p>
+          <p>
             <label>passff_prefs_preferred_new_method_label</label>
             <select id="pref_preferInsert">
               <option value="0">passff_prefs_prefer_generate</option>
               <option value="1">passff_prefs_prefer_insert</option>
             </select>
-          </p><p>
+          </p>
+          <p>
             <input type="checkbox" id="pref_prefillUrl" />
             <label for="pref_prefillUrl">passff_prefs_prefill_url_label</label>
-          </p><p>
+          </p>
+          <p>
             <label>passff_prefs_prefill_login_default_label</label>
             <input type="text" id="pref_prefillLoginDefault" value="" />
-          </p><p>
+          </p>
+          <p>
             <input type="checkbox" id="pref_prefillLoginTab" />
-            <label for="pref_prefillLoginTab">passff_prefs_prefill_login_tab_label</label>
+            <label for="pref_prefillLoginTab"
+              >passff_prefs_prefill_login_tab_label</label
+            >
           </p>
         </fieldset>
       </div>
 
       <div class="tab">
-        <input type="radio" name="tab_radio" id="tab_look">
+        <input type="radio" name="tab_radio" id="tab_look" />
         <label for="tab_look">passff_prefs_tab_look</label>
         <fieldset>
           <p>
             <label for="pref_lookMenuWidth">passff_prefs_look_menu_width</label>
             <input type="text" id="pref_lookMenuWidth" />
-          </p><p>
-            <label for="pref_lookPopupWidth">passff_prefs_look_popup_width</label>
+          </p>
+          <p>
+            <label for="pref_lookPopupWidth"
+              >passff_prefs_look_popup_width</label
+            >
             <input type="text" id="pref_lookPopupWidth" />
           </p>
         </fieldset>
       </div>
 
       <div class="tab">
-        <input type="radio" name="tab_radio" id="tab_dev">
+        <input type="radio" name="tab_radio" id="tab_dev" />
         <label for="tab_dev">passff_prefs_tab_dev</label>
         <fieldset>
           <p>
