@@ -5,7 +5,7 @@ SRC_DIR := ./src
 TARGET_DIR := ./bin/$(VERSION)
 BUILD_DIR := ./build/$(VERSION)
 
-CONTENT_FILES := content _locales modules skin icon.png
+CONTENT_FILES := content _locales modules skin content_script.js icon.png
 CONTENT_SRC := $(addprefix $(SRC_DIR)/,$(CONTENT_FILES))
 CONTENT_OUT := $(addprefix $(BUILD_DIR)/,$(CONTENT_FILES))
 

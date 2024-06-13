@@ -1,9 +1,12 @@
-/* jshint node: true */
-'use strict';
+/**
+ * This module provides universal helper functions for PassFF.
+ */
 
-const PASSFF_URL_GIT = "https://codeberg.org/PassFF/passff";
-const PASSFF_URL_GIT_HOST = "https://codeberg.org/PassFF/passff-host";
-const PASSFF_URL_INSTALLATION = PASSFF_URL_GIT + "#installation";
+import PassFF from "./main.js"
+
+export const PASSFF_URL_GIT = "https://codeberg.org/PassFF/passff";
+export const PASSFF_URL_GIT_HOST = "https://codeberg.org/PassFF/passff-host";
+export const PASSFF_URL_INSTALLATION = PASSFF_URL_GIT + "#installation";
 
 /* #############################################################################
  * #############################################################################
@@ -11,14 +14,14 @@ const PASSFF_URL_INSTALLATION = PASSFF_URL_GIT + "#installation";
  * #############################################################################
  */
 
-function _(key, params) {
+export function _(key, params) {
   if (params) {
     return browser.i18n.getMessage(key, params);
   }
   return browser.i18n.getMessage(key);
 }
 
-function parse_markdown(obj) {
+export function parseMarkdown(obj) {
   let str = obj.innerHTML;
   obj.innerHTML = "";
   let patterns = [
@@ -73,21 +76,21 @@ function parse_markdown(obj) {
  * #############################################################################
  */
 
-var log = {
-  generateArguments: function (args) {
+export let log = {
+  generateArguments: function (args, preInit) {
     let argsArray = Array.from(args);
-    argsArray.unshift('[PassFF.' + PassFF.mode + ']');
+    argsArray.unshift(
+      `[PassFF.${PassFF.mode}${preInit ? " (not initialized)" : ""}]`
+    );
     return argsArray;
   }
 };
 
 (function () {
   function logPrototype() {
-    if (PassFF.Preferences) {
-      // jshint validthis: true
-      if (PassFF.Preferences.enableLogging) {
-        this.apply(console, log.generateArguments(arguments));
-      }
+    let preInit = !PassFF.Preferences || !PassFF.Preferences.ready;
+    if (preInit || PassFF.Preferences.enableLogging) {
+      this.apply(console, log.generateArguments(arguments, preInit));
     }
   }
   log.debug = logPrototype.bind(console.debug);
@@ -102,7 +105,7 @@ var log = {
  * #############################################################################
  */
 
-function getActiveTab() {
+export function getActiveTab() {
   return (
     browser.tabs
     .query({active: true, currentWindow: true})
@@ -110,7 +113,7 @@ function getActiveTab() {
   );
 }
 
-function getTabContainer(tb) {
+export function getTabContainer(tb) {
   return Promise.resolve()
     .then(() => {
       if (typeof browser.contextualIdentities !== "undefined") {
@@ -129,7 +132,7 @@ function getTabContainer(tb) {
     });
 }
 
-function waitTabComplete(tb) {
+export function waitTabComplete(tb) {
   let promised_tab = Promise.resolve(tb);
   if (typeof tb === "undefined") promised_tab = getActiveTab();
   return promised_tab.then((tab) => {
@@ -151,7 +154,7 @@ function waitTabComplete(tb) {
  * #############################################################################
  */
 
-function background_function(name, fun, useSender) {
+export function backgroundFunction(name, fun, useSender) {
   if (typeof useSender === "undefined") {
     useSender = false;
   }
@@ -160,14 +163,14 @@ function background_function(name, fun, useSender) {
       let args = Array.from(arguments);
       args.unshift(useSender);
       args.unshift(name);
-      return background_exec.apply(null, args);
+      return backgroundExec.apply(null, args);
     } else {
-      return Promise.resolve(fun.apply(fun_name(name)[0], arguments));
+      return Promise.resolve(fun.apply(getFunctionFromStr(name)[0], arguments));
     }
   };
 }
 
-function background_exec(action, useSender) {
+function backgroundExec(action, useSender) {
   return browser.runtime.sendMessage({
     action: action,
     params: Array.from(arguments).slice(2),
@@ -179,11 +182,11 @@ function background_exec(action, useSender) {
       return null;
     }
   }).catch((error) => {
-    log.error("Runtime port has crashed:", action, error);
+    log.error("backgroundExec: runtime port has crashed", action, error);
   });
 }
 
-function content_function(name, fun, provideTab) {
+export function contentFunction(name, fun, provideTab) {
   return function () {
     if (PassFF.mode !== "content") {
       let args = Array.from(arguments);
@@ -191,14 +194,14 @@ function content_function(name, fun, provideTab) {
         args.unshift(null);
       }
       args.splice(1, 0, name);
-      return content_exec.apply(null, args);
+      return contentExec.apply(null, args);
     } else {
-      return fun.apply(fun_name(name)[0], arguments);
+      return fun.apply(getFunctionFromStr(name)[0], arguments);
     }
   };
 }
 
-function content_exec(targetTab, action) {
+function contentExec(targetTab, action) {
   let promised_tab = Promise.resolve(targetTab);
   let args = Array.from(arguments).slice(2);
   if (!targetTab) {
@@ -207,7 +210,7 @@ function content_exec(targetTab, action) {
   return promised_tab
     .then((tab) => {
       log.debug("Awaiting tab init for", action);
-      return PassFF.Page.init_tab(tab)
+      return PassFF.Page.initTab(tab)
         .then(function () {
           log.debug("Executing", action, "in content script");
           return browser.tabs.sendMessage(tab.id, {
@@ -224,11 +227,11 @@ function content_exec(targetTab, action) {
         return null;
       }
     }).catch((error) => {
-      log.error("Content script port has crashed:", error);
+      log.error("contentExec: content script port has crashed", action, error);
     });
 }
 
-function fun_name(name) {
+export function getFunctionFromStr(name) {
   let parts = name.split(".");
   if (parts.length > 1) {
     return [PassFF[parts[0]], parts[1]];
@@ -250,7 +253,7 @@ function fun_name(name) {
  * See https://codeberg.org/PassFF/passff/pull/342
  */
 
-const semver = (function semver() {
+export const semver = (function semver() {
 
   /**
    * Takes a version string as input and parses it.
@@ -313,12 +316,12 @@ const semver = (function semver() {
  * #############################################################################
  */
 
-function sanitizeDomain(domain) {
+export function sanitizeDomain(domain) {
   // remove leading or trailing dots from hostname
   return domain.replace(/^\.+/, '').replace(/\.+$/, '');
 }
 
-function getDomainSuffix(domain) {
+export function getDomainSuffix(domain) {
   // get the domain suffix without the leading dot
   domain = sanitizeDomain(domain);
   let domain_parts = domain.split(/\.+/);
@@ -334,7 +337,7 @@ function getDomainSuffix(domain) {
   return suffix;
 }
 
-function getMainDomain(domain) {
+export function getMainDomain(domain) {
   // truncate subdomain parts from hostname, but keep suffix
   domain = sanitizeDomain(domain);
   let suffix = getDomainSuffix(domain);
@@ -343,14 +346,14 @@ function getMainDomain(domain) {
   return parts[parts.length - 1] + "." + suffix;
 }
 
-function checkIsSubdomain(domain1, domain2) {
+export function checkIsSubdomain(domain1, domain2) {
   // check if domain1 is equal to or a subdomain of domain2
   domain1 = sanitizeDomain(domain1);
   domain2 = sanitizeDomain(domain2);
   return domain1 == domain2 || domain1.endsWith("." + domain2);
 }
 
-function checkDomainsHaveSameMain(domain1, domain2) {
+export function checkDomainsHaveSameMain(domain1, domain2) {
   domain1 = sanitizeDomain(domain1);
   domain2 = sanitizeDomain(domain2);
   let main1 = getMainDomain(domain1);

@@ -1,139 +1,139 @@
-/* jshint node: true */
-'use strict';
+/**
+  * This module provides access to the preferences of PassFF and handles
+  * the user interface of the preferences page.
+  *
+  * You can change or read preferences by accessing `PassFF.Preferences[key]`.
+  */
 
-PassFF.Preferences = (function () {
-  /**
-   * This object provides access to the preferences of PassFF and handles
-   * the user interface of the preferences page.
-   *
-   * You can change or read preferences by accessing `PassFF.Preferences[key]`.
-   */
+import * as util from "./util.js"
+import { _, log } from "./util.js"
+import PassFF from "./main.js"
 
-  /* ###########################################################################
-   * ###########################################################################
-   *  Helper for preferences page UI
-   * ###########################################################################
-   */
+/* ###########################################################################
+  * ###########################################################################
+  *  Helper for preferences page UI
+  * ###########################################################################
+  */
 
-  let ui_i18n_init = false;
-  function init_ui() {
-    let pref_str_change_cb = function (key, isInt) {
-      return function (evt) {
-        let val = evt.target.value;
-        if (isInt) val = parseInt(val, 10);
-        PassFF.Preferences[key] = val;
-      };
+let ui_i18n_init = false;
+function init_ui() {
+  let pref_str_change_cb = function (key, isInt) {
+    return function (evt) {
+      let val = evt.target.value;
+      if (isInt) val = parseInt(val, 10);
+      PassFF.Preferences[key] = val;
     };
+  };
 
-    let pref_bool_change_cb = function (key) {
-      return function (evt) {
-        PassFF.Preferences[key] = evt.target.checked;
-      };
+  let pref_bool_change_cb = function (key) {
+    return function (evt) {
+      PassFF.Preferences[key] = evt.target.checked;
     };
+  };
 
-    if (!ui_i18n_init) {
-      document.querySelectorAll("h1,label,p.text,option")
-        .forEach(function (el) {
-          el.textContent = _(el.textContent);
-          parse_markdown(el);
-        });
-      ui_i18n_init = true;
-    }
-
-    for (let [key, val] of Object.entries(prefParams)) {
-      let el = document.getElementById("pref_" + key);
-      if (el === null) continue;
-      if (el.tagName == "TEXTAREA" || el.tagName == "INPUT" && el.type == "text") {
-        el.value = val;
-        el.addEventListener("change", pref_str_change_cb(key));
-      } else if (el.tagName == "INPUT" && el.type == "checkbox") {
-        el.checked = val;
-        el.addEventListener("change", pref_bool_change_cb(key));
-      } else if (el.tagName == "SELECT") {
-        el.value = val;
-        el.addEventListener("change", pref_str_change_cb(key, true));
-      }
-    }
+  if (!ui_i18n_init) {
+    document.querySelectorAll("h1,label,p.text,option")
+      .forEach(function (el) {
+        el.textContent = _(el.textContent);
+        util.parseMarkdown(el);
+      });
+    ui_i18n_init = true;
   }
 
-  /* ###########################################################################
-   * ###########################################################################
-   *  Default preferences
-   * ###########################################################################
-   */
+  for (let [key, val] of Object.entries(prefParams)) {
+    let el = document.getElementById("pref_" + key);
+    if (el === null) continue;
+    if (el.tagName == "TEXTAREA" || el.tagName == "INPUT" && el.type == "text") {
+      el.value = val;
+      el.addEventListener("change", pref_str_change_cb(key));
+    } else if (el.tagName == "INPUT" && el.type == "checkbox") {
+      el.checked = val;
+      el.addEventListener("change", pref_bool_change_cb(key));
+    } else if (el.tagName == "SELECT") {
+      el.value = val;
+      el.addEventListener("change", pref_str_change_cb(key, true));
+    }
+  }
+}
 
-  let prefParams = {
-    passwordInputNames    : 'passwd,password,pass',
-    loginInputNames       : 'login,user,mail,email,tel,username,opt_login,log,usr_name',
-    otpInputNames         : 'otp,code,otc,user[otp_attempt],one-time-password',
-    buttonInputQueries    : 'button:not([type=reset])\ninput[type=submit]\ninput[type=button]\n[role=button]',
-    loginFieldNames       : 'login,user,username,id',
-    passwordFieldNames    : 'passwd,password,pass',
-    urlFieldNames         : 'url,http,https',
-    otpauthFieldNames     : 'otpauth,otp',
-    autoFill              : false,
-    autoSubmit            : false,
-    autoFillBlacklist     : '',
-    checkOnlyAuto         : false,
-    checkProtocol         : 1,
-    checkDomain           : 1,
-    checkSubdomain        : 0,
-    checkFullUrl          : 0,
-    caseInsensitiveSearch : true,
-    handleHttpAuth        : true,
-    enterBehavior         : 0,
-    shiftEnterBehavior    : 4,
-    ctrlEnterBehavior     : 3,
-    prefillLoginTab       : false,
-    prefillLoginDefault   : "",
-    prefillUrl            : false,
-    defaultPasswordLength : 16,
-    defaultIncludeSymbols : true,
-    preferInsert          : 0,
-    showNewPassButton     : true,
-    markFillable          : true,
-    markFillableBlacklist : '',
-    contextMenu           : true,
-    submitFillable        : true,
-    directoriesFirst      : false,
-    enableLogging         : false,
-    showStatus            : true,
-    tbMenuShortcut        : '',
-    indexMetaUrls         : false,
-    matchDirnameOnly      : false,
-    enforceDomainMatch    : false,
-    recognisedSuffixes    : 'co.uk,org.uk,me.uk,co.jp,com.au',
-    filterPathRegex       : 'notes\nattributes\nattachments',
-    lookMenuWidth         : '28rem',
-    lookPopupWidth        : '25rem',
-  };
+/* ###########################################################################
+  * ###########################################################################
+  *  Default preferences
+  * ###########################################################################
+  */
 
-  const listParams = {
-    'passwordInputNames'     : ',',
-    'loginInputNames'        : ',',
-    'otpInputNames'          : ',',
-    'buttonInputQueries'     : '\n',
-    'loginFieldNames'        : ',',
-    'passwordFieldNames'     : ',',
-    'urlFieldNames'          : ',',
-    'otpauthFieldNames'      : ',',
-    'autoFillBlacklist'      : ',',
-    'markFillableBlacklist'  : ',',
-    'recognisedSuffixes'     : ',',
-    'filterPathRegex'        : '\n',
-  };
+let prefParams = {
+  passwordInputNames    : 'passwd,password,pass',
+  loginInputNames       : 'login,user,mail,email,tel,username,opt_login,log,usr_name',
+  otpInputNames         : 'otp,code,otc,user[otp_attempt],one-time-password',
+  buttonInputQueries    : 'button:not([type=reset])\ninput[type=submit]\ninput[type=button]\n[role=button]',
+  loginFieldNames       : 'login,user,username,id',
+  passwordFieldNames    : 'passwd,password,pass',
+  urlFieldNames         : 'url,http,https',
+  otpauthFieldNames     : 'otpauth,otp',
+  autoFill              : false,
+  autoSubmit            : false,
+  autoFillBlacklist     : '',
+  checkOnlyAuto         : false,
+  checkProtocol         : 1,
+  checkDomain           : 1,
+  checkSubdomain        : 0,
+  checkFullUrl          : 0,
+  caseInsensitiveSearch : true,
+  handleHttpAuth        : true,
+  enterBehavior         : 0,
+  shiftEnterBehavior    : 4,
+  ctrlEnterBehavior     : 3,
+  prefillLoginTab       : false,
+  prefillLoginDefault   : "",
+  prefillUrl            : false,
+  defaultPasswordLength : 16,
+  defaultIncludeSymbols : true,
+  preferInsert          : 0,
+  showNewPassButton     : true,
+  markFillable          : true,
+  markFillableBlacklist : '',
+  contextMenu           : true,
+  submitFillable        : true,
+  directoriesFirst      : false,
+  enableLogging         : false,
+  showStatus            : true,
+  tbMenuShortcut        : '',
+  indexMetaUrls         : false,
+  matchDirnameOnly      : false,
+  enforceDomainMatch    : false,
+  recognisedSuffixes    : 'co.uk,org.uk,me.uk,co.jp,com.au',
+  filterPathRegex       : 'notes\nattributes\nattachments',
+  lookMenuWidth         : '28rem',
+  lookPopupWidth        : '25rem',
+};
 
-  const lowerCaseParams = [
-    'passwordInputNames',
-    'loginInputNames',
-    'otpInputNames',
-    'buttonInputQueries',
-    'loginFieldNames',
-    'passwordFieldNames',
-    'urlFieldNames',
-    'otpauthFieldNames',
-    'autoFillBlacklist'
-  ];
+const listParams = {
+  'passwordInputNames'     : ',',
+  'loginInputNames'        : ',',
+  'otpInputNames'          : ',',
+  'buttonInputQueries'     : '\n',
+  'loginFieldNames'        : ',',
+  'passwordFieldNames'     : ',',
+  'urlFieldNames'          : ',',
+  'otpauthFieldNames'      : ',',
+  'autoFillBlacklist'      : ',',
+  'markFillableBlacklist'  : ',',
+  'recognisedSuffixes'     : ',',
+  'filterPathRegex'        : '\n',
+};
+
+const lowerCaseParams = [
+  'passwordInputNames',
+  'loginInputNames',
+  'otpInputNames',
+  'buttonInputQueries',
+  'loginFieldNames',
+  'passwordFieldNames',
+  'urlFieldNames',
+  'otpauthFieldNames',
+  'autoFillBlacklist'
+];
 
 /* #############################################################################
  * #############################################################################
@@ -141,163 +141,166 @@ PassFF.Preferences = (function () {
  * #############################################################################
  */
 
-  let prefObj = {
-    init: function () {
-      let changes = {};
-      return browser.storage.local.get(Object.keys(prefParams))
-        .then((res) => {
-          for (let [key, val] of Object.entries(prefParams)) {
-            if (typeof res[key] === 'undefined') {
-              changes[key] = val;
-            } else {
-              prefParams[key] = res[key];
-            }
-          }
-          return PassFF.Preferences.getBrowserCommand();
-        })
-        .then((command) => {
-          prefParams['tbMenuShortcut'] = command.shortcut;
-          changes['tbMenuShortcut'] = command.shortcut;
-          return browser.storage.local.set(changes);
-        })
-        .then(() => {
-          browser.storage.onChanged.addListener((changes, areaName) => {
-            if (areaName !== "local") return;
-            for (let item of Object.keys(changes)) {
-              prefParams[item] = changes[item].newValue;
-              if (item == "handleHttpAuth" && PassFF.mode === "background") {
-                PassFF.Auth.init();
-              } else if (item == "tbMenuShortcut") {
-                updateBrowserCommand();
-              }
-            }
-          });
+let prefObj = {
+  ready: false,
 
-          if (PassFF.mode === "preferences") {
-            init_ui();
+  init: function () {
+    let changes = {};
+    return browser.storage.local.get(Object.keys(prefParams))
+      .then((res) => {
+        for (let [key, val] of Object.entries(prefParams)) {
+          if (typeof res[key] === 'undefined') {
+            changes[key] = val;
+          } else {
+            prefParams[key] = res[key];
+          }
+        }
+        return PassFF.Preferences.getBrowserCommand();
+      })
+      .then((command) => {
+        prefParams['tbMenuShortcut'] = command.shortcut;
+        changes['tbMenuShortcut'] = command.shortcut;
+        return browser.storage.local.set(changes);
+      })
+      .then(() => {
+        prefObj.ready = true;
+
+        browser.storage.onChanged.addListener((changes, areaName) => {
+          if (areaName !== "local") return;
+          for (let item of Object.keys(changes)) {
+            prefParams[item] = changes[item].newValue;
+            if (item == "handleHttpAuth" && PassFF.mode === "background") {
+              PassFF.Auth.init();
+            } else if (item == "tbMenuShortcut") {
+              updateBrowserCommand();
+            }
           }
         });
-    },
+
+        if (PassFF.mode === "preferences") {
+          init_ui();
+        }
+      });
+  },
 
 // %%%%%%%%%%%%% Add identifier to the list of known login inputs %%%%%%%%%%%%%%
 
-    addInputName: function (type, name) {
-      let names = PassFF.Preferences.loginInputNames;
-      if (type == "password") {
-        names = PassFF.Preferences.passwordInputNames;
+  addInputName: function (type, name) {
+    let names = PassFF.Preferences.loginInputNames;
+    if (type == "password") {
+      names = PassFF.Preferences.passwordInputNames;
+    }
+    if (type == "otp") {
+      names = PassFF.Preferences.otpInputNames;
+    }
+    for (let i = 0; i < names.length; i++) {
+      if (name.toLowerCase().indexOf(names[i].toLowerCase()) >= 0) {
+        return false;
       }
-      if (type == "otp") {
-        names = PassFF.Preferences.otpInputNames;
-      }
-      for (let i = 0; i < names.length; i++) {
-        if (name.toLowerCase().indexOf(names[i].toLowerCase()) >= 0) {
-          return false;
-        }
-      }
-      log.debug("New input name", name, "of type", type);
-      names.push(name);
-      names = names.join(",");
-      if (type == "password") {
-        PassFF.Preferences.passwordInputNames = names;
-      } else if (type == "otp") {
-        PassFF.Preferences.otpInputNames = names;
-      } else {
-        PassFF.Preferences.loginInputNames = names;
-      }
-      PassFF.refresh_all();
-    },
+    }
+    names.push(name);
+    names = names.join(",");
+    if (type == "password") {
+      PassFF.Preferences.passwordInputNames = names;
+    } else if (type == "otp") {
+      PassFF.Preferences.otpInputNames = names;
+    } else {
+      PassFF.Preferences.loginInputNames = names;
+    }
+    PassFF.refresh_all();
+  },
 
 // %%%%%%%%%%%%%%%%%%%%%% Get/set keyboard shortcut %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    getKeyboardShortcut: background_function("Preferences.getKeyboardShortcut",
-      function () {
-        return PassFF.Preferences.getBrowserCommand()
-          .then((command) => {
-            let shortcut = null;
-            if (command) {
-              shortcut = {
-                commandLetter: '',
-                expectedModifierState: {
-                    'Alt': false,
-                    'Meta': false,
-                    'Control': false,
-                    'Shift': false
-                }
-              };
+  getKeyboardShortcut: util.backgroundFunction("Preferences.getKeyboardShortcut",
+    function () {
+      return PassFF.Preferences.getBrowserCommand()
+        .then((command) => {
+          let shortcut = null;
+          if (command) {
+            shortcut = {
+              commandLetter: '',
+              expectedModifierState: {
+                  'Alt': false,
+                  'Meta': false,
+                  'Control': false,
+                  'Shift': false
+              }
+            };
 
-              // Mapping between modifier names in manifest.json and DOM KeyboardEvent.
-              let commandModifiers = {
-                'ctrl': browser.runtime.PlatformOs == 'mac' ? 'Meta' : 'Control',
-                'macctrl': 'Control',
-                'command': 'Meta',
-                'alt': 'Alt',
-                'shift': 'Shift'
-              };
+            // Mapping between modifier names in manifest.json and DOM KeyboardEvent.
+            let commandModifiers = {
+              'ctrl': browser.runtime.PlatformOs == 'mac' ? 'Meta' : 'Control',
+              'macctrl': 'Control',
+              'command': 'Meta',
+              'alt': 'Alt',
+              'shift': 'Shift'
+            };
 
-              command.shortcut
-              .split(/\s*\+\s*/)
-              .map((part) => part.toLowerCase())
-              .forEach((part) => {
-                if (commandModifiers.hasOwnProperty(part)) {
-                  shortcut.expectedModifierState[commandModifiers[part]] = true;
-                } else {
-                  shortcut.commandLetter = part;
-                }
-              });
-            }
-            return shortcut;
-          });
-      }
-    ),
-
-    getBrowserCommand: background_function("Preferences.getBrowserCommand",
-      function () {
-        let name = '_execute_browser_action';
-        return browser.commands.getAll()
-          .then((commands) => {
-            let command = { "name": name, "shortcut": '' };
-            commands.forEach((c) => {
-              if (name == c.name && c.shortcut) {
-                command.shortcut = c.shortcut;
+            command.shortcut
+            .split(/\s*\+\s*/)
+            .map((part) => part.toLowerCase())
+            .forEach((part) => {
+              if (commandModifiers.hasOwnProperty(part)) {
+                shortcut.expectedModifierState[commandModifiers[part]] = true;
+              } else {
+                shortcut.commandLetter = part;
               }
             });
-            return command;
-          });
-      }
-    ),
-  };
-
-  function normalizeBrowserShortcut(shortcut) {
-    let camelCaseParts = {};
-    [
-      "MacCtrl", "PageUp", "PageDown", "MediaNextTrack", "MediaPlayPause",
-      "MediaPrevTrack", "MediaStop",
-    ].forEach((part) => {
-      camelCaseParts[part.toLowerCase()] = part
-    });
-    return (
-      shortcut
-      .split(/\s*\+\s*/)
-      .map((part) => part.toLowerCase())
-      .map((part) => (
-        camelCaseParts.hasOwnProperty(part)
-        ? camelCaseParts[part]
-        : part[0].toUpperCase() + part.slice(1)
-       ))
-      .join("+")
-    );
-  }
-
-  function updateBrowserCommand() {
-    if (browser.commands && browser.commands.update) {
-      return browser.commands.update({
-        name: "_execute_browser_action",
-        shortcut: normalizeBrowserShortcut(prefParams["tbMenuShortcut"]),
-      });
-    } else {
-      return Promise.resolve(false);
+          }
+          return shortcut;
+        });
     }
+  ),
+
+  getBrowserCommand: util.backgroundFunction("Preferences.getBrowserCommand",
+    function () {
+      let name = '_execute_browser_action';
+      return browser.commands.getAll()
+        .then((commands) => {
+          let command = { "name": name, "shortcut": '' };
+          commands.forEach((c) => {
+            if (name == c.name && c.shortcut) {
+              command.shortcut = c.shortcut;
+            }
+          });
+          return command;
+        });
+    }
+  ),
+};
+
+function normalizeBrowserShortcut(shortcut) {
+  let camelCaseParts = {};
+  [
+    "MacCtrl", "PageUp", "PageDown", "MediaNextTrack", "MediaPlayPause",
+    "MediaPrevTrack", "MediaStop",
+  ].forEach((part) => {
+    camelCaseParts[part.toLowerCase()] = part
+  });
+  return (
+    shortcut
+    .split(/\s*\+\s*/)
+    .map((part) => part.toLowerCase())
+    .map((part) => (
+      camelCaseParts.hasOwnProperty(part)
+      ? camelCaseParts[part]
+      : part[0].toUpperCase() + part.slice(1)
+      ))
+    .join("+")
+  );
+}
+
+function updateBrowserCommand() {
+  if (browser.commands && browser.commands.update) {
+    return browser.commands.update({
+      name: "_execute_browser_action",
+      shortcut: normalizeBrowserShortcut(prefParams["tbMenuShortcut"]),
+    });
+  } else {
+    return Promise.resolve(false);
   }
+}
 
 /* #############################################################################
  * #############################################################################
@@ -305,33 +308,33 @@ PassFF.Preferences = (function () {
  * #############################################################################
  */
 
-  return new Proxy(prefObj, {
-    set: function (target, key, val) {
-      let obj = {};
-      obj[key] = val;
-      browser.storage.local.set(obj);
-      return true;
-    },
+export default new Proxy(prefObj, {
+  set: function (target, key, val) {
+    if (target.hasOwnProperty(key)) return false;
+    let obj = {};
+    obj[key] = val;
+    browser.storage.local.set(obj);
+    return true;
+  },
 
-    get: function (target, key) {
-      if (target.hasOwnProperty(key)) {
-        return target[key];
-      } else if (!prefParams.hasOwnProperty(key)) {
-        return undefined;
-      }
-
-      let value = prefParams[key];
-
-      if (lowerCaseParams.indexOf(key) >= 0) {
-        value = value.toLowerCase();
-      }
-
-      if (listParams.hasOwnProperty(key)) {
-        value = value.split(listParams[key])
-          .filter((entry) => { return entry.length > 0; });
-      }
-
-      return value;
+  get: function (target, key) {
+    if (target.hasOwnProperty(key)) {
+      return target[key];
+    } else if (!prefParams.hasOwnProperty(key)) {
+      return undefined;
     }
-  });
-})();
+
+    let value = prefParams[key];
+
+    if (lowerCaseParams.indexOf(key) >= 0) {
+      value = value.toLowerCase();
+    }
+
+    if (listParams.hasOwnProperty(key)) {
+      value = value.split(listParams[key])
+        .filter((entry) => { return entry.length > 0; });
+    }
+
+    return value;
+  }
+});

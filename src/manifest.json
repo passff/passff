@@ -34,7 +34,6 @@
         "tabs",
         "webRequest",
         "webRequestBlocking"
-
     ],
 
     "options_ui": {
@@ -42,28 +41,15 @@
     },
 
     "background": {
-        "scripts": [
-            "modules/util.js",
-            "modules/main.js",
-            "modules/preferences.js",
-            "modules/pass.js",
-            "modules/menu.js",
-            "modules/auth.js",
-            "modules/page.js"
-        ]
+        "scripts": ["modules/main.js"],
+        "type": "module"
     },
 
     "content_scripts": [{
         "matches": ["<all_urls>"],
         "run_at": "document_start",
-        "js": [
-            "modules/util.js",
-            "modules/main.js",
-            "modules/preferences.js",
-            "modules/pass.js",
-            "modules/page.js"
-        ],
-        "css": [ "skin/content.css" ],
+        "js": ["content_script.js"],
+        "css": ["skin/content.css"],
         "all_frames": true
     }],
 
