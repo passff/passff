@@ -1,5 +1,5 @@
-import * as util from "./util.js";
-import PassFF from "./main.js";
+import * as util from "../modules/util.js";
+import PassFF from "../modules/main.js";
 
 test("semver", () => {
   expect(util.semver.gt("1.1.6", "1.4.0")).toBe(false);

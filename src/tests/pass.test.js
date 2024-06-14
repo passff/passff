@@ -1,7 +1,7 @@
 import { jest } from "@jest/globals";
-import PassFF from "./main.js";
-import { log } from "./util.js";
-import * as PassHelpers from "./pass.js";
+import PassFF from "../modules/main.js";
+import { log } from "../modules/util.js";
+import * as PassHelpers from "../modules/pass.js";
 
 test("parse the pass tree output", () => {
   const logSpy = jest.spyOn(log, "debug").mockImplementation(() => {});

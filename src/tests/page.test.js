@@ -1,5 +1,5 @@
-import PassFF from "./main.js";
-import * as PageHelpers from "./page.js";
+import PassFF from "../modules/main.js";
+import * as PageHelpers from "../modules/page.js";
 
 test("doAllSecurityChecks", () => {
   let passItemURL = ["https://example.com", "invalid"];
