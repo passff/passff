@@ -1,4 +1,5 @@
 export default {
   "transform": {},
-  "testEnvironment": "jsdom"
+  "testEnvironment": "jsdom",
+  "verbose": true
 };

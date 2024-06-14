@@ -652,6 +652,120 @@ function onWindowLoad() {
  * #############################################################################
  */
 
+export function doAllSecurityChecks(passItemURL, currTabURL) {
+  let checkResults = {
+    errMessage: null,
+    currUrl: currTabURL,
+    currUrlValid: false,
+    passUrl: passItemURL,
+    passUrlValid: false,
+    protocol: false,
+    fullurl: false,
+    subdomain: false,
+    domain: false,
+  };
+
+  let currURL;
+  try {
+    currURL = new URL(currTabURL);
+    checkResults["currUrlValid"] = true;
+  } catch (e) {
+    checkResults["errMessage"] = e.message;
+    return checkResults;
+  }
+
+  if (currURL.protocol == "https:") {
+    checkResults["protocol"] = true;
+  }
+
+  let errMessage;
+  let passURL = [];
+  for (const url of passItemURL) {
+    try {
+      passURL.push(new URL(url));
+      checkResults["passUrlValid"] = true;
+    } catch (e) {
+      errMessage = e.message;
+    }
+  }
+
+  if (passURL.length == 0) {
+    checkResults["errMessage"] = errMessage;
+    return checkResults;
+  }
+
+  if (passURL.some((url) => url.href == currURL.href)) {
+    checkResults["fullurl"] = true;
+    checkResults["subdomain"] = true;
+    checkResults["domain"] = true;
+  } else {
+    let currHost = currURL.hostname;
+    let passHosts = passURL.map((url) => url.hostname);
+    if (passHosts.some((host) => util.checkIsSubdomain(currHost, host))) {
+      checkResults["subdomain"] = true;
+      checkResults["domain"] = true;
+    } else {
+      let currDomain = util.getMainDomain(currHost);
+      let passDomains = passHosts.map(util.getMainDomain);
+      checkResults["domain"] = passDomains.some(
+        (domain) => domain == currDomain,
+      );
+    }
+  }
+
+  return checkResults;
+}
+
+function securityChecksConfirmationRequired(results) {
+  let confirmationMessage = "";
+  if (!results["currUrlValid"]) {
+    if (
+      PassFF.Preferences.checkProtocol == 2 ||
+      PassFF.Preferences.checkSubdomain == 2 ||
+      PassFF.Preferences.checkDomain == 2 ||
+      PassFF.Preferences.checkFullUrl == 2
+    ) {
+      return ["", false];
+    }
+    confirmationMessage += _("passff_checks_invalid_url_curr") + " ";
+  } else {
+    let pref = PassFF.Preferences.checkProtocol;
+    if (!results["protocol"] && pref > 0) {
+      confirmationMessage += _("passff_checks_protocol") + " ";
+      if (pref == 2) return ["", false];
+    } else if (
+      PassFF.Preferences.checkSubdomain == 0 &&
+      PassFF.Preferences.checkDomain == 0 &&
+      PassFF.Preferences.checkFullUrl == 0
+    ) {
+      return ["", true];
+    }
+
+    if (!results["passUrlValid"]) {
+      if (
+        PassFF.Preferences.checkSubdomain == 2 ||
+        PassFF.Preferences.checkDomain == 2 ||
+        PassFF.Preferences.checkFullUrl == 2
+      ) {
+        return ["", false];
+      }
+      confirmationMessage += _("passff_checks_invalid_url_pass") + " ";
+    } else {
+      let checkLevels = ["fullurl", "subdomain", "domain"];
+      let checkLevelPrefs = ["checkFullUrl", "checkSubdomain", "checkDomain"];
+      for (let i = 0; i < checkLevels.length; i++) {
+        let pref = PassFF.Preferences[checkLevelPrefs[i]];
+        if (!results[checkLevels[i]] && pref > 0) {
+          confirmationMessage += _(`passff_checks_${checkLevels[i]}`) + " ";
+          if (pref == 2) return ["", false];
+          break;
+        }
+      }
+    }
+  }
+  return [confirmationMessage, true];
+}
+
 function securityChecks(passItemURL, currTabURL, isAutoFill) {
   if (
     (!isAutoFill && PassFF.Preferences.checkOnlyAuto) ||
@@ -663,147 +777,20 @@ function securityChecks(passItemURL, currTabURL, isAutoFill) {
     return Promise.resolve(true);
   }
 
-  return Promise.resolve()
-    .then(() => {
-      let checkResults = {
-        errMessage: null,
-        currUrl: currTabURL,
-        currUrlValid: false,
-        passUrl: passItemURL,
-        passUrlValid: false,
-        protocol: false,
-        fullurl: false,
-        subdomain: false,
-        domain: false,
-      };
+  let results = doAllSecurityChecks(passItemURL, currTabURL);
+  let [confirmationMessage, alternative] =
+    securityChecksConfirmationRequired(results);
 
-      let currURL;
-      try {
-        currURL = new URL(currTabURL);
-        checkResults["currUrlValid"] = true;
-      } catch (e) {
-        checkResults["errMessage"] = e.message;
-        return checkResults;
-      }
+  if (confirmationMessage === "") {
+    return Promise.resolve(alternative);
+  }
 
-      if (currURL.protocol == "https:") {
-        checkResults["protocol"] = true;
-      }
-
-      let errMessage;
-      let passURL = [];
-      for (const url of passItemURL) {
-        try {
-          passURL.push(new URL(url));
-          checkResults["passUrlValid"] = true;
-        } catch (e) {
-          errMessage = e.message;
-        }
-      }
-
-      if (passURL.length == 0) {
-        checkResults["errMessage"] = errMessage;
-        return checkResults;
-      }
-
-      if (passURL.some((url) => url.href == currURL.href)) {
-        checkResults["fullurl"] = true;
-        checkResults["subdomain"] = true;
-        checkResults["domain"] = true;
-      } else {
-        let currHost = currURL.hostname;
-        let passHosts = passURL.map((url) => url.hostname);
-        if (passHosts.some((host) => util.checkIsSubdomain(currHost, host))) {
-          checkResults["subdomain"] = true;
-          checkResults["domain"] = true;
-        } else {
-          let currDomain = util.getMainDomain(currHost);
-          let passDomains = passHosts.map(util.getMainDomain);
-          checkResults["domain"] = passDomains.some(
-            (domain) => domain == currDomain,
-          );
-        }
-      }
-
-      return checkResults;
-    })
-    .then((results) => {
-      let confirmationRequired = false;
-      let confirmationMessage = "";
-
-      if (!results["currUrlValid"]) {
-        if (
-          PassFF.Preferences.checkProtocol == 2 ||
-          PassFF.Preferences.checkSubdomain == 2 ||
-          PassFF.Preferences.checkDomain == 2 ||
-          PassFF.Preferences.checkFullUrl == 2
-        ) {
-          return false;
-        }
-        confirmationRequired = true;
-        confirmationMessage += _("passff_checks_invalid_url_curr") + " ";
-      } else {
-        let pref = PassFF.Preferences.checkProtocol;
-        if (!results["protocol"] && pref > 0) {
-          confirmationRequired = true;
-          confirmationMessage += _("passff_checks_protocol") + " ";
-          if (pref == 2) return false;
-        } else if (
-          PassFF.Preferences.checkSubdomain == 0 &&
-          PassFF.Preferences.checkDomain == 0 &&
-          PassFF.Preferences.checkFullUrl == 0
-        ) {
-          return true;
-        }
-
-        if (!results["passUrlValid"]) {
-          if (
-            PassFF.Preferences.checkSubdomain == 2 ||
-            PassFF.Preferences.checkDomain == 2 ||
-            PassFF.Preferences.checkFullUrl == 2
-          ) {
-            return false;
-          }
-          confirmationRequired = true;
-          confirmationMessage += _("passff_checks_invalid_url_pass") + " ";
-        } else {
-          let checkLevels = ["fullurl", "subdomain", "domain"];
-          let checkLevelPrefs = [
-            "checkFullUrl",
-            "checkSubdomain",
-            "checkDomain",
-          ];
-          for (let i = 0; i < checkLevels.length; i++) {
-            let pref = PassFF.Preferences[checkLevelPrefs[i]];
-            if (!results[checkLevels[i]] && pref > 0) {
-              confirmationRequired = true;
-              confirmationMessage += _(`passff_checks_${checkLevels[i]}`) + " ";
-              if (pref == 2) return false;
-              break;
-            }
-          }
-        }
-      }
-
-      return confirmationRequired
-        ? PassFF.Page.confirm(
-            "**" +
-              confirmationMessage +
-              "**\n" +
-              _("passff_checks_url_curr") +
-              "```" +
-              results["currUrl"] +
-              "```" +
-              _("passff_checks_url_pass") +
-              "```" +
-              results["passUrl"].join("\n") +
-              "```" +
-              "**" +
-              _("passff_checks_override_confirm") +
-              "**",
-          )
-        : true;
-    });
+  return PassFF.Page.confirm(
+    `**${confirmationMessage}**\n${_("passff_checks_url_curr")}` +
+      `\`\`\`${results["currUrl"]}\`\`\`${_("passff_checks_url_pass")}` +
+      `\`\`\`${results["passUrl"].join("\n")}\`\`\`` +
+      `**${_("passff_checks_override_confirm")}**`,
+  );
 }
 
 /* #############################################################################

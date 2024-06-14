@@ -1,0 +1,228 @@
+import { jest } from "@jest/globals";
+import PassFF from "./main.js";
+import { log } from "./util.js";
+import * as PassHelpers from "./pass.js";
+
+test("parse the pass tree output", () => {
+  const logSpy = jest.spyOn(log, "debug").mockImplementation(() => {});
+
+  const items = PassHelpers.parsePassTree(`Password Store
+├── dirA
+│   ├── attachments
+│   │   ├── attachA
+│   │   └── attachB
+│   ├── dirAA
+│   │   ├── example.com
+│   │   └── sub.example.co.uk
+│   └── dirAB
+│       ├── example.org
+│       ├── example.org.meta
+│       └── dirABA -> ../dirAA  [recursive, not followed]
+└── dirB
+    ├── dirBA
+    │   ├── foo.com
+    │   ├── dirZZZ -> /home/user/.password_store/dirA  [recursive, not followed]
+    │   ├── dirZZY -> ../../../dirXYZ  [recursive, not followed]
+    │   └── www.bar.org
+    └── baz.info
+        ├── login
+        └── password
+`);
+
+  expect(logSpy).toHaveBeenCalledTimes(2);
+  expect(logSpy.mock.calls[0][0]).toContain(
+    "only relative links are supported, skipping",
+  );
+  expect(logSpy.mock.calls[0][1]).toBe("dirZZZ");
+  expect(logSpy.mock.calls[1][0]).toContain("link points outside the pass dir");
+  expect(logSpy.mock.calls[1][1]).toBe("dirZZY");
+  logSpy.mockRestore();
+
+  expect(items.map((item) => (!!item ? item.fullKey : "null")).join("\n"))
+    .toBe(`
+/dirA
+/dirA/attachments
+/dirA/attachments/attachA
+/dirA/attachments/attachB
+/dirA/dirAA
+/dirA/dirAA/example.com
+/dirA/dirAA/sub.example.co.uk
+/dirA/dirAB
+/dirA/dirAB/example.org
+/dirA/dirAB/example.org.meta
+/dirA/dirAB/dirABA
+/dirA/dirAB/dirABA/example.com
+/dirA/dirAB/dirABA/sub.example.co.uk
+/dirB
+/dirB/dirBA
+/dirB/dirBA/foo.com
+null
+null
+/dirB/dirBA/www.bar.org
+/dirB/baz.info
+/dirB/baz.info/login
+/dirB/baz.info/password`);
+
+  const getItem = (fullKey) => PassHelpers.getItemByFullKey(items, fullKey);
+  let item = getItem("/dirA/dirAB/dirABA");
+  let children = item.children.map(
+    (c) => PassHelpers.getItemById(items, c).key,
+  );
+  expect(children).toEqual(["example.com", "sub.example.co.uk"]);
+  expect(item.isLeaf).toBeFalsy();
+  expect(item.isField).toBeFalsy();
+  expect(item.hasFields).toBeFalsy();
+  expect(item.isMeta).toBeFalsy();
+  expect(item.hasMeta).toBeFalsy();
+  expect(item.isHidden).toBeFalsy();
+  expect(item.isBroken).toBeFalsy();
+
+  expect(getItem("/dirA/attachments").isHidden).toBeTruthy();
+  expect(getItem("/dirA/attachments/attachA").isHidden).toBeTruthy();
+  expect(getItem("/dirA/attachments/attachB").isHidden).toBeTruthy();
+
+  item = getItem("/dirA/dirAB/example.org");
+  expect(item.isLeaf).toBeTruthy();
+  expect(item.hasMeta).toBeTruthy();
+
+  item = getItem("/dirA/dirAB/example.org.meta");
+  expect(item.isLeaf).toBeFalsy();
+  expect(item.isMeta).toBeTruthy();
+
+  item = getItem("/dirB/baz.info");
+  expect(item.hasFields).toBeTruthy();
+  expect(item.isLeaf).toBeFalsy();
+
+  item = getItem("/dirB/baz.info/login");
+  expect(item.isField).toBeTruthy();
+  expect(item.isLeaf).toBeTruthy();
+});
+
+describe("parse the contents of an entry", () => {
+  jest
+    .spyOn(PassFF.Pass, "getPassExecPromise")
+    .mockImplementation((fullKey) => {
+      const stdout = {
+        "/dirA/entryAA": "bar\nlogin: foo\nurl: example.com\nxtoken: baz\n",
+        "/dirA/entryAB": "bar\nlogin: foo\nurl: -> ../dirB/foo\nxtoken: baz\n",
+        "/dirA/entryAC": "bar\nfoo\nexample.com\nxtoken: baz\n",
+        "/dirA/entryAD": "-> entryAA\nfoo\nexample.com\nxtoken: baz\n",
+        "/dirA/entryAE": "bar\nfoo\nhttps://example.com\nxtoken: baz\n",
+        "/dirA/entryAF": "bar\n---\nlogin:foo\nurl: example.com\nxtoken: baz\n",
+        "/dirA/entryAG/password": "bar\n",
+        "/dirA/entryAG/login": "foo\n",
+        "/dirA/entryAG/url": "https://example.com\n",
+        "/dirA/entryAH": "bar\n",
+        "/dirA/entryAH.meta": "login: foo\nurl: example.com\nxtoken: baz\n",
+        "/dirA/foo": "bar\nurl: example.com\n",
+        "/dirA/example.com/foo": "bar\nxtoken: baz\n",
+        "/dirB/foo": "bar\n\nurl: example.com\nxtoken: baz\n",
+        "/dirB/example.com": "bar\nlogin: foo\nxtoken: baz\n",
+        "/dirC/example.com/password": "bar\n",
+        "/dirC/example.com/login": "foo\n",
+      }[fullKey];
+      return Promise.resolve({
+        stdout: stdout,
+        stderr: "",
+        exitCode: 0,
+      });
+    });
+
+  const items = PassHelpers.parsePassTree(`Password Store
+├── dirA
+│   ├── entryAA
+│   ├── entryAB
+│   ├── entryAC
+│   ├── entryAD
+│   ├── entryAE
+│   ├── entryAF
+│   ├── entryAG
+│   │   ├── password
+│   │   ├── login
+│   │   └── url
+│   ├── entryAH
+│   ├── entryAH.meta
+│   ├── foo
+│   └── example.com
+│       └── foo
+├── dirB
+│   ├── foo
+│   └── example.com
+└── dirC
+    └── example.com
+        ├── login
+        └── password
+`);
+  const getItem = (fullKey) => PassHelpers.getItemByFullKey(items, fullKey);
+
+  it.each([
+    "/dirA/entryAA",
+    "/dirA/entryAB",
+    "/dirA/entryAC",
+    "/dirA/entryAD",
+    "/dirA/entryAE",
+    "/dirA/entryAF",
+    "/dirA/entryAG",
+    "/dirA/entryAH",
+    "/dirA/foo",
+    "/dirA/example.com/foo",
+    "/dirB/foo",
+    "/dirB/example.com",
+    "/dirC/example.com",
+  ])("correctly parses %s", async (fullKey) => {
+    const result = await PassHelpers.getPasswordData(items, getItem(fullKey));
+    expect(result.password).toBe("bar");
+    expect(result.login).toBe("foo");
+    expect(result.url).toEqual(["https://example.com"]);
+
+    if (
+      [
+        "/dirA/entryAA",
+        "/dirA/entryAB",
+        "/dirA/entryAC",
+        "/dirA/entryAD",
+        "/dirA/entryAE",
+        "/dirA/entryAF",
+        "/dirA/entryAH",
+        "/dirA/example.com/foo",
+        "/dirB/foo",
+        "/dirB/example.com",
+      ].indexOf(fullKey) >= 0
+    ) {
+      expect(result._other["xtoken"]).toEqual(["baz"]);
+    }
+  });
+});
+
+test("hostMatchQuality", () => {
+  expect(
+    PassHelpers.hostMatchQuality(
+      "/personal/cloud/my.example.com",
+      "www.my.example.com",
+    ),
+  ).toBe(403);
+  expect(
+    PassHelpers.hostMatchQuality(
+      "/personal/cloud/example.com",
+      "www.my.example.com",
+    ),
+  ).toBe(402);
+  expect(
+    PassHelpers.hostMatchQuality(
+      "/personal/cloud/example",
+      "www.my.example.com",
+    ),
+  ).toBe(301);
+  expect(
+    PassHelpers.hostMatchQuality(
+      "/personal/cloud/my.example.com",
+      "different.com",
+    ),
+  ).toBe(-1);
+  expect(
+    PassHelpers.hostMatchQuality(
+      "/personal/cloud/my.example.com",
+      "cloud.other.org",
+    ),
+  ).toBe(101);
+});

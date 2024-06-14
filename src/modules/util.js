@@ -22,7 +22,7 @@ export function _(key, params) {
 }
 
 export function parseMarkdown(obj) {
-  let str = obj.innerHTML;
+  let str = obj.textContent;
   obj.innerHTML = "";
   let patterns = [
     [
@@ -98,7 +98,7 @@ export let log = {
   generateArguments: function (args, preInit) {
     let argsArray = Array.from(args);
     argsArray.unshift(
-      `[PassFF.${PassFF.mode}${preInit ? " (not initialized)" : ""}]`,
+      `[PassFF${preInit ? " (not initialized)" : "." + PassFF.mode}]`,
     );
     return argsArray;
   },
