@@ -493,6 +493,7 @@ export function parsePassTree(stdout) {
     const key = match[2]
       .replace(/\\ /g, " ")
       .replace(/ -> .*/g, "")
+      .replace(/\/+$/, "")
       .replace(/\.gpg$/, "");
 
     while (curParent.depth >= curDepth) {

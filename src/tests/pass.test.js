@@ -14,7 +14,7 @@ test("parse the pass tree output", () => {
 │   ├── dirAA
 │   │   ├── example.com
 │   │   └── sub.example.co.uk
-│   └── dirAB
+│   └── dirAB/
 │       ├── example.org
 │       ├── example.org.meta
 │       └── dirABA -> ../dirAA  [recursive, not followed]
