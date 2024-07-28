@@ -382,24 +382,28 @@ function queryMatchQuality(fullKey, query) {
     .filter((part) => fullKey.search(part) >= 0).length;
 }
 
-function getItemQuality(item, urlStr, containerName) {
+export function getItemQuality(item, urlStr, containerName) {
   if (!item || item.isField || (!item.isLeaf && !item.hasFields)) {
     return { item: null, quality: -1 };
   }
   let url = new URL(urlStr);
-  let quality = hostMatchQuality(item.fullKey, url.host);
+  let quality = hostMatchQuality(item.fullKey, url.hostname);
   if (quality <= 0) return { item: null, quality: -1 };
   if (url.port != "") {
     quality *= 10;
     quality += item.fullKey.indexOf(url.port) >= 0 ? 1 : 0;
   }
-  quality *= 100;
-  quality += pathMatchQuality(item.fullKey, url.pathname);
-  quality *= 100;
-  quality += queryMatchQuality(item.fullKey, url.search);
-  quality *= 10;
-  if (!!containerName && item.fullKey.indexOf(containerName) >= 0) {
-    quality += 1;
+  if (!!url.pathname && url.pathname != "/") {
+    quality *= 100;
+    quality += pathMatchQuality(item.fullKey, url.pathname);
+  }
+  if (!!url.search) {
+    quality *= 100;
+    quality += queryMatchQuality(item.fullKey, url.search);
+  }
+  if (!!containerName) {
+    quality *= 10;
+    quality += item.fullKey.indexOf(containerName) >= 0 ? 1 : 0;
   }
   return { item: item, quality: quality };
 }
@@ -970,7 +974,7 @@ export default {
 
   getUrlMatchingItems: function (urlStr, containerName) {
     let url = new URL(urlStr);
-    let domainRegex = ciSearchRegex(util.getMainDomain(url.host));
+    let domainRegex = ciSearchRegex(util.getMainDomain(url.hostname));
     let matchingItems = allItems
       .filter((item) => {
         if (!PassFF.Preferences.enforceDomainMatch) return true;
@@ -1168,7 +1172,7 @@ export default {
           /\/[^\/]*$/,
           "/",
         );
-        addPasswordContext["fullKey"] += url.host;
+        addPasswordContext["fullKey"] += url.hostname;
         addPasswordContext["tabUrl"] = activeTab.url;
         addPasswordContext["tabLogin"] =
           PassFF.Preferences.prefillLoginTab && tabLogin != ""

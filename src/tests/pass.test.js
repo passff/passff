@@ -226,3 +226,61 @@ test("hostMatchQuality", () => {
     ),
   ).toBe(101);
 });
+
+describe("getItemQuality", () => {
+  let itemFromKey = (key) => ({
+    fullKey: key,
+    isField: false,
+    isLeaf: true,
+    hasFields: false,
+  });
+  let getQuality = (item, url, container) =>
+    PassHelpers.getItemQuality(itemFromKey(item), url, container).quality;
+
+  let itemFixed = "/personal/cloud/example.com-4922";
+  it.each([
+    { u: "https://nomatch.com/personal/cloud", c: "", q: -1 },
+    { u: "https://www.my.example.com/", c: "", q: 402 },
+    { u: "https://www.my.example.com/some/path", c: "", q: 40200 },
+    {
+      u: "https://www.my.example.com/some/path?with=query&foo=bar",
+      c: "",
+      q: 4020000,
+    },
+    {
+      u: "https://www.my.example.com:4231/some/path?with=query&foo=bar",
+      c: "",
+      q: 40200000,
+    },
+    {
+      u: "https://www.my.example.com:4231/some/path?with=query&foo=bar",
+      c: "somecont",
+      q: 402000000,
+    },
+    {
+      u: "https://www.my.example.com/some/path?personal=cloud&foo=bar",
+      c: "",
+      q: 4020002,
+    },
+    {
+      u: "https://www.my.example.com/cloud/path?with=query&foo=bar",
+      c: "",
+      q: 4020100,
+    },
+    {
+      u: "https://www.my.example.com/some/path?personal=query&foo=bar",
+      c: "cloud",
+      q: 40200011,
+    },
+    {
+      u: "https://www.my.example.com:4922/personal/path?with=query&foo=bar",
+      c: "cloud",
+      q: 402101001,
+    },
+  ])(
+    `getItemQuality for $u in '$c'`,
+    ({ u: url, c: container, q: quality }) => {
+      expect(getQuality(itemFixed, url, container)).toBe(quality);
+    },
+  );
+});
