@@ -35,7 +35,6 @@ test("getFunctionFromStr", () => {
   expect(fobj).toBe(PassFF);
   expect(fname).toBe("refreshAll");
 });
-true;
 
 test("(sub)domain handling", () => {
   expect(util.sanitizeDomain("sub.example.com")).toBe("sub.example.com");
