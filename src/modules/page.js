@@ -218,9 +218,7 @@ function writeValueWithEvents(input, value) {
   let inputs = [input];
   let values = [value];
   if (input.maxLength == 1) {
-    inputs = Array.from(document.getElementsByTagName("input")).filter(
-      (el) => el.maxLength == 1,
-    );
+    inputs = querySelectorAllShadows("input").filter((el) => el.maxLength == 1);
     if (inputs.length == value.length) {
       values = value.split("");
     } else {
@@ -268,9 +266,7 @@ function annotateInputs(inputs) {
 
 function onNodeAdded() {
   inputElements = annotateInputs(
-    Array.from(document.getElementsByTagName("input"))
-      .concat(Array.from(document.getElementsByTagName("select")))
-      .filter(isVisible),
+    querySelectorAllShadows("input,select").filter(isVisible),
   );
   if (PassFF.Preferences.markFillable) {
     let url = window.location.href;
@@ -285,6 +281,16 @@ function onNodeAdded() {
         .forEach((inp) => injectIcon(inp[0]));
     }
   }
+}
+
+function querySelectorAllShadows(selectors, doc) {
+  doc = doc || document;
+  return Array.from(doc.querySelectorAll(selectors)).concat(
+    Array.from(doc.querySelectorAll("*"))
+      .map((el) => el.shadowRoot)
+      .filter(Boolean)
+      .flatMap((frag) => querySelectorAllShadows(selectors, frag)),
+  );
 }
 
 /* #############################################################################

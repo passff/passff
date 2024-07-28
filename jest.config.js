@@ -1,5 +1,5 @@
 export default {
-  "transform": {},
-  "testEnvironment": "jsdom",
-  "verbose": true
+  transform: {},
+  testEnvironment: "jsdom",
+  verbose: true,
 };

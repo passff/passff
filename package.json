@@ -17,7 +17,7 @@
     "src/**/*.js": [
       "prettier --write --ignore-unknown",
       "eslint --max-warnings=0 --fix",
-      "npm run test"
+      "npm run test -- --findRelatedTests"
     ]
   }
 }
