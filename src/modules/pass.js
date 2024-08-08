@@ -97,7 +97,8 @@ export async function getPasswordData(items, item, recursionHist) {
     for (const [fieldName, values] of Object.entries(result)) {
       let linkedValues = [];
       for (const value of values) {
-        const match = / *-> *(.*)/.exec(value);
+        // at least one space after "->" is enforced
+        const match = /^ *-> +(.*)/.exec(value);
         if (!match) {
           linkedValues.push(value);
         } else {

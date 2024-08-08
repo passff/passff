@@ -114,6 +114,8 @@ describe("parse the contents of an entry", () => {
         "/dirA/entryAG/url": "https://example.com\n",
         "/dirA/entryAH": "bar\n",
         "/dirA/entryAH.meta": "login: foo\nurl: example.com\nxtoken: baz\n",
+        "/dirA/entryAI": "abc->def\nfoo\nexample.com\nxtoken: baz\n",
+        "/dirA/entryAJ": "->d.e%f\nfoo\nexample.com\nxtoken: baz\n",
         "/dirA/foo": "bar\nurl: example.com\n",
         "/dirA/example.com/foo": "bar\nxtoken: baz\n",
         "/dirB/foo": "bar\n\nurl: example.com\nxtoken: baz\n",
@@ -142,6 +144,8 @@ describe("parse the contents of an entry", () => {
 │   │   └── url
 │   ├── entryAH
 │   ├── entryAH.meta
+│   ├── entryAI
+│   ├── entryAJ
 │   ├── foo
 │   └── example.com
 │       └── foo
@@ -154,6 +158,17 @@ describe("parse the contents of an entry", () => {
         └── password
 `);
   const getItem = (fullKey) => PassHelpers.getItemByFullKey(items, fullKey);
+
+  it("ignores '->' inside of passwords", async () => {
+    let result = await PassHelpers.getPasswordData(
+      items,
+      getItem("/dirA/entryAI"),
+    );
+    expect(result.password).toBe("abc->def");
+
+    result = await PassHelpers.getPasswordData(items, getItem("/dirA/entryAJ"));
+    expect(result.password).toBe("->d.e%f");
+  });
 
   it.each([
     "/dirA/entryAA",

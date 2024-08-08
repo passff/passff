@@ -118,7 +118,7 @@ Use symbolic links in your password store directory if the data is identical acr
 to use relative (instead of absolute) links since PassFF cannot resolve paths beyond the password store directory.
 If individual fields are equal across pass entries, you can store the data in one entry and reference that entry from
 others. For example, in order to instruct PassFF to use the password and login name stored in `shopping/example.com`
-when dealing with `shopping/example2.com`, you can use the syntax `->` followed by a relative or absolute path:
+when dealing with `shopping/example2.com`, you can use the syntax `->` followed by a space and a relative or absolute path:
 
 ```
 -> /shopping/example.com
