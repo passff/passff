@@ -639,7 +639,7 @@ function resetMatchItems() {
 function onWindowLoad() {
   resetMatchItems();
 
-  let obs = new MutationObserver(onNodeAdded);
+  let obs = new MutationObserver(util.debouncedFunction(onNodeAdded, 200));
   obs.observe(document, { attributes: true, childList: true, subtree: true });
   onNodeAdded();
 

@@ -265,6 +265,37 @@ export function getFunctionFromStr(name) {
   }
 }
 
+export function debouncedFunction(fun, delay) {
+  /* Make sure that `fun` is not called more than once every `delay` milliseconds
+   *
+   * This wrapper is for functions that are triggered by rather frequent events (such as DOM
+   * changes), but should not be executed more than once every `delay` milliseconds (e.g. for
+   * performance reasons).
+   * If delay=5, and the wrapper is called at t=0 and t=2, the function `fun` will be called only
+   * once: at t=5. The call at t=2 and other calls between t=0 and t=5 are discarded.
+   *
+   * Note that the wrapper does not pass function arguments or return values.
+   */
+  let timerId = undefined;
+  let lastInvokeTime = undefined;
+  let timerExpired = () => {
+    const time = Date.now();
+    const remainingWait = delay - (time - lastInvokeTime);
+    if (lastInvokeTime !== undefined && remainingWait > 0) {
+      timerId = setTimeout(timerExpired, remainingWait);
+    } else {
+      timerId = undefined;
+      lastInvokeTime = time;
+      fun(time);
+    }
+  };
+  return () => {
+    if (timerId === undefined) {
+      timerId = setTimeout(timerExpired, delay);
+    }
+  };
+}
+
 /* #############################################################################
  * #############################################################################
  *  semantic versioning
