@@ -7,10 +7,10 @@ test("parse the pass tree output", () => {
   const logSpy = jest.spyOn(log, "debug").mockImplementation(() => {});
 
   const items = PassHelpers.parsePassTree(`Password Store
+├── attachments
+│   ├── attachA
+│   └── attachB
 ├── dirA
-│   ├── attachments
-│   │   ├── attachA
-│   │   └── attachB
 │   ├── dirAA
 │   │   ├── example.com
 │   │   └── sub.example.co.uk
@@ -40,10 +40,10 @@ test("parse the pass tree output", () => {
 
   expect(items.map((item) => (!!item ? item.fullKey : "null")).join("\n"))
     .toBe(`
+/attachments
+/attachments/attachA
+/attachments/attachB
 /dirA
-/dirA/attachments
-/dirA/attachments/attachA
-/dirA/attachments/attachB
 /dirA/dirAA
 /dirA/dirAA/example.com
 /dirA/dirAA/sub.example.co.uk
@@ -77,9 +77,9 @@ null
   expect(item.isHidden).toBeFalsy();
   expect(item.isBroken).toBeFalsy();
 
-  expect(getItem("/dirA/attachments").isHidden).toBeTruthy();
-  expect(getItem("/dirA/attachments/attachA").isHidden).toBeTruthy();
-  expect(getItem("/dirA/attachments/attachB").isHidden).toBeTruthy();
+  expect(getItem("/attachments").isHidden).toBeTruthy();
+  expect(getItem("/attachments/attachA").isHidden).toBeTruthy();
+  expect(getItem("/attachments/attachB").isHidden).toBeTruthy();
 
   item = getItem("/dirA/dirAB/example.org");
   expect(item.isLeaf).toBeTruthy();

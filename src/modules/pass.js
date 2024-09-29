@@ -516,7 +516,7 @@ export function parsePassTree(stdout) {
 
   let isInUseHiddenRegex = PassFF.Preferences.filterPathRegex.length != 0;
   let isHiddenRegex = new RegExp(
-    PassFF.Preferences.filterPathRegex.join("|"),
+    `^/(${PassFF.Preferences.filterPathRegex.join("|")})$`,
     "i",
   );
 
@@ -542,6 +542,33 @@ export function parsePassTree(stdout) {
           isOtpauthField(item.key));
       item.hasFields = item.children.some((c) => getItemById(items, c).isField);
       item.isHidden = isInUseHiddenRegex && isHiddenRegex.test(item.fullKey);
+    });
+
+  // hide children of hidden folders
+  items
+    .filter((item) => item.children.length > 0)
+    .forEach((item) => {
+      if (!item.isHidden) return;
+      item.children
+        .map((child) => getItemById(items, child))
+        .forEach((child) => {
+          child.isHidden = true;
+        });
+    });
+
+  // hide folders that only contain hidden elements
+  items
+    .slice()
+    .reverse()
+    .filter(
+      (item) =>
+        item.children.length > 0 &&
+        item.children
+          .map((child) => getItemById(items, child))
+          .every((child) => child.isHidden),
+    )
+    .forEach((item) => {
+      item.isHidden = true;
     });
 
   items
@@ -968,9 +995,10 @@ export default {
         }),
       )
       .sort((i1, i2) => i2.similarity - i1.similarity)
-      .slice(0, limit)
       .filter((i) => i.similarity > 0)
-      .map((i) => i.item);
+      .filter((i) => !i.isHidden)
+      .map((i) => i.item)
+      .slice(0, limit);
   },
 
   getUrlMatchingItems: function (urlStr, containerName) {
@@ -1008,7 +1036,7 @@ export default {
     let bestQuality = -1;
 
     items.forEach(function (curItem) {
-      if (curItem.isLeaf) {
+      if (curItem.isLeaf || curItem.isHidden) {
         return;
       }
 

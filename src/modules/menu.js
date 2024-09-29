@@ -319,8 +319,8 @@ function createItemsMenuList(items, cleanMenu) {
 
   if (cleanMenu) clearMenuList();
   let listElm = document.getElementById("passff-entries-list");
-  items.forEach(function (item) {
-    if (item.isField || item.isMeta) return;
+  items.forEach((item) => {
+    if (item.isField || item.isMeta || item.isHidden) return;
     let onEnter = null;
     if (item.isLeaf || item.hasFields) {
       onEnter = function (event) {
