@@ -1061,10 +1061,12 @@ export default {
     return this.executePass(args).then((result) => {
       if (result.exitCode !== 0) return;
       let lines = result.stdout.trim().split("\n");
-      if (lines.length == 1) {
-        let otp = lines[0];
-        return otp;
+      if (lines.length > 1) {
+        log.debug(
+          `generateOtp: more than one line of stdout\n${lines.slice(0, -1).join("\n")}`,
+        );
       }
+      return lines[lines.length - 1];
     });
   },
 
