@@ -215,19 +215,19 @@ test("hostMatchQuality", () => {
       "/personal/cloud/my.example.com",
       "www.my.example.com",
     ),
-  ).toBe(403);
+  ).toBe(406);
   expect(
     PassHelpers.hostMatchQuality(
       "/personal/cloud/example.com",
       "www.my.example.com",
     ),
-  ).toBe(402);
+  ).toBe(404);
   expect(
     PassHelpers.hostMatchQuality(
       "/personal/cloud/example",
       "www.my.example.com",
     ),
-  ).toBe(301);
+  ).toBe(302);
   expect(
     PassHelpers.hostMatchQuality(
       "/personal/cloud/my.example.com",
@@ -255,42 +255,42 @@ describe("getItemQuality", () => {
   let itemFixed = "/personal/cloud/example.com-4922";
   it.each([
     { u: "https://nomatch.com/personal/cloud", c: "", q: -1 },
-    { u: "https://www.my.example.com/", c: "", q: 402 },
-    { u: "https://www.my.example.com/some/path", c: "", q: 40200 },
+    { u: "https://www.my.example.com/", c: "", q: 403 },
+    { u: "https://www.my.example.com/some/path", c: "", q: 40300 },
     {
       u: "https://www.my.example.com/some/path?with=query&foo=bar",
       c: "",
-      q: 4020000,
+      q: 4030000,
     },
     {
       u: "https://www.my.example.com:4231/some/path?with=query&foo=bar",
       c: "",
-      q: 40200000,
+      q: 40300000,
     },
     {
       u: "https://www.my.example.com:4231/some/path?with=query&foo=bar",
       c: "somecont",
-      q: 402000000,
+      q: 403000000,
     },
     {
       u: "https://www.my.example.com/some/path?personal=cloud&foo=bar",
       c: "",
-      q: 4020002,
+      q: 4030002,
     },
     {
       u: "https://www.my.example.com/cloud/path?with=query&foo=bar",
       c: "",
-      q: 4020100,
+      q: 4030100,
     },
     {
       u: "https://www.my.example.com/some/path?personal=query&foo=bar",
       c: "cloud",
-      q: 40200011,
+      q: 40300011,
     },
     {
       u: "https://www.my.example.com:4922/personal/path?with=query&foo=bar",
       c: "cloud",
-      q: 402101001,
+      q: 403101001,
     },
   ])(
     `getItemQuality for $u in '$c'`,

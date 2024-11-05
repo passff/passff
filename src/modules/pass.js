@@ -310,14 +310,16 @@ export function hostMatchQuality(fullKey, host) {
    * public suffix and *not* matched *alone*. Same applies to very short (less
    * than 3 chars) and some very generic parts like "www"
    */
+  let entryName = fullKey.replace(/.*\/([^\/]+)\/?/, "$1");
   if (PassFF.Preferences.matchDirnameOnly) {
     fullKey = fullKey.replace(/\/[^\/]+\/?$/, "");
+    entryName = fullKey;
   }
   host = util.sanitizeDomain(host);
   let suffix = util.getDomainSuffix(host);
   do {
     // check a.b.c.d, then a.b.c, then a.b, ...
-    let quality = host.split(/\.+/).length * 100 + host.split(/\.+/).length;
+    let quality = host.split(/\.+/).length * 100 + 2 * host.split(/\.+/).length;
     let subhost = host;
     do {
       // check a.b.c.d, then b.c.d, then c.d, ...
@@ -329,13 +331,27 @@ export function hostMatchQuality(fullKey, host) {
         break;
 
       let regex = ciSearchRegex(subhost);
-      if (fullKey.search(regex) >= 0 || regexSearchMetaUrls(fullKey, regex)) {
+
+      // For a.b.c and entries /dir/one/bar.b.c and /dir/two/b.c, the latter is ranked
+      // higher even though the former contains the subdomain part "a". This is because the part
+      // "b.c" is only contained in the former, but matches the latter key name exactly.
+      // Note, however, that /dir/one/bla.b.c is ranked higher than both, because it contains the
+      // longer hostname part "a.b.c".
+      let match = fullKey.match(regex);
+      if (match !== null && match[0] == entryName) {
         return quality;
+      }
+
+      let matchMeta = regexSearchMetaUrls(fullKey, regex);
+      if (matchMeta == 2) {
+        return quality;
+      } else if (match !== null || matchMeta == 1) {
+        return quality - 1;
       }
 
       if (subhost.indexOf(".") < 0) break;
       subhost = subhost.replace(/[^\.]+\.+/, "");
-      quality--;
+      quality -= 2;
     } while (true);
     if (host.indexOf(".") < 0) break;
     if (suffix.length > 0) {
@@ -349,19 +365,32 @@ export function hostMatchQuality(fullKey, host) {
 }
 
 function regexSearchMetaUrls(fullKey, regex) {
+  // returns 0 if there is no match (or no meta URL for this entry)
+  // returns 1 if the meta URL contains the regex
+  // returns 2 if the hostname of the meta URL matches the regex exactly
   if (metaUrls === null) {
-    return false;
+    return 0;
   }
   const itemMetaUrls = metaUrls.get(fullKey);
   if (typeof itemMetaUrls === "undefined" || itemMetaUrls.length === 0) {
-    return false;
+    return 0;
   }
   for (let url of itemMetaUrls) {
-    if (url.search(regex) >= 0) {
-      return true;
+    if (typeof url === "string") {
+      if (url.search(regex) >= 0) {
+        return 1;
+      }
+    } else {
+      let match = url.hostname.match(regex);
+      if (match !== null && url.hostname == match[0]) {
+        return 2;
+      }
+      if (url.href.search(regex) >= 0) {
+        return 1;
+      }
     }
   }
-  return false;
+  return 0;
 }
 
 function pathMatchQuality(fullKey, path) {
@@ -959,6 +988,9 @@ export default {
           if (!urlRegExp.test(url)) {
             url = `https://${url}`;
           }
+          if (isUrlValid(url)) {
+            url = new URL(url);
+          }
           urls.push(url);
         }
       }
@@ -1014,7 +1046,7 @@ export default {
       .filter((item) => {
         if (!PassFF.Preferences.enforceDomainMatch) return true;
         if (item.fullKey.search(domainRegex) >= 0) return true;
-        return regexSearchMetaUrls(item.fullKey, domainRegex);
+        return regexSearchMetaUrls(item.fullKey, domainRegex) > 0;
       })
       .map((i) => getItemQuality(i, urlStr, containerName))
       .filter((i) => i.quality >= 0)
