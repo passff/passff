@@ -887,19 +887,22 @@ export default {
     return contextItems;
   },
 
-  loadItems: util.backgroundFunction("Pass.loadItems", function (reload) {
-    if (!reload) return [allItems, contextItems, metaUrls];
-    return this.executePass([]).then((result) => {
-      if (result.exitCode !== 0) {
-        PassFF.Menu.state.error = true;
-        return;
-      }
+  loadItems: util.backgroundFunction("Pass.loadItems", async function (reload) {
+    if (!reload) {
+      return [allItems, contextItems, metaUrls];
+    }
 
-      PassFF.Menu.state.error = false;
-      allItems = parsePassTree(result.stdout);
-      this.indexMetaUrls();
-      return [allItems];
-    });
+    const result = await this.executePass([]);
+
+    if (result.exitCode !== 0) {
+      PassFF.Menu.state.error = true;
+      return;
+    }
+
+    PassFF.Menu.state.error = false;
+    allItems = parsePassTree(result.stdout);
+    await this.indexMetaUrls();
+    return [allItems];
   }),
 
   indexMetaUrls: util.backgroundFunction("Pass.indexMetaUrls", function () {
