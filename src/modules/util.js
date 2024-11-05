@@ -180,35 +180,30 @@ export function backgroundFunction(name, fun, useSender) {
   if (typeof useSender === "undefined") {
     useSender = false;
   }
-  return function () {
+  return async function () {
     if (PassFF.mode !== "background") {
       let args = Array.from(arguments);
       args.unshift(useSender);
       args.unshift(name);
       return backgroundExec.apply(null, args);
     } else {
-      return Promise.resolve(fun.apply(getFunctionFromStr(name)[0], arguments));
+      return fun.apply(getFunctionFromStr(name)[0], arguments);
     }
   };
 }
 
-function backgroundExec(action, useSender) {
-  return browser.runtime
-    .sendMessage({
+async function backgroundExec(action, useSender) {
+  let msg;
+  try {
+    msg = await browser.runtime.sendMessage({
       action: action,
       params: Array.from(arguments).slice(2),
       useSender: useSender,
-    })
-    .then((msg) => {
-      if (msg) {
-        return msg.response;
-      } else {
-        return null;
-      }
-    })
-    .catch((error) => {
-      log.error("backgroundExec: runtime port has crashed", action, error);
     });
+  } catch (error) {
+    log.error("backgroundExec: runtime port has crashed", action, error);
+  }
+  return msg ? msg.response : null;
 }
 
 export function contentFunction(name, fun, provideTab) {

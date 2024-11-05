@@ -170,14 +170,18 @@ function prefixHttpsIfNeeded(urlStr) {
   return /^[a-z]+:\/\//.test(urlStr) ? urlStr : `https://${urlStr}`;
 }
 
-function isUrlValid(urlStr) {
+function strToURL(urlStr) {
   urlStr = prefixHttpsIfNeeded(urlStr);
   try {
-    new URL(urlStr);
-    return true;
+    const urlObj = new URL(urlStr);
+    return urlObj;
   } catch (e) {
-    return false;
+    return null;
   }
+}
+
+function isUrlValid(urlStr) {
+  return strToURL(urlStr) !== null;
 }
 
 function setLoginPasswordUrls(passwordData, item) {
@@ -381,16 +385,17 @@ function regexSearchMetaUrls(fullKey, regex) {
     return 0;
   }
   for (let url of itemMetaUrls) {
-    if (typeof url === "string") {
+    const urlObj = strToURL(url);
+    if (!urlObj) {
       if (url.search(regex) >= 0) {
         return 1;
       }
     } else {
-      let match = url.hostname.match(regex);
-      if (match !== null && url.hostname == match[0]) {
+      let match = urlObj.hostname.match(regex);
+      if (match !== null && urlObj.hostname == match[0]) {
         return 2;
       }
-      if (url.href.search(regex) >= 0) {
+      if (urlObj.href.search(regex) >= 0) {
         return 1;
       }
     }
@@ -754,44 +759,39 @@ function rmTree(items, itemId) {
  */
 
 export default {
-  init: function () {
+  init: async function () {
     if (PassFF.mode === "passwordGenerator") {
       handlePasswordGeneration();
     }
-    return this.loadItems(PassFF.mode === "background").then((items) => {
-      if (typeof items === "undefined") {
-        log.warn("loadItems failed!");
-        return;
+    const items = await this.loadItems(PassFF.mode === "background");
+    if (typeof items === "undefined") {
+      log.warn("loadItems failed!");
+      return;
+    }
+    allItems = items[0];
+    if (PassFF.mode !== "background") {
+      contextItems = items[1];
+      metaUrls = items[2];
+    }
+    if (PassFF.mode === "itemMonitor") {
+      let passOutputEl = document.getElementsByTagName("pre")[0];
+      let restOutputEl = document.getElementsByTagName("pre")[1];
+      document.querySelector("div:first-child > span").textContent = _(
+        "passff_display_hover",
+      );
+      const passwordData = await this.getDisplayItem();
+      if (passwordData === null) return;
+      if (passwordData.hasOwnProperty("fullText")) {
+        let otherData = passwordData["fullText"];
+        let sep = otherData.indexOf("\n");
+        passOutputEl.textContent = passwordData["password"];
+        restOutputEl.textContent = otherData.substring(sep + 1);
+      } else {
+        passOutputEl.textContent = passwordData["password"];
+        restOutputEl.textContent =
+          "login: " + passwordData["login"] + "\nurl: " + passwordData["url"];
       }
-      allItems = items[0];
-      if (PassFF.mode !== "background") {
-        contextItems = items[1];
-        metaUrls = items[2];
-      }
-      if (PassFF.mode === "itemMonitor") {
-        let passOutputEl = document.getElementsByTagName("pre")[0];
-        let restOutputEl = document.getElementsByTagName("pre")[1];
-        document.querySelector("div:first-child > span").textContent = _(
-          "passff_display_hover",
-        );
-        this.getDisplayItem().then((passwordData) => {
-          if (passwordData === null) return;
-          if (passwordData.hasOwnProperty("fullText")) {
-            let otherData = passwordData["fullText"];
-            let sep = otherData.indexOf("\n");
-            passOutputEl.textContent = passwordData["password"];
-            restOutputEl.textContent = otherData.substring(sep + 1);
-          } else {
-            passOutputEl.textContent = passwordData["password"];
-            restOutputEl.textContent =
-              "login: " +
-              passwordData["login"] +
-              "\nurl: " +
-              passwordData["url"];
-          }
-        });
-      }
-    });
+    }
   },
 
   // %%%%%%%%%%%%%%%%%%%%%%%%%% Execute pass script %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -942,75 +942,72 @@ export default {
     return [allItems];
   }),
 
-  indexMetaUrls: util.backgroundFunction("Pass.indexMetaUrls", function () {
-    if (!PassFF.Preferences.indexMetaUrls) {
-      metaUrls = null;
-      return;
-    }
-    if (metaUrls !== null) {
-      return;
-    }
-    log.debug("Indexing meta urls");
-    metaUrls = new Map();
-    return this.executePass(["grepMetaUrls", PassFF.Preferences.urlFieldNames])
-      .then((result) => {
-        PassFF.Menu.state.indexingMetaUrls = false;
-        let stdout = result.stdout;
-        // remove escape codes
-        stdout = stdout.replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, "");
+  indexMetaUrls: util.backgroundFunction(
+    "Pass.indexMetaUrls",
+    async function () {
+      if (!PassFF.Preferences.indexMetaUrls) {
+        metaUrls = null;
+        return;
+      }
+      if (metaUrls !== null) {
+        return;
+      }
+      log.debug("indexMetaUrls: calling host app");
+      metaUrls = new Map();
+      const result = await this.executePass([
+        "grepMetaUrls",
+        PassFF.Preferences.urlFieldNames,
+      ]);
 
-        let lines = stdout.split("\n");
+      PassFF.Menu.state.indexingMetaUrls = false;
+      let stdout = result.stdout;
+      // remove escape codes
+      stdout = stdout.replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, "");
 
-        let fullKey = "";
-        let urls = [];
+      let lines = stdout.split("\n");
 
-        // build RegExp for detecting metaTag lines
-        let metaTagRegexp = new RegExp(
-          `^(${PassFF.Preferences.urlFieldNames.join("|")}):`,
-          "i",
-        );
-        let urlRegExp = new RegExp("^https?://.*");
+      let fullKey = "";
+      let urls = [];
 
-        for (let line of stdout.split("\n")) {
-          if (!metaTagRegexp.test(line)) {
-            // reached next fullKey in output
-            if (urls.length > 0) {
-              metaUrls.set(fullKey, urls);
-            }
+      // build RegExp for detecting metaTag lines
+      let metaTagRegexp = new RegExp(
+        `^(${PassFF.Preferences.urlFieldNames.join("|")}):`,
+        "i",
+      );
+      let urlRegExp = new RegExp("^https?://.*");
 
-            // current line ends with a colon which we need to strip
-            // add leading slash for compatibility with our naming scheme
-            fullKey = "/" + line.substring(0, line.length - 1);
-            urls = [];
-          } else {
-            // current line is an url matching the last found fullKey
-            // 'host:' or 'url:" needs to be stripped
-            let url = (
-              urlRegExp.test(line)
-                ? line.trim()
-                : line.replace(metaTagRegexp, "")
-            ).trim();
-            if (!urlRegExp.test(url)) {
-              url = `https://${url}`;
-            }
-            if (isUrlValid(url)) {
-              url = new URL(url);
-            }
-            urls.push(url);
+      for (let line of stdout.split("\n")) {
+        if (!metaTagRegexp.test(line)) {
+          // reached next fullKey in output
+          if (urls.length > 0) {
+            metaUrls.set(fullKey, urls);
           }
+
+          // current line ends with a colon which we need to strip
+          // add leading slash for compatibility with our naming scheme
+          fullKey = "/" + line.substring(0, line.length - 1);
+          urls = [];
+        } else {
+          // current line is an url matching the last found fullKey
+          // 'host:' or 'url:" needs to be stripped
+          let url = (
+            urlRegExp.test(line) ? line.trim() : line.replace(metaTagRegexp, "")
+          ).trim();
+          if (!urlRegExp.test(url)) {
+            url = `https://${url}`;
+          }
+          urls.push(url);
         }
-        if (urls.length > 0) {
-          metaUrls.set(fullKey, urls);
-        }
-        log.debug(
-          `Finished indexing meta urls, found ${metaUrls.size} entries that include urls`,
-        );
-        return browser.tabs.query({});
-      })
-      .then((tabs) => {
-        tabs.forEach((t) => browser.tabs.sendMessage(t.id, "refresh"));
-      });
-  }),
+      }
+      if (urls.length > 0) {
+        metaUrls.set(fullKey, urls);
+      }
+      log.debug(
+        `indexMetaUrls: found ${metaUrls.size} entries that include urls`,
+      );
+      return PassFF.refreshTabs();
+    },
+  ),
 
   loadContextItems: function (url, containerName) {
     contextItems = this.getUrlMatchingItems(url, containerName);

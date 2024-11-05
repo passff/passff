@@ -864,7 +864,7 @@ export default {
       return tabInitPending[pendingId].promise;
     } else {
       pendingId = tabInitPending.length;
-      log.debug("Awaiting tab init...", tab.id, tab.url);
+      log.debug("initTab: await", tab.id, tab.url);
       let pendingPromise = initTab(tab);
       tabInitPending.push({ id: tab.id, promise: pendingPromise });
       return pendingPromise.then((readyTab) => {

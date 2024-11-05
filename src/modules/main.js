@@ -197,15 +197,22 @@ let PassFF = {
       }));
   },
 
-  refreshAll: util.backgroundFunction("refreshAll", function () {
-    return PassFF.Preferences.init()
-      .then(() => PassFF.Pass.init())
-      .then(() => onTabActivated())
-      .then(() => browser.runtime.sendMessage("refresh"))
-      .then(() => browser.tabs.query({}))
-      .then((tabs) => {
-        tabs.forEach((t) => browser.tabs.sendMessage(t.id, "refresh"));
+  refreshAll: util.backgroundFunction("refreshAll", async function () {
+    await PassFF.Preferences.init();
+    await PassFF.Pass.init();
+    await onTabActivated();
+    await browser.runtime.sendMessage("refresh");
+    return PassFF.refreshTabs();
+  }),
+
+  refreshTabs: util.backgroundFunction("refreshTabs", async function () {
+    for (let tab of await browser.tabs.query({})) {
+      browser.tabs.sendMessage(tab.id, "refresh").catch((e) => {
+        log.debug(
+          `refreshTabs: failed to refresh tab (${tab.id}, ${tab.url}): ${e.message}`,
+        );
       });
+    }
   }),
 };
 
