@@ -663,12 +663,15 @@ export default {
 
   onCopyToClipboard: util.backgroundFunction(
     "Menu.onCopyToClipboard",
-    function (itemId, dataKey, rightClick) {
-      let item = PassFF.Pass.getItemById(itemId);
-      PassFF.Pass.getPasswordData(item).then((passwordData) => {
-        if (typeof passwordData === "undefined") return;
-        navigator.clipboard.writeText(passwordData[dataKey]);
-      });
+    async function (itemId, dataKey, rightClick) {
+      const item = PassFF.Pass.getItemById(itemId);
+      const passwordData = await PassFF.Pass.getPasswordData(
+        item,
+        undefined,
+        dataKey == "otp",
+      );
+      if (typeof passwordData === "undefined") return;
+      navigator.clipboard.writeText(passwordData[dataKey]);
     },
   ),
 };

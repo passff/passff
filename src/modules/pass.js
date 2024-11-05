@@ -21,7 +21,7 @@ let addPasswordContext = "/";
  * #############################################################################
  */
 
-export async function getPasswordData(items, item, recursionHist) {
+export async function getPasswordData(items, item, recursionHist, enforceOtp) {
   let result = {};
   recursionHist = recursionHist || [];
   recursionHist = [...recursionHist, item.id];
@@ -47,6 +47,8 @@ export async function getPasswordData(items, item, recursionHist) {
     if (!!otpauthkey) {
       log.debug("getPasswordData: Generating OTP token");
       result.otp = await PassFF.Pass.generateOtp(otpauthkey);
+    } else if (!!enforceOtp) {
+      result.otp = "";
     }
     return result;
   } else {
@@ -118,7 +120,7 @@ export async function getPasswordData(items, item, recursionHist) {
     }
 
     setLoginPasswordUrls(result, item);
-    await setOtp(result, item);
+    await setOtp(result, item, enforceOtp);
     setOther(result);
     setText(result, stdout);
 
@@ -233,16 +235,19 @@ function setLoginPasswordUrls(passwordData, item) {
   passwordData.url = urls.map(prefixHttpsIfNeeded);
 }
 
-async function setOtp(passwordData, item) {
-  let otpauth = false;
-  for (let i = 0; i < PassFF.Preferences.otpauthFieldNames.length; i++) {
-    otpauth = passwordData[PassFF.Preferences.otpauthFieldNames[i]];
-    if (otpauth) break;
+async function setOtp(passwordData, item, enforce) {
+  if (!enforce) {
+    let otpauth = false;
+    for (let i = 0; i < PassFF.Preferences.otpauthFieldNames.length; i++) {
+      otpauth = passwordData[PassFF.Preferences.otpauthFieldNames[i]];
+      if (otpauth) break;
+    }
+    if (!otpauth) return;
   }
-  if (!otpauth) return;
 
   log.debug("setOtp: Generating OTP token");
-  passwordData.otp = await PassFF.Pass.generateOtp(item.fullKey);
+  const otp = await PassFF.Pass.generateOtp(item.fullKey);
+  passwordData.otp = otp === undefined ? "" : otp;
 }
 
 function setOther(passwordData) {
@@ -947,63 +952,64 @@ export default {
     }
     log.debug("Indexing meta urls");
     metaUrls = new Map();
-    return this.executePass([
-      "grepMetaUrls",
-      PassFF.Preferences.urlFieldNames,
-    ]).then((result) => {
-      PassFF.Menu.state.indexingMetaUrls = false;
-      let stdout = result.stdout;
-      // remove escape codes
-      stdout = stdout.replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, "");
+    return this.executePass(["grepMetaUrls", PassFF.Preferences.urlFieldNames])
+      .then((result) => {
+        PassFF.Menu.state.indexingMetaUrls = false;
+        let stdout = result.stdout;
+        // remove escape codes
+        stdout = stdout.replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, "");
 
-      let lines = stdout.split("\n");
+        let lines = stdout.split("\n");
 
-      let fullKey = "";
-      let urls = [];
+        let fullKey = "";
+        let urls = [];
 
-      // build RegExp for detecting metaTag lines
-      let metaTagRegexp = new RegExp(
-        `^(${PassFF.Preferences.urlFieldNames.join("|")}):`,
-        "i",
-      );
-      let urlRegExp = new RegExp("^https?://.*");
+        // build RegExp for detecting metaTag lines
+        let metaTagRegexp = new RegExp(
+          `^(${PassFF.Preferences.urlFieldNames.join("|")}):`,
+          "i",
+        );
+        let urlRegExp = new RegExp("^https?://.*");
 
-      for (let line of stdout.split("\n")) {
-        if (!metaTagRegexp.test(line)) {
-          // reached next fullKey in output
-          if (urls.length > 0) {
-            metaUrls.set(fullKey, urls);
+        for (let line of stdout.split("\n")) {
+          if (!metaTagRegexp.test(line)) {
+            // reached next fullKey in output
+            if (urls.length > 0) {
+              metaUrls.set(fullKey, urls);
+            }
+
+            // current line ends with a colon which we need to strip
+            // add leading slash for compatibility with our naming scheme
+            fullKey = "/" + line.substring(0, line.length - 1);
+            urls = [];
+          } else {
+            // current line is an url matching the last found fullKey
+            // 'host:' or 'url:" needs to be stripped
+            let url = (
+              urlRegExp.test(line)
+                ? line.trim()
+                : line.replace(metaTagRegexp, "")
+            ).trim();
+            if (!urlRegExp.test(url)) {
+              url = `https://${url}`;
+            }
+            if (isUrlValid(url)) {
+              url = new URL(url);
+            }
+            urls.push(url);
           }
-
-          // current line ends with a colon which we need to strip
-          // add leading slash for compatibility with our naming scheme
-          fullKey = "/" + line.substring(0, line.length - 1);
-          urls = [];
-        } else {
-          // current line is an url matching the last found fullKey
-          // 'host:' or 'url:" needs to be stripped
-          let url = (
-            urlRegExp.test(line) ? line.trim() : line.replace(metaTagRegexp, "")
-          ).trim();
-          if (!urlRegExp.test(url)) {
-            url = `https://${url}`;
-          }
-          if (isUrlValid(url)) {
-            url = new URL(url);
-          }
-          urls.push(url);
         }
-      }
-      if (urls.length > 0) {
-        metaUrls.set(fullKey, urls);
-      }
-      log.debug(
-        `Finished indexing meta urls, found ${metaUrls.size} entries that include urls`,
-      );
-      browser.tabs.query({}).then((tabs) => {
+        if (urls.length > 0) {
+          metaUrls.set(fullKey, urls);
+        }
+        log.debug(
+          `Finished indexing meta urls, found ${metaUrls.size} entries that include urls`,
+        );
+        return browser.tabs.query({});
+      })
+      .then((tabs) => {
         tabs.forEach((t) => browser.tabs.sendMessage(t.id, "refresh"));
       });
-    });
   }),
 
   loadContextItems: function (url, containerName) {
@@ -1013,8 +1019,8 @@ export default {
     }
   },
 
-  getPasswordData: async function (item, recursionHist) {
-    return await getPasswordData(allItems, item, recursionHist);
+  getPasswordData: async function (item, recursionHist, enforceOtp) {
+    return await getPasswordData(allItems, item, recursionHist, enforceOtp);
   },
 
   // %%%%%%%%%%%%%%%%%%%%%%%%%% Data filtering %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
