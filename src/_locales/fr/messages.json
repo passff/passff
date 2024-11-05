@@ -171,7 +171,7 @@
     "message": "Noms des champs d'OTP"
   },
   "passff_prefs_filter_path_regex_label": {
-    "message": "Regex pour cacher des éléments, un par ligne (teste le chemin d'accès complet)"
+    "message": "Regex pour cacher des éléments, un par ligne (teste le chemin d'accès complet). Notez que les modifications de ce paramètre prennent effet après le redémarrage du navigateur ou en cliquant sur le bouton « recharger » dans le menu PassFF."
   },
   "passff_prefs_script_howto": {
     "message": "Voir le fichier passff.py pour changer les variables d'environnement de pass."

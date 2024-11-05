@@ -174,7 +174,7 @@
     "message": "OTP-Datensatznamen"
   },
   "passff_prefs_filter_path_regex_label": {
-    "message": "Einträge verstecken, deren Pfad zu einem der folgenden regulären Ausdrücke passt (einer pro Zeile)"
+    "message": "Einträge verstecken, deren Pfad zu einem der folgenden regulären Ausdrücke passt (einer pro Zeile). Änderungen an dieser Einstellung werden erst nach einem Neustart des Browsers oder nach einem Klick auf 'Neu laden' im PassFF-Menü aktiv."
   },
   "passff_prefs_script_howto": {
     "message": "Änderungen bitte direkt in der passff.py vornehmen!"

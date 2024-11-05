@@ -156,7 +156,7 @@
     "message": "Campos para OTP Auth"
   },
   "passff_prefs_filter_path_regex_label": {
-    "message": "Regex para esconder os itens, um por linha (o regex será comparado com todo o caminho)"
+    "message": "Regex para esconder os itens, um por linha (o regex será comparado com todo o caminho). Note-se que as alterações a esta definição têm efeito após reiniciar o browser ou clicar no botão “recarregar” no menu PassFF."
   },
   "passff_prefs_script_howto": {
     "message": "Veja o arquivo passff.py para alterar as variáveis de ambiente de pass"

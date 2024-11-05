@@ -156,7 +156,7 @@
     "message": "OTP yetkilendirme alanı adları"
   },
   "passff_prefs_filter_path_regex_label": {
-    "message": "Ögeleri gizlemek için düzenli ifade, her satırda bir tane (tam yolu test eder)"
+    "message": "Ögeleri gizlemek için düzenli ifade, her satırda bir tane (tam yolu test eder). Bu ayardaki değişikliklerin tarayıcıyı yeniden başlattıktan veya PassFF menüsündeki 'yeniden yükle' düğmesine tıkladıktan sonra etkili olacağını unutmayın."
   },
   "passff_prefs_script_howto": {
     "message": "Pass ortam değişkenlerini değiştirmek için passff.py dosyasına bakın."

@@ -174,7 +174,7 @@
     "message": "OTP key URI field names"
   },
   "passff_prefs_filter_path_regex_label": {
-    "message": "Hide items whose path matches at least one of the following regular expressions (one per line)"
+    "message": "Hide items whose path matches at least one of the following regular expressions (one per line). Note that changes to this setting take effect after restarting the browser or clicking on the 'reload' button in the PassFF menu."
   },
   "passff_prefs_script_howto": {
     "message": "See passff.py for changing the environment variables of pass."

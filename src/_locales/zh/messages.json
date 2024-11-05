@@ -156,7 +156,7 @@
     "message": "OTP (两部验证) 字段名称"
   },
   "passff_prefs_filter_path_regex_label": {
-    "message": "用于隐藏的正则表达式，每行一个。"
+    "message": "用于隐藏的正则表达式，每行一个。 请注意，该设置的更改会在重启浏览器或点击 PassFF 菜单中的 “重新加载 ”按钮后生效。"
   },
   "passff_prefs_script_howto": {
     "message": "请查看 passff.py 以更改 pass 的环境变量"
