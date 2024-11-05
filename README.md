@@ -185,7 +185,9 @@ Note that the file structure format is recognized and assumed by PassFF whenever
 
 ### Improve suggestions (contextual entries)
 
-Unless you activate the preference "Index URL fields on startup", the auto-suggestions in the menus are based on matches of the current web page's URL against the _names_ of password store entries. In the following, you find an explanation how you can improve matching quality by adapting the names and paths of your password store entries.
+By default, the auto-suggestions in the menus are based on matches of the current web page's URL against the _names_ of password store entries. If the preference "Index URL fields on startup" is activated, the URL fields contained in the password store entries are also checked for matches. However, note that glob patterns, wildcards or regular expressions in the URL fields are not parsed by PassFF, and might even deteriorate the match quality.
+
+In the following, you find an explanation how you can improve matching quality by adapting the names and paths of your password store entries. The logic also applies to the contents of the URL fields if the preference "Index URL fields on startup" is activated.
 
 Generally speaking, the match quality is best if the exact hostname as well as all alphanumeric parts of the URL's path appear exactly in your entry's name. An entry is excluded from the matching if no part of the hostname is contained in its name. Matching (parts of) the hostname is more important than matching parts from the rest of the URL.
 
