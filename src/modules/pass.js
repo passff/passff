@@ -901,7 +901,10 @@ export default {
 
     PassFF.Menu.state.error = false;
     allItems = parsePassTree(result.stdout);
-    await this.indexMetaUrls();
+
+    // we run indexMetaUrls asynchronously since the indexing can take minutes
+    this.indexMetaUrls();
+
     return [allItems];
   }),
 
