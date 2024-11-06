@@ -85,6 +85,10 @@ function onMessage(request, sender) {
       .then(() => {
         if (PassFF.mode === "content") return PassFF.Page.refresh();
       });
+  } else if (request === "refreshMenuStatusBar") {
+    if (PassFF.mode === "menu") {
+      return PassFF.Menu.restoreFromState();
+    }
   } else if (["background", "content"].indexOf(PassFF.mode) >= 0) {
     log.debug("onMessage:", request.action, "received in", PassFF.mode);
     let [fobj, fname] = util.getFunctionFromStr(request.action);

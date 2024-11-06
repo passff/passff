@@ -12,7 +12,7 @@ let allItems = [];
 let contextItems = [];
 let metaUrls = null;
 let displayItem = null;
-let pendingRequests = {};
+let passExecPromises = {};
 let addPasswordContext = "/";
 
 /* #############################################################################
@@ -806,6 +806,15 @@ export default {
         command = "show";
       }
     }
+    let passResult = {
+      timeStart: new Date(),
+      timeEnd: null,
+      stderr: null,
+      exitCode: null,
+      command: command,
+    };
+    PassFF.Menu.state.lastResults.push(passResult);
+    PassFF.Menu.refreshStatusBar();
     return browser.runtime.sendNativeMessage("passff", args).then(
       (result) => {
         let version = result.version || "0.0";
@@ -880,35 +889,31 @@ export default {
         } else {
           log.debug("Script execution ok");
         }
-        PassFF.Menu.state.lastResult = {
-          timestamp: new Date(),
-          stderr: result.stderr,
-          exitCode: result.exitCode,
-          command: command,
-        };
+        passResult["timeEnd"] = new Date();
+        passResult["stderr"] = result.stderr;
+        passResult["exitCode"] = result.exitCode;
+        PassFF.Menu.refreshStatusBar();
         return result;
       },
       (ex) => {
         log.error("executePass: executing the host app failed", ex);
-        PassFF.Menu.state.lastResult = {
-          timestamp: new Date(),
-          stderr: "PassFF failed to execute the host app",
-          exitCode: -1,
-          command: command,
-        };
+        passResult["timeEnd"] = new Date();
+        passResult["stderr"] = "PassFF failed to execute the host app";
+        passResult["exitCode"] = -1;
+        PassFF.Menu.refreshStatusBar();
         return { exitCode: -1 };
       },
     );
   }),
 
   getPassExecPromise: function (key) {
-    if (!pendingRequests.hasOwnProperty(key)) {
-      pendingRequests[key] = this.executePass([key]).then((result) => {
-        delete pendingRequests[key];
+    if (!passExecPromises.hasOwnProperty(key)) {
+      passExecPromises[key] = this.executePass([key]).then((result) => {
+        delete passExecPromises[key];
         return result;
       });
     }
-    return pendingRequests[key];
+    return passExecPromises[key];
   },
 
   // %%%%%%%%%%%%%%%%%%%%%%%%% Data retrieval %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -947,9 +952,6 @@ export default {
     async function () {
       if (!PassFF.Preferences.indexMetaUrls) {
         metaUrls = null;
-        return;
-      }
-      if (metaUrls !== null) {
         return;
       }
       log.debug("indexMetaUrls: calling host app");

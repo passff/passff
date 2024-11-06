@@ -17,34 +17,47 @@ let menuState = {
   searchValue: "",
   items: null,
   error: false,
-  lastResult: null,
+  lastResults: [],
 };
 
 function showStatus() {
-  let result = menuState.lastResult;
+  if (menuState.lastResults.length === 0) {
+    return;
+  }
+
+  let result = menuState.lastResults.findLast((res) => res.timeEnd === null);
+  if (typeof result === "undefined") {
+    result = menuState.lastResults[menuState.lastResults.length - 1];
+  }
+
+  if (!PassFF.Preferences.showStatus && result.timeEnd !== null) {
+    return;
+  }
+
   let bar = document.getElementById("statusbar");
   if (!bar) {
     bar = document.createElement("div");
     bar.id = "statusbar";
     document.body.appendChild(bar);
   }
-  if (result === null) {
-    bar.textContent = "";
-    return;
+  bar.classList.toggle(
+    "error",
+    result.exitCode != 0 && result.timeEnd !== null,
+  );
+  bar.classList.toggle("pending", result.timeEnd === null);
+
+  let msg = "(pending...)";
+  if (result.timeEnd !== null) {
+    msg = `-> (${result.exitCode}) ${result.stderr || "no error message"}`;
   }
-  let msg = result.stderr || "no error message";
-  let timestamp = result.timestamp.toTimeString();
+  let timestamp = result.timeStart.toTimeString();
   timestamp = timestamp.substr(0, 8);
-  bar.textContent =
-    "[" +
-    timestamp +
-    "] " +
-    result.command +
-    " -> " +
-    "(" +
-    result.exitCode +
-    ") " +
-    msg;
+  let timedelta =
+    result.timeEnd === null ? 0 : result.timeEnd - result.timeStart;
+  if (timedelta > 1000) {
+    timestamp = `${timestamp}+${Math.round(timedelta / 1000)}s`;
+  }
+  bar.textContent = `[${timestamp}] ${result.command} ${msg}`;
   window.dispatchEvent(new Event("resize"));
 }
 
@@ -59,7 +72,7 @@ function restoreFromState(stateObj) {
     document.body.classList.remove("error");
   }
 
-  if (PassFF.Preferences.showStatus) showStatus();
+  showStatus();
 
   let searchInput = document.getElementById("passff-search-box");
   if (PassFF.mode === "itemPicker") {
@@ -537,7 +550,7 @@ function initUi() {
 export default {
   init: function () {
     initUi();
-    return PassFF.Menu.getLastState().then(restoreFromState);
+    return PassFF.Menu.restoreFromState();
   },
 
   onContextChanged: function (url) {
@@ -545,10 +558,23 @@ export default {
     menuState["searchValue"] = "";
   },
 
+  restoreFromState: function () {
+    return PassFF.Menu.getLastState().then(restoreFromState);
+  },
+
+  refreshStatusBar: function () {
+    browser.runtime.sendMessage("refreshMenuStatusBar").catch((e) => {
+      log.debug(`refreshMenuStatusBar: ${e.message}`);
+    });
+  },
+
   // %%%%%%%%%%%%%%%%%%%%%% Menu state manipulation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   backupState: util.backgroundFunction("Menu.backupState", (stateObj) => {
-    menuState = stateObj;
+    menuState = {
+      ...stateObj,
+      lastResults: menuState.lastResults,
+    };
   }),
 
   getLastState: util.backgroundFunction("Menu.getLastState", () => {

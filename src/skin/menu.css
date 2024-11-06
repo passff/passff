@@ -224,14 +224,21 @@ body.error > div {
   border-color: #b6b6b3;
   border-width: 1px 0 0 0;
   border-style: solid;
-  background-color: #555;
-  color: #fff;
+  background-color: #ddfbe8;
+  color: #000;
   font-family: monospace;
+}
+
+#statusbar.pending {
+  background-color: #fffbd6;
+}
+
+#statusbar.error {
+  background-color: #faeced;
 }
 
 @media (prefers-color-scheme: dark) {
   #statusbar {
-    background-color: #333;
     border-color: #111;
   }
 }
