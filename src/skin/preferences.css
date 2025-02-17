@@ -70,6 +70,12 @@ fieldset p.text code {
   padding: 0.1em 0.2em;
 }
 
+@media (prefers-color-scheme: dark) {
+  fieldset p.text code {
+    background-color: #23222b;
+  }
+}
+
 fieldset p > label:first-child {
   display: block;
   margin: 0.8rem 0 0.3rem;
