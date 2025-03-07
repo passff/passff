@@ -81,7 +81,12 @@ function getAutocompleteAttr(input) {
 }
 
 function readInputNames(input) {
-  let inputNames = [input.name || "", input.id || ""];
+  let inputNames = PassFF.Preferences.inputAttributes.reduce((filtered, name) => {
+    if (input.getAttribute(name)) {
+       filtered.push(input.getAttribute(name));
+    }
+    return filtered;
+  }, []);
   let placeholder = input.getAttribute("placeholder");
   if (placeholder && placeholder.toLowerCase().indexOf("search") === -1) {
     inputNames.push(placeholder);
