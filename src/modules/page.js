@@ -81,28 +81,20 @@ function getAutocompleteAttr(input) {
 }
 
 function readInputNames(input) {
-  let inputNames = PassFF.Preferences.inputAttributes.reduce((filtered, name) => {
-    if (input.getAttribute(name)) {
-       filtered.push(input.getAttribute(name));
+  let inputNames = PassFF.Preferences.inputAttributes.map((name) => {
+    let value = input.getAttribute(name);
+    if (name.toLowerCase() == "autocomplete") {
+      value = getAutocompleteAttr(input);
+      if (["on", "off"].indexOf(autocomplete) !== -1) {
+        value = "";
+      }
+    } else if (name.toLowerCase() == "placeholder") {
+      if (value.toLowerCase().indexOf("search") !== -1) {
+        value = "";
+      }
     }
-    return filtered;
-  }, []);
-  let placeholder = input.getAttribute("placeholder");
-  if (placeholder && placeholder.toLowerCase().indexOf("search") === -1) {
-    inputNames.push(placeholder);
-  }
-
-  // there is actually no such thing as a "label" attribute, but aliexpress.com uses it
-  // https://codeberg.org/PassFF/passff-host/issues/68
-  let label = input.getAttribute("label");
-  if (label) {
-    inputNames.push(label);
-  }
-
-  let autocomplete = getAutocompleteAttr(input);
-  if (autocomplete && ["on", "off"].indexOf(autocomplete) === -1) {
-    inputNames.push(autocomplete);
-  }
+    return value;
+  });
 
   // labels are <label> elements whose `for`-attribute points to this input
   if (input.labels) {
@@ -115,6 +107,7 @@ function readInputNames(input) {
     inputNames.push(input.type);
   }
 
+  // the first two (usually id and name) have higher influence on the rating
   return inputNames
     .slice(0, 2)
     .concat(inputNames.slice(2).filter(Boolean))

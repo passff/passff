@@ -144,19 +144,19 @@
     "message": "Inputs are used by PassFF to find fillable input fields in web pages. Optionally, PassFF marks them with a menu to fill them."
   },
   "passff_prefs_input_names_description": {
-    "message": "PassFF analyzes all input fields on a webpage to identify those that can be filled with usernames, passwords, or OTPs. It does this by checking field attributes (e.g., 'id', 'name') against a user-configurable list and scoring matches based on similarity, selecting the highest-scoring field per category for autofill."
+    "message": "PassFF analyzes all input fields on a webpage to identify those that can be filled with usernames, passwords, or OTPs. It does this by checking the values of particular field attributes (e.g., 'id', 'name') against a user-configurable list and scoring matches based on similarity, selecting the highest-scoring field per category for autofill."
   },
   "passff_prefs_input_attributes_label": {
-    "message": "Attribute Names: list of field attributes to analyze"
+    "message": "Attribute names: list of field attributes to analyze"
   },
   "passff_prefs_password_input_names_label": {
-    "message": "Password Values: identifiers for password fields"
+    "message": "Attribute values that identify password fields"
   },
   "passff_prefs_login_input_names_label": {
-    "message": "Username Values: identifiers for username fields"
+    "message": "Attribute values that identify username fields"
   },
   "passff_prefs_otp_input_names_label": {
-    "message": "OTP Values: identifiers for OTP fields"
+    "message": "Attribute values that identify OTP fields"
   },
   "passff_prefs_button_input_queries_label": {
     "message": "Form submit button queries, one per line"

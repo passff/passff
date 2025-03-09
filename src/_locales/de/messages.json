@@ -150,13 +150,13 @@
     "message": "Attributnamen: Liste der zu analysierenden Feldeigenschaften"
   },
   "passff_prefs_password_input_names_label": {
-    "message": "Passwortwerte: Bezeichner für Passwortfelder"
+    "message": "Attributwerte für Passwortfelder"
   },
   "passff_prefs_login_input_names_label": {
-    "message": "Benutzername-Werte: Bezeichner für Benutzernamenfelder"
+    "message": "Attributwerte für Benutzernamenfelder"
   },
   "passff_prefs_otp_input_names_label": {
-    "message": "OTP-Werte: Bezeichner für OTP-Felder"
+    "message": "Attributwerte für OTP-Felder"
   },
   "passff_prefs_button_input_queries_label": {
     "message": "'Formular senden'-Knopf-Queries, eine pro Zeile"

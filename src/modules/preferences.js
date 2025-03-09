@@ -68,7 +68,15 @@ let prefParams = {
   passwordInputNames: "passwd,password,pass",
   loginInputNames: "login,user,mail,email,tel,username,opt_login,log,usr_name",
   otpInputNames: "otp,code,otc,user[otp_attempt],one-time-password",
-  inputAttributes: "id,name",
+
+  // Notes for some of the attributes listed below:
+  // - id,name: The first two in the list are weighted higher during rating!
+  // - label: There is actually no such thing as a "label" attribute, but aliexpress.com uses it
+  //          https://codeberg.org/PassFF/passff-host/issues/68
+  // - formcontrolname: Attribute name used by Angular https://codeberg.org/PassFF/passff/issues/587
+  // - autocomplete: Ignored if value is "on" or "off"
+  inputAttributes: "id,name,placeholder,label,formcontrolname,autocomplete",
+
   buttonInputQueries:
     "button:not([type=reset])\ninput[type=submit]\ninput[type=button]\n[role=button]",
   loginFieldNames: "login,user,username,id",
