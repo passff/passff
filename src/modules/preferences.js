@@ -68,6 +68,7 @@ let prefParams = {
   passwordInputNames: "passwd,password,pass",
   loginInputNames: "login,user,mail,email,tel,username,opt_login,log,usr_name",
   otpInputNames: "otp,code,otc,user[otp_attempt],one-time-password",
+  inputAttributes: "id,name",
   buttonInputQueries:
     "button:not([type=reset])\ninput[type=submit]\ninput[type=button]\n[role=button]",
   loginFieldNames: "login,user,username,id",
@@ -115,6 +116,7 @@ const listParams = {
   passwordInputNames: ",",
   loginInputNames: ",",
   otpInputNames: ",",
+  inputAttributes: ",",
   buttonInputQueries: "\n",
   loginFieldNames: ",",
   passwordFieldNames: ",",
@@ -130,6 +132,7 @@ const lowerCaseParams = [
   "passwordInputNames",
   "loginInputNames",
   "otpInputNames",
+  "inputAttributes",
   "buttonInputQueries",
   "loginFieldNames",
   "passwordFieldNames",
