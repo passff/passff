@@ -207,6 +207,9 @@ function setLoginPasswordUrls(passwordData, item) {
     if (line2Data.length > 0 && line2Data[0] != "") {
       loginSrc = "line2";
       logins.push(passwordData["PASSFF_LINE_2"][0]);
+    } else if (PassFF.Preferences.defaultLogin) {
+      loginSrc = "default";
+      logins.push(PassFF.Preferences.defaultLogin);
     } else {
       loginSrc = "key";
       logins.push(item.key);
