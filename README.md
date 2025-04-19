@@ -83,8 +83,9 @@ and URL respectively (unless those lines are left empty):
 <more_content>
 ```
 
-If there is only a single line, or none of the provided fields matches a login field name, the username is taken from
-the filename, e.g. `example.com/janedoe` will have a default username of `janedoe`:
+If there is only a single line, or none of the provided fields matches a login field name, the
+username is taken from the filename, e.g. `example.com/janedoe` will have a default username of
+`janedoe`:
 
 ```
 <the_password>
@@ -92,8 +93,10 @@ url: <the_url>
 <other_inputfield_name>: <inputfield_value>
 ```
 
-If there is no `url` field, but a `login` field, the URL is taken from the filename, assuming a secure protocol,
-e.g. `shopping/example.com` will have a default URL of `https://example.com`:
+Note that you can specify a "default username" in the preferences that will be used instead of
+the filename in this case. If there is no `url` field, but a `login` field, the URL is taken from
+the filename, assuming a secure protocol, e.g. `shopping/example.com` will have a default URL of
+`https://example.com`:
 
 ```
 <the_password>
