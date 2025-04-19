@@ -155,6 +155,9 @@
   "passff_prefs_login_input_names_label": {
     "message": "Attribute values that identify username fields"
   },
+  "passff_prefs_default_login_label": {
+    "message": "Default username if no username is found"
+  },
   "passff_prefs_otp_input_names_label": {
     "message": "Attribute values that identify OTP fields"
   },

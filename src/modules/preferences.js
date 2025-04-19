@@ -67,6 +67,7 @@ function initUi() {
 let prefParams = {
   passwordInputNames: "passwd,password,pass",
   loginInputNames: "login,user,mail,email,tel,username,opt_login,log,usr_name",
+  defaultLogin: "",
   otpInputNames: "otp,code,otc,user[otp_attempt],one-time-password",
 
   // Notes for some of the attributes listed below:
