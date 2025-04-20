@@ -82,7 +82,7 @@ function getAutocompleteAttr(input) {
 
 function readInputNames(input) {
   let inputNames = PassFF.Preferences.inputAttributes.map((name) => {
-    let value = input.getAttribute(name);
+    let value = input.getAttribute(name) || "";
     if (name.toLowerCase() == "autocomplete") {
       value = getAutocompleteAttr(input) || "";
       if (["on", "off"].indexOf(value) !== -1) {
