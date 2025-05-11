@@ -285,7 +285,7 @@
     "message": "Confirm password"
   },
   "passff_newpassword_inputs_additional_info_label": {
-    "message": "Additional info"
+    "message": "username: <username>\nurl: <url>\nAdditional info"
   },
   "passff_newpassword_inputs_password_length_label": {
     "message": "Length"

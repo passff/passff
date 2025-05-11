@@ -1,9 +1,9 @@
 {
   "passff_passphrase_title": {
-    "message": "Репозиторий паролей заблокирован"
+    "message": "Хранилище паролей заблокировано"
   },
   "passff_passphrase_description": {
-    "message": "Нет доступа к паролю.\n Сначала добавьте пароль в gpg-agent."
+    "message": "Нет доступа к паролю.\nСначала добавьте пароль в gpg-agent."
   },
   "passff_menu_copy_password": {
     "message": "Копировать пароль"
@@ -45,7 +45,7 @@
     "message": "Настройки"
   },
   "passff_toolbar_new_password_label": {
-    "message": "Новый"
+    "message": "Новый пароль"
   },
   "passff_button_root_label": {
     "message": "Показать все"
@@ -63,7 +63,7 @@
     "message": "Автозаполнение"
   },
   "passff_prefs_tab_inputs": {
-    "message": "Входы"
+    "message": "Методы ввода"
   },
   "passff_prefs_tab_fields": {
     "message": "Поля"
@@ -75,7 +75,7 @@
     "message": "Добавление паролей"
   },
   "passff_prefs_tab_browsing": {
-    "message": "Browsing and searching the password store"
+    "message": "Поиск по хранилищу паролей"
   },
   "passff_prefs_tab_dev": {
     "message": "Отладка"
@@ -93,7 +93,7 @@
     "message": "Отметить поля, которые можно заполнить, иконкой PassFF"
   },
   "passff_prefs_context_menu": {
-    "message": "Add item to context menu for filling fillable input fields"
+    "message": "Добавить пункт 'заполнить поле' в контекстное меню"
   },
   "passff_prefs_submit_fillable": {
     "message": "Отправить при выборе через меню ввода"
@@ -102,7 +102,7 @@
     "message": "Обрабатывать аутентификацию HTTP"
   },
   "passff_prefs_directories_first": {
-    "message": "Показывать каталоги в начале списка в панели инструментов"
+    "message": "Показывать папки в начале списка в панели инструментов"
   },
   "passff_prefs_tb_menu_shortcut_label": {
     "message": "Сочетание клавиш для меню панели инструментов"
@@ -114,10 +114,10 @@
     "message": "Поведение клавиши ввода"
   },
   "passff_prefs_inputs_description": {
-    "message": "Входы используются PassFF, чтобы найти на веб-страницах поля, которые можно автоматически заполнить. PassFF может помечать такие поля специальной иконкой, нажатие на которую вызовет автозаполнение полей."
+    "message": "Используется PassFF, чтобы найти на веб-страницах поля, которые можно автоматически заполнить. PassFF может помечать такие поля специальной иконкой, нажатие на которую вызовет автозаполнение."
   },
   "passff_prefs_fields_description": {
-    "message": "Поля, которые используются для поиска данных в вашем репозитории паролей. PassFF пытается найти логин, пароль и адреса сайтов в файлах с паролями (используя стандартный синтаксис)."
+    "message": "Поля, которые используются для поиска данных в вашем хранилище паролей. PassFF пытается найти логин, пароль и адреса сайтов в файлах с паролями, используя стандартный синтаксис."
   },
   "passff_prefs_password_input_names_label": {
     "message": "Имена полей для паролей"
@@ -144,19 +144,19 @@
     "message": "Автоматически отправлять поля для входа"
   },
   "passff_prefs_autofill_blacklist_label": {
-    "message": "Не использовать автозаполнение если адрес содержит одну из следующих строк"
+    "message": "Не использовать автозаполнение, если адрес содержит одну из следующих строк"
   },
   "passff_prefs_default_length_label": {
     "message": "Длина пароля по умолчанию"
   },
   "passff_prefs_default_include_symbols_label": {
-    "message": "Включать все символы по умолчанию"
+    "message": "Включать специальные символы"
   },
   "passff_prefs_preferred_new_method_label": {
     "message": "Предпочтительный новый метод"
   },
   "passff_prefs_prefer_generate": {
-    "message": "Сгенерировать"
+    "message": "Создать"
   },
   "passff_prefs_prefer_insert": {
     "message": "Вставить"
@@ -165,13 +165,13 @@
     "message": "Показывать кнопку 'Новый пароль' в панели инструментов"
   },
   "passff_prefs_enable_logging": {
-    "message": "Включить отладку в JavaScript веб-консоли"
+    "message": "Включить отладку в консоли JavaScript"
   },
   "passff_prefs_show_status": {
     "message": "Показывать строку состояния в панели инструментов"
   },
   "passff_prefs_match_suffixes_label": {
-    "message": "Domain suffixes to treat like TLDs"
+    "message": "Дополнительные домены верхнего уровня"
   },
   "passff_newpassword_window_title": {
     "message": "Новый пароль"
@@ -180,7 +180,7 @@
     "message": "Добавить новый пароль"
   },
   "passff_newpassword_tabs_generate": {
-    "message": "Генерировать"
+    "message": "Создать"
   },
   "passff_newpassword_tabs_insert": {
     "message": "Вставить"
@@ -195,19 +195,19 @@
     "message": "Подтвердить пароль"
   },
   "passff_newpassword_inputs_additional_info_label": {
-    "message": "Дополнительные данные"
+    "message": "username: <логин>\nurl: <url-адрес, для которого будет подставляться пароль>\nПрочие данные"
   },
   "passff_newpassword_inputs_password_length_label": {
     "message": "Длина"
   },
   "passff_newpassword_inputs_include_symbols_label": {
-    "message": "Включая отличные от букв и цифр символы?"
+    "message": "Использовать специальные символы?"
   },
   "passff_newpassword_inputs_add_password_button_label": {
     "message": "Вставить пароль"
   },
   "passff_newpassword_inputs_generate_password_button_label": {
-    "message": "Генерировать пароль"
+    "message": "Создать пароль"
   },
   "passff_newpassword_inputs_overwrite_password_prompt": {
     "message": "Пароль уже существует. Хотите заменить его?"
@@ -228,10 +228,10 @@
     "message": "Извините, произошла неожиданная ошибка"
   },
   "passff_errors_exec_host_app": {
-    "message": "Соединение с хост-приложением не удалось или возвратило неожиданный результат!"
+    "message": "Соединение с хост-приложением не удалось, или приложение вернуло ошибку!"
   },
   "passff_errors_upgrade_host_app": {
-    "message": "Убедитесь, что вы используете последнюю версию хост-приложения PastFF. Смотри руководство по установке [инструкции по установке]($passffURL$).",
+    "message": "Убедитесь, что вы используете последнюю версию passff-host. Смотри [инструкции по установке]($passffURL$).",
     "placeholders": {
       "passffURL": {
         "content": "$1",
@@ -240,6 +240,6 @@
     }
   },
   "passff_no_entries_found": {
-    "message": "Нет записей совпадающих с этим URL."
+    "message": "Для этого URL ничего не нашлось"
   }
 }
