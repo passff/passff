@@ -98,7 +98,7 @@ let prefParams = {
   shiftEnterBehavior: 4,
   ctrlEnterBehavior: 3,
   prefillLoginTab: false,
-  prefillLoginDefault: "",
+  prefillLoginDefault: "<username>",
   prefillUrl: false,
   defaultPasswordLength: 16,
   defaultIncludeSymbols: true,

@@ -1428,14 +1428,14 @@ function handlePasswordGeneration() {
         `${PassFF.Preferences.loginFieldNames[0]}: ${context["tabLogin"]}`,
       );
     }
+    let urlValue = "<url>";
     if (PassFF.Preferences.prefillUrl) {
       let url = new URL(context["tabUrl"]);
       if (url.protocol !== "about:") {
-        addtlInfo.push(
-          `${PassFF.Preferences.urlFieldNames[0]}: ${context["tabUrl"]}`,
-        );
+        urlValue = url.href;
       }
     }
+    addtlInfo.push(`${PassFF.Preferences.urlFieldNames[0]}: ${urlValue}`);
     document.getElementById("add-password-info").value = addtlInfo.join("\n");
   });
 }
