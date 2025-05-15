@@ -195,7 +195,7 @@
     "message": "Подтвердить пароль"
   },
   "passff_newpassword_inputs_additional_info_label": {
-    "message": "username: <логин>\nurl: <url-адрес, для которого будет подставляться пароль>\nПрочие данные"
+    "message": "Прочие данные"
   },
   "passff_newpassword_inputs_password_length_label": {
     "message": "Длина"
