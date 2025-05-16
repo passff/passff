@@ -287,6 +287,9 @@ let prefObj = {
 };
 
 function normalizeBrowserShortcut(shortcut) {
+  if (shortcut == "") {
+    return "";
+  }
   let camelCaseParts = {};
   [
     "MacCtrl",
