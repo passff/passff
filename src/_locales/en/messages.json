@@ -104,6 +104,9 @@
   "passff_prefs_look_popup_width": {
     "message": "Form popup width"
   },
+  "passff_prefs_icon_offset": {
+    "message": "Offset the icon in field for multiple pw managers"
+  },
   "passff_prefs_mark_fillable": {
     "message": "Mark fillable input fields with the PassFF icon"
   },

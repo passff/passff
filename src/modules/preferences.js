@@ -109,6 +109,7 @@ let prefParams = {
   filterPathRegex: "notes\nattributes\nattachments",
   lookMenuWidth: "28rem",
   lookPopupWidth: "25rem",
+  iconOffset: "0px",
 };
 
 const listParams = {

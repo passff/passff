@@ -353,15 +353,19 @@ function getPassffIcon(light) {
 function isMouseOverIcon(e) {
   if (typeof e.target.passffInjected === "undefined") return false;
   let bcrect = e.target.getBoundingClientRect();
-  let leftLimit = bcrect.left + bcrect.width - 22;
-  return e.clientX > leftLimit;
+  let iconoffset = parseFloat(PassFF.Preferences.iconOffset) || 0;
+  //let leftLimit = bcrect.left + bcrect.width - 22;
+  let leftLimit = bcrect.left + bcrect.width - 22 - iconoffset;
+  let rightLimit = bcrect.left + bcrect.width - iconoffset;
+  return e.clientX > leftLimit && e.clientX < rightLimit;
 }
 
 function setIconBackgroundStyle(input, iconUrl) {
   input.style.backgroundRepeat = "no-repeat";
   input.style.backgroundAttachment = "scroll";
   input.style.backgroundSize = "16px 16px";
-  input.style.backgroundPosition = "calc(100% - 4px) 50%";
+  input.style.backgroundPosition = "calc(100% - 24px) 50%";
+  input.style.backgroundPosition = `calc(100% - 4px - ${PassFF.Preferences.iconOffset}) 50%`;
   input.style.backgroundImage = `url('${iconUrl}')`;
 }
 
