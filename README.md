@@ -52,7 +52,7 @@ Note: Since the host app runs non-interactively, **a console _pinentry_ such as 
 
 ### One-time-password (OTP) Authentication
 
-PassFF can generate tokens to fill OTP input fields if the [pass-otp](https://github.com/tadfisher/pass-otp) extension is installed and the key URI is configured in the password file.
+PassFF can generate tokens to fill OTP input fields if the [pass-otp](https://github.com/tadfisher/pass-otp) extension is installed and the key URI is configured in the password file. See examples.
 
 ## Password formats
 
