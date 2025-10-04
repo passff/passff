@@ -62,6 +62,7 @@ div.buttonbox > div {
 
 div.buttonbox > div div {
   display: table-cell;
+  vertical-align: middle;
 }
 
 div.buttonbox button {
