@@ -35,7 +35,6 @@ function getActiveElement(doc, depth) {
   } else {
     return doc.activeElement;
   }
-  return false;
 }
 
 function refocus() {
@@ -354,20 +353,36 @@ function getPassffIcon(light) {
   return browser.runtime.getURL(`/skin/icon${!!light ? "-light" : ""}.svg`);
 }
 
+const ICON_HIT_WIDTH = 22;
+
 function isMouseOverIcon(e) {
   if (typeof e.target.passffInjected === "undefined") return false;
-  let bcrect = e.target.getBoundingClientRect();
-  let iconOffset = parseFloat(PassFF.Preferences.iconOffset) || 0;
-  let rightLimit = bcrect.left + bcrect.width - iconOffset;
-  let leftLimit = rightLimit - 22;
-  return e.clientX > leftLimit && e.clientX < rightLimit;
+  const input = e.target;
+  const rect = input.getBoundingClientRect();
+  const iconOffset = parseFloat(PassFF.Preferences.iconOffset) || 0;
+  const isRtl = getComputedStyle(input).direction === "rtl";
+
+  const iconLeft = isRtl
+    ? rect.left + iconOffset
+    : rect.right - iconOffset - ICON_HIT_WIDTH;
+  const iconRight = iconLeft + ICON_HIT_WIDTH;
+
+  return e.clientX >= iconLeft && e.clientX <= iconRight;
 }
 
+const ICON_SIZE_PX = 16;
+const ICON_POSITION_INSET_PX = 4;
+
 function setIconBackgroundStyle(input, iconUrl) {
+  const { iconOffset } = PassFF.Preferences;
+  const isRtl = getComputedStyle(input).direction === "rtl";
+
   input.style.backgroundRepeat = "no-repeat";
   input.style.backgroundAttachment = "scroll";
-  input.style.backgroundSize = "16px 16px";
-  input.style.backgroundPosition = `calc(100% - 4px - ${PassFF.Preferences.iconOffset}) 50%`;
+  input.style.backgroundSize = `${ICON_SIZE_PX}px ${ICON_SIZE_PX}px`;
+  input.style.backgroundPosition = isRtl
+    ? `calc(${ICON_POSITION_INSET_PX}px - ${iconOffset}) 50%`
+    : `calc(100% - ${ICON_POSITION_INSET_PX}px - ${iconOffset}) 50%`;
   input.style.backgroundImage = `url('${iconUrl}')`;
 }
 
