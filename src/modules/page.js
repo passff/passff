@@ -120,7 +120,7 @@ function findIntersection(arr1, arr2, callback) {
   return arr1.find((el1) => arr2.some((el2) => callback(el1, el2)));
 }
 
-function rateInputNames(input, goodNames) {
+export function rateInputNames(input, goodNames) {
   let inputNames = readInputNames(input);
   let rt = inputNames.map((inputName) => {
     let rating = 0;
