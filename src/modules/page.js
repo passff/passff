@@ -35,7 +35,6 @@ function getActiveElement(doc, depth) {
   } else {
     return doc.activeElement;
   }
-  return false;
 }
 
 function refocus() {
@@ -354,21 +353,57 @@ function getPassffIcon(light) {
   return browser.runtime.getURL(`/skin/icon${!!light ? "-light" : ""}.svg`);
 }
 
-function isMouseOverIcon(e) {
-  if (typeof e.target.passffInjected === "undefined") return false;
-  let bcrect = e.target.getBoundingClientRect();
-  let iconOffset = parseFloat(PassFF.Preferences.iconOffset) || 0;
-  let rightLimit = bcrect.left + bcrect.width - iconOffset;
-  let leftLimit = rightLimit - 22;
-  return e.clientX > leftLimit && e.clientX < rightLimit;
+/**
+ * Returns true if the element is in RTL direction
+ * Falls back to document direction if not explicitly set
+ * @param {HTMLElement} el
+ * @returns {boolean}
+ */
+function isRtl(el) {
+  if (!el) return false;
+  const dir = getComputedStyle(el).direction;
+  return dir === "rtl";
 }
 
+function getIconOffset() {
+  return parseFloat(PassFF.Preferences.iconOffset) || 0;
+}
+
+const ICON_HIT_WIDTH = 22;
+
+function isMouseOverIcon(e) {
+  if (typeof e.target.passffInjected === "undefined") return false;
+  const input = e.target;
+  const rect = input.getBoundingClientRect();
+  const iconOffset = getIconOffset();
+  const rtl = isRtl(input);
+
+  const iconLeft = rtl
+    ? rect.left + iconOffset
+    : rect.right - iconOffset - ICON_HIT_WIDTH;
+  const iconRight = iconLeft + ICON_HIT_WIDTH;
+
+  return e.clientX >= iconLeft && e.clientX <= iconRight;
+}
+
+const ICON_SIZE_PX = 16;
+const ICON_POSITION_INSET_PX = 4;
+
 function setIconBackgroundStyle(input, iconUrl) {
-  input.style.backgroundRepeat = "no-repeat";
-  input.style.backgroundAttachment = "scroll";
-  input.style.backgroundSize = "16px 16px";
-  input.style.backgroundPosition = `calc(100% - 4px - ${PassFF.Preferences.iconOffset}) 50%`;
-  input.style.backgroundImage = `url('${iconUrl}')`;
+  const iconOffset = getIconOffset();
+  const rtl = isRtl(input);
+
+  const positionX = rtl
+    ? `${ICON_POSITION_INSET_PX + iconOffset}px`
+    : `calc(100% - ${ICON_POSITION_INSET_PX + iconOffset}px)`;
+
+  Object.assign(input.style, {
+    backgroundImage: `url('${iconUrl}')`,
+    backgroundRepeat: "no-repeat",
+    backgroundAttachment: "scroll",
+    backgroundSize: `${ICON_SIZE_PX}px ${ICON_SIZE_PX}px`,
+    backgroundPosition: `${positionX} 50%`,
+  });
 }
 
 function onIconHover(e) {
