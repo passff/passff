@@ -51,6 +51,10 @@ function isVisible(el) {
   return !isInvisible(el);
 }
 
+function isWritable(el) {
+  return !!el && !el.hasAttribute("readonly");
+}
+
 function getSubmitButton(form) {
   let buttonQuery = PassFF.Preferences.buttonInputQueries.join(",");
   let buttons = Array.from(form.querySelectorAll(buttonQuery))
@@ -263,7 +267,9 @@ function annotateInputs(inputs) {
 
 function onNodeAdded() {
   inputElements = annotateInputs(
-    querySelectorAllShadows("input,select").filter(isVisible),
+    querySelectorAllShadows("input,select")
+      .filter(isVisible)
+      .filter(isWritable),
   );
   if (PassFF.Preferences.markFillable) {
     let url = window.location.href;
@@ -1021,7 +1027,9 @@ export default {
               (el) => el.tagName == "INPUT",
             );
           }
-          inputs = annotateInputs(Array.from(inputs).filter(isVisible));
+          inputs = annotateInputs(
+            Array.from(inputs).filter(isVisible).filter(isWritable),
+          );
           setInputs(inputs, passwordData);
         },
       );
