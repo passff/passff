@@ -1,6 +1,10 @@
 import * as util from "../modules/util.js";
 import PassFF from "../modules/main.js";
 
+beforeAll(() =>
+  Object.defineProperty(global, "browser", { value: {}, writable: false }),
+);
+
 test("semver", () => {
   expect(util.semver.gt("1.1.6", "1.4.0")).toBe(false);
   expect(util.semver.gt("1.19", "1.18.4")).toBe(true);

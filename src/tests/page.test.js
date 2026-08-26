@@ -1,6 +1,10 @@
 import PassFF from "../modules/main.js";
 import * as PageHelpers from "../modules/page.js";
 
+beforeAll(() =>
+  Object.defineProperty(global, "browser", { value: {}, writable: false }),
+);
+
 test("rateInputNames", () => {
   // mock an INPUT element
   const input = {

@@ -372,6 +372,9 @@ export function sanitizeDomain(domain) {
 export function getDomainSuffix(domain) {
   // get the domain suffix without the leading dot
   domain = sanitizeDomain(domain);
+  if (!!browser?.publicSuffix) {
+    return browser.publicSuffix.getKnownSuffix(domain) || "";
+  }
   let domainParts = domain.split(/\.+/);
   let suffix =
     domainParts.length >= 2 ? domainParts[domainParts.length - 1] : "";

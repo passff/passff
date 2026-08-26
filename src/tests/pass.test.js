@@ -3,6 +3,10 @@ import PassFF from "../modules/main.js";
 import { log } from "../modules/util.js";
 import * as PassHelpers from "../modules/pass.js";
 
+beforeAll(() =>
+  Object.defineProperty(global, "browser", { value: {}, writable: false }),
+);
+
 test("parse the pass tree output", () => {
   const logSpy = jest.spyOn(log, "debug").mockImplementation(() => {});
 
