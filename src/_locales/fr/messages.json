@@ -101,6 +101,9 @@
   "passff_prefs_look_menu_width": {
     "message": "Largeur du menu de la barre d'outils"
   },
+  "passff_prefs_look_menu_in_popup": {
+    "message": "Ouvrir le menu de la barre d'outils dans sa propre fenêtre popup"
+  },
   "passff_prefs_look_popup_width": {
     "message": "Largeur de la fenêtre contextuelle"
   },

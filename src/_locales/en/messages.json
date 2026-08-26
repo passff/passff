@@ -101,6 +101,9 @@
   "passff_prefs_look_menu_width": {
     "message": "Toolbar menu width"
   },
+  "passff_prefs_look_menu_in_popup": {
+    "message": "Open toolbar menu in own popup window"
+  },
   "passff_prefs_look_popup_width": {
     "message": "Form popup width"
   },

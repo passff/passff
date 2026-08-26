@@ -9,6 +9,16 @@ import * as util from "./util.js";
 import { _, log } from "./util.js";
 import PassFF from "./main.js";
 
+function browserActionListener() {
+  browser.windows.create({
+    url: browser.runtime.getURL("content/menu.html"),
+    width: 448,
+    height: 277,
+    type: "popup",
+  });
+  return false;
+}
+
 /* ###########################################################################
  * ###########################################################################
  *  Helper for preferences page UI
@@ -118,6 +128,7 @@ let prefParams = {
   recognisedSuffixes: "co.uk,org.uk,me.uk,co.jp,com.au",
   filterPathRegex: "notes\nattributes\nattachments",
   lookMenuWidth: "28rem",
+  lookMenuInPopup: false,
   lookPopupWidth: "25rem",
   iconOffset: "0px",
 };
@@ -190,6 +201,8 @@ let prefObj = {
               PassFF.Auth.init();
             } else if (item == "tbMenuShortcut") {
               updateBrowserCommand();
+            } else if (item == "lookMenuInPopup") {
+              PassFF.Preferences.updateMenuInPopup();
             }
           }
         });
@@ -283,6 +296,27 @@ let prefObj = {
         });
         return command;
       });
+    },
+  ),
+
+  updateMenuInPopup: util.backgroundFunction(
+    "Preferences.updateMenuInPopup",
+    function () {
+      if (PassFF.Preferences.lookMenuInPopup) {
+        browser.browserAction.setPopup({ popup: "" });
+        if (
+          !browser.browserAction.onClicked.hasListener(browserActionListener)
+        ) {
+          browser.browserAction.onClicked.addListener(browserActionListener);
+        }
+      } else {
+        if (
+          browser.browserAction.onClicked.hasListener(browserActionListener)
+        ) {
+          browser.browserAction.onClicked.removeListener(browserActionListener);
+        }
+        browser.browserAction.setPopup({ popup: "content/menu.html" });
+      }
     },
   ),
 };

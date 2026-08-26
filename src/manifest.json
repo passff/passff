@@ -23,8 +23,7 @@
         "dark": "skin/icon.svg",
         "size": 32
       }
-    ],
-    "default_popup": "content/menu.html"
+    ]
   },
 
   "permissions": [

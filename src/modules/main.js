@@ -191,6 +191,7 @@ let PassFF = {
             break;
           case "background":
             PassFF.Auth.init();
+            PassFF.Preferences.updateMenuInPopup();
             browser.contextMenus.onClicked.addListener(onContextMenuClick);
             browser.tabs.onUpdated.addListener(onTabUpdated);
             browser.tabs.onActivated.addListener(onTabActivated);

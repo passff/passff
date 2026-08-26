@@ -101,6 +101,9 @@
   "passff_prefs_look_menu_width": {
     "message": "Breite des Toolbar-Menüs"
   },
+  "passff_prefs_look_menu_in_popup": {
+    "message": "Toolbar-Menü in eigenem Popup-Fenster öffnen"
+  },
   "passff_prefs_look_popup_width": {
     "message": "Breite des Formular-Popups"
   },
