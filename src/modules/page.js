@@ -99,6 +99,16 @@ function readInputNames(input) {
     return value;
   });
 
+  if (input.ariaLabel) {
+    inputNames.push(input.ariaLabel);
+  }
+
+  if (input.ariaLabelledByElements) {
+    inputNames = inputNames.concat(
+      Array.from(input.ariaLabelledByElements, (l) => l.innerText),
+    );
+  }
+
   // labels are <label> elements whose `for`-attribute points to this input
   if (input.labels) {
     inputNames = inputNames.concat(
