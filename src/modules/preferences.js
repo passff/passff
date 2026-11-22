@@ -8,7 +8,6 @@
 import * as util from "./util.js";
 import { _, log } from "./util.js";
 import PassFF from "./main.js";
-import { getOverwrites } from "./policy.js";
 
 function browserActionListener() {
   browser.windows.create({
@@ -53,7 +52,7 @@ function initUi() {
   for (let [key, val] of Object.entries(prefParams)) {
     let el = document.getElementById("pref_" + key);
     if (el === null) continue;
-    if (overwrites.hasOwnProperty(key)) {
+    if (prefParamsManaged.hasOwnProperty(key)) {
       el.disabled = true;
       el.title = _("passff_prefs_managed");
     }
@@ -138,8 +137,8 @@ let prefParams = {
   iconOffset: "0px",
 };
 
-// Preferences enforced by policy, see policy.js
-let overwrites = {};
+// preferences enforced by enterprise policy (from managed storage)
+let prefParamsManaged = {};
 
 const listParams = {
   passwordInputNames: ",",
@@ -181,9 +180,22 @@ let prefObj = {
 
   init: function () {
     let changes = {};
-    return getOverwrites(prefParams)
+    return (
+      !browser.storage.managed
+        ? Promise.resolve({})
+        : browser.storage.managed.get(Object.keys(prefParams))
+    )
+      .catch(() => ({})) // rejects when no policy is configured
       .then((res) => {
-        overwrites = res;
+        // only use managed preferences of correct type
+        prefParamsManaged = {};
+        for (let [key, val] of Object.entries(res || {})) {
+          if (typeof val === typeof prefParams[key]) {
+            prefParamsManaged[key] = val;
+          } else {
+            log.warn("Managed preference has unexpected type!", key);
+          }
+        }
         return browser.storage.local.get(Object.keys(prefParams));
       })
       .then((res) => {
@@ -199,11 +211,11 @@ let prefObj = {
       .then((command) => {
         prefParams["tbMenuShortcut"] = command.shortcut;
         changes["tbMenuShortcut"] = command.shortcut;
-        Object.assign(prefParams, overwrites);
+        Object.assign(prefParams, prefParamsManaged);
         return browser.storage.local.set(changes);
       })
       .then(() => {
-        if (overwrites.hasOwnProperty("tbMenuShortcut")) {
+        if (prefParamsManaged.hasOwnProperty("tbMenuShortcut")) {
           return updateBrowserCommand();
         }
       })
@@ -213,7 +225,7 @@ let prefObj = {
         browser.storage.onChanged.addListener((changes, areaName) => {
           if (areaName !== "local") return;
           for (let item of Object.keys(changes)) {
-            if (overwrites.hasOwnProperty(item)) continue;
+            if (prefParamsManaged.hasOwnProperty(item)) continue;
             prefParams[item] = changes[item].newValue;
             if (item == "handleHttpAuth" && PassFF.mode === "background") {
               PassFF.Auth.init();
@@ -386,7 +398,7 @@ function updateBrowserCommand() {
 export default new Proxy(prefObj, {
   set: function (target, key, val) {
     if (target.hasOwnProperty(key)) return false;
-    if (overwrites.hasOwnProperty(key)) return true;
+    if (prefParamsManaged.hasOwnProperty(key)) return true;
     let obj = {};
     obj[key] = val;
     browser.storage.local.set(obj);

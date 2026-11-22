@@ -242,7 +242,7 @@ into the name of the entry for `http://example.com:2000/`:
 
 Accessible from the gear button in the toolbar menu, preferences let you fine-tune the behaviour of PassFF.
 
-Preferences can also be enforced through a [Firefox enterprise policy](https://mozilla.github.io/policy-templates/#3rdparty). The preferences set there replace your own values and are greyed out in the preferences page:
+Preferences can also be enforced through a [Firefox enterprise policy](https://firefox-admin-docs.mozilla.org/reference/policies/3rdparty/). The preferences set there replace your own values and are greyed out in the preferences page:
 
 ```json
 {

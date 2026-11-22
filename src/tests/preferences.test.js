@@ -2,7 +2,7 @@ import { jest } from "@jest/globals";
 import PassFF from "../modules/main.js";
 import { log } from "../modules/util.js";
 
-let policy, local;
+let managedStorageData, localStorageData;
 
 beforeAll(() => {
   Object.defineProperty(global, "browser", {
@@ -10,15 +10,15 @@ beforeAll(() => {
       storage: {
         managed: {
           get: jest.fn(() =>
-            policy === null
+            managedStorageData === null
               ? Promise.reject(new Error("Managed storage manifest not found"))
-              : Promise.resolve(policy),
+              : Promise.resolve(managedStorageData),
           ),
         },
         local: {
-          get: jest.fn(() => Promise.resolve(local)),
+          get: jest.fn(() => Promise.resolve(localStorageData)),
           set: jest.fn((obj) => {
-            Object.assign(local, obj);
+            Object.assign(localStorageData, obj);
             return Promise.resolve();
           }),
         },
@@ -41,24 +41,24 @@ beforeAll(() => {
 beforeEach(() => jest.clearAllMocks());
 
 test("without a policy the stored preferences are used", async () => {
-  policy = null;
-  local = { enterBehavior: 1 };
+  managedStorageData = null;
+  localStorageData = { enterBehavior: 1 };
   await PassFF.Preferences.init();
   expect(PassFF.Preferences.enterBehavior).toBe(1);
   PassFF.Preferences.enterBehavior = 2;
-  expect(local.enterBehavior).toBe(2);
+  expect(localStorageData.enterBehavior).toBe(2);
   expect(browser.commands.update).not.toHaveBeenCalled();
 });
 
 test("managed preferences replace the stored ones and lock them", async () => {
   const warnSpy = jest.spyOn(log, "warn").mockImplementation(() => {});
-  policy = {
+  managedStorageData = {
     enterBehavior: 3,
     recognisedSuffixes: "co.uk,it",
     tbMenuShortcut: "Ctrl+Alt+P",
     defaultPasswordLength: "20", // wrong type, ignored
   };
-  local = { enterBehavior: 1, defaultPasswordLength: 12 };
+  localStorageData = { enterBehavior: 1, defaultPasswordLength: 12 };
   await PassFF.Preferences.init();
 
   expect(PassFF.Preferences.enterBehavior).toBe(3);
@@ -72,5 +72,5 @@ test("managed preferences replace the stored ones and lock them", async () => {
 
   PassFF.Preferences.enterBehavior = 0;
   expect(PassFF.Preferences.enterBehavior).toBe(3);
-  expect(local.enterBehavior).toBe(1);
+  expect(localStorageData.enterBehavior).toBe(1);
 });
