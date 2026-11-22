@@ -128,6 +128,9 @@
   "passff_prefs_tb_menu_shortcut_label": {
     "message": "Raccourcie clavier pour le menu de la barre d'outils"
   },
+  "passff_prefs_managed": {
+    "message": "Ce paramètre est défini par l'administrateur."
+  },
   "passff_prefs_shortcut_syntax_help": {
     "message": "Exemples de raccourcis valides : `Ctrl+Shift+L`, `Ctrl+Alt+U`. Pour la syntaxe générale, veuillez vous référer à la [MDN web docs](https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/manifest.json/commands#shortcut_values)."
   },
