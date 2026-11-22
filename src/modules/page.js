@@ -13,7 +13,7 @@ let loginInputTypes = ["text", "email", "tel"];
 let otpInputTypes = ["text", "number", "password", "tel"];
 let pwInputTypes = ["password", "text"];
 let tabInitPending = [];
-let matchItems = [];
+let matchItems = null;
 let bestFitItem = null;
 let goToAutoFillPending = null;
 let lastActiveElement = null;
@@ -518,6 +518,7 @@ function setupPopup() {
       let paperPlane16 = browser.runtime.getURL("/skin/paper-plane.svg");
       let pencilSquare16 = browser.runtime.getURL("/skin/pencil-square.svg");
 
+      loadMatchItems();
       if (matchItems.length === 0) {
         let alertEl = doc.createElement("div");
         alertEl.classList.add("alert");
@@ -685,14 +686,18 @@ function initTab(tab) {
   });
 }
 
-function resetMatchItems() {
-  let url = window.location.href;
+function loadMatchItems() {
+  if (matchItems !== null) {
+    return;
+  }
+  const url = window.location.href;
   matchItems = PassFF.Pass.getUrlMatchingItems(url, tabContainer);
   bestFitItem = PassFF.Pass.findBestFitItem(matchItems, url, tabContainer);
 }
 
 function onWindowLoad() {
-  resetMatchItems();
+  matchItems = null;
+  bestFitItem = null;
 
   let obs = new MutationObserver(util.debouncedFunction(onNodeAdded, 200));
   obs.observe(document, { attributes: true, childList: true, subtree: true });
@@ -930,8 +935,9 @@ export default {
   }),
 
   refresh: util.contentFunction("Page.refresh", function () {
-    resetMatchItems();
     setupPopup();
+    matchItems = null;
+    bestFitItem = null;
   }),
 
   // %%%%%%%%%%%%%%%%%%%%%%%%%% URL changer %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1008,6 +1014,7 @@ export default {
     if (urlInBlacklist >= 0) return;
 
     log.debug("Start pref-auto-fill");
+    loadMatchItems();
     if (bestFitItem) {
       PassFF.Page.fillInputs(bestFitItem, false, true).then((passwordData) => {
         if (

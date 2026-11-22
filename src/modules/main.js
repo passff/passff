@@ -40,6 +40,24 @@ function onContextMenuClick(info, tab) {
   }
 }
 
+function updateContextMenu() {
+  PassFF.Pass.contextItems
+    .filter((i) => {
+      return i.isLeaf;
+    })
+    .slice(0, 3)
+    .forEach((i) => {
+      // note that this re-creates the element each time the context menu opens
+      // however, since we use a unique ID, Firefox just ignores this after the first time
+      chrome.contextMenus.create({
+        id: "login-" + i.id,
+        title: i.fullKey,
+        contexts: ["editable"],
+      });
+    });
+  chrome.contextMenus.refresh();
+}
+
 function setupContextMenu() {
   chrome.contextMenus.removeAll();
   chrome.contextMenus.create({
@@ -57,18 +75,6 @@ function setupContextMenu() {
     type: "separator",
     contexts: ["editable"],
   });
-  PassFF.Pass.contextItems
-    .filter((i) => {
-      return i.isLeaf;
-    })
-    .slice(0, 3)
-    .forEach((i) => {
-      chrome.contextMenus.create({
-        id: "login-" + i.id,
-        title: i.fullKey,
-        contexts: ["editable"],
-      });
-    });
 }
 
 /* #############################################################################
@@ -124,10 +130,12 @@ function onTabUpdated(tabId, changeInfo, tab) {
     }
 
     return util.getTabContainer(tab).then((containerName) => {
-      PassFF.Pass.loadContextItems(url, containerName);
+      PassFF.Pass.setContextInfo(url, containerName);
       if (PassFF.Preferences.contextMenu) {
         setupContextMenu();
+        chrome.contextMenus.onShown.addListener(updateContextMenu);
       } else {
+        chrome.contextMenus.onShown.removeListener(updateContextMenu);
         chrome.contextMenus.removeAll();
       }
       PassFF.Menu.onContextChanged();

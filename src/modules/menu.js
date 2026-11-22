@@ -554,7 +554,7 @@ export default {
   },
 
   onContextChanged: function (url) {
-    menuState["items"] = PassFF.Pass.contextItems;
+    menuState["items"] = null;
     menuState["searchValue"] = "";
   },
 
@@ -578,6 +578,9 @@ export default {
   }),
 
   getLastState: util.backgroundFunction("Menu.getLastState", () => {
+    if (menuState.items === null) {
+      menuState["items"] = PassFF.Pass.contextItems;
+    }
     return menuState;
   }),
 

@@ -9,7 +9,8 @@ import { _, log } from "./util.js";
 import PassFF from "./main.js";
 
 let allItems = [];
-let contextItems = [];
+let contextInfo = null;
+let contextItems = null;
 let metaUrls = null;
 let displayItem = null;
 let passExecPromises = {};
@@ -926,7 +927,16 @@ export default {
   },
 
   get contextItems() {
-    return contextItems;
+    if (contextItems === null && contextInfo !== null) {
+      const matchingItems = this.getUrlMatchingItems(
+        contextInfo.url,
+        contextInfo.containerName,
+      );
+      if (matchingItems.length > 0) {
+        contextItems = matchingItems;
+      }
+    }
+    return contextItems === null ? this.rootItems : contextItems;
   },
 
   loadItems: util.backgroundFunction("Pass.loadItems", async function (reload) {
@@ -1014,11 +1024,16 @@ export default {
     },
   ),
 
-  loadContextItems: function (url, containerName) {
-    contextItems = this.getUrlMatchingItems(url, containerName);
-    if (contextItems.length === 0) {
-      contextItems = this.rootItems;
+  setContextInfo: function (url, containerName) {
+    if (
+      contextInfo !== null &&
+      contextInfo.url == url &&
+      contextInfo.containerName == containerName
+    ) {
+      return;
     }
+    contextInfo = { url, containerName };
+    contextItems = null;
   },
 
   getPasswordData: async function (item, recursionHist, enforceOtp) {
