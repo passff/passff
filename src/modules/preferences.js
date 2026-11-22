@@ -8,6 +8,7 @@
 import * as util from "./util.js";
 import { _, log } from "./util.js";
 import PassFF from "./main.js";
+import { getOverwrites } from "./policy.js";
 
 function browserActionListener() {
   browser.windows.create({
@@ -52,6 +53,10 @@ function initUi() {
   for (let [key, val] of Object.entries(prefParams)) {
     let el = document.getElementById("pref_" + key);
     if (el === null) continue;
+    if (overwrites.hasOwnProperty(key)) {
+      el.disabled = true;
+      el.title = _("passff_prefs_managed");
+    }
     if (
       el.tagName == "TEXTAREA" ||
       (el.tagName == "INPUT" && el.type == "text")
@@ -133,6 +138,9 @@ let prefParams = {
   iconOffset: "0px",
 };
 
+// Preferences enforced by policy, see policy.js
+let overwrites = {};
+
 const listParams = {
   passwordInputNames: ",",
   loginInputNames: ",",
@@ -173,8 +181,11 @@ let prefObj = {
 
   init: function () {
     let changes = {};
-    return browser.storage.local
-      .get(Object.keys(prefParams))
+    return getOverwrites(prefParams)
+      .then((res) => {
+        overwrites = res;
+        return browser.storage.local.get(Object.keys(prefParams));
+      })
       .then((res) => {
         for (let [key, val] of Object.entries(prefParams)) {
           if (typeof res[key] === "undefined") {
@@ -188,7 +199,13 @@ let prefObj = {
       .then((command) => {
         prefParams["tbMenuShortcut"] = command.shortcut;
         changes["tbMenuShortcut"] = command.shortcut;
+        Object.assign(prefParams, overwrites);
         return browser.storage.local.set(changes);
+      })
+      .then(() => {
+        if (overwrites.hasOwnProperty("tbMenuShortcut")) {
+          return updateBrowserCommand();
+        }
       })
       .then(() => {
         prefObj.ready = true;
@@ -196,6 +213,7 @@ let prefObj = {
         browser.storage.onChanged.addListener((changes, areaName) => {
           if (areaName !== "local") return;
           for (let item of Object.keys(changes)) {
+            if (overwrites.hasOwnProperty(item)) continue;
             prefParams[item] = changes[item].newValue;
             if (item == "handleHttpAuth" && PassFF.mode === "background") {
               PassFF.Auth.init();
@@ -368,6 +386,7 @@ function updateBrowserCommand() {
 export default new Proxy(prefObj, {
   set: function (target, key, val) {
     if (target.hasOwnProperty(key)) return false;
+    if (overwrites.hasOwnProperty(key)) return true;
     let obj = {};
     obj[key] = val;
     browser.storage.local.set(obj);

@@ -242,6 +242,26 @@ into the name of the entry for `http://example.com:2000/`:
 
 Accessible from the gear button in the toolbar menu, preferences let you fine-tune the behaviour of PassFF.
 
+Preferences can also be enforced through a [Firefox enterprise policy](https://mozilla.github.io/policy-templates/#3rdparty). The preferences set there replace your own values and are greyed out in the preferences page:
+
+```json
+{
+  "policies": {
+    "3rdparty": {
+      "Extensions": {
+        "passff@invicem.pro": {
+          "enterBehavior": 2,
+          "tbMenuShortcut": "Ctrl+Alt+P",
+          "recognisedSuffixes": "co.uk,org.uk,me.uk,co.jp,com.au,it"
+        }
+      }
+    }
+  }
+}
+```
+
+Keys and value types are the same as in `prefParams` in [`src/modules/preferences.js`](src/modules/preferences.js).
+
 ### Host application preferences
 
 If you use a customized `pass` installation: environment variables, customized repository path or extensions, you may have to [configure the host application accordingly](https://codeberg.org/PassFF/passff-host#preferences).

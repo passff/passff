@@ -131,6 +131,9 @@
   "passff_prefs_tb_menu_shortcut_label": {
     "message": "Keyboard shortcut for toolbar menu"
   },
+  "passff_prefs_managed": {
+    "message": "This preference is set by your administrator."
+  },
   "passff_prefs_shortcut_syntax_help": {
     "message": "Examples for valid shortcuts: `Ctrl+Shift+L`, `Ctrl+Alt+U`. For the general syntax, please refer to the [MDN web docs](https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/manifest.json/commands#shortcut_values)."
   },
