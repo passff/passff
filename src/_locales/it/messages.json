@@ -1,0 +1,398 @@
+{
+  "passff_passphrase_title": {
+    "message": "Repository delle password bloccato"
+  },
+  "passff_passphrase_description": {
+    "message": "Impossibile accedere alla password.\nAggiungi prima la tua passphrase a gpg-agent."
+  },
+  "passff_menu_copy_password": {
+    "message": "Copia password"
+  },
+  "passff_menu_copy_login": {
+    "message": "Copia nome utente"
+  },
+  "passff_menu_copy_otp": {
+    "message": "Copia token OTP"
+  },
+  "passff_menu_fill": {
+    "message": "Compila"
+  },
+  "passff_menu_fill_and_submit": {
+    "message": "Compila e invia"
+  },
+  "passff_menu_goto_fill": {
+    "message": "Vai a e compila"
+  },
+  "passff_menu_goto_fill_and_submit": {
+    "message": "Visita, compila e invia"
+  },
+  "passff_menu_goto_fill_new_tab": {
+    "message": "Visita e compila (in una nuova scheda)"
+  },
+  "passff_menu_goto_fill_and_submit_new_tab": {
+    "message": "Visita, compila e invia (in una nuova scheda)"
+  },
+  "passff_menu_goto": {
+    "message": "Visita"
+  },
+  "passff_menu_display": {
+    "message": "Mostra"
+  },
+  "passff_display_hover": {
+    "message": "Passa il puntatore del mouse per mostrare la password."
+  },
+  "passff_toolbar_button_label": {
+    "message": "PassFF"
+  },
+  "passff_toolbar_search_placeholder": {
+    "message": "Cerca"
+  },
+  "passff_toolbar_refresh_label": {
+    "message": "Aggiorna"
+  },
+  "passff_toolbar_preferences_label": {
+    "message": "Preferenze"
+  },
+  "passff_toolbar_new_password_label": {
+    "message": "Nuova"
+  },
+  "passff_button_root_label": {
+    "message": "Mostra tutte"
+  },
+  "passff_button_context_label": {
+    "message": "Mostra contestuali"
+  },
+  "passff_prefs_headline": {
+    "message": "Preferenze di PassFF"
+  },
+  "passff_prefs_tab_general": {
+    "message": "Generali"
+  },
+  "passff_prefs_tab_autofilling": {
+    "message": "Compilazione automatica"
+  },
+  "passff_prefs_tab_checks": {
+    "message": "Controlli di sicurezza"
+  },
+  "passff_prefs_tab_inputs": {
+    "message": "Campi di input"
+  },
+  "passff_prefs_tab_fields": {
+    "message": "Campi"
+  },
+  "passff_prefs_tab_script": {
+    "message": "Script di pass"
+  },
+  "passff_prefs_tab_adding": {
+    "message": "Aggiunta di password"
+  },
+  "passff_prefs_tab_browsing": {
+    "message": "Navigazione e ricerca nel repository delle password"
+  },
+  "passff_prefs_tab_match": {
+    "message": "Corrispondenza delle voci con l'URL del sito corrente"
+  },
+  "passff_prefs_tab_dev": {
+    "message": "Debug e sviluppo"
+  },
+  "passff_prefs_tab_look": {
+    "message": "Aspetto e stile"
+  },
+  "passff_prefs_look_menu_width": {
+    "message": "Larghezza del menu della barra degli strumenti"
+  },
+  "passff_prefs_look_menu_in_popup": {
+    "message": "Apri il menu della barra degli strumenti in una finestra popup separata"
+  },
+  "passff_prefs_look_popup_width": {
+    "message": "Larghezza del popup del modulo"
+  },
+  "passff_prefs_icon_offset": {
+    "message": "Spostamento dell'icona di PassFF nei campi di input (da usare con più gestori di password)"
+  },
+  "passff_prefs_mark_fillable": {
+    "message": "Contrassegna i campi compilabili con l'icona di PassFF"
+  },
+  "passff_prefs_mark_fillable_blacklist_label": {
+    "message": "Non contrassegnare come compilabili se l'URL contiene una delle stringhe (separate da virgole)"
+  },
+  "passff_prefs_context_menu": {
+    "message": "Aggiungi una voce al menu contestuale per compilare i campi di input"
+  },
+  "passff_prefs_submit_fillable": {
+    "message": "Invia quando selezionato dal menu dei campi di input"
+  },
+  "passff_prefs_handle_http_auth": {
+    "message": "Gestisci l'autenticazione HTTP"
+  },
+  "passff_prefs_directories_first": {
+    "message": "Mostra prima le cartelle nel menu della barra degli strumenti"
+  },
+  "passff_prefs_tb_menu_shortcut_label": {
+    "message": "Scorciatoia da tastiera per il menu della barra degli strumenti"
+  },
+  "passff_prefs_managed": {
+    "message": "Questa preferenza è impostata dall'amministratore di sistema."
+  },
+  "passff_prefs_shortcut_syntax_help": {
+    "message": "Esempi di scorciatoie valide: `Ctrl+Shift+L`, `Ctrl+Alt+U`. Per la sintassi generale, consulta la [documentazione MDN](https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/manifest.json/commands#shortcut_values)."
+  },
+  "passff_prefs_case_insensitive_search": {
+    "message": "Ricerca senza distinzione tra maiuscole e minuscole"
+  },
+  "passff_prefs_enter_behavior": {
+    "message": "Comportamento del tasto Invio"
+  },
+  "passff_prefs_shift_enter_behavior": {
+    "message": "Comportamento del tasto Maiusc+Invio"
+  },
+  "passff_prefs_ctrl_enter_behavior": {
+    "message": "Comportamento del tasto Ctrl+Invio"
+  },
+  "passff_prefs_inputs_description": {
+    "message": "PassFF usa i campi di input per trovare i campi compilabili nelle pagine web. Facoltativamente, PassFF li contrassegna con un menu per compilarli."
+  },
+  "passff_prefs_input_names_description": {
+    "message": "PassFF analizza tutti i campi di input di una pagina web per individuare quelli che possono essere compilati con nome utente, password o OTP. Lo fa controllando i valori di specifici attributi del campo (ad esempio 'id', 'name') rispetto a un elenco personalizzabile e assegnando un punteggio in base alla somiglianza; per ogni categoria viene scelto il campo con il punteggio più alto per la compilazione automatica."
+  },
+  "passff_prefs_input_attributes_label": {
+    "message": "Nomi degli attributi: elenco degli attributi dei campi da analizzare"
+  },
+  "passff_prefs_password_input_names_label": {
+    "message": "Valori degli attributi che identificano i campi password"
+  },
+  "passff_prefs_login_input_names_label": {
+    "message": "Valori degli attributi che identificano i campi nome utente"
+  },
+  "passff_prefs_default_login_label": {
+    "message": "Nome utente predefinito se non ne viene trovato nessuno"
+  },
+  "passff_prefs_otp_input_names_label": {
+    "message": "Valori degli attributi che identificano i campi OTP"
+  },
+  "passff_prefs_button_input_queries_label": {
+    "message": "Selettori dei pulsanti di invio dei moduli, uno per riga"
+  },
+  "passff_prefs_fields_description": {
+    "message": "I campi servono a trovare i dati all'interno del repository delle password. PassFF cerca login, password, URL e URI della chiave OTP nel file della password. Se si tratta di una cartella, PassFF li cerca nei file di questa cartella."
+  },
+  "passff_prefs_login_field_names_label": {
+    "message": "Nomi dei campi di login"
+  },
+  "passff_prefs_password_field_names_label": {
+    "message": "Nomi dei campi password"
+  },
+  "passff_prefs_url_field_names_label": {
+    "message": "Nomi dei campi URL"
+  },
+  "passff_prefs_otpauth_field_names_label": {
+    "message": "Nomi dei campi URI della chiave OTP"
+  },
+  "passff_prefs_filter_path_regex_label": {
+    "message": "Nascondi le voci il cui percorso corrisponde ad almeno una delle seguenti espressioni regolari (una per riga). Le modifiche a questa impostazione hanno effetto dopo il riavvio del browser o dopo aver cliccato sul pulsante 'ricarica' nel menu di PassFF."
+  },
+  "passff_prefs_script_howto": {
+    "message": "Consulta passff.py per modificare le variabili d'ambiente di pass."
+  },
+  "passff_prefs_auto_fill_label": {
+    "message": "Prova a compilare automaticamente i moduli di accesso delle pagine"
+  },
+  "passff_prefs_auto_submit_label": {
+    "message": "Prova a inviare automaticamente i moduli di accesso delle pagine"
+  },
+  "passff_prefs_autofill_blacklist_label": {
+    "message": "Non compilare automaticamente se l'URL della scheda contiene una delle stringhe (separate da virgole)"
+  },
+  "passff_prefs_check_auto_label": {
+    "message": "Disattiva i controlli di sicurezza dell'URL durante la compilazione manuale"
+  },
+  "passff_prefs_check_action_ignore": {
+    "message": "Ignora e continua la compilazione senza avvisi"
+  },
+  "passff_prefs_check_action_ask": {
+    "message": "Avvisa e chiedi conferma"
+  },
+  "passff_prefs_check_action_enforce": {
+    "message": "Non compilare"
+  },
+  "passff_prefs_check_protocol_label": {
+    "message": "Se la connessione attuale non è cifrata (senza HTTPS)"
+  },
+  "passff_prefs_check_domain_label": {
+    "message": "Se il sito e il nome host salvato hanno nomi di dominio diversi"
+  },
+  "passff_prefs_check_subdomain_label": {
+    "message": "Se il nome host non è un sottodominio di quello salvato"
+  },
+  "passff_prefs_check_fullurl_label": {
+    "message": "Se il sito e l'URL salvato sono diversi"
+  },
+  "passff_prefs_prefill_login_default_label": {
+    "message": "Precompila il campo del nome utente con questo valore"
+  },
+  "passff_prefs_prefill_login_tab_label": {
+    "message": "Precompila il nome utente dalla scheda attiva, se possibile"
+  },
+  "passff_prefs_prefill_url_label": {
+    "message": "Precompila l'URL dalla scheda attiva"
+  },
+  "passff_prefs_default_length_label": {
+    "message": "Lunghezza predefinita delle password generate"
+  },
+  "passff_prefs_default_include_symbols_label": {
+    "message": "Includi per impostazione predefinita almeno un carattere speciale nelle password generate"
+  },
+  "passff_prefs_preferred_new_method_label": {
+    "message": "Metodo preferito per aggiungere nuove password"
+  },
+  "passff_prefs_prefer_generate": {
+    "message": "Genera casualmente"
+  },
+  "passff_prefs_prefer_insert": {
+    "message": "Inserisci manualmente"
+  },
+  "passff_prefs_show_new_password_button": {
+    "message": "Mostra il pulsante 'Nuova password' nel menu della barra degli strumenti"
+  },
+  "passff_prefs_enable_logging": {
+    "message": "Attiva la registrazione nella console web di JavaScript"
+  },
+  "passff_prefs_show_status": {
+    "message": "Mostra una barra di stato nel menu della barra degli strumenti"
+  },
+  "passff_prefs_match_index_urls_label": {
+    "message": "Indicizza i campi URL all'avvio. Questo legge tutti i valori dei campi URL nella memoria del browser e li rende utilizzabili quando PassFF cerca le password (richiede passff-host ≥1.2.0)."
+  },
+  "passff_prefs_match_dirname_label": {
+    "message": "Confronta solo la cartella, non il nome della voce."
+  },
+  "passff_prefs_match_domain_label": {
+    "message": "Suggerisci solo le voci che contengono il nome di dominio."
+  },
+  "passff_prefs_match_suffixes_label": {
+    "message": "Suffissi di dominio da trattare come TLD"
+  },
+  "passff_newpassword_window_title": {
+    "message": "Nuova password"
+  },
+  "passff_newpassword_window_header": {
+    "message": "Aggiungi una nuova password"
+  },
+  "passff_newpassword_tabs_generate": {
+    "message": "Genera"
+  },
+  "passff_newpassword_tabs_insert": {
+    "message": "Inserisci"
+  },
+  "passff_newpassword_inputs_password_name_label": {
+    "message": "Nome"
+  },
+  "passff_newpassword_inputs_password_label": {
+    "message": "Password"
+  },
+  "passff_newpassword_inputs_password_confirmation_label": {
+    "message": "Conferma password"
+  },
+  "passff_newpassword_inputs_additional_info_label": {
+    "message": "Informazioni aggiuntive"
+  },
+  "passff_newpassword_inputs_password_length_label": {
+    "message": "Lunghezza"
+  },
+  "passff_newpassword_inputs_include_symbols_label": {
+    "message": "Includi caratteri speciali"
+  },
+  "passff_newpassword_inputs_add_password_button_label": {
+    "message": "Inserisci password"
+  },
+  "passff_newpassword_inputs_generate_password_button_label": {
+    "message": "Genera password"
+  },
+  "passff_newpassword_inputs_overwrite_password_prompt": {
+    "message": "Questa password esiste già. Vuoi davvero sostituirla?"
+  },
+  "passff_newpassword_errors_name_is_required": {
+    "message": "Il nome è obbligatorio."
+  },
+  "passff_newpassword_errors_password_is_required": {
+    "message": "La password è obbligatoria."
+  },
+  "passff_newpassword_errors_password_confirmation_mismatch": {
+    "message": "Le password non corrispondono."
+  },
+  "passff_newpassword_errors_pass_execution_failed": {
+    "message": "Ops, qualcosa è andato storto!"
+  },
+  "passff_newpassword_errors_unexpected_error": {
+    "message": "Spiacenti, si è verificato un errore imprevisto!"
+  },
+  "passff_errors_exec_host_app": {
+    "message": "Connessione all'applicazione host non riuscita oppure risposta inattesa!"
+  },
+  "passff_errors_upgrade_host_app": {
+    "message": "Assicurati di avere installata l'ultima versione dell'applicazione host di PassFF seguendo le [istruzioni ufficiali di installazione]($passffURL$).",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_no_entries_found": {
+    "message": "Nessuna voce corrisponde a questo URL."
+  },
+  "passff_checks_url_curr": {
+    "message": "L'URL del sito corrente:"
+  },
+  "passff_checks_url_pass": {
+    "message": "L'URL o gli URL salvati nella voce di pass:"
+  },
+  "passff_checks_override_confirm": {
+    "message": "Vuoi continuare comunque? Così facendo potresti esporti a un rischio per la sicurezza."
+  },
+  "passff_checks_invalid_url_curr": {
+    "message": "Si è verificato un errore durante l'analisi dell'URL corrente."
+  },
+  "passff_checks_invalid_url_pass": {
+    "message": "Si è verificato un errore durante l'analisi dell'URL dal database delle password."
+  },
+  "passff_checks_protocol": {
+    "message": "La pagina corrente usa un protocollo non sicuro che potrebbe compromettere la tua password."
+  },
+  "passff_checks_domain": {
+    "message": "Il dominio del sito corrente non corrisponde a quello presente nel tuo database di pass."
+  },
+  "passff_checks_subdomain": {
+    "message": "Il nome host del sito corrente non è un sottodominio di quello presente nel tuo database di pass."
+  },
+  "passff_checks_fullurl": {
+    "message": "L'URL del sito corrente non corrisponde a quello presente nel tuo database di pass."
+  },
+  "passff_error_otp_host_version": {
+    "message": "Il supporto OTP richiede la versione 1.1.0 o successiva dell'applicazione host di PassFF. Segui le [istruzioni ufficiali di installazione]($passffURL$).",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_error_grep_host_version": {
+    "message": "L'indicizzazione degli URL nei metadati richiede la versione 1.2.0 o successiva dell'applicazione host di PassFF. Segui le [istruzioni ufficiali di installazione]($passffURL$).",
+    "placeholders": {
+      "passffURL": {
+        "content": "$1",
+        "example": "https://gitfoo.org/passff#installation"
+      }
+    }
+  },
+  "passff_error_script_failed": {
+    "message": "Esecuzione dello script non riuscita: ```$errMsg$```",
+    "placeholders": {
+      "errMsg": {
+        "content": "$1",
+        "example": "gpg: cancelled by user"
+      }
+    }
+  }
+}
