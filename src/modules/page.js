@@ -99,14 +99,19 @@ function readInputNames(input) {
     return value;
   });
 
-  if (input.ariaLabel) {
-    inputNames.push(input.ariaLabel);
-  }
-
-  if (input.ariaLabelledByElements) {
-    inputNames = inputNames.concat(
-      Array.from(input.ariaLabelledByElements, (l) => l.innerText),
-    );
+  // note that Element.ariaLabelledByElements crashes the page process so we use a workaround
+  const labelElementIds = input.getAttribute("aria-labelledby");
+  if (!!labelElementIds) {
+    const rootEl = input.getRootNode();
+    if (!!rootEl.getElementById) {
+      inputNames = inputNames.concat(
+        labelElementIds
+          .split(/\s+/)
+          .filter((id) => !!id)
+          .map((id) => rootEl.getElementById(id).innerText)
+          .filter((name) => !!name),
+      );
+    }
   }
 
   // labels are <label> elements whose `for`-attribute points to this input
@@ -149,10 +154,9 @@ export function rateInputNames(input, goodNames) {
     return rating;
   });
   rt = 10 * (rt[0] + rt[1]) + rt.slice(2).reduce((a, b) => a + b, 0);
-  // We ignore `autocomplete="off"` if the rating is at least 10 (which
-  // usually means a match in the "id" and/or "name" attribute).
-  // https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion#the_autocomplete_attribute_and_login_fields
-  if (getAutocompleteAttr(input) == "off" && rt < 10) {
+  // We ignore `autocomplete="off"`, but respect `autocomplete="new-password"`, see
+  // https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/Turning_off_form_autocompletion#managing_autofill_for_login_fields
+  if (getAutocompleteAttr(input) == "new-password") {
     rt = 0;
   }
   return rt;

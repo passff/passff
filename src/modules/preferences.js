@@ -90,7 +90,8 @@ let prefParams = {
   //          https://codeberg.org/PassFF/passff-host/issues/68
   // - formcontrolname: Attribute name used by Angular https://codeberg.org/PassFF/passff/issues/587
   // - autocomplete: Ignored if value is "on" or "off"
-  inputAttributes: "id,name,placeholder,label,formcontrolname,autocomplete",
+  inputAttributes:
+    "id,name,placeholder,aria-label,label,formcontrolname,autocomplete",
 
   buttonInputQueries:
     "button:not([type=reset])\ninput[type=submit]\ninput[type=button]\n[role=button]",
